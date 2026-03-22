@@ -239,7 +239,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-group-body" id="group-profile">
       <div class="nav-item" onclick="nav(this,'mediaprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Media Profile</div>
       <div class="nav-item" onclick="nav(this,'sociallinks')"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Social Links</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div>
+      <div class="nav-item" onclick="nav(this,'video')"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Promo Codes</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>Favicon & Branding</div>
     </div>
@@ -544,6 +544,189 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       </div>
     </div>
 
+    <!-- VIDEO -->
+    <div id="screen-video" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Video</h2>
+        <p class="section-sub">Upload videos up to 5 minutes long to display on your page</p>
+      </div>
+
+      <!-- Upload Area -->
+      <div id="video-upload-area" style="background:#fff;border:2px dashed var(--border);border-radius:16px;padding:40px;text-align:center;margin-bottom:28px;cursor:pointer;transition:all 0.2s;" onclick="document.getElementById('video-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--brown)'" ondragleave="this.style.borderColor='var(--border)'" ondrop="handleVideoDrop(event)">
+        <input type="file" id="video-file-input" accept="video/*" style="display:none" onchange="handleVideoSelect(event)">
+        <div style="width:60px;height:60px;background:var(--brown-bg2);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--brown)" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        </div>
+        <div style="font-weight:700;font-size:1rem;color:var(--text);margin-bottom:6px;">Drop your video here or click to browse</div>
+        <div style="font-size:0.82rem;color:var(--text-dim);">MP4, MOV, AVI — Max 5 minutes long</div>
+      </div>
+
+      <!-- Add Video Form (hidden until file selected) -->
+      <div id="video-form" style="display:none;background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:28px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);">New Video</div>
+          <button onclick="cancelVideoForm()" title="Remove video" style="width:28px;height:28px;border-radius:50%;background:var(--cream2);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--text-mid);line-height:1;transition:all 0.2s;" onmouseover="this.style.background='#fee2e2';this.style.color='#dc2626'" onmouseout="this.style.background='var(--cream2)';this.style.color='var(--text-mid)'">✕</button>
+        </div>
+
+        <!-- Preview -->
+        <div style="margin-bottom:18px;border-radius:12px;overflow:hidden;background:#000;max-height:200px;display:flex;align-items:center;justify-content:center;">
+          <video id="video-preview" controls style="width:100%;max-height:200px;display:block;"></video>
+        </div>
+
+        <div id="video-duration-warning" style="display:none;background:#fee2e2;color:#dc2626;border-radius:9px;padding:10px 14px;font-size:0.82rem;font-weight:600;margin-bottom:14px;">
+          ⚠️ This video is over 5 minutes. Please choose a shorter video.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-field" style="margin:0;">
+            <label>Video Title</label>
+            <input type="text" id="video-title-input" placeholder="Enter a title for your video">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Genre</label>
+            <select id="video-genre-input">
+              <option value="">-- Select genre --</option>
+              <option value="Shorts">Shorts</option>
+              <option value="Stories">Stories</option>
+              <option value="Music Video">Music Video</option>
+              <option value="Branding">Branding</option>
+              <option value="Class">Class</option>
+              <option value="Education">Education</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;">
+          <button onclick="saveVideo()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;">Save Video</button>
+          <button onclick="cancelVideoForm()" style="padding:12px 20px;background:var(--cream2);color:var(--text-mid);border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Video List -->
+      <div id="video-list"></div>
+    </div>
+
+    <style>
+    .video-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;}
+    .video-thumb{width:100px;height:65px;border-radius:9px;background:#000;overflow:hidden;flex-shrink:0;position:relative;}
+    .video-thumb video{width:100%;height:100%;object-fit:cover;}
+    .video-thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);}
+    .video-thumb-overlay svg{width:22px;height:22px;fill:#fff;}
+    .video-info{flex:1;min-width:0;}
+    .video-title{font-size:0.92rem;font-weight:700;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .video-meta{font-size:0.75rem;color:var(--text-dim);}
+    .video-genre-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.65rem;font-weight:700;letter-spacing:0.05em;background:var(--brown-bg);color:var(--brown);margin-left:6px;}
+    .video-actions{display:flex;gap:6px;flex-shrink:0;}
+    .vid-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+    .vid-btn:hover{background:var(--cream2);}
+    .vid-btn svg{width:14px;height:14px;stroke:var(--text-mid);fill:none;stroke-width:2;}
+    .vid-btn.delete:hover{background:#fee2e2;border-color:#fecaca;}
+    .vid-btn.delete:hover svg{stroke:#dc2626;}
+    </style>
+
+    <script>
+    let videos = [];
+    let pendingVideoFile = null;
+
+    function handleVideoSelect(e) {
+      const file = e.target.files[0];
+      if (file) loadVideoFile(file);
+    }
+
+    function handleVideoDrop(e) {
+      e.preventDefault();
+      document.getElementById('video-upload-area').style.borderColor = 'var(--border)';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('video/')) loadVideoFile(file);
+      else toast('Please drop a valid video file');
+    }
+
+    function loadVideoFile(file) {
+      const url = URL.createObjectURL(file);
+      const videoEl = document.getElementById('video-preview');
+      videoEl.src = url;
+      videoEl.onloadedmetadata = function() {
+        const dur = videoEl.duration;
+        const warn = document.getElementById('video-duration-warning');
+        const saveBtn = document.querySelector('#video-form button');
+        if (dur > 300) {
+          warn.style.display = 'block';
+          saveBtn.disabled = true;
+          saveBtn.style.opacity = '0.5';
+        } else {
+          warn.style.display = 'none';
+          saveBtn.disabled = false;
+          saveBtn.style.opacity = '1';
+        }
+        pendingVideoFile = { file, url, duration: dur };
+      };
+      document.getElementById('video-form').style.display = 'block';
+      document.getElementById('video-upload-area').style.display = 'none';
+    }
+
+    function cancelVideoForm() {
+      document.getElementById('video-form').style.display = 'none';
+      document.getElementById('video-upload-area').style.display = 'block';
+      document.getElementById('video-title-input').value = '';
+      document.getElementById('video-genre-input').value = '';
+      document.getElementById('video-file-input').value = '';
+      pendingVideoFile = null;
+    }
+
+    function saveVideo() {
+      const title = document.getElementById('video-title-input').value.trim();
+      const genre = document.getElementById('video-genre-input').value;
+      if (!title) { toast('Please enter a video title'); return; }
+      if (!genre) { toast('Please select a genre'); return; }
+      if (!pendingVideoFile) return;
+
+      const mins = Math.floor(pendingVideoFile.duration / 60);
+      const secs = Math.floor(pendingVideoFile.duration % 60).toString().padStart(2,'0');
+      videos.push({ id: Date.now(), title, genre, url: pendingVideoFile.url, duration: mins + ':' + secs });
+      renderVideos();
+      cancelVideoForm();
+      toast('✓ Video saved!');
+    }
+
+    function renderVideos() {
+      const list = document.getElementById('video-list');
+      if (videos.length === 0) { list.innerHTML = ''; return; }
+      list.innerHTML = videos.map((v, i) => `
+        <div class="video-card" id="vid-${v.id}">
+          <div class="video-thumb">
+            <video src="${v.url}" muted preload="metadata"></video>
+            <div class="video-thumb-overlay"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#fff"/></svg></div>
+          </div>
+          <div class="video-info">
+            <div class="video-title">${v.title}</div>
+            <div class="video-meta">${v.duration} <span class="video-genre-badge">${v.genre}</span></div>
+          </div>
+          <div class="video-actions">
+            <button class="vid-btn" onclick="moveVideo(${i},-1)" title="Move up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <button class="vid-btn" onclick="moveVideo(${i},1)" title="Move down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <button class="vid-btn delete" onclick="deleteVideo(${i})" title="Delete"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function moveVideo(index, dir) {
+      const newIndex = index + dir;
+      if (newIndex < 0 || newIndex >= videos.length) return;
+      const temp = videos[index];
+      videos[index] = videos[newIndex];
+      videos[newIndex] = temp;
+      renderVideos();
+    }
+
+    function deleteVideo(index) {
+      if (!confirm('Delete this video?')) return;
+      videos.splice(index, 1);
+      renderVideos();
+      toast('Video deleted');
+    }
+    </script>
+
     <!-- COMING SOON -->
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
@@ -660,7 +843,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 <script>
 // ── NAV ──────────────────────────────────────────────
-const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',analytics:'Analytics',livepreview:'Live Preview',coming:'Coming Soon'};
+const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',livepreview:'Live Preview',coming:'Coming Soon'};
 
 function nav(el, screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
