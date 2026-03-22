@@ -228,7 +228,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Subscriptions</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Events</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Listings</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010-6h20a3 3 0 010 6"/><path d="M2 9v11a2 2 0 002 2h16a2 2 0 002-2V9"/><path d="M12 9v13"/></svg>Ticket Sales</div>
+      <div class="nav-item" onclick="nav(this,'tickets')"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010-6h20a3 3 0 010 6"/><path d="M2 9v11a2 2 0 002 2h16a2 2 0 002-2V9"/><path d="M12 9v13"/></svg>Ticket Sales</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Courses</div>
     </div>
 
@@ -1020,6 +1020,508 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     }
     </script>
 
+    <!-- TICKET SALES -->
+    <div id="screen-tickets" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Ticket Sales</h2>
+        <p class="section-sub">Create and manage events, tours, popups, and more</p>
+      </div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;"><div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Total Events</div><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;" id="tk-total-events">0</div></div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;"><div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Tickets Sold</div><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;" id="tk-total-sold">0</div></div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;"><div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Revenue</div><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--brown);" id="tk-revenue">$0</div></div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;"><div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Active Events</div><div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#16a34a;" id="tk-active">0</div></div>
+      </div>
+
+      <!-- Create Event Button -->
+      <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+        <button onclick="openCreateEvent()" style="padding:11px 22px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;box-shadow:0 2px 10px rgba(192,122,80,0.35);display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#fff" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Create Event
+        </button>
+      </div>
+
+      <!-- Events List -->
+      <div id="tk-events-list"></div>
+
+      <!-- Empty state -->
+      <div id="tk-empty" style="text-align:center;padding:48px;background:#fff;border-radius:16px;border:1.5px dashed var(--border);">
+        <div style="font-size:2.5rem;margin-bottom:12px;">🎟️</div>
+        <h3 style="font-size:1rem;font-weight:600;margin-bottom:6px;">No events yet</h3>
+        <p style="font-size:0.85rem;color:var(--text-dim);">Create your first event to start selling tickets</p>
+      </div>
+    </div>
+
+    <!-- CREATE/EDIT EVENT MODAL -->
+    <div class="modal-overlay" id="modal-create-event" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
+      <div class="modal" style="max-width:600px;margin:auto;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 class="modal-title" style="margin:0;" id="event-modal-title">Create Event</h2>
+          <button onclick="closeModal('modal-create-event')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+
+        <!-- Event Cover Image -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Event Cover Image</div>
+          <div id="ev-cover-preview" onclick="document.getElementById('ev-cover-input').click()" style="width:100%;height:180px;background:linear-gradient(135deg,#1a0a00,#2d1500);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border);overflow:hidden;position:relative;">
+            <input type="file" id="ev-cover-input" accept="image/*" style="display:none" onchange="handleEventCover(event)">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div style="font-size:0.82rem;color:var(--text-dim);margin-top:10px;">Click to upload cover image</div>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-field" style="margin:0;grid-column:1/-1;">
+            <label>Event Name</label>
+            <input type="text" id="ev-name" placeholder="e.g. Winter Music Festival 2026">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Event Type</label>
+            <select id="ev-type">
+              <option value="">-- Select type --</option>
+              <option>Concert / Show</option>
+              <option>Tour</option>
+              <option>Popup</option>
+              <option>Festival</option>
+              <option>Workshop</option>
+              <option>Networking</option>
+              <option>Party</option>
+              <option>Brunch</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Ticket Type</label>
+            <select id="ev-ticket-type">
+              <option>General Admission</option>
+              <option>VIP</option>
+              <option>Early Bird</option>
+              <option>Free</option>
+              <option>Donation</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-field">
+          <label>Event Description</label>
+          <textarea id="ev-desc" placeholder="Describe your event, vibe, what to expect..." style="min-height:90px;"></textarea>
+        </div>
+
+        <!-- Date, Time, Location -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-field" style="margin:0;">
+            <label>Date</label>
+            <input type="date" id="ev-date">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Time</label>
+            <input type="time" id="ev-time">
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-field">
+          <label>Location</label>
+          <div style="display:flex;gap:10px;margin-bottom:8px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+              <input type="radio" name="ev-loc-type" value="set" checked onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> Set Location
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+              <input type="radio" name="ev-loc-type" value="tbd" onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> To Be Determined
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+              <input type="radio" name="ev-loc-type" value="after" onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> Sent After Purchase
+            </label>
+          </div>
+          <input type="text" id="ev-location" placeholder="Venue name, city, state">
+        </div>
+
+        <!-- Tickets & Pricing -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-field" style="margin:0;">
+            <label>Tickets Available</label>
+            <input type="number" id="ev-qty" placeholder="e.g. 200" min="1">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Ticket Price</label>
+            <input type="number" id="ev-price" placeholder="0.00" step="0.01" min="0">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Sale Price (Optional)</label>
+            <input type="number" id="ev-sale-price" placeholder="0.00" step="0.01" min="0">
+          </div>
+        </div>
+
+        <!-- Delivery Method -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Ticket Delivery</div>
+          <div style="display:flex;gap:16px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-send-email" checked style="accent-color:var(--brown);"> Email</label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-send-sms" style="accent-color:var(--brown);"> SMS / Phone</label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-in-person" checked style="accent-color:var(--brown);"> In-Person Barcode Scan</label>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-field">
+          <label>Event Tags</label>
+          <input type="text" id="ev-tags" placeholder="e.g. Gathering, Social, Night Out (comma separated)">
+        </div>
+
+        <!-- Gallery -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Event Gallery (Optional)</div>
+          <div onclick="document.getElementById('ev-gallery-input').click()" style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;background:var(--cream);">
+            <input type="file" id="ev-gallery-input" accept="image/*" multiple style="display:none" onchange="handleEventGallery(event)">
+            <div style="font-size:0.82rem;color:var(--text-mid);">Click to add gallery images</div>
+          </div>
+          <div id="ev-gallery-previews" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal('modal-create-event')">Cancel</button>
+          <button class="btn-confirm" onclick="saveEvent()">Publish Event →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW EVENT MODAL -->
+    <div class="modal-overlay" id="modal-view-event" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
+      <div style="background:#111;border-radius:24px;max-width:400px;width:90%;margin:auto;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5);">
+        <!-- Cover -->
+        <div id="view-ev-cover" style="width:100%;height:220px;background:linear-gradient(135deg,#1a0a00,#3d1f00);position:relative;display:flex;align-items:flex-end;">
+          <div style="position:absolute;top:16px;left:16px;cursor:pointer;" onclick="closeModal('modal-view-event')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <div style="position:absolute;top:16px;right:16px;display:flex;gap:10px;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" onclick="shareEvent()" style="cursor:pointer;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <div style="padding:20px;background:linear-gradient(transparent,rgba(0,0,0,0.8));width:100%;">
+            <h2 id="view-ev-name" style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.4rem;margin-bottom:6px;"></h2>
+            <div style="display:flex;gap:14px;flex-wrap:wrap;">
+              <span id="view-ev-datetime" style="color:rgba(255,255,255,0.7);font-size:0.75rem;display:flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              <span id="view-ev-location-tag" style="color:rgba(255,255,255,0.7);font-size:0.75rem;display:flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            </div>
+          </div>
+        </div>
+        <!-- Details -->
+        <div style="padding:20px;">
+          <div id="view-ev-joined" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:14px;">150+ Joined</div>
+          <div id="view-ev-hosted" style="font-size:0.85rem;color:var(--brown-light);font-weight:700;margin-bottom:10px;"></div>
+          <div id="view-ev-desc" style="font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:16px;"></div>
+          <!-- Tags -->
+          <div id="view-ev-tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;"></div>
+          <!-- Gallery -->
+          <div id="view-ev-gallery-section" style="display:none;margin-bottom:16px;">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;">Gallery</div>
+            <div id="view-ev-gallery" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;"></div>
+          </div>
+          <!-- Get Ticket button -->
+          <button onclick="openTicketView()" style="width:100%;padding:16px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:800;">Get Ticket (<span id="view-ev-price"></span>)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- YOUR TICKET MODAL -->
+    <div class="modal-overlay" id="modal-your-ticket">
+      <div style="background:#111;border-radius:24px;max-width:380px;width:90%;padding:0;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5);">
+        <div style="padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;">
+          <div style="cursor:pointer;" onclick="closeModal('modal-your-ticket');openModal('modal-view-event')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <span style="color:#fff;font-weight:700;font-size:0.95rem;">Your ticket</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </div>
+        <!-- Ticket card -->
+        <div style="margin:20px;background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:18px;padding:24px;text-align:center;">
+          <h3 id="ticket-ev-name" style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem;margin-bottom:6px;"></h3>
+          <p style="color:rgba(255,255,255,0.5);font-size:0.75rem;margin-bottom:20px;">Show this QR code at the event entrance</p>
+          <div id="ticket-id-label" style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:16px;"></div>
+          <!-- QR Code (SVG generated) -->
+          <div style="background:#fff;border-radius:16px;padding:16px;display:inline-block;margin-bottom:16px;">
+            <svg id="ticket-qr" viewBox="0 0 100 100" width="140" height="140" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <!-- Event details -->
+          <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:14px;text-align:left;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Venue</div><div id="ticket-venue" style="font-size:0.82rem;color:#fff;font-weight:600;"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Date & Time</div><div id="ticket-datetime" style="font-size:0.82rem;color:#fff;font-weight:600;"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Price</div><div id="ticket-price-label" style="font-size:0.82rem;color:var(--brown-light);font-weight:800;"></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0 20px 20px;">
+          <button onclick="downloadTicket()" style="width:100%;padding:15px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#111" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download ticket
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+    .tk-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;}
+    .tk-cover{width:100%;height:140px;object-fit:cover;background:linear-gradient(135deg,#1a0a00,#3d1f00);}
+    .tk-cover-placeholder{width:100%;height:140px;background:linear-gradient(135deg,#1a0a00,#3d1f00);display:flex;align-items:center;justify-content:center;font-size:2rem;}
+    .tk-body{padding:16px;}
+    .tk-name{font-family:'DM Serif Display',serif;font-size:1.05rem;margin-bottom:4px;}
+    .tk-meta{font-size:0.75rem;color:var(--text-dim);display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;}
+    .tk-meta span{display:flex;align-items:center;gap:4px;}
+    .tk-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--border);background:var(--cream);}
+    .tk-sold-bar{flex:1;margin:0 16px;}
+    .tk-bar-bg{height:6px;background:var(--cream2);border-radius:3px;overflow:hidden;}
+    .tk-bar-fill{height:100%;background:linear-gradient(90deg,var(--brown-light),var(--brown-dark));border-radius:3px;transition:width 0.4s;}
+    .tk-action-btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:700;}
+    </style>
+
+    <script>
+    let events = [];
+    let currentEventIndex = null;
+    let eventGalleryFiles = [];
+
+    function openCreateEvent() {
+      currentEventIndex = null;
+      document.getElementById('event-modal-title').textContent = 'Create Event';
+      document.getElementById('ev-name').value = '';
+      document.getElementById('ev-type').value = '';
+      document.getElementById('ev-ticket-type').value = 'General Admission';
+      document.getElementById('ev-desc').value = '';
+      document.getElementById('ev-date').value = '';
+      document.getElementById('ev-time').value = '';
+      document.getElementById('ev-location').value = '';
+      document.getElementById('ev-qty').value = '';
+      document.getElementById('ev-price').value = '';
+      document.getElementById('ev-sale-price').value = '';
+      document.getElementById('ev-tags').value = '';
+      document.getElementById('ev-gallery-previews').innerHTML = '';
+      document.getElementById('ev-cover-preview').innerHTML = '<input type="file" id="ev-cover-input" accept="image/*" style="display:none" onchange="handleEventCover(event)"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><div style="font-size:0.82rem;color:var(--text-dim);margin-top:10px;">Click to upload cover image</div>';
+      document.getElementById('ev-cover-preview').onclick = () => document.getElementById('ev-cover-input').click();
+      eventGalleryFiles = [];
+      document.querySelectorAll('input[name="ev-loc-type"]')[0].checked = true;
+      document.getElementById('ev-location').style.display = 'block';
+      openModal('modal-create-event');
+    }
+
+    function toggleLocationField(radio) {
+      const field = document.getElementById('ev-location');
+      if (radio.value === 'tbd') { field.value = 'To Be Determined'; field.disabled = true; }
+      else if (radio.value === 'after') { field.value = 'Sent after purchase'; field.disabled = true; }
+      else { field.value = ''; field.disabled = false; }
+    }
+
+    function handleEventCover(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const prev = document.getElementById('ev-cover-preview');
+      prev.style.backgroundImage = `url(${url})`;
+      prev.style.backgroundSize = 'cover';
+      prev.style.backgroundPosition = 'center';
+      prev.innerHTML = `<input type="file" id="ev-cover-input" accept="image/*" style="display:none" onchange="handleEventCover(event)">`;
+      prev.onclick = () => document.getElementById('ev-cover-input').click();
+      prev._coverUrl = url;
+    }
+
+    function handleEventGallery(e) {
+      eventGalleryFiles = Array.from(e.target.files);
+      const prev = document.getElementById('ev-gallery-previews');
+      prev.innerHTML = '';
+      eventGalleryFiles.forEach(f => {
+        const url = URL.createObjectURL(f);
+        const img = document.createElement('img');
+        img.src = url; img.style.cssText = 'width:70px;height:70px;border-radius:8px;object-fit:cover;border:1px solid var(--border);';
+        prev.appendChild(img);
+      });
+    }
+
+    function saveEvent() {
+      const name = document.getElementById('ev-name').value.trim();
+      const type = document.getElementById('ev-type').value;
+      const ticketType = document.getElementById('ev-ticket-type').value;
+      const desc = document.getElementById('ev-desc').value.trim();
+      const date = document.getElementById('ev-date').value;
+      const time = document.getElementById('ev-time').value;
+      const location = document.getElementById('ev-location').value.trim();
+      const qty = parseInt(document.getElementById('ev-qty').value) || 0;
+      const price = parseFloat(document.getElementById('ev-price').value) || 0;
+      const salePrice = parseFloat(document.getElementById('ev-sale-price').value) || null;
+      const tagsRaw = document.getElementById('ev-tags').value;
+      const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+      const coverUrl = document.getElementById('ev-cover-preview')._coverUrl || null;
+      const galleryUrls = eventGalleryFiles.map(f => URL.createObjectURL(f));
+      const sendEmail = document.getElementById('ev-send-email').checked;
+      const sendSMS = document.getElementById('ev-send-sms').checked;
+      const inPerson = document.getElementById('ev-in-person').checked;
+
+      if (!name) { toast('Please enter an event name'); return; }
+      if (!date) { toast('Please select a date'); return; }
+      if (qty <= 0) { toast('Please enter ticket quantity'); return; }
+
+      const ev = { id: Date.now(), name, type, ticketType, desc, date, time, location, qty, sold: 0, price, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true };
+      if (currentEventIndex !== null) events[currentEventIndex] = ev;
+      else events.unshift(ev);
+      closeModal('modal-create-event');
+      renderEvents();
+      updateTicketStats();
+      toast('✓ Event published!');
+    }
+
+    function renderEvents() {
+      const list = document.getElementById('tk-events-list');
+      const empty = document.getElementById('tk-empty');
+      if (events.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+      empty.style.display = 'none';
+      list.innerHTML = events.map((ev, i) => {
+        const pct = ev.qty > 0 ? Math.round((ev.sold / ev.qty) * 100) : 0;
+        const dateStr = ev.date ? new Date(ev.date + 'T12:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : '';
+        return `
+        <div class="tk-card">
+          ${ev.coverUrl ? `<img src="${ev.coverUrl}" class="tk-cover">` : `<div class="tk-cover-placeholder">🎟️</div>`}
+          <div class="tk-body">
+            <div class="tk-name">${ev.name}</div>
+            <div class="tk-meta">
+              <span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dateStr}${ev.time ? ' • ' + ev.time : ''}</span>
+              <span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>${ev.location || 'TBD'}</span>
+              <span style="background:var(--brown-bg);color:var(--brown);padding:2px 8px;border-radius:20px;font-weight:700;">${ev.type || 'Event'}</span>
+            </div>
+          </div>
+          <div style="padding:0 16px 8px;">
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-dim);margin-bottom:4px;"><span>${ev.sold} sold</span><span>${ev.qty - ev.sold} remaining</span></div>
+            <div class="tk-bar-bg"><div class="tk-bar-fill" style="width:${pct}%;"></div></div>
+          </div>
+          <div class="tk-footer">
+            <div style="font-weight:800;font-size:0.95rem;color:var(--brown);">${ev.salePrice ? '<span style="text-decoration:line-through;color:var(--text-dim);font-weight:400;font-size:0.8rem;">$'+ev.price.toFixed(2)+'</span> $'+ev.salePrice.toFixed(2) : ev.price === 0 ? 'Free' : '$'+ev.price.toFixed(2)}</div>
+            <div style="display:flex;gap:8px;">
+              <button class="tk-action-btn" onclick="viewEvent(${i})" style="background:var(--brown-bg2);color:var(--brown-dark);">View</button>
+              <button class="tk-action-btn" onclick="editEvent(${i})" style="background:var(--cream2);color:var(--text-mid);">Edit</button>
+              <button class="tk-action-btn" onclick="deleteEvent(${i})" style="background:#fee2e2;color:#dc2626;">Delete</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function viewEvent(i) {
+      const ev = events[i];
+      currentEventIndex = i;
+      const dateStr = ev.date ? new Date(ev.date + 'T12:00:00').toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'}) : '';
+      document.getElementById('view-ev-name').textContent = ev.name;
+      document.getElementById('view-ev-datetime').innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${dateStr} ${ev.time ? '• ' + ev.time : ''}`;
+      document.getElementById('view-ev-location-tag').innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> ${ev.location || 'TBD'}`;
+      document.getElementById('view-ev-hosted').textContent = 'Hosted By ' + (document.getElementById('topbar-title').textContent !== 'Ticket Sales' ? 'You' : 'Host');
+      document.getElementById('view-ev-desc').textContent = ev.desc;
+      document.getElementById('view-ev-tags').innerHTML = ev.tags.map(t => `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:4px 12px;border-radius:20px;font-size:0.72rem;">${t}</span>`).join('');
+      const price = ev.salePrice || ev.price;
+      document.getElementById('view-ev-price').textContent = price === 0 ? 'Free' : '$' + price.toFixed(2);
+      if (ev.coverUrl) { document.getElementById('view-ev-cover').style.backgroundImage = `url(${ev.coverUrl})`; document.getElementById('view-ev-cover').style.backgroundSize = 'cover'; document.getElementById('view-ev-cover').style.backgroundPosition = 'center'; }
+      const gallSec = document.getElementById('view-ev-gallery-section');
+      if (ev.galleryUrls && ev.galleryUrls.length > 0) {
+        gallSec.style.display = 'block';
+        document.getElementById('view-ev-gallery').innerHTML = ev.galleryUrls.map(url => `<img src="${url}" style="width:90px;height:70px;border-radius:10px;object-fit:cover;flex-shrink:0;">`).join('');
+      } else { gallSec.style.display = 'none'; }
+      openModal('modal-view-event');
+    }
+
+    function openTicketView() {
+      const ev = events[currentEventIndex];
+      if (!ev) return;
+      const dateStr = ev.date ? new Date(ev.date + 'T12:00:00').toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'}) : '';
+      const ticketId = 'TKT-' + ev.id.toString().slice(-6);
+      document.getElementById('ticket-ev-name').textContent = ev.name;
+      document.getElementById('ticket-id-label').textContent = 'Ticket: ' + ticketId;
+      document.getElementById('ticket-venue').textContent = ev.location || 'TBD';
+      document.getElementById('ticket-datetime').textContent = dateStr + (ev.time ? ' • ' + ev.time : '');
+      const price = ev.salePrice || ev.price;
+      document.getElementById('ticket-price-label').textContent = price === 0 ? 'Free' : '$' + price.toFixed(2);
+      generateQR(ticketId);
+      closeModal('modal-view-event');
+      openModal('modal-your-ticket');
+    }
+
+    function generateQR(text) {
+      // Simple visual QR-like pattern using SVG blocks
+      const svg = document.getElementById('ticket-qr');
+      svg.innerHTML = '';
+      const size = 10, cols = 10, rows = 10;
+      const seed = text.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const val = (seed * (r+1) * (c+1) * 31337) % 100;
+          if (val < 55 || (r < 3 && c < 3) || (r < 3 && c > 6) || (r > 6 && c < 3)) {
+            const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+            rect.setAttribute('x', c * size); rect.setAttribute('y', r * size);
+            rect.setAttribute('width', size-1); rect.setAttribute('height', size-1);
+            rect.setAttribute('fill','#111'); svg.appendChild(rect);
+          }
+        }
+      }
+      // Corner markers
+      ['0,0','70,0','0,70'].forEach(pos => {
+        const [x,y] = pos.split(',').map(Number);
+        const outer = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        outer.setAttribute('x',x); outer.setAttribute('y',y); outer.setAttribute('width',28); outer.setAttribute('height',28); outer.setAttribute('fill','#111'); outer.setAttribute('rx','3'); svg.appendChild(outer);
+        const inner = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        inner.setAttribute('x',x+4); inner.setAttribute('y',y+4); inner.setAttribute('width',20); inner.setAttribute('height',20); inner.setAttribute('fill','#fff'); svg.appendChild(inner);
+        const dot = document.createElementNS('http://www.w3.org/2000/svg','rect');
+        dot.setAttribute('x',x+8); dot.setAttribute('y',y+8); dot.setAttribute('width',12); dot.setAttribute('height',12); dot.setAttribute('fill','#111'); svg.appendChild(dot);
+      });
+    }
+
+    function editEvent(i) {
+      currentEventIndex = i;
+      const ev = events[i];
+      document.getElementById('event-modal-title').textContent = 'Edit Event';
+      document.getElementById('ev-name').value = ev.name;
+      document.getElementById('ev-type').value = ev.type;
+      document.getElementById('ev-ticket-type').value = ev.ticketType;
+      document.getElementById('ev-desc').value = ev.desc;
+      document.getElementById('ev-date').value = ev.date;
+      document.getElementById('ev-time').value = ev.time;
+      document.getElementById('ev-location').value = ev.location;
+      document.getElementById('ev-qty').value = ev.qty;
+      document.getElementById('ev-price').value = ev.price;
+      document.getElementById('ev-sale-price').value = ev.salePrice || '';
+      document.getElementById('ev-tags').value = ev.tags.join(', ');
+      if (ev.coverUrl) { const prev = document.getElementById('ev-cover-preview'); prev.style.backgroundImage = `url(${ev.coverUrl})`; prev.style.backgroundSize = 'cover'; prev._coverUrl = ev.coverUrl; }
+      openModal('modal-create-event');
+    }
+
+    function deleteEvent(i) {
+      if (!confirm('Delete this event?')) return;
+      events.splice(i, 1);
+      renderEvents();
+      updateTicketStats();
+      toast('Event deleted');
+    }
+
+    function shareEvent() {
+      toast('🔗 Event link copied to clipboard!');
+    }
+
+    function downloadTicket() {
+      toast('📥 Ticket downloading...');
+    }
+
+    function updateTicketStats() {
+      document.getElementById('tk-total-events').textContent = events.length;
+      document.getElementById('tk-total-sold').textContent = events.reduce((s,e) => s+e.sold, 0);
+      document.getElementById('tk-revenue').textContent = '$' + events.reduce((s,e) => s+(e.sold*(e.salePrice||e.price)),0).toFixed(2);
+      document.getElementById('tk-active').textContent = events.filter(e=>e.active).length;
+    }
+    </script>
+
     <!-- COMING SOON -->
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
@@ -1136,7 +1638,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 <script>
 // ── NAV ──────────────────────────────────────────────
-const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',livepreview:'Live Preview',coming:'Coming Soon'};
+const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Ticket Sales',livepreview:'Live Preview',coming:'Coming Soon'};
 
 function nav(el, screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
