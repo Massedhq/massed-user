@@ -69,6 +69,93 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .screen.active{display:block;}
 #screen-livepreview.active{display:flex!important;padding:0!important;}
 
+/* HAMBURGER */
+.hamburger{display:none;width:40px;height:40px;background:none;border:none;cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;}
+.hamburger svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:2;}
+
+/* SIDEBAR OVERLAY */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(44,26,14,0.4);z-index:99;backdrop-filter:blur(2px);}
+.sidebar-overlay.visible{display:block;}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  body{overflow:hidden;}
+  :root{--sidebar-w:280px;}
+
+  /* Sidebar slides in */
+  .sidebar{transform:translateX(-100%);transition:transform 0.3s ease;z-index:200;}
+  .sidebar.open{transform:translateX(0);}
+
+  /* Main takes full width */
+  .main{margin-left:0;width:100%;}
+
+  /* Topbar */
+  .topbar{padding:0 16px;}
+  .hamburger{display:flex;}
+  .link-badge{display:none;}
+  .btn-logout{padding:7px 12px;font-size:0.78rem;}
+
+  /* Screens */
+  .screen{padding:20px 16px;}
+
+  /* Welcome */
+  .welcome-wrap{min-height:calc(100vh - 60px);padding:20px;}
+  .welcome-title{font-size:1.6rem;}
+
+  /* Profile grid */
+  .profile-grid{grid-template-columns:1fr;}
+  .profile-card.full{grid-column:1;}
+
+  /* Social grid */
+  .social-grid{grid-template-columns:1fr;}
+
+  /* Stats rows */
+  .stats-row{grid-template-columns:1fr 1fr;}
+
+  /* Analytics stats */
+  #screen-analytics .stats-row{grid-template-columns:1fr 1fr;}
+
+  /* Review stats */
+  #screen-reviews > div:first-of-type{grid-template-columns:1fr;}
+
+  /* Ticket stats */
+  #screen-tickets > div:first-of-type{grid-template-columns:1fr 1fr;}
+
+  /* Live preview */
+  #screen-livepreview.active{flex-direction:column;}
+  .lp-left{padding:20px;flex:none;}
+  .lp-right{width:100%;padding:20px;border-left:none;border-top:1px solid #333;}
+  .phone-frame{width:240px;height:480px;}
+
+  /* Live banner */
+  .live-banner{left:0;}
+  .live-banner-inner{flex-wrap:wrap;gap:10px;}
+  .live-banner-actions{width:100%;justify-content:flex-end;}
+
+  /* Modals */
+  .modal{padding:24px 18px;}
+  .modal-title{font-size:1.25rem;}
+
+  /* Ticket event modal */
+  #modal-view-event > div,
+  #modal-your-ticket > div{width:95%;}
+
+  /* Create event grid */
+  #modal-create-event .modal > div[style*="grid-template-columns:1fr 1fr"]{display:flex;flex-direction:column;}
+
+  /* Ticket stats */
+  .tk-footer{flex-wrap:wrap;gap:10px;}
+  .tk-footer > div:last-child{width:100%;justify-content:flex-end;}
+
+  /* Section headers with buttons */
+  .section-header{margin-bottom:16px;}
+  #screen-tickets > div:nth-child(3),
+  #screen-reviews > div:nth-child(3){justify-content:flex-start;}
+
+  /* Video form grid */
+  #video-form > div[style*="grid-template-columns"]{display:flex;flex-direction:column;}
+}
+
 /* WELCOME */
 .welcome-wrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 60px);}
 .welcome-card{text-align:center;max-width:420px;}
@@ -200,6 +287,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 </head>
 <body>
 
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
@@ -283,7 +373,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <span class="topbar-title" id="page-title">Dashboard</span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="hamburger" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <span class="topbar-title" id="page-title">Dashboard</span>
+    </div>
     <div class="topbar-right">
       <div class="link-badge">
         <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -1635,10 +1730,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 <div id="toast"></div>
 
 <script>
+// ── SIDEBAR MOBILE TOGGLE ─────────────────────────────
+function toggleSidebar(){
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('visible');
+}
+function closeSidebar(){
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('visible');
+}
+
 // ── NAV ──────────────────────────────────────────────
 const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',livepreview:'Live Preview',coming:'Coming Soon'};
 
 function nav(el, screen) {
+  closeSidebar();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + screen).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
