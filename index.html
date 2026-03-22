@@ -255,7 +255,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <div class="nav-section-label">Trust & Community</div>
-    <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews</div>
+    <div class="nav-item" onclick="nav(this,'reviews')"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews</div>
     <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Collaboration</div>
 
     <div class="nav-section-label">System</div>
@@ -727,6 +727,299 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     }
     </script>
 
+    <!-- REVIEWS -->
+    <div id="screen-reviews" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Reviews</h2>
+        <p class="section-sub">All reviews require a verified Massed purchase or a receipt from a verifiable source</p>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--text);" id="rev-avg">0.0</div>
+          <div id="rev-stars-avg" style="margin:6px 0;font-size:1.2rem;">☆☆☆☆☆</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);">Average Rating</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--text);" id="rev-total">0</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:6px;">Total Reviews</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:2.4rem;color:var(--brown);" id="rev-verified">0</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:6px;">Verified Purchases</div>
+        </div>
+      </div>
+
+      <!-- Leave a Review Button -->
+      <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
+        <button onclick="openReviewModal()" style="padding:11px 22px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;box-shadow:0 2px 10px rgba(192,122,80,0.35);">+ Leave a Review</button>
+      </div>
+
+      <!-- Admin note -->
+      <div style="background:var(--brown-bg);border:1px solid rgba(192,122,80,0.25);border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span style="font-size:0.8rem;color:var(--brown-dark);font-weight:600;">Only admins can remove reviews. All reviews are visible on your public page.</span>
+      </div>
+
+      <!-- Reviews list -->
+      <div id="reviews-list"></div>
+
+      <!-- Empty state -->
+      <div id="reviews-empty" style="text-align:center;padding:48px;background:#fff;border-radius:16px;border:1.5px dashed var(--border);">
+        <div style="font-size:2rem;margin-bottom:12px;">⭐</div>
+        <h3 style="font-size:1rem;font-weight:600;margin-bottom:6px;">No reviews yet</h3>
+        <p style="font-size:0.85rem;color:var(--text-dim);">Reviews from verified purchases will appear here</p>
+      </div>
+    </div>
+
+    <!-- REVIEW MODAL -->
+    <div class="modal-overlay" id="modal-review">
+      <div class="modal" style="max-width:520px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h2 class="modal-title" style="margin:0;">Leave a Review</h2>
+          <button onclick="closeModal('modal-review')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+
+        <!-- Star rating -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Your Rating</div>
+          <div id="star-picker" style="display:flex;gap:6px;font-size:2rem;cursor:pointer;">
+            <span onclick="setRating(1)" onmouseover="hoverRating(1)" onmouseout="resetHover()">☆</span>
+            <span onclick="setRating(2)" onmouseover="hoverRating(2)" onmouseout="resetHover()">☆</span>
+            <span onclick="setRating(3)" onmouseover="hoverRating(3)" onmouseout="resetHover()">☆</span>
+            <span onclick="setRating(4)" onmouseover="hoverRating(4)" onmouseout="resetHover()">☆</span>
+            <span onclick="setRating(5)" onmouseover="hoverRating(5)" onmouseout="resetHover()">☆</span>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Review Title</label>
+          <input type="text" id="rev-title-input" placeholder="Summarize your experience">
+        </div>
+        <div class="form-field">
+          <label>Review</label>
+          <textarea id="rev-body-input" placeholder="Tell others about your experience..." style="min-height:100px;"></textarea>
+        </div>
+
+        <!-- Verification -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Purchase Verification</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:#fff;border-radius:10px;border:2px solid var(--border);transition:all 0.2s;" id="verify-opt-massed">
+              <input type="radio" name="verify-type" value="massed" onchange="toggleVerifyType(this)" style="accent-color:var(--brown);">
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;color:var(--text);">Verified Massed Purchase</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">Automatically verified through your Massed order history</div>
+              </div>
+              <div style="margin-left:auto;background:#dcfce7;color:#16a34a;font-size:0.65rem;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap;">AUTO VERIFIED</div>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:#fff;border-radius:10px;border:2px solid var(--border);transition:all 0.2s;" id="verify-opt-receipt">
+              <input type="radio" name="verify-type" value="receipt" onchange="toggleVerifyType(this)" style="accent-color:var(--brown);">
+              <div>
+                <div style="font-size:0.88rem;font-weight:700;color:var(--text);">Upload Receipt</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);">From Amazon, Shopify, Etsy, or other verifiable sources</div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Receipt upload (hidden by default) -->
+          <div id="receipt-upload-area" style="display:none;margin-top:12px;">
+            <div onclick="document.getElementById('receipt-file').click()" style="border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:#fff;">
+              <input type="file" id="receipt-file" accept="image/*,.pdf" style="display:none" onchange="handleReceiptUpload(event)">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--brown-light)" stroke-width="1.5" style="margin:0 auto 8px;display:block;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div id="receipt-upload-label" style="font-size:0.82rem;color:var(--text-mid);font-weight:500;">Click to upload receipt (JPG, PNG, PDF)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Photos (optional) -->
+        <div class="form-field">
+          <label>Photos (Optional)</label>
+          <div onclick="document.getElementById('rev-photos').click()" style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;background:var(--cream);">
+            <input type="file" id="rev-photos" accept="image/*" multiple style="display:none" onchange="handleReviewPhotos(event)">
+            <div style="font-size:0.82rem;color:var(--text-mid);">Click to add photos to your review</div>
+          </div>
+          <div id="rev-photo-previews" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal('modal-review')">Cancel</button>
+          <button class="btn-confirm" onclick="submitReview()">Submit Review →</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+    .review-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:14px;}
+    .rev-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .rev-avatar{width:42px;height:42px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:1rem;flex-shrink:0;}
+    .rev-author{font-weight:700;font-size:0.92rem;color:var(--text);}
+    .rev-date{font-size:0.75rem;color:var(--text-dim);}
+    .rev-stars{color:#f59e0b;font-size:1.1rem;margin-bottom:8px;}
+    .rev-title{font-weight:700;font-size:0.98rem;color:var(--text);margin-bottom:6px;}
+    .rev-body{font-size:0.88rem;color:var(--text-mid);line-height:1.6;margin-bottom:12px;}
+    .rev-footer{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+    .verified-badge{display:inline-flex;align-items:center;gap:5px;background:#dcfce7;color:#16a34a;font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:20px;}
+    .verified-badge svg{width:12px;height:12px;stroke:#16a34a;fill:none;stroke-width:2.5;}
+    .receipt-badge{display:inline-flex;align-items:center;gap:5px;background:#dbeafe;color:#2563eb;font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:20px;}
+    .rev-helpful{display:flex;align-items:center;gap:10px;margin-left:auto;}
+    .helpful-btn{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--text-mid);display:flex;align-items:center;gap:5px;transition:all 0.2s;}
+    .helpful-btn:hover{border-color:var(--brown);color:var(--brown);}
+    .rev-photos-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+    .rev-photo{width:80px;height:80px;border-radius:10px;object-fit:cover;cursor:pointer;border:1px solid var(--border);}
+    .admin-remove{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:0.78rem;font-weight:600;padding:4px 8px;border-radius:6px;transition:all 0.2s;}
+    .admin-remove:hover{background:#fee2e2;color:#dc2626;}
+    </style>
+
+    <script>
+    let reviews = [];
+    let currentRating = 0;
+    let reviewPhotos = [];
+    const isAdmin = true; // set to false for public view — wire to actual role later
+
+    function openReviewModal() {
+      currentRating = 0;
+      reviewPhotos = [];
+      document.getElementById('rev-title-input').value = '';
+      document.getElementById('rev-body-input').value = '';
+      document.getElementById('rev-photo-previews').innerHTML = '';
+      document.getElementById('receipt-upload-area').style.display = 'none';
+      document.getElementById('receipt-upload-label').textContent = 'Click to upload receipt (JPG, PNG, PDF)';
+      document.querySelectorAll('input[name="verify-type"]').forEach(r => r.checked = false);
+      renderStarPicker(0);
+      openModal('modal-review');
+    }
+
+    function setRating(n) { currentRating = n; renderStarPicker(n); }
+    function hoverRating(n) { renderStarPicker(n); }
+    function resetHover() { renderStarPicker(currentRating); }
+
+    function renderStarPicker(n) {
+      document.querySelectorAll('#star-picker span').forEach((s, i) => {
+        s.textContent = i < n ? '★' : '☆';
+        s.style.color = i < n ? '#f59e0b' : '#d1d5db';
+      });
+    }
+
+    function toggleVerifyType(radio) {
+      document.getElementById('receipt-upload-area').style.display = radio.value === 'receipt' ? 'block' : 'none';
+    }
+
+    function handleReceiptUpload(e) {
+      const file = e.target.files[0];
+      if (file) document.getElementById('receipt-upload-label').textContent = '✓ ' + file.name;
+    }
+
+    function handleReviewPhotos(e) {
+      const files = Array.from(e.target.files);
+      reviewPhotos = files;
+      const prev = document.getElementById('rev-photo-previews');
+      prev.innerHTML = '';
+      files.forEach(f => {
+        const url = URL.createObjectURL(f);
+        const img = document.createElement('img');
+        img.src = url; img.className = 'rev-photo'; img.style.width = '60px'; img.style.height = '60px';
+        prev.appendChild(img);
+      });
+    }
+
+    function submitReview() {
+      if (!currentRating) { toast('Please select a star rating'); return; }
+      const title = document.getElementById('rev-title-input').value.trim();
+      const body = document.getElementById('rev-body-input').value.trim();
+      const verifyType = document.querySelector('input[name="verify-type"]:checked');
+      if (!title) { toast('Please enter a review title'); return; }
+      if (!body) { toast('Please write your review'); return; }
+      if (!verifyType) { toast('Please select a verification method'); return; }
+      if (verifyType.value === 'receipt') {
+        const receipt = document.getElementById('receipt-file').files[0];
+        if (!receipt) { toast('Please upload your receipt'); return; }
+      }
+
+      const photoUrls = reviewPhotos.map(f => URL.createObjectURL(f));
+      const now = new Date();
+      reviews.unshift({
+        id: Date.now(),
+        author: 'You',
+        initials: 'Y',
+        rating: currentRating,
+        title,
+        body,
+        verifyType: verifyType.value,
+        photos: photoUrls,
+        date: 'Just now',
+        helpful: 0,
+        unhelpful: 0
+      });
+      closeModal('modal-review');
+      renderReviews();
+      updateReviewStats();
+      toast('✓ Review submitted!');
+    }
+
+    function renderReviews() {
+      const list = document.getElementById('reviews-list');
+      const empty = document.getElementById('reviews-empty');
+      if (reviews.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+      empty.style.display = 'none';
+      list.innerHTML = reviews.map((r, i) => `
+        <div class="review-card" id="rev-${r.id}">
+          <div class="rev-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="rev-avatar">${r.initials}</div>
+              <div>
+                <div class="rev-author">By ${r.author}</div>
+                <div class="rev-date">${r.date}</div>
+              </div>
+            </div>
+            ${isAdmin ? `<button class="admin-remove" onclick="removeReview(${i})" title="Admin: Remove review">🗑 Remove</button>` : ''}
+          </div>
+          <div class="rev-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+          <div class="rev-title">${r.title}</div>
+          <div class="rev-body">${r.body}</div>
+          ${r.photos.length > 0 ? `<div class="rev-photos-row">${r.photos.map(p => `<img src="${p}" class="rev-photo">`).join('')}</div>` : ''}
+          <div class="rev-footer" style="margin-top:12px;">
+            ${r.verifyType === 'massed'
+              ? `<div class="verified-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Verified Purchase</div>`
+              : `<div class="receipt-badge">📄 Receipt Verified</div>`}
+            <div class="rev-helpful">
+              <button class="helpful-btn" onclick="voteHelpful(${i},1)">👍 Helpful (${r.helpful})</button>
+              <button class="helpful-btn" onclick="voteHelpful(${i},-1)">👎 Unhelpful (${r.unhelpful})</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function voteHelpful(i, val) {
+      if (val === 1) reviews[i].helpful++; else reviews[i].unhelpful++;
+      renderReviews();
+    }
+
+    function removeReview(i) {
+      if (!isAdmin) return;
+      if (!confirm('Remove this review? This cannot be undone.')) return;
+      reviews.splice(i, 1);
+      renderReviews();
+      updateReviewStats();
+      toast('Review removed');
+    }
+
+    function updateReviewStats() {
+      const total = reviews.length;
+      const verified = reviews.filter(r => r.verifyType === 'massed').length;
+      const avg = total > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1) : '0.0';
+      const avgNum = parseFloat(avg);
+      document.getElementById('rev-total').textContent = total;
+      document.getElementById('rev-verified').textContent = verified;
+      document.getElementById('rev-avg').textContent = avg;
+      const filled = Math.round(avgNum);
+      document.getElementById('rev-stars-avg').textContent = '★'.repeat(filled) + '☆'.repeat(5 - filled);
+      document.getElementById('rev-stars-avg').style.color = '#f59e0b';
+    }
+    </script>
+
     <!-- COMING SOON -->
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
@@ -843,7 +1136,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 <script>
 // ── NAV ──────────────────────────────────────────────
-const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',livepreview:'Live Preview',coming:'Coming Soon'};
+const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',livepreview:'Live Preview',coming:'Coming Soon'};
 
 function nav(el, screen) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
