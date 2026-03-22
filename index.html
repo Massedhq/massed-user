@@ -496,6 +496,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="live-banner-actions">
       <button id="btn-bring-back" class="lba-btn" onclick="bringBackProduct()" style="display:none;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);">Bring Back</button>
       <button id="btn-close-prod" class="lba-btn" onclick="closeProduct()" style="display:none;background:var(--cream2);color:var(--text-mid);">Close Product</button>
+      <button id="btn-pause" class="lba-btn" onclick="togglePause()" style="background:#fef3c7;color:#d97706;">⏸ Pause</button>
       <button class="lba-btn" onclick="endLive()" style="background:#fee2e2;color:#dc2626;">End Live</button>
     </div>
   </div>
@@ -823,7 +824,36 @@ function startDuration() {
 }
 function stopDuration() { clearInterval(durationInterval); }
 
-// ── MODALS ────────────────────────────────────────────
+// ── PAUSE ─────────────────────────────────────────────
+let isPaused = false;
+
+function togglePause() {
+  isPaused = !isPaused;
+  const btn = document.getElementById('btn-pause');
+  const dot = document.querySelector('.live-dot');
+  const label = document.querySelector('.live-label');
+  if (isPaused) {
+    clearInterval(saleTimerInterval);
+    btn.textContent = '▶ Resume';
+    btn.style.background = '#dcfce7';
+    btn.style.color = '#16a34a';
+    dot.style.background = '#f59e0b';
+    dot.style.animation = 'none';
+    label.textContent = 'PAUSED';
+    label.style.color = '#f59e0b';
+    toast('⏸ Live paused');
+  } else {
+    if (currentProduct && saleTimerSeconds > 0) startSaleTimer(saleTimerSeconds);
+    btn.textContent = '⏸ Pause';
+    btn.style.background = '#fef3c7';
+    btn.style.color = '#d97706';
+    dot.style.background = '#ef4444';
+    dot.style.animation = 'pulse 1.5s infinite';
+    label.textContent = 'LIVE';
+    label.style.color = '#ef4444';
+    toast('▶ Live resumed');
+  }
+}
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
