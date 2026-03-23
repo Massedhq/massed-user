@@ -1385,7 +1385,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       // Render ticket tiers
       const tiersEl = document.getElementById('view-ev-tiers');
       if (ev.tiers && ev.tiers.length > 0) {
-        tiersEl.innerHTML = ev.tiers.map((t,ti) => `
+        window._tierQtys = ev.tiers.map(()=>0);
+        tiersEl.innerHTML = `
+          ${ev.tiers.map((t,ti) => `
           <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px;margin-bottom:10px;">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
               <div style="flex:1;">
@@ -1396,20 +1398,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                 ${t.description?`<div style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.6;margin-bottom:8px;">${t.description}</div>`:''}
                 <div style="color:rgba(255,255,255,0.3);font-size:0.72rem;">${t.qty?t.qty+' available':''}</div>
               </div>
-              <!-- Qty picker + Get Ticket -->
-              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
-                <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border-radius:8px;padding:4px 8px;">
-                  <button onclick="changeTierQty(${ti},-1)" style="background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;width:24px;line-height:1;">−</button>
-                  <span id="tier-qty-${ti}" style="color:#fff;font-weight:700;font-size:0.9rem;min-width:20px;text-align:center;">1</span>
-                  <button onclick="changeTierQty(${ti},1)" style="background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;width:24px;line-height:1;">+</button>
-                </div>
-                <button onclick="getTicketsForTier(${i},${ti})" style="padding:9px 16px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:700;white-space:nowrap;">Get Ticket →</button>
+              <!-- Qty picker -->
+              <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border-radius:8px;padding:4px 8px;flex-shrink:0;">
+                <button onclick="changeTierQty(${ti},-1)" style="background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;width:24px;line-height:1;">−</button>
+                <span id="tier-qty-${ti}" style="color:#fff;font-weight:700;font-size:0.9rem;min-width:20px;text-align:center;">0</span>
+                <button onclick="changeTierQty(${ti},1)" style="background:none;border:none;color:#fff;font-size:1.1rem;cursor:pointer;width:24px;line-height:1;">+</button>
               </div>
             </div>
           </div>
-        `).join('');
-        // init qty trackers
-        window._tierQtys = ev.tiers.map(()=>1);
+          `).join('')}
+          <!-- Cart total bar -->
+          <div id="cart-bar" style="display:none;background:rgba(192,122,80,0.15);border:1px solid rgba(192,122,80,0.3);border-radius:12px;padding:14px 16px;margin-top:4px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+              <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">Cart Total</div>
+              <div id="cart-total-display" style="color:var(--brown-light);font-weight:800;font-size:1.1rem;"></div>
+            </div>
+            <button onclick="proceedToCheckout(${i})" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:700;box-shadow:0 3px 14px rgba(192,122,80,0.4);">Checkout →</button>
+          </div>
+        `;
       } else {
         tiersEl.innerHTML = `<div style="color:rgba(255,255,255,0.4);font-size:0.82rem;">No ticket tiers set</div>`;
       }
@@ -1433,24 +1439,70 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
     function changeTierQty(tierIdx, delta) {
       if (!window._tierQtys) window._tierQtys = [];
-      window._tierQtys[tierIdx] = Math.max(1, (window._tierQtys[tierIdx]||1) + delta);
+      window._tierQtys[tierIdx] = Math.max(0, (window._tierQtys[tierIdx]||0) + delta);
       const el = document.getElementById('tier-qty-'+tierIdx);
       if (el) el.textContent = window._tierQtys[tierIdx];
+      updateCartBar();
     }
 
-    function getTicketsForTier(evIdx, tierIdx) {
-      currentEventIndex = evIdx;
-      const ev = events[evIdx];
-      ev._selectedTier = ev.tiers[tierIdx];
-      ev._selectedQty = (window._tierQtys && window._tierQtys[tierIdx]) || 1;
-      // Open checkout first for paid tickets
-      const price = parseFloat(ev.tiers[tierIdx].price) || 0;
-      if (price > 0) {
-        closeModal('modal-view-event');
-        openCheckout(evIdx, tierIdx, ev._selectedQty);
+    function updateCartBar() {
+      const ev = events[currentEventIndex];
+      if (!ev || !ev.tiers) return;
+      let total = 0, totalTickets = 0;
+      ev.tiers.forEach((t,ti) => {
+        const qty = window._tierQtys[ti] || 0;
+        total += (parseFloat(t.price)||0) * qty;
+        totalTickets += qty;
+      });
+      const bar = document.getElementById('cart-bar');
+      if (!bar) return;
+      if (totalTickets > 0) {
+        bar.style.display = 'block';
+        document.getElementById('cart-total-display').textContent = total === 0 ? 'Free' : '$' + total.toFixed(2) + ' · ' + totalTickets + ' ticket' + (totalTickets>1?'s':'');
       } else {
-        openTicketView();
+        bar.style.display = 'none';
       }
+    }
+
+    function proceedToCheckout(evIdx) {
+      const ev = events[evIdx];
+      currentEventIndex = evIdx;
+      // Build cart items from all selected tiers
+      const cartItems = ev.tiers.map((t,ti) => ({
+        tier: t,
+        qty: window._tierQtys[ti] || 0,
+        price: parseFloat(t.price) || 0
+      })).filter(item => item.qty > 0);
+      if (cartItems.length === 0) { toast('Please select at least one ticket'); return; }
+      const subtotal = cartItems.reduce((s,item) => s + item.price * item.qty, 0);
+      const fee = subtotal * 0.05;
+      const total = subtotal + fee;
+      const totalTickets = cartItems.reduce((s,item) => s + item.qty, 0);
+      // Store cart
+      window._cart = { ev, cartItems, subtotal, fee, total, totalTickets };
+      // Build checkout summary
+      document.getElementById('checkout-items').innerHTML = cartItems.map(item => `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div>
+            <div style="color:#fff;font-weight:600;font-size:0.88rem;">${item.tier.type}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:0.72rem;">${item.price===0?'Free':'$'+item.price.toFixed(2)} × ${item.qty}</div>
+          </div>
+          <div style="color:var(--brown-light);font-weight:700;">${item.price===0?'Free':'$'+(item.price*item.qty).toFixed(2)}</div>
+        </div>
+      `).join('') + `
+        <div style="border-top:1px solid rgba(255,255,255,0.08);margin-top:8px;padding-top:8px;">
+          <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.35);font-size:0.72rem;margin-bottom:4px;">
+            <span>Subtotal (${totalTickets} tickets)</span><span>${subtotal===0?'Free':'$'+subtotal.toFixed(2)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.35);font-size:0.72rem;">
+            <span>Service fee</span><span>${subtotal===0?'$0.00':'$'+fee.toFixed(2)}</span>
+          </div>
+        </div>
+      `;
+      document.getElementById('checkout-total').textContent = total === 0 ? 'Free' : '$' + total.toFixed(2);
+      goCheckoutStep(1);
+      closeModal('modal-view-event');
+      openModal('modal-checkout');
     }
 
     function openTicketView() {
@@ -2038,46 +2090,80 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
       <!-- Step 2: Payment -->
       <div id="checkout-step-2" style="display:none;">
-        <div style="margin-bottom:14px;">
-          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Card Number</div>
-          <div style="position:relative;">
-            <input type="text" id="co-card" placeholder="0000  0000  0000  0000" maxlength="19" oninput="formatCard(this)" style="width:100%;padding:13px 50px 13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.95rem;color:#fff;outline:none;letter-spacing:0.1em;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;gap:4px;">
-              <div style="width:28px;height:18px;background:#eb001b;border-radius:3px;opacity:0.8;"></div>
-              <div style="width:28px;height:18px;background:#f79e1b;border-radius:3px;opacity:0.8;margin-left:-10px;"></div>
+
+        <!-- Payment Type Toggle -->
+        <div style="display:flex;gap:8px;margin-bottom:20px;">
+          <div id="pay-full-btn" onclick="setPaymentType('full')" style="flex:1;padding:12px;background:var(--brown);color:#fff;border-radius:10px;cursor:pointer;text-align:center;font-size:0.82rem;font-weight:700;transition:all 0.2s;">
+            💳 Full Payment
+          </div>
+          <div id="pay-split-btn" onclick="setPaymentType('split')" style="flex:1;padding:12px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;text-align:center;font-size:0.82rem;font-weight:700;transition:all 0.2s;">
+            🤝 Split Payment
+          </div>
+        </div>
+
+        <!-- Full Payment Form -->
+        <div id="full-payment-form">
+          <div style="margin-bottom:14px;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Card Number</div>
+            <div style="position:relative;">
+              <input type="text" id="co-card" placeholder="0000  0000  0000  0000" maxlength="19" oninput="formatCard(this)" style="width:100%;padding:13px 50px 13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.95rem;color:#fff;outline:none;letter-spacing:0.1em;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;gap:4px;">
+                <div style="width:28px;height:18px;background:#eb001b;border-radius:3px;opacity:0.8;"></div>
+                <div style="width:28px;height:18px;background:#f79e1b;border-radius:3px;opacity:0.8;margin-left:-10px;"></div>
+              </div>
             </div>
           </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-          <div>
-            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Expiry</div>
-            <input type="text" id="co-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            <div>
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Expiry</div>
+              <input type="text" id="co-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+            </div>
+            <div>
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">CVV</div>
+              <input type="text" id="co-cvv" placeholder="•••" maxlength="4" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+            </div>
           </div>
-          <div>
-            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">CVV</div>
-            <input type="text" id="co-cvv" placeholder="•••" maxlength="4" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <div style="margin-bottom:16px;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Name on Card</div>
+            <input type="text" id="co-cardname" placeholder="As it appears on card" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:16px;">
+            <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">💳 Card</div>
+            <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;"> Apple Pay</div>
+            <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">G Pay</div>
           </div>
         </div>
-        <div style="margin-bottom:20px;">
-          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Name on Card</div>
-          <input type="text" id="co-cardname" placeholder="As it appears on card" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+
+        <!-- Split Payment Form -->
+        <div id="split-payment-form" style="display:none;">
+          <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;margin-bottom:16px;">
+            <div style="color:rgba(255,255,255,0.6);font-size:0.82rem;line-height:1.6;margin-bottom:14px;">Split the total cost with friends. Each person receives a unique payment link. Tickets are generated only after all payments are collected.</div>
+            <div style="margin-bottom:14px;">
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Number of People Splitting</div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <input type="number" id="split-count" value="2" min="2" max="10" oninput="updateSplitPreview()" style="width:100px;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#fff;outline:none;text-align:center;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                <div id="split-per-person" style="color:var(--brown-light);font-size:0.88rem;font-weight:700;"></div>
+              </div>
+            </div>
+            <div id="split-links-preview" style="margin-top:14px;"></div>
+          </div>
+          <div style="background:rgba(192,122,80,0.08);border:1px solid rgba(192,122,80,0.2);border-radius:10px;padding:12px;font-size:0.78rem;color:rgba(255,255,255,0.45);line-height:1.5;">
+            🔒 Each person pays their share via a unique secure link. Tickets are only released once the full amount is collected.
+          </div>
         </div>
-        <!-- Pay methods -->
-        <div style="display:flex;gap:8px;margin-bottom:16px;">
-          <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">💳 Card</div>
-          <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">  Apple Pay</div>
-          <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">G Pay</div>
-        </div>
-        <button onclick="goCheckoutStep(3)" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:700;letter-spacing:0.03em;box-shadow:0 4px 20px rgba(192,122,80,0.4);">Review Order →</button>
+
+        <button onclick="goCheckoutStep(3)" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:700;letter-spacing:0.03em;box-shadow:0 4px 20px rgba(192,122,80,0.4);margin-top:16px;">Review Order →</button>
       </div>
 
       <!-- Step 3: Confirm -->
       <div id="checkout-step-3" style="display:none;">
         <div id="checkout-review-block" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:18px;margin-bottom:16px;"></div>
+        <!-- Split payment links (shown if split) -->
+        <div id="split-links-final" style="display:none;margin-bottom:16px;"></div>
         <div style="background:rgba(192,122,80,0.08);border:1px solid rgba(192,122,80,0.2);border-radius:10px;padding:12px;margin-bottom:20px;font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.6;">
-          By completing your purchase you agree to our Terms of Service. Tickets will be delivered to your email immediately after payment.
+          By completing your purchase you agree to our Terms of Service. Tickets will be delivered to your email immediately after payment is complete.
         </div>
-        <button onclick="completeCheckout()" style="width:100%;padding:16px;background:linear-gradient(135deg,#C8A96E,#8B6914);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400;letter-spacing:0.08em;box-shadow:0 4px 24px rgba(184,134,11,0.5);">Complete Purchase</button>
+        <button onclick="completeCheckout()" id="complete-purchase-btn" style="width:100%;padding:16px;background:linear-gradient(135deg,#C8A96E,#8B6914);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400;letter-spacing:0.08em;box-shadow:0 4px 24px rgba(184,134,11,0.5);">Complete Purchase</button>
       </div>
     </div>
   </div>
@@ -2257,31 +2343,44 @@ function copyStreamLink() {
 
 // ── CHECKOUT ─────────────────────────────────────────
 let checkoutData = {};
+let paymentType = 'full';
 
-function openCheckout(evIdx, tierIdx, qty) {
-  const ev = events[evIdx];
-  const tier = ev.tiers[tierIdx];
-  const price = parseFloat(tier.price) || 0;
-  const total = price * qty;
-  checkoutData = { ev, tier, qty, price, total };
+function setPaymentType(type) {
+  paymentType = type;
+  document.getElementById('full-payment-form').style.display = type==='full'?'block':'none';
+  document.getElementById('split-payment-form').style.display = type==='split'?'block':'none';
+  document.getElementById('pay-full-btn').style.background = type==='full'?'var(--brown)':'rgba(255,255,255,0.06)';
+  document.getElementById('pay-full-btn').style.color = type==='full'?'#fff':'rgba(255,255,255,0.45)';
+  document.getElementById('pay-full-btn').style.border = type==='full'?'none':'1px solid rgba(255,255,255,0.1)';
+  document.getElementById('pay-split-btn').style.background = type==='split'?'var(--brown)':'rgba(255,255,255,0.06)';
+  document.getElementById('pay-split-btn').style.color = type==='split'?'#fff':'rgba(255,255,255,0.45)';
+  document.getElementById('pay-split-btn').style.border = type==='split'?'none':'1px solid rgba(255,255,255,0.1)';
+  if (type==='split') updateSplitPreview();
+}
 
-  // Build summary
-  document.getElementById('checkout-items').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div>
-        <div style="color:#fff;font-weight:600;font-size:0.9rem;">${ev.name}</div>
-        <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;">${tier.type} × ${qty}</div>
+function updateSplitPreview() {
+  const count = parseInt(document.getElementById('split-count').value) || 2;
+  const total = window._cart ? window._cart.total : 0;
+  const perPerson = total / count;
+  document.getElementById('split-per-person').textContent = total===0 ? 'Free each' : `$${perPerson.toFixed(2)} each`;
+  // Generate preview links
+  const links = Array.from({length:count},(_,i)=>{
+    const linkId = 'SPL-'+Date.now().toString().slice(-5)+'-'+(i+1);
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;">
+        <div>
+          <div style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:600;">Person ${i+1}</div>
+          <div style="font-family:monospace;font-size:0.68rem;color:rgba(255,255,255,0.3);">pay.massed.io/${linkId}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="color:var(--brown-light);font-weight:700;font-size:0.85rem;">${total===0?'Free':'$'+perPerson.toFixed(2)}</span>
+          <span style="background:rgba(234,179,8,0.15);color:#fbbf24;font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:20px;">Pending</span>
+        </div>
       </div>
-      <div style="color:var(--brown-light);font-weight:700;">${price===0?'Free':'$'+(price*qty).toFixed(2)}</div>
-    </div>
-    <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.35);font-size:0.75rem;">
-      <span>Service fee</span><span>${price===0?'$0.00':'$'+(total*0.05).toFixed(2)}</span>
-    </div>
-  `;
-  const grandTotal = price === 0 ? 0 : total * 1.05;
-  document.getElementById('checkout-total').textContent = grandTotal === 0 ? 'Free' : '$' + grandTotal.toFixed(2);
-  goCheckoutStep(1);
-  openModal('modal-checkout');
+    `;
+  }).join('');
+  const preview = document.getElementById('split-links-preview');
+  if (preview) { preview.innerHTML = `<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Payment Links</div>${links}`; }
 }
 
 function goCheckoutStep(step) {
@@ -2291,8 +2390,13 @@ function goCheckoutStep(step) {
     btn.style.background = s===step?'var(--brown)':'transparent';
     btn.style.color = s===step?'#fff':'rgba(255,255,255,0.35)';
   });
+  if (step === 2) { setPaymentType('full'); }
   if (step === 3) {
-    const d = checkoutData;
+    const d = window._cart || {};
+    const isSplit = paymentType === 'split';
+    const splitCount = isSplit ? (parseInt(document.getElementById('split-count').value)||2) : 0;
+    const perPerson = isSplit && d.total ? (d.total/splitCount).toFixed(2) : 0;
+
     document.getElementById('checkout-review-block').innerHTML = `
       <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);">
         <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Attendee</div>
@@ -2300,46 +2404,140 @@ function goCheckoutStep(step) {
         <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">${document.getElementById('co-email').value||'—'}</div>
       </div>
       <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Event</div>
-        <div style="color:#fff;font-size:0.9rem;">${d.ev.name}</div>
-        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">${d.tier.type} × ${d.qty} — ${d.price===0?'Free':'$'+(d.total*1.05).toFixed(2)}</div>
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Tickets</div>
+        ${(d.cartItems||[]).map(item=>`<div style="color:#fff;font-size:0.85rem;margin-bottom:4px;">${item.tier.type} × ${item.qty} — ${item.price===0?'Free':'$'+(item.price*item.qty).toFixed(2)}</div>`).join('')}
       </div>
-      <div>
-        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Payment</div>
-        <div style="color:#fff;font-size:0.9rem;">•••• •••• •••• ${(document.getElementById('co-card').value.replace(/\s/g,'')||'0000').slice(-4)}</div>
+      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Payment Method</div>
+        <div style="color:#fff;font-size:0.85rem;">${isSplit?`🤝 Split Payment — ${splitCount} people × $${perPerson} each`:`💳 Card ending in ${(document.getElementById('co-card').value.replace(/\s/g,'')||'0000').slice(-4)}`}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="color:rgba(255,255,255,0.5);font-size:0.85rem;">Total</span>
+        <span style="color:#fff;font-weight:800;font-size:1.1rem;font-family:'DM Serif Display',serif;">${d.total===0?'Free':'$'+(d.total||0).toFixed(2)}</span>
       </div>
     `;
+
+    // Show split links in confirm step if split payment
+    const splitFinal = document.getElementById('split-links-final');
+    if (isSplit && splitFinal) {
+      splitFinal.style.display = 'block';
+      const count = splitCount;
+      const perP = d.total ? (d.total/count).toFixed(2) : 0;
+      splitFinal.innerHTML = `
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;margin-bottom:0;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;">🤝 Split Payment Links</div>
+          ${Array.from({length:count},(_,i)=>{
+            const linkId='SPL-'+Date.now().toString().slice(-5)+'-'+(i+1);
+            return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;">
+              <div><div style="color:rgba(255,255,255,0.7);font-size:0.8rem;font-weight:600;">Person ${i+1}</div><div style="font-family:monospace;font-size:0.65rem;color:rgba(255,255,255,0.3);">pay.massed.io/${linkId}</div></div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="color:var(--brown-light);font-weight:700;font-size:0.85rem;">$${perP}</span>
+                <button onclick="copyPayLink('pay.massed.io/${linkId}')" style="background:rgba(192,122,80,0.2);border:1px solid rgba(192,122,80,0.3);color:var(--brown-light);font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;">Copy</button>
+              </div>
+            </div>`;
+          }).join('')}
+          <div style="margin-top:10px;font-size:0.72rem;color:rgba(255,255,255,0.3);line-height:1.5;">Tickets will be generated automatically once all ${count} payments are received.</div>
+        </div>
+      `;
+      // Change button text for split
+      document.getElementById('complete-purchase-btn').textContent = 'Send Payment Links';
+    } else if (splitFinal) {
+      splitFinal.style.display = 'none';
+      document.getElementById('complete-purchase-btn').textContent = 'Complete Purchase';
+    }
   }
 }
 
-function formatCard(input) {
-  let v = input.value.replace(/\D/g,'').substring(0,16);
-  input.value = v.replace(/(.{4})/g,'$1  ').trim();
-}
-function formatExpiry(input) {
-  let v = input.value.replace(/\D/g,'').substring(0,4);
-  if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2);
-  input.value = v;
+function copyPayLink(link) {
+  navigator.clipboard.writeText('https://'+link).then(()=>toast('✓ Payment link copied!'));
 }
 
 function completeCheckout() {
-  const btn = event.target;
-  btn.textContent = 'Processing...';
+  const btn = document.getElementById('complete-purchase-btn');
+  const isSplit = paymentType === 'split';
+  btn.textContent = isSplit ? 'Sending links...' : 'Processing...';
   btn.disabled = true;
   setTimeout(() => {
     closeModal('modal-checkout');
-    btn.textContent = 'Complete Purchase';
     btn.disabled = false;
-    // Open ticket view
-    const ev = checkoutData.ev;
-    const tierIdx = ev.tiers.indexOf(checkoutData.tier);
-    ev._selectedTier = checkoutData.tier;
-    ev._selectedQty = checkoutData.qty;
-    currentEventIndex = events.indexOf(ev);
-    openTicketView();
-    toast('🎉 Purchase complete! Your tickets are ready.');
+    if (isSplit) {
+      toast('🤝 Payment links sent! Tickets will generate when all payments are received.');
+    } else {
+      // Generate tickets for all cart items
+      const cart = window._cart;
+      if (cart && cart.ev) {
+        cart.ev._selectedCart = cart.cartItems;
+        currentEventIndex = events.indexOf(cart.ev);
+        openTicketViewFromCart();
+      }
+      toast('🎉 Purchase complete! Your tickets are ready.');
+    }
   }, 2000);
 }
+
+function openTicketViewFromCart() {
+  const ev = events[currentEventIndex];
+  if (!ev) return;
+  const cart = ev._selectedCart || [];
+  const dateStr = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : 'Date TBD';
+  const isOnline = ev.type === 'Online';
+
+  // Build all tickets for all tiers in cart
+  let allTickets = [];
+  cart.forEach(item => {
+    for (let i=0; i<item.qty; i++) {
+      allTickets.push({ tier: item.tier, index: allTickets.length+1 });
+    }
+  });
+
+  const totalTickets = allTickets.length;
+  const ticketsHTML = allTickets.map((t, idx) => {
+    const ticketNum = generateTicketNumber(ev.id, t.tier.type, idx+1);
+    const price = parseFloat(t.tier.price)||0;
+    return `
+      <div style="background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;position:relative;">
+        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:20px;">Ticket ${idx+1} of ${totalTickets}</div>
+        <h3 style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.1rem;margin-bottom:6px;padding-right:60px;text-align:left;">${ev.name}</h3>
+        <div style="text-align:left;margin-bottom:4px;">
+          <span style="background:rgba(192,122,80,0.3);color:var(--brown-light);font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;">${t.tier.type}</span>
+          ${isOnline?'<span style="background:rgba(37,99,235,0.2);color:#60a5fa;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-left:6px;">🌐 Online</span>':''}
+        </div>
+        <p style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:14px;text-align:left;">${isOnline?'Use your ticket number to access the event':'Show QR code at entrance'}</p>
+        <div style="background:#fff;border-radius:12px;padding:12px;display:inline-block;margin-bottom:12px;">
+          <svg id="qr-${idx}" viewBox="0 0 100 100" width="130" height="130" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 12px;display:inline-block;margin-bottom:14px;">
+          <div style="color:rgba(255,255,255,0.35);font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Ticket Number</div>
+          <div style="color:var(--brown-light);font-family:monospace;font-size:0.88rem;font-weight:800;letter-spacing:0.08em;">${ticketNum}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:left;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Venue</div><div style="font-size:0.8rem;color:#fff;font-weight:600;">${isOnline?'Online Event':ev.location||'TBD'}</div></div>
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Date & Time</div><div style="font-size:0.78rem;color:#fff;font-weight:600;">${dateStr}${ev.time?' • '+ev.time:''}</div></div>
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Type</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:700;">${t.tier.type}</div></div>
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Price</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:800;">${price===0?'Free':'$'+price.toFixed(2)}</div></div>
+          </div>
+          ${t.tier.description?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Includes</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;">${t.tier.description}</div></div>`:''}
+          ${isOnline?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Massed Stream Link</div><div style="background:rgba(192,122,80,0.12);border:1px solid rgba(192,122,80,0.25);border-radius:8px;padding:10px;"><div style="color:rgba(255,255,255,0.5);font-size:0.72rem;margin-bottom:6px;">Enter ticket number <strong style="color:var(--brown-light);">${ticketNum}</strong></div><div style="color:var(--brown-light);font-family:monospace;font-size:0.78rem;font-weight:600;word-break:break-all;">${ev.onlineLink||'https://stream.massed.io/'+ev.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}</div></div></div>`:''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('multi-ticket-container').innerHTML = ticketsHTML;
+  document.getElementById('multi-ticket-title').textContent = totalTickets > 1 ? `Your ${totalTickets} Tickets` : 'Your Ticket';
+  document.getElementById('multi-ticket-total').textContent = '';
+
+  allTickets.forEach((t, idx) => {
+    const ticketNum = generateTicketNumber(ev.id, t.tier.type, idx+1);
+    setTimeout(()=>generateQR(ticketNum,'qr-'+idx), 80+idx*30);
+  });
+
+  openModal('modal-your-ticket');
+}
+
+
+
 
 // ── SCANNER ───────────────────────────────────────────
 let scanStats = {total:0, valid:0, invalid:0};
