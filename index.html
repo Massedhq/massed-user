@@ -1152,226 +1152,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       </div>
     </div>
 
-    <!-- CREATE/EDIT EVENT MODAL -->
-    <div class="modal-overlay" id="modal-create-event" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
-      <div onclick="event.stopPropagation()" class="modal" style="max-width:600px;margin:auto;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
-          <h2 class="modal-title" style="margin:0;" id="event-modal-title">Create Event</h2>
-          <button onclick="closeModal('modal-create-event')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
-        </div>
-
-        <!-- Event Cover Image -->
-        <div style="margin-bottom:18px;">
-          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Event Cover Image</div>
-          <div id="ev-cover-preview" onclick="document.getElementById('ev-cover-input').click()" style="width:100%;height:180px;background:linear-gradient(135deg,#1a0a00,#2d1500);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border);overflow:hidden;position:relative;">
-            <input type="file" id="ev-cover-input" accept="image/*" style="display:none" onchange="handleEventCover(event)">
-            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            <div style="font-size:0.82rem;color:var(--text-dim);margin-top:10px;">Click to upload cover image</div>
-          </div>
-        </div>
-
-        <!-- Basic Info -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-          <div class="form-field" style="margin:0;grid-column:1/-1;">
-            <label>Event Name</label>
-            <input type="text" id="ev-name" placeholder="e.g. Winter Music Festival 2026">
-          </div>
-          <div class="form-field" style="margin:0;">
-            <label>Event Type</label>
-            <select id="ev-type">
-              <option value="">-- Select type --</option>
-              <option>Concert / Show</option>
-              <option>Tour</option>
-              <option>Popup</option>
-              <option>Festival</option>
-              <option>Workshop</option>
-              <option>Networking</option>
-              <option>Party</option>
-              <option>Brunch</option>
-              <option>Watch Party</option>
-              <option>Listening Party</option>
-              <option>Award Show</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="form-field" style="margin:0;">
-            <label>Ticket Type</label>
-            <select id="ev-ticket-type">
-              <option>General Admission</option>
-              <option>VIP</option>
-              <option>Early Bird</option>
-              <option>Free</option>
-              <option>Donation</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Description -->
-        <div class="form-field">
-          <label>Event Description</label>
-          <textarea id="ev-desc" placeholder="Describe your event, vibe, what to expect..." style="min-height:90px;"></textarea>
-        </div>
-
-        <!-- Date, Time, Location -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-          <div class="form-field" style="margin:0;">
-            <label>Date</label>
-            <input type="date" id="ev-date">
-          </div>
-          <div class="form-field" style="margin:0;">
-            <label>Time</label>
-            <input type="time" id="ev-time">
-          </div>
-        </div>
-
-        <!-- Location -->
-        <div class="form-field">
-          <label>Location</label>
-          <div style="display:flex;gap:10px;margin-bottom:8px;">
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
-              <input type="radio" name="ev-loc-type" value="set" checked onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> Set Location
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
-              <input type="radio" name="ev-loc-type" value="tbd" onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> To Be Determined
-            </label>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
-              <input type="radio" name="ev-loc-type" value="after" onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> Sent After Purchase
-            </label>
-          </div>
-          <input type="text" id="ev-location" placeholder="Venue name, city, state">
-        </div>
-
-        <!-- Tickets & Pricing -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
-          <div class="form-field" style="margin:0;">
-            <label>Tickets Available</label>
-            <input type="number" id="ev-qty" placeholder="e.g. 200" min="1">
-          </div>
-          <div class="form-field" style="margin:0;">
-            <label>Ticket Price</label>
-            <input type="number" id="ev-price" placeholder="0.00" step="0.01" min="0">
-          </div>
-          <div class="form-field" style="margin:0;">
-            <label>Sale Price (Optional)</label>
-            <input type="number" id="ev-sale-price" placeholder="0.00" step="0.01" min="0">
-          </div>
-        </div>
-
-        <!-- Delivery Method -->
-        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
-          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Ticket Delivery</div>
-          <div style="display:flex;gap:16px;">
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-send-email" checked style="accent-color:var(--brown);"> Email</label>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-send-sms" style="accent-color:var(--brown);"> SMS / Phone</label>
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-in-person" checked style="accent-color:var(--brown);"> In-Person Barcode Scan</label>
-          </div>
-        </div>
-
-        <!-- Tags -->
-        <div class="form-field">
-          <label>Event Tags</label>
-          <input type="text" id="ev-tags" placeholder="e.g. Gathering, Social, Night Out (comma separated)">
-        </div>
-
-        <!-- Gallery -->
-        <div style="margin-bottom:18px;">
-          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Event Gallery (Optional)</div>
-          <div onclick="document.getElementById('ev-gallery-input').click()" style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;background:var(--cream);">
-            <input type="file" id="ev-gallery-input" accept="image/*" multiple style="display:none" onchange="handleEventGallery(event)">
-            <div style="font-size:0.82rem;color:var(--text-mid);">Click to add gallery images</div>
-          </div>
-          <div id="ev-gallery-previews" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
-        </div>
-
-        <div class="modal-actions">
-          <button class="btn-cancel" onclick="closeModal('modal-create-event')">Cancel</button>
-          <button class="btn-confirm" onclick="saveEvent()">Publish Event →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- VIEW EVENT MODAL -->
-    <div class="modal-overlay" id="modal-view-event" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
-      <div onclick="event.stopPropagation()" style="background:#111;border-radius:24px;max-width:400px;width:90%;margin:auto;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5);">
-        <!-- Cover -->
-        <div id="view-ev-cover" style="width:100%;height:220px;background:linear-gradient(135deg,#1a0a00,#3d1f00);position:relative;display:flex;align-items:flex-end;">
-          <div style="position:absolute;top:16px;left:16px;cursor:pointer;" onclick="closeModal('modal-view-event')">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          </div>
-          <div style="position:absolute;top:16px;right:16px;display:flex;gap:10px;">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" onclick="shareEvent()" style="cursor:pointer;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          </div>
-          <div style="padding:20px;background:linear-gradient(transparent,rgba(0,0,0,0.8));width:100%;">
-            <h2 id="view-ev-name" style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.4rem;margin-bottom:6px;"></h2>
-            <div style="display:flex;gap:14px;flex-wrap:wrap;">
-              <span id="view-ev-datetime" style="color:rgba(255,255,255,0.7);font-size:0.75rem;display:flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-              <span id="view-ev-location-tag" style="color:rgba(255,255,255,0.7);font-size:0.75rem;display:flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-            </div>
-          </div>
-        </div>
-        <!-- Details -->
-        <div style="padding:20px;">
-          <div id="view-ev-joined" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:14px;">150+ Joined</div>
-          <div id="view-ev-hosted" style="font-size:0.85rem;color:var(--brown-light);font-weight:700;margin-bottom:10px;"></div>
-          <div id="view-ev-desc" style="font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:16px;"></div>
-          <!-- Tags -->
-          <div id="view-ev-tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;"></div>
-          <!-- Gallery -->
-          <div id="view-ev-gallery-section" style="display:none;margin-bottom:16px;">
-            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;">Gallery</div>
-            <div id="view-ev-gallery" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;"></div>
-          </div>
-          <!-- Get Ticket button -->
-          <button onclick="openTicketView()" style="width:100%;padding:16px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:800;">Get Ticket (<span id="view-ev-price"></span>)</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- YOUR TICKET MODAL -->
-    <div class="modal-overlay" id="modal-your-ticket">
-      <div onclick="event.stopPropagation()" style="background:#111;border-radius:24px;max-width:380px;width:90%;padding:0;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5);">
-        <div style="padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;">
-          <div style="cursor:pointer;" onclick="closeModal('modal-your-ticket');openModal('modal-view-event')">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-          </div>
-          <span style="color:#fff;font-weight:700;font-size:0.95rem;">Your ticket</span>
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </div>
-        <!-- Ticket card -->
-        <div style="margin:20px;background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:18px;padding:24px;text-align:center;">
-          <h3 id="ticket-ev-name" style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem;margin-bottom:6px;"></h3>
-          <p style="color:rgba(255,255,255,0.5);font-size:0.75rem;margin-bottom:20px;">Show this QR code at the event entrance</p>
-          <div id="ticket-id-label" style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:16px;"></div>
-          <!-- QR Code (SVG generated) -->
-          <div style="background:#fff;border-radius:16px;padding:16px;display:inline-block;margin-bottom:16px;">
-            <svg id="ticket-qr" viewBox="0 0 100 100" width="140" height="140" xmlns="http://www.w3.org/2000/svg"></svg>
-          </div>
-          <!-- Event details -->
-          <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:14px;text-align:left;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Venue</div><div id="ticket-venue" style="font-size:0.82rem;color:#fff;font-weight:600;"></div></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Date & Time</div><div id="ticket-datetime" style="font-size:0.82rem;color:#fff;font-weight:600;"></div></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Price</div><div id="ticket-price-label" style="font-size:0.82rem;color:var(--brown-light);font-weight:800;"></div></div>
-            </div>
-          </div>
-        </div>
-        <div style="padding:0 20px 20px;">
-          <button onclick="downloadTicket()" style="width:100%;padding:15px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#111" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download ticket
-          </button>
-        </div>
-      </div>
-    </div>
-
     <style>
     .tk-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;}
     .tk-cover{width:100%;height:140px;object-fit:cover;background:linear-gradient(135deg,#1a0a00,#3d1f00);}
@@ -1719,6 +1499,226 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
   </div>
 </div>
+
+<!-- CREATE/EDIT EVENT MODAL -->
+    <div class="modal-overlay" id="modal-create-event" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
+      <div onclick="event.stopPropagation()" class="modal" style="max-width:600px;margin:auto;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 class="modal-title" style="margin:0;" id="event-modal-title">Create Event</h2>
+          <button onclick="closeModal('modal-create-event')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+
+        <!-- Event Cover Image -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Event Cover Image</div>
+          <div id="ev-cover-preview" onclick="document.getElementById('ev-cover-input').click()" style="width:100%;height:180px;background:linear-gradient(135deg,#1a0a00,#2d1500);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:2px dashed var(--border);overflow:hidden;position:relative;">
+            <input type="file" id="ev-cover-input" accept="image/*" style="display:none" onchange="handleEventCover(event)">
+            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div style="font-size:0.82rem;color:var(--text-dim);margin-top:10px;">Click to upload cover image</div>
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-field" style="margin:0;grid-column:1/-1;">
+            <label>Event Name</label>
+            <input type="text" id="ev-name" placeholder="e.g. Winter Music Festival 2026">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Event Type</label>
+            <select id="ev-type">
+              <option value="">-- Select type --</option>
+              <option>Concert / Show</option>
+              <option>Tour</option>
+              <option>Popup</option>
+              <option>Festival</option>
+              <option>Workshop</option>
+              <option>Networking</option>
+              <option>Party</option>
+              <option>Brunch</option>
+              <option>Watch Party</option>
+              <option>Listening Party</option>
+              <option>Award Show</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Ticket Type</label>
+            <select id="ev-ticket-type">
+              <option>General Admission</option>
+              <option>VIP</option>
+              <option>Early Bird</option>
+              <option>Free</option>
+              <option>Donation</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-field">
+          <label>Event Description</label>
+          <textarea id="ev-desc" placeholder="Describe your event, vibe, what to expect..." style="min-height:90px;"></textarea>
+        </div>
+
+        <!-- Date, Time, Location -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-field" style="margin:0;">
+            <label>Date</label>
+            <input type="date" id="ev-date">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Time</label>
+            <input type="time" id="ev-time">
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="form-field">
+          <label>Location</label>
+          <div style="display:flex;gap:10px;margin-bottom:8px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+              <input type="radio" name="ev-loc-type" value="set" checked onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> Set Location
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+              <input type="radio" name="ev-loc-type" value="tbd" onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> To Be Determined
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+              <input type="radio" name="ev-loc-type" value="after" onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> Sent After Purchase
+            </label>
+          </div>
+          <input type="text" id="ev-location" placeholder="Venue name, city, state">
+        </div>
+
+        <!-- Tickets & Pricing -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div class="form-field" style="margin:0;">
+            <label>Tickets Available</label>
+            <input type="number" id="ev-qty" placeholder="e.g. 200" min="1">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Ticket Price</label>
+            <input type="number" id="ev-price" placeholder="0.00" step="0.01" min="0">
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Sale Price (Optional)</label>
+            <input type="number" id="ev-sale-price" placeholder="0.00" step="0.01" min="0">
+          </div>
+        </div>
+
+        <!-- Delivery Method -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Ticket Delivery</div>
+          <div style="display:flex;gap:16px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-send-email" checked style="accent-color:var(--brown);"> Email</label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-send-sms" style="accent-color:var(--brown);"> SMS / Phone</label>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-in-person" checked style="accent-color:var(--brown);"> In-Person Barcode Scan</label>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-field">
+          <label>Event Tags</label>
+          <input type="text" id="ev-tags" placeholder="e.g. Gathering, Social, Night Out (comma separated)">
+        </div>
+
+        <!-- Gallery -->
+        <div style="margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Event Gallery (Optional)</div>
+          <div onclick="document.getElementById('ev-gallery-input').click()" style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;background:var(--cream);">
+            <input type="file" id="ev-gallery-input" accept="image/*" multiple style="display:none" onchange="handleEventGallery(event)">
+            <div style="font-size:0.82rem;color:var(--text-mid);">Click to add gallery images</div>
+          </div>
+          <div id="ev-gallery-previews" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal('modal-create-event')">Cancel</button>
+          <button class="btn-confirm" onclick="saveEvent()">Publish Event →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW EVENT MODAL -->
+    <div class="modal-overlay" id="modal-view-event" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
+      <div onclick="event.stopPropagation()" style="background:#111;border-radius:24px;max-width:400px;width:90%;margin:auto;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5);">
+        <!-- Cover -->
+        <div id="view-ev-cover" style="width:100%;height:220px;background:linear-gradient(135deg,#1a0a00,#3d1f00);position:relative;display:flex;align-items:flex-end;">
+          <div style="position:absolute;top:16px;left:16px;cursor:pointer;" onclick="closeModal('modal-view-event')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <div style="position:absolute;top:16px;right:16px;display:flex;gap:10px;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" onclick="shareEvent()" style="cursor:pointer;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <div style="padding:20px;background:linear-gradient(transparent,rgba(0,0,0,0.8));width:100%;">
+            <h2 id="view-ev-name" style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.4rem;margin-bottom:6px;"></h2>
+            <div style="display:flex;gap:14px;flex-wrap:wrap;">
+              <span id="view-ev-datetime" style="color:rgba(255,255,255,0.7);font-size:0.75rem;display:flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+              <span id="view-ev-location-tag" style="color:rgba(255,255,255,0.7);font-size:0.75rem;display:flex;align-items:center;gap:4px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+            </div>
+          </div>
+        </div>
+        <!-- Details -->
+        <div style="padding:20px;">
+          <div id="view-ev-joined" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-bottom:14px;">150+ Joined</div>
+          <div id="view-ev-hosted" style="font-size:0.85rem;color:var(--brown-light);font-weight:700;margin-bottom:10px;"></div>
+          <div id="view-ev-desc" style="font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:16px;"></div>
+          <!-- Tags -->
+          <div id="view-ev-tags" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;"></div>
+          <!-- Gallery -->
+          <div id="view-ev-gallery-section" style="display:none;margin-bottom:16px;">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;">Gallery</div>
+            <div id="view-ev-gallery" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;"></div>
+          </div>
+          <!-- Get Ticket button -->
+          <button onclick="openTicketView()" style="width:100%;padding:16px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:800;">Get Ticket (<span id="view-ev-price"></span>)</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- YOUR TICKET MODAL -->
+    <div class="modal-overlay" id="modal-your-ticket">
+      <div onclick="event.stopPropagation()" style="background:#111;border-radius:24px;max-width:380px;width:90%;padding:0;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.5);">
+        <div style="padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;">
+          <div style="cursor:pointer;" onclick="closeModal('modal-your-ticket');openModal('modal-view-event')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </div>
+          <span style="color:#fff;font-weight:700;font-size:0.95rem;">Your ticket</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </div>
+        <!-- Ticket card -->
+        <div style="margin:20px;background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:18px;padding:24px;text-align:center;">
+          <h3 id="ticket-ev-name" style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.2rem;margin-bottom:6px;"></h3>
+          <p style="color:rgba(255,255,255,0.5);font-size:0.75rem;margin-bottom:20px;">Show this QR code at the event entrance</p>
+          <div id="ticket-id-label" style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:16px;"></div>
+          <!-- QR Code (SVG generated) -->
+          <div style="background:#fff;border-radius:16px;padding:16px;display:inline-block;margin-bottom:16px;">
+            <svg id="ticket-qr" viewBox="0 0 100 100" width="140" height="140" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <!-- Event details -->
+          <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:14px;text-align:left;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Venue</div><div id="ticket-venue" style="font-size:0.82rem;color:#fff;font-weight:600;"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Date & Time</div><div id="ticket-datetime" style="font-size:0.82rem;color:#fff;font-weight:600;"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown-light)" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              <div><div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;">Price</div><div id="ticket-price-label" style="font-size:0.82rem;color:var(--brown-light);font-weight:800;"></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0 20px 20px;">
+          <button onclick="downloadTicket()" style="width:100%;padding:15px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#111" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download ticket
+          </button>
+        </div>
+      </div>
+    </div>
 
 <!-- LIVE BANNER -->
 <div class="live-banner" id="live-banner">
