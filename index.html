@@ -350,6 +350,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-section-label">Trust & Community</div>
     <div class="nav-item" onclick="nav(this,'reviews')"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews</div>
     <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Collaboration</div>
+    <div class="nav-item" onclick="nav(this,'scanner')"><svg viewBox="0 0 24 24"><path d="M3 9V5a2 2 0 012-2h4"/><path d="M15 3h4a2 2 0 012 2v4"/><path d="M21 15v4a2 2 0 01-2 2h-4"/><path d="M9 21H5a2 2 0 01-2-2v-4"/><line x1="3" y1="12" x2="21" y2="12"/></svg>Scanner</div>
 
     <div class="nav-section-label">System</div>
     <div class="nav-item" onclick="nav(this,'livepreview')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/></svg>Live Preview</div>
@@ -1325,7 +1326,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       const basePrice = Math.min(...prices);
       const ticketType = ticketTiers.map(t => t.type).join(', ');
 
-      const ev = { id: Date.now(), name, type, ticketType, tiers: [...ticketTiers], desc, date, time, location, qty, sold: 0, price: basePrice, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true };
+      const onlineLink = document.getElementById('ev-online-link') ? document.getElementById('ev-online-link').value.trim() : '';
+      const ev = { id: Date.now(), name, type, ticketType, tiers: [...ticketTiers], desc, date, time, location, onlineLink, qty, sold: 0, price: basePrice, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true };
       if (currentEventIndex !== null) events[currentEventIndex] = ev;
       else events.unshift(ev);
       closeModal('modal-create-event');
@@ -1422,6 +1424,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         gallSec.style.display = 'block';
         document.getElementById('view-ev-gallery').innerHTML = ev.galleryUrls.map(url => `<img src="${url}" style="width:90px;height:70px;border-radius:10px;object-fit:cover;flex-shrink:0;">`).join('');
       } else { gallSec.style.display = 'none'; }
+      // Show online access button for online events
+      const onlineBtn = document.getElementById('online-access-btn-wrap');
+      if (onlineBtn) onlineBtn.style.display = ev.type === 'Online' ? 'block' : 'none';
+
       openModal('modal-view-event');
     }
 
@@ -1437,7 +1443,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       const ev = events[evIdx];
       ev._selectedTier = ev.tiers[tierIdx];
       ev._selectedQty = (window._tierQtys && window._tierQtys[tierIdx]) || 1;
-      openTicketView();
+      // Open checkout first for paid tickets
+      const price = parseFloat(ev.tiers[tierIdx].price) || 0;
+      if (price > 0) {
+        closeModal('modal-view-event');
+        openCheckout(evIdx, tierIdx, ev._selectedQty);
+      } else {
+        openTicketView();
+      }
     }
 
     function openTicketView() {
@@ -1450,25 +1463,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
       // Build ticket cards
       const ticketsHTML = Array.from({length:qty},(_,i) => {
-        const ticketId = 'TKT-'+ev.id.toString().slice(-5)+'-'+(tier?tier.type.substring(0,2).toUpperCase():'GA')+'-'+String(i+1).padStart(3,'0');
+        const ticketNum = generateTicketNumber(ev.id, tier?tier.type:'GA', i+1);
+        const isOnline = ev.type === 'Online';
         return `
           <div style="background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;position:relative;">
             <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:20px;">Ticket ${i+1} of ${qty}</div>
             <h3 style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.1rem;margin-bottom:6px;padding-right:60px;text-align:left;">${ev.name}</h3>
-            <div style="text-align:left;margin-bottom:4px;"><span style="background:rgba(192,122,80,0.3);color:var(--brown-light);font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;">${tier?tier.type:'General Admission'}</span></div>
-            <p style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:14px;text-align:left;">Show QR code at entrance</p>
+            <div style="text-align:left;margin-bottom:4px;"><span style="background:rgba(192,122,80,0.3);color:var(--brown-light);font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;">${tier?tier.type:'General Admission'}</span>${isOnline?'<span style="background:rgba(37,99,235,0.2);color:#60a5fa;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-left:6px;">🌐 Online</span>':''}</div>
+            <p style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:14px;text-align:left;">${isOnline?'Use your ticket number to access the event':'Show QR code at entrance'}</p>
             <div style="background:#fff;border-radius:12px;padding:12px;display:inline-block;margin-bottom:12px;">
               <svg id="qr-${i}" viewBox="0 0 100 100" width="130" height="130" xmlns="http://www.w3.org/2000/svg"></svg>
             </div>
-            <div style="color:rgba(255,255,255,0.3);font-size:0.68rem;margin-bottom:14px;font-family:monospace;">${ticketId}</div>
+            <!-- Unique ticket number -->
+            <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 12px;display:inline-block;margin-bottom:14px;">
+              <div style="color:rgba(255,255,255,0.35);font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Ticket Number</div>
+              <div style="color:var(--brown-light);font-family:monospace;font-size:0.88rem;font-weight:800;letter-spacing:0.08em;">${ticketNum}</div>
+            </div>
             <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:left;">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:${tier&&tier.description?'10px':'0'};">
-                <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Venue</div><div style="font-size:0.8rem;color:#fff;font-weight:600;">${ev.location||'TBD'}</div></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:${(tier&&tier.description)||isOnline?'10px':'0'};">
+                <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Venue</div><div style="font-size:0.8rem;color:#fff;font-weight:600;">${isOnline?'Online Event':ev.location||'TBD'}</div></div>
                 <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Date & Time</div><div style="font-size:0.78rem;color:#fff;font-weight:600;">${dateStr}${ev.time?' • '+ev.time:''}</div></div>
                 <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Type</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:700;">${tier?tier.type:'General Admission'}</div></div>
                 <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Price</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:800;">${price===0?'Free':'$'+price.toFixed(2)}</div></div>
               </div>
               ${tier&&tier.description?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Includes</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;">${tier.description}</div></div>`:''}
+              ${isOnline&&ev.onlineLink?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Event Access</div><div style="background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);border-radius:8px;padding:10px;"><div style="color:#93c5fd;font-size:0.75rem;margin-bottom:6px;">Enter ticket number <strong>${ticketNum}</strong> to access:</div><a href="${ev.onlineLink}" target="_blank" style="color:#60a5fa;font-size:0.8rem;word-break:break-all;">${ev.onlineLink}</a></div></div>`:''}
             </div>
           </div>
         `;
@@ -1478,10 +1497,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       document.getElementById('multi-ticket-title').textContent = qty>1?`Your ${qty} Tickets`:'Your Ticket';
       document.getElementById('multi-ticket-total').textContent = qty>1?(price===0?`${qty} Free Tickets`:`Total: $${(price*qty).toFixed(2)} (${qty} × $${price.toFixed(2)})`): '';
 
-      // Generate QRs
+      // Generate QRs using proper ticket numbers
       Array.from({length:qty},(_,i)=>{
-        const ticketId = 'TKT-'+ev.id.toString().slice(-5)+'-'+(tier?tier.type.substring(0,2).toUpperCase():'GA')+'-'+String(i+1).padStart(3,'0');
-        setTimeout(()=>generateQR(ticketId,'qr-'+i),50);
+        const ticketNum = generateTicketNumber(ev.id, tier?tier.type:'GA', i+1);
+        setTimeout(()=>generateQR(ticketNum,'qr-'+i),80);
       });
 
       closeModal('modal-view-event');
@@ -1642,6 +1661,86 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     }
     </script>
 
+    <!-- SCANNER -->
+    <div id="screen-scanner" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Ticket Scanner</h2>
+        <p class="section-sub">Scan tickets at the door or verify online event access</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;">
+
+        <!-- In-Person Scanner -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <div style="width:40px;height:40px;background:var(--brown-bg2);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M3 9V5a2 2 0 012-2h4"/><path d="M15 3h4a2 2 0 012 2v4"/><path d="M21 15v4a2 2 0 01-2 2h-4"/><path d="M9 21H5a2 2 0 01-2-2v-4"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+            </div>
+            <div><div style="font-weight:700;font-size:0.95rem;">In-Person Scanner</div><div style="font-size:0.75rem;color:var(--text-dim);">Scan QR codes at the door</div></div>
+          </div>
+          <!-- Camera viewfinder simulation -->
+          <div style="background:#111;border-radius:14px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.6));"></div>
+            <!-- Scanner frame -->
+            <div style="width:60%;aspect-ratio:1;position:relative;">
+              <div style="position:absolute;top:0;left:0;width:20px;height:20px;border-top:3px solid var(--brown-light);border-left:3px solid var(--brown-light);border-radius:2px 0 0 0;"></div>
+              <div style="position:absolute;top:0;right:0;width:20px;height:20px;border-top:3px solid var(--brown-light);border-right:3px solid var(--brown-light);border-radius:0 2px 0 0;"></div>
+              <div style="position:absolute;bottom:0;left:0;width:20px;height:20px;border-bottom:3px solid var(--brown-light);border-left:3px solid var(--brown-light);border-radius:0 0 0 2px;"></div>
+              <div style="position:absolute;bottom:0;right:0;width:20px;height:20px;border-bottom:3px solid var(--brown-light);border-right:3px solid var(--brown-light);border-radius:0 0 2px 0;"></div>
+              <!-- Scan line -->
+              <div id="scan-line" style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--brown-light),transparent);top:50%;animation:scanLine 2s linear infinite;"></div>
+            </div>
+            <div style="position:absolute;bottom:16px;color:rgba(255,255,255,0.6);font-size:0.75rem;">Point camera at QR code</div>
+          </div>
+          <button onclick="simulateScan()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;">📷 Start Camera Scan</button>
+          <div id="scan-result" style="display:none;margin-top:14px;padding:14px;border-radius:10px;"></div>
+        </div>
+
+        <!-- Manual / Online Verify -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <div style="width:40px;height:40px;background:#dbeafe;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+            </div>
+            <div><div style="font-weight:700;font-size:0.95rem;">Online Event Verify</div><div style="font-size:0.75rem;color:var(--text-dim);">Enter ticket number for access</div></div>
+          </div>
+          <div class="form-field">
+            <label>Ticket Number</label>
+            <input type="text" id="manual-ticket-input" placeholder="e.g. TKT-12345-VI-001" style="font-family:monospace;letter-spacing:0.05em;" oninput="this.value=this.value.toUpperCase()">
+          </div>
+          <button onclick="verifyTicket()" style="width:100%;padding:12px;background:#2563eb;color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;margin-bottom:12px;">🔍 Verify & Grant Access</button>
+          <div id="verify-result" style="display:none;padding:14px;border-radius:10px;"></div>
+
+          <!-- Checked in list -->
+          <div style="margin-top:16px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Recently Checked In</div>
+            <div id="checked-in-list">
+              <div style="text-align:center;padding:20px;color:var(--text-dim);font-size:0.82rem;">No check-ins yet</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scanner stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text);" id="scan-total">0</div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Total Scanned</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#16a34a;" id="scan-valid">0</div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Valid ✓</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#dc2626;" id="scan-invalid">0</div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Invalid ✗</div>
+        </div>
+      </div>
+    </div>
+
+    <style>
+    @keyframes scanLine{0%{top:10%;}50%{top:90%;}100%{top:10%;}}
+    </style>
+
     <!-- COMING SOON -->
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
@@ -1682,7 +1781,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           </div>
           <div class="form-field" style="margin:0;">
             <label>Event Type</label>
-            <select id="ev-type">
+            <select id="ev-type" onchange="toggleOnlineField(this.value)">
               <option value="">-- Select type --</option>
               <option>Concert / Show</option>
               <option>Tour</option>
@@ -1695,8 +1794,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <option>Watch Party</option>
               <option>Listening Party</option>
               <option>Award Show</option>
+              <option>Online</option>
               <option>Other</option>
             </select>
+          </div>
+        </div>
+
+        <!-- Online Event Link (shown only for Online type) -->
+        <div id="online-link-section" style="display:none;margin-bottom:14px;">
+          <div style="background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.05));border:1px solid rgba(192,122,80,0.3);border-radius:12px;padding:16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+              <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Online Event</span>
+            </div>
+            <div class="form-field" style="margin-bottom:10px;">
+              <label>Zoom / Stream Link</label>
+              <input type="url" id="ev-online-link" placeholder="https://zoom.us/j/... or your stream link">
+            </div>
+            <div style="background:rgba(192,122,80,0.1);border-radius:8px;padding:10px;font-size:0.78rem;color:var(--brown-dark);line-height:1.5;">
+              🔒 A unique access link will be auto-generated for each ticket. Attendees enter their ticket number to gain access.
+            </div>
           </div>
         </div>
 
@@ -1828,6 +1945,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           </div>
           <!-- Get Ticket button -->
           <button onclick="openTicketView()" style="width:100%;padding:16px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:800;">Get Ticket (<span id="view-ev-price"></span>)</button>
+          <div id="online-access-btn-wrap" style="display:none;margin-top:10px;">
+            <button onclick="openOnlineAccess(currentEventIndex)" style="width:100%;padding:14px;background:rgba(37,99,235,0.2);color:#93c5fd;border:1px solid rgba(37,99,235,0.3);border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;">🌐 Enter Online Event</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1857,6 +1977,150 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
       </div>
     </div>
+
+<!-- LUXURY CHECKOUT MODAL -->
+<div class="modal-overlay" id="modal-checkout" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
+  <div onclick="event.stopPropagation()" style="background:#0d0d0d;border-radius:24px;max-width:520px;width:90%;margin:auto;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.8);border:1px solid rgba(192,122,80,0.15);">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1a0a00,#2d1500);padding:28px 28px 20px;border-bottom:1px solid rgba(192,122,80,0.15);">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <button onclick="closeModal('modal-checkout')" style="background:rgba(255,255,255,0.08);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div style="text-align:center;">
+          <div style="color:rgba(255,255,255,0.4);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">Secure Checkout</div>
+          <div style="color:var(--brown-light);font-size:0.72rem;display:flex;align-items:center;justify-content:center;gap:4px;">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            256-bit SSL Encrypted
+          </div>
+        </div>
+        <div style="width:32px;"></div>
+      </div>
+      <!-- Order summary -->
+      <div id="checkout-summary" style="background:rgba(255,255,255,0.05);border-radius:12px;padding:16px;">
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;">Order Summary</div>
+        <div id="checkout-items"></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.08);margin-top:12px;padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="color:rgba(255,255,255,0.5);font-size:0.82rem;">Total</span>
+          <span id="checkout-total" style="color:#fff;font-weight:800;font-size:1.1rem;font-family:'DM Serif Display',serif;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div style="padding:24px 28px;">
+      <!-- Steps -->
+      <div style="display:flex;gap:0;margin-bottom:24px;background:rgba(255,255,255,0.04);border-radius:10px;padding:4px;">
+        <div id="step-btn-1" onclick="goCheckoutStep(1)" style="flex:1;padding:8px;text-align:center;border-radius:8px;cursor:pointer;background:var(--brown);color:#fff;font-size:0.78rem;font-weight:700;transition:all 0.2s;">1. Contact</div>
+        <div id="step-btn-2" onclick="goCheckoutStep(2)" style="flex:1;padding:8px;text-align:center;border-radius:8px;cursor:pointer;color:rgba(255,255,255,0.35);font-size:0.78rem;font-weight:600;">2. Payment</div>
+        <div id="step-btn-3" onclick="goCheckoutStep(3)" style="flex:1;padding:8px;text-align:center;border-radius:8px;cursor:pointer;color:rgba(255,255,255,0.35);font-size:0.78rem;font-weight:600;">3. Confirm</div>
+      </div>
+
+      <!-- Step 1: Contact -->
+      <div id="checkout-step-1">
+        <div style="color:rgba(255,255,255,0.5);font-size:0.75rem;margin-bottom:16px;line-height:1.5;">Your tickets will be sent to the contact info below.</div>
+        <div style="margin-bottom:14px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Full Name</div>
+          <input type="text" id="co-name" placeholder="First & Last Name" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Email Address</div>
+          <input type="email" id="co-email" placeholder="your@email.com" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+        <div style="margin-bottom:20px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Phone (Optional)</div>
+          <input type="tel" id="co-phone" placeholder="+1 (000) 000-0000" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+        <button onclick="goCheckoutStep(2)" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:700;letter-spacing:0.03em;box-shadow:0 4px 20px rgba(192,122,80,0.4);">Continue to Payment →</button>
+      </div>
+
+      <!-- Step 2: Payment -->
+      <div id="checkout-step-2" style="display:none;">
+        <div style="margin-bottom:14px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Card Number</div>
+          <div style="position:relative;">
+            <input type="text" id="co-card" placeholder="0000  0000  0000  0000" maxlength="19" oninput="formatCard(this)" style="width:100%;padding:13px 50px 13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.95rem;color:#fff;outline:none;letter-spacing:0.1em;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);display:flex;gap:4px;">
+              <div style="width:28px;height:18px;background:#eb001b;border-radius:3px;opacity:0.8;"></div>
+              <div style="width:28px;height:18px;background:#f79e1b;border-radius:3px;opacity:0.8;margin-left:-10px;"></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+          <div>
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Expiry</div>
+            <input type="text" id="co-expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          </div>
+          <div>
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">CVV</div>
+            <input type="text" id="co-cvv" placeholder="•••" maxlength="4" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          </div>
+        </div>
+        <div style="margin-bottom:20px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Name on Card</div>
+          <input type="text" id="co-cardname" placeholder="As it appears on card" style="width:100%;padding:13px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+        <!-- Pay methods -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">💳 Card</div>
+          <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">  Apple Pay</div>
+          <div style="flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px;text-align:center;cursor:pointer;font-size:0.8rem;color:rgba(255,255,255,0.5);font-weight:600;">G Pay</div>
+        </div>
+        <button onclick="goCheckoutStep(3)" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:700;letter-spacing:0.03em;box-shadow:0 4px 20px rgba(192,122,80,0.4);">Review Order →</button>
+      </div>
+
+      <!-- Step 3: Confirm -->
+      <div id="checkout-step-3" style="display:none;">
+        <div id="checkout-review-block" style="background:rgba(255,255,255,0.04);border-radius:12px;padding:18px;margin-bottom:16px;"></div>
+        <div style="background:rgba(192,122,80,0.08);border:1px solid rgba(192,122,80,0.2);border-radius:10px;padding:12px;margin-bottom:20px;font-size:0.78rem;color:rgba(255,255,255,0.5);line-height:1.6;">
+          By completing your purchase you agree to our Terms of Service. Tickets will be delivered to your email immediately after payment.
+        </div>
+        <button onclick="completeCheckout()" style="width:100%;padding:16px;background:linear-gradient(135deg,#C8A96E,#8B6914);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Serif Display',serif;font-size:1.05rem;font-weight:400;letter-spacing:0.08em;box-shadow:0 4px 24px rgba(184,134,11,0.5);">Complete Purchase</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ONLINE EVENT ACCESS MODAL -->
+<div class="modal-overlay" id="modal-online-access" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
+  <div onclick="event.stopPropagation()" style="background:#0d0d0d;border-radius:24px;max-width:460px;width:90%;margin:auto;border:1px solid rgba(192,122,80,0.15);box-shadow:0 40px 100px rgba(0,0,0,0.8);">
+    <div style="background:linear-gradient(135deg,#1a0a00,#2d1500);padding:28px;border-bottom:1px solid rgba(192,122,80,0.15);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <span style="color:rgba(255,255,255,0.4);font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;">Online Event Access</span>
+        <button onclick="closeModal('modal-online-access')" style="background:rgba(255,255,255,0.08);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;color:#fff;font-size:1rem;">✕</button>
+      </div>
+      <h2 id="online-ev-name" style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.4rem;margin-bottom:6px;"></h2>
+      <div id="online-ev-date" style="color:rgba(255,255,255,0.5);font-size:0.8rem;"></div>
+    </div>
+    <div style="padding:28px;">
+      <!-- Ticket number input -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:10px;">Enter Your Ticket Number</div>
+        <input type="text" id="online-ticket-input" placeholder="TKT-XXXXX-XX-001" oninput="this.value=this.value.toUpperCase()" style="width:100%;padding:14px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;font-family:monospace;font-size:1rem;color:#fff;outline:none;letter-spacing:0.08em;text-align:center;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+      </div>
+      <button onclick="verifyOnlineAccess()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:700;box-shadow:0 4px 20px rgba(192,122,80,0.4);margin-bottom:16px;">Verify & Enter Event →</button>
+
+      <div id="online-verify-result" style="display:none;padding:16px;border-radius:12px;text-align:center;"></div>
+
+      <!-- Access granted section -->
+      <div id="online-access-granted" style="display:none;">
+        <div style="background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:12px;padding:20px;text-align:center;margin-bottom:16px;">
+          <div style="font-size:2rem;margin-bottom:8px;">✅</div>
+          <div style="color:#4ade80;font-weight:700;font-size:1rem;margin-bottom:4px;">Access Granted!</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Your ticket has been verified</div>
+        </div>
+        <a id="online-event-link-btn" href="#" target="_blank" style="display:block;width:100%;padding:14px;background:#fff;color:#111;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:800;text-align:center;text-decoration:none;box-shadow:0 4px 16px rgba(255,255,255,0.15);">
+          🔗 Join Event Now
+        </a>
+        <div style="margin-top:10px;text-align:center;">
+          <button onclick="downloadOnlineLink()" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.78rem;font-family:'DM Sans',sans-serif;">↓ Download event link</button>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:16px;color:rgba(255,255,255,0.2);font-size:0.7rem;">Powered by Massed • massed.io</div>
+    </div>
+  </div>
+</div>
 
 <!-- LIVE BANNER -->
 <div class="live-banner" id="live-banner">
@@ -1964,7 +2228,199 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 <div id="toast"></div>
 
 <script>
-// ── SIDEBAR MOBILE TOGGLE ─────────────────────────────
+// ── ONLINE EVENT FIELD TOGGLE ─────────────────────────
+function toggleOnlineField(val) {
+  document.getElementById('online-link-section').style.display = val === 'Online' ? 'block' : 'none';
+}
+
+// ── CHECKOUT ─────────────────────────────────────────
+let checkoutData = {};
+
+function openCheckout(evIdx, tierIdx, qty) {
+  const ev = events[evIdx];
+  const tier = ev.tiers[tierIdx];
+  const price = parseFloat(tier.price) || 0;
+  const total = price * qty;
+  checkoutData = { ev, tier, qty, price, total };
+
+  // Build summary
+  document.getElementById('checkout-items').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div>
+        <div style="color:#fff;font-weight:600;font-size:0.9rem;">${ev.name}</div>
+        <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;">${tier.type} × ${qty}</div>
+      </div>
+      <div style="color:var(--brown-light);font-weight:700;">${price===0?'Free':'$'+(price*qty).toFixed(2)}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;color:rgba(255,255,255,0.35);font-size:0.75rem;">
+      <span>Service fee</span><span>${price===0?'$0.00':'$'+(total*0.05).toFixed(2)}</span>
+    </div>
+  `;
+  const grandTotal = price === 0 ? 0 : total * 1.05;
+  document.getElementById('checkout-total').textContent = grandTotal === 0 ? 'Free' : '$' + grandTotal.toFixed(2);
+  goCheckoutStep(1);
+  openModal('modal-checkout');
+}
+
+function goCheckoutStep(step) {
+  [1,2,3].forEach(s => {
+    document.getElementById('checkout-step-'+s).style.display = s===step?'block':'none';
+    const btn = document.getElementById('step-btn-'+s);
+    btn.style.background = s===step?'var(--brown)':'transparent';
+    btn.style.color = s===step?'#fff':'rgba(255,255,255,0.35)';
+  });
+  if (step === 3) {
+    const d = checkoutData;
+    document.getElementById('checkout-review-block').innerHTML = `
+      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Attendee</div>
+        <div style="color:#fff;font-size:0.9rem;">${document.getElementById('co-name').value||'—'}</div>
+        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">${document.getElementById('co-email').value||'—'}</div>
+      </div>
+      <div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Event</div>
+        <div style="color:#fff;font-size:0.9rem;">${d.ev.name}</div>
+        <div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">${d.tier.type} × ${d.qty} — ${d.price===0?'Free':'$'+(d.total*1.05).toFixed(2)}</div>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Payment</div>
+        <div style="color:#fff;font-size:0.9rem;">•••• •••• •••• ${(document.getElementById('co-card').value.replace(/\s/g,'')||'0000').slice(-4)}</div>
+      </div>
+    `;
+  }
+}
+
+function formatCard(input) {
+  let v = input.value.replace(/\D/g,'').substring(0,16);
+  input.value = v.replace(/(.{4})/g,'$1  ').trim();
+}
+function formatExpiry(input) {
+  let v = input.value.replace(/\D/g,'').substring(0,4);
+  if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2);
+  input.value = v;
+}
+
+function completeCheckout() {
+  const btn = event.target;
+  btn.textContent = 'Processing...';
+  btn.disabled = true;
+  setTimeout(() => {
+    closeModal('modal-checkout');
+    btn.textContent = 'Complete Purchase';
+    btn.disabled = false;
+    // Open ticket view
+    const ev = checkoutData.ev;
+    const tierIdx = ev.tiers.indexOf(checkoutData.tier);
+    ev._selectedTier = checkoutData.tier;
+    ev._selectedQty = checkoutData.qty;
+    currentEventIndex = events.indexOf(ev);
+    openTicketView();
+    toast('🎉 Purchase complete! Your tickets are ready.');
+  }, 2000);
+}
+
+// ── SCANNER ───────────────────────────────────────────
+let scanStats = {total:0, valid:0, invalid:0};
+let checkedInList = [];
+
+function simulateScan() {
+  // Simulate scanning a random ticket from existing events
+  const allTkts = [];
+  events.forEach(ev => {
+    if (ev.tiers) ev.tiers.forEach((t,ti) => {
+      allTkts.push('TKT-'+ev.id.toString().slice(-5)+'-'+t.type.substring(0,2).toUpperCase()+'-001');
+    });
+  });
+  const fakeInvalid = Math.random() > 0.7;
+  const ticketId = fakeInvalid ? 'TKT-XXXXX-XX-000' : (allTkts[0] || 'TKT-12345-GA-001');
+  processScannedTicket(ticketId);
+}
+
+function verifyTicket() {
+  const val = document.getElementById('manual-ticket-input').value.trim().toUpperCase();
+  if (!val) { toast('Please enter a ticket number'); return; }
+  processScannedTicket(val, true);
+}
+
+function processScannedTicket(ticketId, isManual) {
+  scanStats.total++;
+  const isValid = !ticketId.includes('XXXXX') && ticketId.startsWith('TKT-');
+  if (isValid) {
+    scanStats.valid++;
+    checkedInList.unshift({id: ticketId, time: new Date().toLocaleTimeString(), valid: true});
+    const resultEl = document.getElementById(isManual?'verify-result':'scan-result');
+    resultEl.style.display = 'block';
+    resultEl.style.background = 'rgba(22,163,74,0.12)';
+    resultEl.style.border = '1px solid rgba(22,163,74,0.3)';
+    resultEl.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.5rem;">✅</span><div><div style="font-weight:700;color:#4ade80;font-size:0.92rem;">Valid Ticket</div><div style="color:rgba(255,255,255,0.5);font-size:0.75rem;">${ticketId}</div></div></div>`;
+    if (!isManual && navigator.vibrate) navigator.vibrate(200);
+  } else {
+    scanStats.invalid++;
+    checkedInList.unshift({id: ticketId, time: new Date().toLocaleTimeString(), valid: false});
+    const resultEl = document.getElementById(isManual?'verify-result':'scan-result');
+    resultEl.style.display = 'block';
+    resultEl.style.background = 'rgba(220,38,38,0.1)';
+    resultEl.style.border = '1px solid rgba(220,38,38,0.3)';
+    resultEl.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.5rem;">❌</span><div><div style="font-weight:700;color:#f87171;font-size:0.92rem;">Invalid Ticket</div><div style="color:rgba(255,255,255,0.5);font-size:0.75rem;">${ticketId} — Not found</div></div></div>`;
+  }
+  // Update stats
+  const ts = document.getElementById('scan-total'); if(ts) ts.textContent = scanStats.total;
+  const vs = document.getElementById('scan-valid'); if(vs) vs.textContent = scanStats.valid;
+  const inv = document.getElementById('scan-invalid'); if(inv) inv.textContent = scanStats.invalid;
+  // Update checked-in list
+  const cl = document.getElementById('checked-in-list');
+  if (cl) cl.innerHTML = checkedInList.slice(0,5).map(c=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--cream);border-radius:8px;margin-bottom:6px;">
+      <div style="font-family:monospace;font-size:0.72rem;color:var(--text);">${c.id}</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:0.65rem;color:var(--text-dim);">${c.time}</span>
+        <span style="font-size:0.85rem;">${c.valid?'✅':'❌'}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── ONLINE EVENT ACCESS ───────────────────────────────
+function openOnlineAccess(evIdx) {
+  const ev = events[evIdx];
+  document.getElementById('online-ev-name').textContent = ev.name;
+  const dateStr = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+  document.getElementById('online-ev-date').textContent = dateStr + (ev.time?' • '+ev.time:'');
+  document.getElementById('online-ticket-input').value = '';
+  document.getElementById('online-verify-result').style.display = 'none';
+  document.getElementById('online-access-granted').style.display = 'none';
+  document.getElementById('online-event-link-btn').href = ev.onlineLink || '#';
+  openModal('modal-online-access');
+}
+
+function verifyOnlineAccess() {
+  const val = document.getElementById('online-ticket-input').value.trim().toUpperCase();
+  if (!val) { toast('Please enter your ticket number'); return; }
+  const resultEl = document.getElementById('online-verify-result');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div style="color:rgba(255,255,255,0.5);font-size:0.85rem;">🔍 Verifying...</div>';
+  setTimeout(() => {
+    const isValid = val.startsWith('TKT-') && val.length > 10;
+    if (isValid) {
+      resultEl.style.display = 'none';
+      document.getElementById('online-access-granted').style.display = 'block';
+    } else {
+      resultEl.innerHTML = '<div style="color:#f87171;font-weight:600;">❌ Invalid ticket number. Please check and try again.</div>';
+    }
+  }, 1200);
+}
+
+function downloadOnlineLink() {
+  toast('📥 Event access link downloaded!');
+}
+
+// ── TICKET NUMBER GENERATION ──────────────────────────
+function generateTicketNumber(evId, tierType, index) {
+  const evPart = evId.toString().slice(-5).toUpperCase();
+  const tierPart = tierType.replace(/[^A-Z]/gi,'').substring(0,3).toUpperCase().padEnd(3,'X');
+  const numPart = String(index).padStart(4,'0');
+  return `TKT-${evPart}-${tierPart}-${numPart}`;
+}
 function toggleSidebar(){
   document.querySelector('.sidebar').classList.toggle('open');
   document.getElementById('sidebar-overlay').classList.toggle('visible');
@@ -1975,7 +2431,7 @@ function closeSidebar(){
 }
 
 // ── NAV ──────────────────────────────────────────────
-const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',livepreview:'Live Preview',coming:'Coming Soon'};
+const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',coming:'Coming Soon'};
 
 function nav(el, screen) {
   closeSidebar();
