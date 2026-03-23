@@ -1534,8 +1534,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
     function openTicketView() {
       const ev = events[currentEventIndex];
-      if (!ev) return;
-      const dateStr = ev.date ? new Date(ev.date + 'T12:00:00').toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'}) : '';
+      if (!ev) { toast('No event selected'); return; }
+      const dateStr = ev.date ? new Date(ev.date + 'T12:00:00').toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'}) : 'Date TBD';
       const ticketId = 'TKT-' + ev.id.toString().slice(-6);
       document.getElementById('ticket-ev-name').textContent = ev.name;
       document.getElementById('ticket-id-label').textContent = 'Ticket: ' + ticketId;
@@ -1546,6 +1546,93 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       generateQR(ticketId);
       closeModal('modal-view-event');
       openModal('modal-your-ticket');
+    }
+
+    function downloadTicket() {
+      const ev = events[currentEventIndex];
+      if (!ev) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = 800; canvas.height = 1000;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      const grad = ctx.createLinearGradient(0, 0, 0, 1000);
+      grad.addColorStop(0, '#2d1500'); grad.addColorStop(1, '#1a0a00');
+      ctx.fillStyle = grad; ctx.fillRect(0, 0, 800, 1000);
+
+      // Header
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 36px Georgia';
+      ctx.textAlign = 'center';
+      const name = ev.name || 'Event';
+      const words = name.split(' ');
+      let line = '', y = 100;
+      words.forEach(w => {
+        const test = line + w + ' ';
+        if (ctx.measureText(test).width > 680 && line) { ctx.fillText(line.trim(), 400, y); line = w + ' '; y += 46; }
+        else line = test;
+      });
+      ctx.fillText(line.trim(), 400, y); y += 60;
+
+      // Ticket ID
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = '18px monospace';
+      const ticketId = 'TKT-' + ev.id.toString().slice(-6);
+      ctx.fillText(ticketId, 400, y); y += 50;
+
+      // QR placeholder (draw grid from SVG data)
+      const qrSvg = document.getElementById('ticket-qr');
+      const qrSize = 200;
+      const qrX = (800 - qrSize) / 2;
+      ctx.fillStyle = '#fff';
+      ctx.roundRect ? ctx.roundRect(qrX - 20, y - 20, qrSize + 40, qrSize + 40, 16) : ctx.fillRect(qrX - 20, y - 20, qrSize + 40, qrSize + 40);
+      ctx.fill();
+      ctx.fillStyle = '#111';
+      qrSvg.querySelectorAll('rect').forEach(r => {
+        const rx = parseInt(r.getAttribute('x')) * 2 + qrX;
+        const ry = parseInt(r.getAttribute('y')) * 2 + y;
+        const rw = parseInt(r.getAttribute('width')) * 2;
+        const rh = parseInt(r.getAttribute('height')) * 2;
+        const fill = r.getAttribute('fill');
+        ctx.fillStyle = fill === '#fff' ? '#fff' : '#111';
+        ctx.fillRect(rx, ry, rw, rh);
+      });
+      y += qrSize + 60;
+
+      // Divider
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.setLineDash([10, 8]);
+      ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(760, y); ctx.stroke();
+      ctx.setLineDash([]);
+      y += 40;
+
+      // Details
+      const details = [
+        ['📍 Venue', ev.location || 'TBD'],
+        ['📅 Date & Time', (ev.date ? new Date(ev.date + 'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : 'TBD') + (ev.time ? ' • ' + ev.time : '')],
+        ['🎟 Ticket Type', ev.ticketType || 'General Admission'],
+        ['💰 Price', ev.price === 0 ? 'Free' : '$' + (ev.salePrice || ev.price).toFixed(2)],
+      ];
+      ctx.textAlign = 'left';
+      details.forEach(([label, value]) => {
+        ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.font = '500 16px sans-serif';
+        ctx.fillText(label, 60, y); y += 28;
+        ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif';
+        ctx.fillText(value, 60, y); y += 46;
+      });
+
+      // Footer
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font = '16px sans-serif';
+      ctx.fillText('Powered by Massed • massed.io', 400, 960);
+
+      // Download
+      const link = document.createElement('a');
+      link.download = (ev.name || 'ticket').replace(/\s+/g, '-') + '-ticket.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast('✓ Ticket downloaded!');
     }
 
     function generateQR(text) {
@@ -1606,10 +1693,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
     function shareEvent() {
       toast('🔗 Event link copied to clipboard!');
-    }
-
-    function downloadTicket() {
-      toast('📥 Ticket downloading...');
     }
 
     function updateTicketStats() {
