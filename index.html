@@ -1171,19 +1171,77 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     let events = [];
     let currentEventIndex = null;
     let eventGalleryFiles = [];
+    let ticketTiers = [];
+
+    const TIER_TYPES = ['General Admission','VIP','Early Bird','Free','Donation','Student','Group','Backstage Pass','Table','Meet & Greet'];
+
+    function addTicketTier(preset) {
+      const id = Date.now() + Math.random();
+      ticketTiers.push({ id, type: preset || '', price: '', qty: '', description: '' });
+      renderTicketTiers();
+    }
+
+    function removeTicketTier(id) {
+      ticketTiers = ticketTiers.filter(t => t.id !== id);
+      renderTicketTiers();
+    }
+
+    function renderTicketTiers() {
+      const list = document.getElementById('ticket-tiers-list');
+      if (ticketTiers.length === 0) {
+        list.innerHTML = `<div style="text-align:center;padding:20px;background:var(--cream);border-radius:10px;border:1.5px dashed var(--border);font-size:0.85rem;color:var(--text-dim);">No ticket tiers yet — click "+ Add Tier" to add your first ticket type</div>`;
+        return;
+      }
+      list.innerHTML = ticketTiers.map((t, i) => `
+        <div style="background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Tier ${i+1}</div>
+            <button type="button" onclick="removeTicketTier(${t.id})" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:1rem;line-height:1;" onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='var(--text-dim)'">✕</button>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div class="form-field" style="margin:0;">
+              <label>Ticket Type</label>
+              <select onchange="updateTier(${t.id},'type',this.value)" style="width:100%;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;">
+                <option value="">-- Select --</option>
+                ${TIER_TYPES.map(type => `<option value="${type}" ${t.type===type?'selected':''}>${type}</option>`).join('')}
+              </select>
+            </div>
+            <div class="form-field" style="margin:0;">
+              <label>Price</label>
+              <div style="position:relative;">
+                <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-weight:600;">$</span>
+                <input type="number" value="${t.price}" placeholder="0.00" step="0.01" min="0" onchange="updateTier(${t.id},'price',this.value)" style="width:100%;padding:10px 12px 10px 24px;background:#fff;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;">
+              </div>
+            </div>
+            <div class="form-field" style="margin:0;">
+              <label>Qty Available</label>
+              <input type="number" value="${t.qty}" placeholder="e.g. 50" min="1" onchange="updateTier(${t.id},'qty',this.value)" style="width:100%;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;">
+            </div>
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>What's Included / Description</label>
+            <textarea placeholder="e.g. VIP ticket includes: early entry, meet &amp; greet, backstage access, complimentary drink..." onchange="updateTier(${t.id},'description',this.value)" style="width:100%;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;resize:vertical;min-height:70px;">${t.description}</textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateTier(id, field, value) {
+      const tier = ticketTiers.find(t => t.id === id);
+      if (tier) tier[field] = value;
+    }
 
     function openCreateEvent() {
       currentEventIndex = null;
+      ticketTiers = [];
       document.getElementById('event-modal-title').textContent = 'Create Event';
       document.getElementById('ev-name').value = '';
       document.getElementById('ev-type').value = '';
-      document.getElementById('ev-ticket-type').value = 'General Admission';
       document.getElementById('ev-desc').value = '';
       document.getElementById('ev-date').value = '';
       document.getElementById('ev-time').value = '';
       document.getElementById('ev-location').value = '';
       document.getElementById('ev-qty').value = '';
-      document.getElementById('ev-price').value = '';
       document.getElementById('ev-sale-price').value = '';
       document.getElementById('ev-tags').value = '';
       document.getElementById('ev-gallery-previews').innerHTML = '';
@@ -1192,6 +1250,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       eventGalleryFiles = [];
       document.querySelectorAll('input[name="ev-loc-type"]')[0].checked = true;
       document.getElementById('ev-location').style.display = 'block';
+      // Add one default tier to start
+      addTicketTier('General Admission');
       openModal('modal-create-event');
     }
 
@@ -1230,13 +1290,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     function saveEvent() {
       const name = document.getElementById('ev-name').value.trim();
       const type = document.getElementById('ev-type').value;
-      const ticketType = document.getElementById('ev-ticket-type').value;
       const desc = document.getElementById('ev-desc').value.trim();
       const date = document.getElementById('ev-date').value;
       const time = document.getElementById('ev-time').value;
       const location = document.getElementById('ev-location').value.trim();
       const qty = parseInt(document.getElementById('ev-qty').value) || 0;
-      const price = parseFloat(document.getElementById('ev-price').value) || 0;
       const salePrice = parseFloat(document.getElementById('ev-sale-price').value) || null;
       const tagsRaw = document.getElementById('ev-tags').value;
       const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
@@ -1248,9 +1306,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
       if (!name) { toast('Please enter an event name'); return; }
       if (!date) { toast('Please select a date'); return; }
-      if (qty <= 0) { toast('Please enter ticket quantity'); return; }
+      if (ticketTiers.length === 0) { toast('Please add at least one ticket type'); return; }
+      const invalidTier = ticketTiers.find(t => !t.type);
+      if (invalidTier) { toast('Please select a type for all ticket tiers'); return; }
 
-      const ev = { id: Date.now(), name, type, ticketType, desc, date, time, location, qty, sold: 0, price, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true };
+      // Use lowest tier price as the base display price
+      const prices = ticketTiers.map(t => parseFloat(t.price) || 0);
+      const basePrice = Math.min(...prices);
+      const ticketType = ticketTiers.map(t => t.type).join(', ');
+
+      const ev = { id: Date.now(), name, type, ticketType, tiers: [...ticketTiers], desc, date, time, location, qty, sold: 0, price: basePrice, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true };
       if (currentEventIndex !== null) events[currentEventIndex] = ev;
       else events.unshift(ev);
       closeModal('modal-create-event');
@@ -1301,11 +1366,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       document.getElementById('view-ev-name').textContent = ev.name;
       document.getElementById('view-ev-datetime').innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${dateStr} ${ev.time ? '• ' + ev.time : ''}`;
       document.getElementById('view-ev-location-tag').innerHTML = `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg> ${ev.location || 'TBD'}`;
-      document.getElementById('view-ev-hosted').textContent = 'Hosted By ' + (document.getElementById('topbar-title').textContent !== 'Ticket Sales' ? 'You' : 'Host');
+      document.getElementById('view-ev-hosted').textContent = 'Hosted By You';
       document.getElementById('view-ev-desc').textContent = ev.desc;
       document.getElementById('view-ev-tags').innerHTML = ev.tags.map(t => `<span style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);padding:4px 12px;border-radius:20px;font-size:0.72rem;">${t}</span>`).join('');
-      const price = ev.salePrice || ev.price;
-      document.getElementById('view-ev-price').textContent = price === 0 ? 'Free' : '$' + price.toFixed(2);
+
+      // Render ticket tiers
+      const tiersEl = document.getElementById('view-ev-tiers');
+      if (ev.tiers && ev.tiers.length > 0) {
+        tiersEl.innerHTML = ev.tiers.map((t,ti) => `
+          <div onclick="selectTierAndGetTicket(${i},${ti})" style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(192,122,80,0.2)';this.style.borderColor='rgba(192,122,80,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.07)';this.style.borderColor='rgba(255,255,255,0.12)'">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+              <span style="color:#fff;font-weight:700;font-size:0.92rem;">${t.type}</span>
+              <span style="color:var(--brown-light);font-weight:800;font-size:1rem;">${parseFloat(t.price)===0||!t.price?'Free':'$'+parseFloat(t.price).toFixed(2)}</span>
+            </div>
+            ${t.description ? `<div style="color:rgba(255,255,255,0.55);font-size:0.78rem;line-height:1.5;">${t.description}</div>` : ''}
+            ${t.qty ? `<div style="color:rgba(255,255,255,0.3);font-size:0.7rem;margin-top:6px;">${t.qty} available</div>` : ''}
+          </div>
+        `).join('');
+      } else {
+        tiersEl.innerHTML = `<div style="color:rgba(255,255,255,0.4);font-size:0.82rem;">No ticket tiers set</div>`;
+      }
+
+      // Update Get Ticket button
+      const lowestPrice = ev.tiers && ev.tiers.length > 0 ? Math.min(...ev.tiers.map(t=>parseFloat(t.price)||0)) : ev.price || 0;
+      document.getElementById('view-ev-price').textContent = lowestPrice === 0 ? 'Free' : 'From $' + lowestPrice.toFixed(2);
+
       if (ev.coverUrl) { document.getElementById('view-ev-cover').style.backgroundImage = `url(${ev.coverUrl})`; document.getElementById('view-ev-cover').style.backgroundSize = 'cover'; document.getElementById('view-ev-cover').style.backgroundPosition = 'center'; }
       const gallSec = document.getElementById('view-ev-gallery-section');
       if (ev.galleryUrls && ev.galleryUrls.length > 0) {
@@ -1315,16 +1400,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       openModal('modal-view-event');
     }
 
+    function selectTierAndGetTicket(evIdx, tierIdx) {
+      currentEventIndex = evIdx;
+      const ev = events[evIdx];
+      const tier = ev.tiers[tierIdx];
+      // Override price with selected tier
+      ev._selectedTier = tier;
+      openTicketView();
+    }
+
     function openTicketView() {
       const ev = events[currentEventIndex];
       if (!ev) { toast('No event selected'); return; }
+      const tier = ev._selectedTier || (ev.tiers && ev.tiers[0]) || null;
       const dateStr = ev.date ? new Date(ev.date + 'T12:00:00').toLocaleDateString('en-US', {month:'long',day:'numeric',year:'numeric'}) : 'Date TBD';
-      const ticketId = 'TKT-' + ev.id.toString().slice(-6);
-      document.getElementById('ticket-ev-name').textContent = ev.name;
+      const ticketId = 'TKT-' + ev.id.toString().slice(-6) + (tier ? '-' + tier.type.substring(0,2).toUpperCase() : '');
+      document.getElementById('ticket-ev-name').textContent = ev.name + (tier ? ' — ' + tier.type : '');
       document.getElementById('ticket-id-label').textContent = 'Ticket: ' + ticketId;
       document.getElementById('ticket-venue').textContent = ev.location || 'TBD';
       document.getElementById('ticket-datetime').textContent = dateStr + (ev.time ? ' • ' + ev.time : '');
-      const price = ev.salePrice || ev.price;
+      const price = tier ? (parseFloat(tier.price) || 0) : (ev.salePrice || ev.price || 0);
       document.getElementById('ticket-price-label').textContent = price === 0 ? 'Free' : '$' + price.toFixed(2);
       generateQR(ticketId);
       closeModal('modal-view-event');
@@ -1450,19 +1545,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     function editEvent(i) {
       currentEventIndex = i;
       const ev = events[i];
+      ticketTiers = ev.tiers ? ev.tiers.map(t => ({...t})) : [];
       document.getElementById('event-modal-title').textContent = 'Edit Event';
       document.getElementById('ev-name').value = ev.name;
       document.getElementById('ev-type').value = ev.type;
-      document.getElementById('ev-ticket-type').value = ev.ticketType;
       document.getElementById('ev-desc').value = ev.desc;
       document.getElementById('ev-date').value = ev.date;
       document.getElementById('ev-time').value = ev.time;
       document.getElementById('ev-location').value = ev.location;
       document.getElementById('ev-qty').value = ev.qty;
-      document.getElementById('ev-price').value = ev.price;
       document.getElementById('ev-sale-price').value = ev.salePrice || '';
       document.getElementById('ev-tags').value = ev.tags.join(', ');
       if (ev.coverUrl) { const prev = document.getElementById('ev-cover-preview'); prev.style.backgroundImage = `url(${ev.coverUrl})`; prev.style.backgroundSize = 'cover'; prev._coverUrl = ev.coverUrl; }
+      renderTicketTiers();
       openModal('modal-create-event');
     }
 
@@ -1664,6 +1759,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div id="view-ev-gallery-section" style="display:none;margin-bottom:16px;">
             <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;">Gallery</div>
             <div id="view-ev-gallery" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;"></div>
+          </div>
+          <!-- Ticket Tiers -->
+          <div style="margin-bottom:16px;">
+            <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:10px;">Tickets</div>
+            <div id="view-ev-tiers"></div>
           </div>
           <!-- Get Ticket button -->
           <button onclick="openTicketView()" style="width:100%;padding:16px;background:#fff;color:#111;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:800;">Get Ticket (<span id="view-ev-price"></span>)</button>
@@ -1867,6 +1967,7 @@ window.addEventListener('load', function() {
     b.style.transition = 'max-height 0.3s ease';
     b.style.maxHeight = b.scrollHeight + 'px';
   });
+  renderTicketTiers();
 });
 
 // ── SHOWCASE ──────────────────────────────────────────
