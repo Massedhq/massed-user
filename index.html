@@ -2361,26 +2361,38 @@ function setPaymentType(type) {
 function updateSplitPreview() {
   const count = parseInt(document.getElementById('split-count').value) || 2;
   const total = window._cart ? window._cart.total : 0;
-  const perPerson = total / count;
+  const perPerson = total === 0 ? 0 : total / count;
+  const eventName = window._cart && window._cart.ev ? window._cart.ev.name : 'Event';
   document.getElementById('split-per-person').textContent = total===0 ? 'Free each' : `$${perPerson.toFixed(2)} each`;
-  // Generate preview links
-  const links = Array.from({length:count},(_,i)=>{
-    const linkId = 'SPL-'+Date.now().toString().slice(-5)+'-'+(i+1);
-    return `
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;">
-        <div>
-          <div style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:600;">Person ${i+1}</div>
-          <div style="font-family:monospace;font-size:0.68rem;color:rgba(255,255,255,0.3);">pay.massed.io/${linkId}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="color:var(--brown-light);font-weight:700;font-size:0.85rem;">${total===0?'Free':'$'+perPerson.toFixed(2)}</span>
-          <span style="background:rgba(234,179,8,0.15);color:#fbbf24;font-size:0.62rem;font-weight:700;padding:2px 8px;border-radius:20px;">Pending</span>
-        </div>
-      </div>
-    `;
-  }).join('');
+
+  const splitId = 'SPL-' + Math.random().toString(36).substring(2,8).toUpperCase();
+  const payLink = 'pay.massed.io/' + splitId;
+  window._splitData = { count, total, perPerson, splitId, payLink, eventName };
+
   const preview = document.getElementById('split-links-preview');
-  if (preview) { preview.innerHTML = `<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Payment Links</div>${links}`; }
+  if (!preview) return;
+  preview.innerHTML = `
+    <div style="margin-top:14px;">
+      <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:10px;">Payment Card Preview</div>
+      <!-- Card preview -->
+      <div id="split-preview-card" style="background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:14px;padding:18px;margin-bottom:12px;text-align:center;border:1px solid rgba(192,122,80,0.2);">
+        <div style="font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:6px;">Split Payment Request</div>
+        <div style="font-family:'DM Serif Display',serif;color:#fff;font-size:1rem;margin-bottom:3px;">${eventName}</div>
+        <div style="color:var(--brown-light);font-size:0.78rem;font-weight:700;margin-bottom:14px;">${count} people · ${total===0?'Free':'$'+perPerson.toFixed(2)+' each'}</div>
+        <div style="background:#fff;border-radius:10px;padding:10px;display:inline-block;margin-bottom:10px;">
+          <svg id="split-preview-qr" viewBox="0 0 80 80" width="90" height="90" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div style="font-family:monospace;font-size:0.72rem;color:var(--brown-light);font-weight:600;margin-bottom:8px;">${payLink}</div>
+        <div style="font-size:0.65rem;color:rgba(255,255,255,0.3);line-height:1.5;">Scan or click · Enter name, email, phone & pay · Ticket sent when all ${count} pay</div>
+      </div>
+      <!-- Download button in preview -->
+      <button onclick="downloadSplitCard('preview')" style="width:100%;padding:11px;background:rgba(192,122,80,0.15);border:1px solid rgba(192,122,80,0.3);color:var(--brown-light);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Payment Card
+      </button>
+    </div>
+  `;
+  setTimeout(()=>generateQR(payLink,'split-preview-qr'),60);
 }
 
 function goCheckoutStep(step) {
@@ -2417,30 +2429,50 @@ function goCheckoutStep(step) {
       </div>
     `;
 
-    // Show split links in confirm step if split payment
+    // Show split download card in confirm step if split payment
     const splitFinal = document.getElementById('split-links-final');
     if (isSplit && splitFinal) {
       splitFinal.style.display = 'block';
       const count = splitCount;
-      const perP = d.total ? (d.total/count).toFixed(2) : 0;
+      const perP = d.total ? (d.total/count).toFixed(2) : '0.00';
+      const linkId = 'SPL-' + Date.now().toString().slice(-6);
+      const payLink = 'pay.massed.io/' + linkId;
+      window._splitLinkId = linkId;
+      window._splitPayLink = payLink;
+      window._splitPerP = perP;
       splitFinal.innerHTML = `
-        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;margin-bottom:0;">
-          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;">🤝 Split Payment Links</div>
-          ${Array.from({length:count},(_,i)=>{
-            const linkId='SPL-'+Date.now().toString().slice(-5)+'-'+(i+1);
-            return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;margin-bottom:6px;">
-              <div><div style="color:rgba(255,255,255,0.7);font-size:0.8rem;font-weight:600;">Person ${i+1}</div><div style="font-family:monospace;font-size:0.65rem;color:rgba(255,255,255,0.3);">pay.massed.io/${linkId}</div></div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span style="color:var(--brown-light);font-weight:700;font-size:0.85rem;">$${perP}</span>
-                <button onclick="copyPayLink('pay.massed.io/${linkId}')" style="background:rgba(192,122,80,0.2);border:1px solid rgba(192,122,80,0.3);color:var(--brown-light);font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;">Copy</button>
-              </div>
-            </div>`;
-          }).join('')}
-          <div style="margin-top:10px;font-size:0.72rem;color:rgba(255,255,255,0.3);line-height:1.5;">Tickets will be generated automatically once all ${count} payments are received.</div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:16px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;">🤝 Split Payment Card</div>
+
+          <!-- The downloadable card preview -->
+          <div id="split-card-preview" style="background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:16px;padding:20px;margin-bottom:14px;text-align:center;border:1px solid rgba(192,122,80,0.2);">
+            <div style="font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:6px;">Split Payment Request</div>
+            <div style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.1rem;margin-bottom:4px;">${d.ev?d.ev.name:''}</div>
+            <div style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-bottom:16px;">${count} people · $${perP} each</div>
+            <!-- QR Code -->
+            <div style="background:#fff;border-radius:12px;padding:12px;display:inline-block;margin-bottom:12px;">
+              <svg id="split-qr" viewBox="0 0 100 100" width="110" height="110" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+            <div style="font-family:monospace;font-size:0.78rem;color:var(--brown-light);font-weight:600;margin-bottom:6px;">${payLink}</div>
+            <div style="font-size:0.7rem;color:rgba(255,255,255,0.3);line-height:1.5;">Each person scans or clicks the link, enters their name, email, phone and pays $${perP}. Your ticket is sent once all ${count} payments are collected.</div>
+          </div>
+
+          <!-- Actions -->
+          <div style="display:flex;gap:8px;">
+            <button onclick="downloadSplitCard()" style="flex:1;padding:11px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Card
+            </button>
+            <button onclick="copySplitLink()" style="flex:1;padding:11px;background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.1);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;">
+              Copy Link
+            </button>
+          </div>
+          <div style="margin-top:10px;font-size:0.72rem;color:rgba(255,255,255,0.3);line-height:1.5;text-align:center;">Tickets generate automatically once all ${count} payments are received.</div>
         </div>
       `;
-      // Change button text for split
-      document.getElementById('complete-purchase-btn').textContent = 'Send Payment Links';
+      // Generate QR for the split link
+      setTimeout(() => generateQR(payLink, 'split-qr'), 80);
+      document.getElementById('complete-purchase-btn').textContent = 'Generate Payment Card';
     } else if (splitFinal) {
       splitFinal.style.display = 'none';
       document.getElementById('complete-purchase-btn').textContent = 'Complete Purchase';
@@ -2448,22 +2480,119 @@ function goCheckoutStep(step) {
   }
 }
 
-function copyPayLink(link) {
-  navigator.clipboard.writeText('https://'+link).then(()=>toast('✓ Payment link copied!'));
+function copySplitLink() {
+  const link = 'https://' + (window._splitPayLink || 'pay.massed.io/SPL-000000');
+  navigator.clipboard.writeText(link).then(() => toast('✓ Payment link copied!'));
+}
+
+function downloadSplitCard(source) {
+  const d = window._splitData || {};
+  const cart = window._cart || {};
+  const ev = cart.ev || {};
+  const count = d.count || 2;
+  const perP = d.perPerson ? d.perPerson.toFixed(2) : '0.00';
+  const payLink = d.payLink || window._splitPayLink || 'pay.massed.io/SPL-000000';
+  const eventName = d.eventName || ev.name || 'Event';
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 600; canvas.height = 780;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const grad = ctx.createLinearGradient(0,0,0,780);
+  grad.addColorStop(0,'#2d1500'); grad.addColorStop(1,'#1a0a00');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,600,780);
+
+  // Border
+  ctx.strokeStyle = 'rgba(192,122,80,0.4)'; ctx.lineWidth = 1.5;
+  ctx.roundRect ? ctx.roundRect(10,10,580,760,16) : ctx.strokeRect(10,10,580,760);
+  ctx.stroke();
+
+  // Header
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.font = '500 11px monospace'; ctx.textAlign = 'center';
+  ctx.fillText('SPLIT PAYMENT REQUEST', 300, 55);
+
+  // Event name
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 26px Georgia';
+  ctx.fillText(eventName, 300, 100);
+
+  // Split info
+  ctx.fillStyle = '#D4956E';
+  ctx.font = 'bold 17px sans-serif';
+  ctx.fillText(`${count} people  ·  $${perP} each`, 300, 135);
+
+  // QR Code
+  const qrSvg = source === 'preview'
+    ? document.getElementById('split-preview-qr')
+    : (document.getElementById('split-qr') || document.getElementById('split-preview-qr'));
+  const qrSize = 200, qrX = 200, qrY = 165;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(qrX-14, qrY-14, qrSize+28, qrSize+28);
+  if (qrSvg) {
+    const scale = qrSize / 80;
+    qrSvg.querySelectorAll('rect').forEach(r => {
+      const rx = parseFloat(r.getAttribute('x'))*scale + qrX;
+      const ry = parseFloat(r.getAttribute('y'))*scale + qrY;
+      const rw = parseFloat(r.getAttribute('width'))*scale;
+      const rh = parseFloat(r.getAttribute('height'))*scale;
+      ctx.fillStyle = r.getAttribute('fill')==='#fff'?'#fff':'#111';
+      ctx.fillRect(rx,ry,rw,rh);
+    });
+  }
+
+  // Payment link
+  ctx.fillStyle = '#D4956E';
+  ctx.font = 'bold 15px monospace'; ctx.textAlign = 'center';
+  ctx.fillText(payLink, 300, 415);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.setLineDash([6,6]);
+  ctx.beginPath(); ctx.moveTo(50,440); ctx.lineTo(550,440); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Instructions
+  ctx.textAlign = 'left';
+  const steps = [
+    ['1.', 'Scan the QR code or visit the link above'],
+    ['2.', 'Enter your name, email & phone number'],
+    ['3.', `Pay your share: $${perP}`],
+    ['4.', `Your ticket will be sent once all ${count} people have paid`],
+  ];
+  steps.forEach(([num, text], i) => {
+    const y = 476 + i * 48;
+    ctx.fillStyle = i===2?'#D4956E':'rgba(255,255,255,0.25)';
+    ctx.font = 'bold 14px sans-serif'; ctx.fillText(num, 54, y);
+    ctx.fillStyle = i===2?'#D4956E':'rgba(255,255,255,0.6)';
+    ctx.font = '14px sans-serif'; ctx.fillText(text, 80, y);
+  });
+
+  // Footer
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Powered by Massed · massed.io', 300, 755);
+
+  const a = document.createElement('a');
+  a.download = 'split-payment-'+payLink.split('/').pop()+'.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  toast('✓ Payment card downloaded! Share via text or email.');
 }
 
 function completeCheckout() {
   const btn = document.getElementById('complete-purchase-btn');
   const isSplit = paymentType === 'split';
-  btn.textContent = isSplit ? 'Sending links...' : 'Processing...';
+  btn.textContent = isSplit ? 'Generating Card...' : 'Processing...';
   btn.disabled = true;
   setTimeout(() => {
     closeModal('modal-checkout');
     btn.disabled = false;
     if (isSplit) {
-      toast('🤝 Payment links sent! Tickets will generate when all payments are received.');
+      // Auto-download the split card
+      downloadSplitCard();
+      toast('🤝 Payment card ready! Download it and share with your group.');
     } else {
-      // Generate tickets for all cart items
       const cart = window._cart;
       if (cart && cart.ev) {
         cart.ev._selectedCart = cart.cartItems;
@@ -2473,6 +2602,80 @@ function completeCheckout() {
       toast('🎉 Purchase complete! Your tickets are ready.');
     }
   }, 2000);
+}
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 600; canvas.height = 380;
+  const ctx = canvas.getContext('2d');
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, 600, 380);
+  grad.addColorStop(0, '#2d1500'); grad.addColorStop(1, '#1a0a00');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, 600, 380);
+
+  // Border
+  ctx.strokeStyle = 'rgba(192,122,80,0.4)'; ctx.lineWidth = 2;
+  ctx.roundRect ? ctx.roundRect(10,10,580,360,16) : ctx.strokeRect(10,10,580,360);
+  ctx.stroke();
+
+  // Header label
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.font = '500 11px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('SPLIT PAYMENT REQUEST', 300, 44);
+
+  // Event name
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 22px Georgia';
+  ctx.fillText(ev.name || 'Event', 300, 80);
+
+  // Split info
+  ctx.fillStyle = '#D4956E';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.fillText(`${count} people  ·  $${perP} each`, 300, 108);
+
+  // QR placeholder box
+  const qrSvg = document.getElementById('split-qr');
+  const qrSize = 140;
+  const qrX = (600 - qrSize) / 2;
+  const qrY = 130;
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
+  ctx.fillStyle = '#111';
+  if (qrSvg) {
+    qrSvg.querySelectorAll('rect').forEach(r => {
+      const rx = parseInt(r.getAttribute('x')) * 1.4 + qrX;
+      const ry = parseInt(r.getAttribute('y')) * 1.4 + qrY;
+      const rw = parseInt(r.getAttribute('width')) * 1.4;
+      const rh = parseInt(r.getAttribute('height')) * 1.4;
+      ctx.fillStyle = r.getAttribute('fill') === '#fff' ? '#fff' : '#111';
+      ctx.fillRect(rx, ry, rw, rh);
+    });
+  }
+
+  // Payment link
+  ctx.fillStyle = '#D4956E';
+  ctx.font = '600 13px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(payLink, 300, qrY + qrSize + 30);
+
+  // Instructions
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.font = '12px sans-serif';
+  ctx.fillText('Scan or click the link · Enter your name, email, phone & pay your share', 300, qrY + qrSize + 52);
+  ctx.fillText(`Tickets sent to each person once all ${count} payments are collected`, 300, qrY + qrSize + 70);
+
+  // Footer
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  ctx.font = '11px sans-serif';
+  ctx.fillText('Powered by Massed · massed.io', 300, 360);
+
+  // Download
+  const link = document.createElement('a');
+  link.download = 'split-payment-' + (ev.name||'event').replace(/\s+/g,'-').toLowerCase() + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  toast('✓ Payment card downloaded!');
 }
 
 function openTicketViewFromCart() {
