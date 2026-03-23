@@ -1326,7 +1326,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       const basePrice = Math.min(...prices);
       const ticketType = ticketTiers.map(t => t.type).join(', ');
 
-      const onlineLink = document.getElementById('ev-online-link') ? document.getElementById('ev-online-link').value.trim() : '';
+      const onlineLink = type === 'Online' ? updateStreamLink() : '';
       const ev = { id: Date.now(), name, type, ticketType, tiers: [...ticketTiers], desc, date, time, location, onlineLink, qty, sold: 0, price: basePrice, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true };
       if (currentEventIndex !== null) events[currentEventIndex] = ev;
       else events.unshift(ev);
@@ -1487,7 +1487,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                 <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Price</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:800;">${price===0?'Free':'$'+price.toFixed(2)}</div></div>
               </div>
               ${tier&&tier.description?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Includes</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;">${tier.description}</div></div>`:''}
-              ${isOnline&&ev.onlineLink?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Event Access</div><div style="background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);border-radius:8px;padding:10px;"><div style="color:#93c5fd;font-size:0.75rem;margin-bottom:6px;">Enter ticket number <strong>${ticketNum}</strong> to access:</div><a href="${ev.onlineLink}" target="_blank" style="color:#60a5fa;font-size:0.8rem;word-break:break-all;">${ev.onlineLink}</a></div></div>`:''}
+              ${isOnline?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Massed Stream Link</div><div style="background:rgba(192,122,80,0.12);border:1px solid rgba(192,122,80,0.25);border-radius:8px;padding:10px;"><div style="color:rgba(255,255,255,0.5);font-size:0.72rem;margin-bottom:6px;">Enter ticket number <strong style="color:var(--brown-light);">${ticketNum}</strong> to access:</div><div style="color:var(--brown-light);font-family:monospace;font-size:0.78rem;font-weight:600;word-break:break-all;">${ev.onlineLink||'https://stream.massed.io/'+ev.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$\//g,'')}</div></div></div>`:''}
             </div>
           </div>
         `;
@@ -1777,7 +1777,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
           <div class="form-field" style="margin:0;grid-column:1/-1;">
             <label>Event Name</label>
-            <input type="text" id="ev-name" placeholder="e.g. Winter Music Festival 2026">
+            <input type="text" id="ev-name" placeholder="e.g. Winter Music Festival 2026" oninput="if(document.getElementById('ev-type').value==='Online')updateStreamLink()">
           </div>
           <div class="form-field" style="margin:0;">
             <label>Event Type</label>
@@ -1803,16 +1803,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <!-- Online Event Link (shown only for Online type) -->
         <div id="online-link-section" style="display:none;margin-bottom:14px;">
           <div style="background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.05));border:1px solid rgba(192,122,80,0.3);border-radius:12px;padding:16px;">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-              <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Online Event</span>
+              <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Massed Online Event</span>
             </div>
-            <div class="form-field" style="margin-bottom:10px;">
-              <label>Zoom / Stream Link</label>
-              <input type="url" id="ev-online-link" placeholder="https://zoom.us/j/... or your stream link">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Your Stream Link (Auto-Generated)</div>
+            <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2" style="flex-shrink:0;"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              <span id="auto-stream-link" style="font-family:monospace;font-size:0.82rem;color:var(--brown-dark);font-weight:600;">https://stream.massed.io/</span>
+              <button onclick="copyStreamLink()" style="margin-left:auto;padding:5px 12px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;white-space:nowrap;">Copy Link</button>
             </div>
-            <div style="background:rgba(192,122,80,0.1);border-radius:8px;padding:10px;font-size:0.78rem;color:var(--brown-dark);line-height:1.5;">
-              🔒 A unique access link will be auto-generated for each ticket. Attendees enter their ticket number to gain access.
+            <div style="margin-top:10px;background:var(--brown-bg);border-radius:8px;padding:10px;font-size:0.78rem;color:var(--brown-dark);line-height:1.5;">
+              🔒 This link is unique to your event. Attendees must enter their ticket number to gain access. The link activates on your event date.
             </div>
           </div>
         </div>
@@ -2109,10 +2111,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="color:#4ade80;font-weight:700;font-size:1rem;margin-bottom:4px;">Access Granted!</div>
           <div style="color:rgba(255,255,255,0.5);font-size:0.8rem;">Your ticket has been verified</div>
         </div>
-        <a id="online-event-link-btn" href="#" target="_blank" style="display:block;width:100%;padding:14px;background:#fff;color:#111;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:800;text-align:center;text-decoration:none;box-shadow:0 4px 16px rgba(255,255,255,0.15);">
-          🔗 Join Event Now
-        </a>
-        <div style="margin-top:10px;text-align:center;">
+        <div style="background:rgba(192,122,80,0.08);border:1px solid rgba(192,122,80,0.2);border-radius:12px;padding:16px;margin-bottom:14px;text-align:center;">
+          <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;">Your Massed Stream Link</div>
+          <div id="online-stream-link-display" style="font-family:monospace;font-size:0.82rem;color:var(--brown-light);font-weight:600;margin-bottom:14px;word-break:break-all;"></div>
+          <a id="online-event-link-btn" href="#" target="_blank" style="display:block;width:100%;padding:14px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.92rem;font-weight:800;text-align:center;text-decoration:none;box-shadow:0 4px 16px rgba(192,122,80,0.4);">
+            🎥 Enter Stream Now
+          </a>
+        </div>
+        <div style="text-align:center;">
           <button onclick="downloadOnlineLink()" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.78rem;font-family:'DM Sans',sans-serif;">↓ Download event link</button>
         </div>
       </div>
@@ -2230,7 +2236,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 <script>
 // ── ONLINE EVENT FIELD TOGGLE ─────────────────────────
 function toggleOnlineField(val) {
-  document.getElementById('online-link-section').style.display = val === 'Online' ? 'block' : 'none';
+  const section = document.getElementById('online-link-section');
+  section.style.display = val === 'Online' ? 'block' : 'none';
+  if (val === 'Online') updateStreamLink();
+}
+
+function updateStreamLink() {
+  const name = document.getElementById('ev-name').value.trim();
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'my-event';
+  const link = 'https://stream.massed.io/' + slug;
+  const el = document.getElementById('auto-stream-link');
+  if (el) el.textContent = link;
+  return link;
+}
+
+function copyStreamLink() {
+  const link = updateStreamLink();
+  navigator.clipboard.writeText(link).then(() => toast('✓ Stream link copied!'));
 }
 
 // ── CHECKOUT ─────────────────────────────────────────
@@ -2383,13 +2405,16 @@ function processScannedTicket(ticketId, isManual) {
 // ── ONLINE EVENT ACCESS ───────────────────────────────
 function openOnlineAccess(evIdx) {
   const ev = events[evIdx];
+  const streamLink = ev.onlineLink || ('https://stream.massed.io/' + ev.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''));
   document.getElementById('online-ev-name').textContent = ev.name;
   const dateStr = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
   document.getElementById('online-ev-date').textContent = dateStr + (ev.time?' • '+ev.time:'');
   document.getElementById('online-ticket-input').value = '';
   document.getElementById('online-verify-result').style.display = 'none';
   document.getElementById('online-access-granted').style.display = 'none';
-  document.getElementById('online-event-link-btn').href = ev.onlineLink || '#';
+  document.getElementById('online-event-link-btn').href = streamLink;
+  const displayEl = document.getElementById('online-stream-link-display');
+  if (displayEl) displayEl.textContent = streamLink;
   openModal('modal-online-access');
 }
 
