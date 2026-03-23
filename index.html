@@ -787,7 +787,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       if (videos.length === 0) { list.innerHTML = ''; return; }
       list.innerHTML = videos.map((v, i) => `
         <div class="video-card" id="vid-${v.id}">
-          <div class="video-thumb">
+          <div class="video-thumb" onclick="openVideoPlayer(${i})" style="cursor:pointer;">
             <video src="${v.url}" muted preload="metadata"></video>
             <div class="video-thumb-overlay"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#fff"/></svg></div>
           </div>
@@ -796,12 +796,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div class="video-meta">${v.duration} <span class="video-genre-badge">${v.genre}</span></div>
           </div>
           <div class="video-actions">
+            <button class="vid-btn" onclick="openVideoPlayer(${i})" title="View" style="background:var(--brown-bg2);border-color:var(--brown);">
+              <svg viewBox="0 0 24 24" style="stroke:var(--brown);"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
             <button class="vid-btn" onclick="moveVideo(${i},-1)" title="Move up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
             <button class="vid-btn" onclick="moveVideo(${i},1)" title="Move down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
             <button class="vid-btn delete" onclick="deleteVideo(${i})" title="Delete"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
           </div>
         </div>
       `).join('');
+    }
+
+    function openVideoPlayer(index) {
+      const v = videos[index];
+      if (!v) return;
+      const modal = document.getElementById('video-player-modal');
+      const player = document.getElementById('video-player-el');
+      const title = document.getElementById('video-player-title');
+      const genre = document.getElementById('video-player-genre');
+      player.src = v.url;
+      title.textContent = v.title;
+      genre.textContent = v.genre + ' · ' + v.duration;
+      modal.classList.add('open');
+      player.play();
+    }
+
+    function closeVideoPlayer() {
+      const modal = document.getElementById('video-player-modal');
+      const player = document.getElementById('video-player-el');
+      player.pause();
+      player.src = '';
+      modal.classList.remove('open');
     }
 
     function moveVideo(index, dir) {
@@ -820,6 +845,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       toast('Video deleted');
     }
     </script>
+
+    <!-- VIDEO PLAYER MODAL -->
+    <div class="modal-overlay" id="video-player-modal" onclick="if(event.target===this)closeVideoPlayer()">
+      <div onclick="event.stopPropagation()" style="background:#000;border-radius:20px;max-width:680px;width:92%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.8);">
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:#111;">
+          <div>
+            <div id="video-player-title" style="color:#fff;font-weight:700;font-size:0.95rem;"></div>
+            <div id="video-player-genre" style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-top:2px;"></div>
+          </div>
+          <button onclick="closeVideoPlayer()" style="width:34px;height:34px;background:rgba(255,255,255,0.1);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;line-height:1;">✕</button>
+        </div>
+        <!-- Video -->
+        <video id="video-player-el" controls style="width:100%;display:block;max-height:420px;background:#000;"></video>
+      </div>
+    </div>
 
     <!-- REVIEWS -->
     <div id="screen-reviews" class="screen">
