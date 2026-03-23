@@ -1542,16 +1542,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <option>Other</option>
             </select>
           </div>
-          <div class="form-field" style="margin:0;">
-            <label>Ticket Type</label>
-            <select id="ev-ticket-type">
-              <option>General Admission</option>
-              <option>VIP</option>
-              <option>Early Bird</option>
-              <option>Free</option>
-              <option>Donation</option>
-            </select>
+        </div>
+
+        <!-- TICKET TIERS -->
+        <div style="margin-bottom:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Ticket Types & Pricing</div>
+            <button type="button" onclick="addTicketTier()" style="padding:6px 14px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;">+ Add Tier</button>
           </div>
+          <div id="ticket-tiers-list"></div>
         </div>
 
         <!-- Description -->
@@ -1589,18 +1588,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <input type="text" id="ev-location" placeholder="Venue name, city, state">
         </div>
 
-        <!-- Tickets & Pricing -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+        <!-- Total Tickets Available -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
           <div class="form-field" style="margin:0;">
-            <label>Tickets Available</label>
+            <label>Total Tickets Available</label>
             <input type="number" id="ev-qty" placeholder="e.g. 200" min="1">
           </div>
           <div class="form-field" style="margin:0;">
-            <label>Ticket Price</label>
-            <input type="number" id="ev-price" placeholder="0.00" step="0.01" min="0">
-          </div>
-          <div class="form-field" style="margin:0;">
-            <label>Sale Price (Optional)</label>
+            <label>Sale Price (Optional Override)</label>
             <input type="number" id="ev-sale-price" placeholder="0.00" step="0.01" min="0">
           </div>
         </div>
