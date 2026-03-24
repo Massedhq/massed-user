@@ -71,7 +71,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 #screen-livepreview.active{display:flex!important;padding:0!important;}
 
 /* MOBILE FLOATING GO LIVE */
-.float-golive{display:none;position:fixed;bottom:20px;right:20px;z-index:150;padding:13px 20px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;box-shadow:0 4px 20px rgba(192,122,80,0.5);display:none;align-items:center;gap:8px;}
+.float-golive{display:none;position:fixed;bottom:20px;right:20px;z-index:150;padding:13px 20px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;box-shadow:0 4px 20px rgba(192,122,80,0.5);align-items:center;gap:8px;}
 @media(max-width:768px){
   .float-golive{display:flex;}
 }
@@ -361,7 +361,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div class="user-handle">massed.io/username</div>
       </div>
     </div>
-    <div class="bottom-btns">
+    <div class="bottom-btns desktop-golive">
       <button class="btn-golive" onclick="openGoLive()">
         Go Live
         <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;"><circle cx="12" cy="12" r="3" fill="#fff"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
@@ -1757,7 +1757,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <h2 class="section-title">Ticket Scanner</h2>
         <p class="section-sub">Scan QR codes at the door or manually verify ticket numbers</p>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;">
+      <div style="display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:28px;">
 
         <!-- Camera Scanner -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
