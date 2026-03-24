@@ -61,7 +61,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .link-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
 .btn-logout{padding:8px 16px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;}
 .btn-logout:hover{background:var(--brown-dark);}
-.content{flex:1;overflow-y:auto;}
+.content{flex:1;overflow-y:auto;min-height:0;}
 .content::-webkit-scrollbar{width:5px;}
 .content::-webkit-scrollbar-thumb{background:var(--cream3);border-radius:3px;}
 
@@ -89,12 +89,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   :root{--sidebar-w:280px;}
   .sidebar{transform:translateX(-100%);transition:transform 0.3s ease;z-index:200;}
   .sidebar.open{transform:translateX(0);}
-  .main{margin-left:0;width:100%;}
-  .topbar{padding:0 16px;}
+  .main{margin-left:0;width:100%;height:100vh;overflow:hidden;}
+  .content{flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;}
+  .topbar{padding:0 16px;flex-shrink:0;}
   .hamburger{display:flex !important;}
   .link-badge{display:none;}
   .btn-logout{padding:7px 12px;font-size:0.78rem;}
-  .float-golive{display:none !important;}
 
   /* Screens */
   .screen{padding:20px 16px;}
@@ -269,9 +269,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .lba-btn{padding:8px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;border:none;}
 
 /* LIVE PREVIEW */
-#screen-livepreview{background:#111;min-height:calc(100vh - 60px);}
-.lp-left{flex:1;display:flex;align-items:center;justify-content:center;padding:30px;}
-.lp-right{width:320px;background:#1a1a1a;border-left:1px solid #333;display:flex;flex-direction:column;overflow-y:auto;padding:24px;}
+#screen-livepreview{background:#111;height:100%;min-height:calc(100vh - 60px);}
+.lp-left{flex:1;display:flex;align-items:center;justify-content:center;padding:30px;overflow-y:auto;}
+.lp-right{width:320px;background:#1a1a1a;border-left:1px solid #333;display:flex;flex-direction:column;overflow-y:auto;padding:24px;height:100%;}
 .phone-frame{width:280px;height:560px;background:#000;border-radius:40px;border:8px solid #2a2a2a;position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
 .phone-status{height:28px;background:#000;display:flex;align-items:center;justify-content:space-between;padding:0 18px;}
 .phone-status span{color:#fff;font-size:0.6rem;font-weight:700;}
