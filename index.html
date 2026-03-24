@@ -22,7 +22,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .sidebar-logo{padding:18px 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .logo-mark{width:36px;height:36px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:1rem;}
 .logo-name{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--text);}
-.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0 16px;scrollbar-width:none;min-height:0;-webkit-overflow-scrolling:touch;}
+.sidebar-nav{flex:1;overflow-y:scroll;padding:12px 0 20px;scrollbar-width:none;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 .sidebar-nav::-webkit-scrollbar{display:none;}
 .sidebar-bottom{border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0;background:#fff;}
 .nav-section-label{font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);padding:14px 20px 4px;}
@@ -40,7 +40,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .nav-group-body{overflow:hidden;transition:max-height 0.3s ease;}
 
 /* SIDEBAR BOTTOM */
-.sidebar-bottom{border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0;}
 .user-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--cream);margin-bottom:10px;}
 .user-avatar{width:36px;height:36px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.9rem;flex-shrink:0;}
 .user-name{font-size:0.85rem;font-weight:600;color:var(--text);}
