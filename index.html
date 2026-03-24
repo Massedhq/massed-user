@@ -19,10 +19,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* SIDEBAR */
 .sidebar{width:var(--sidebar-w);height:100vh;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:fixed;left:0;top:0;z-index:100;overflow:hidden;}
-.sidebar-logo{padding:18px 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.sidebar-logo{padding:18px 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .logo-mark{width:36px;height:36px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:1rem;}
 .logo-name{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--text);}
-.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0;scrollbar-width:none;min-height:0;}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0 16px;scrollbar-width:none;min-height:0;-webkit-overflow-scrolling:touch;}
 .sidebar-nav::-webkit-scrollbar{display:none;}
 .sidebar-bottom{border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0;background:#fff;}
 .nav-section-label{font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);padding:14px 20px 4px;}
@@ -70,10 +70,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .screen.active{display:block;}
 #screen-livepreview.active{display:flex!important;padding:0!important;}
 
-/* MOBILE FLOATING GO LIVE — removed, now in sidebar */
-@media(max-width:768px){
-  #sidebar-golive-btn{display:flex !important;}
-}
+/* MOBILE FLOATING GO LIVE — removed, Go Live is in sidebar-bottom */
 /* HAMBURGER — hidden on desktop, flex on mobile */
 .hamburger{width:40px;height:40px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;padding:0;}
 .hamburger svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:2;}
@@ -352,11 +349,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-item" onclick="nav(this,'scanner')"><svg viewBox="0 0 24 24"><path d="M3 9V5a2 2 0 012-2h4"/><path d="M15 3h4a2 2 0 012 2v4"/><path d="M21 15v4a2 2 0 01-2 2h-4"/><path d="M9 21H5a2 2 0 01-2-2v-4"/><line x1="3" y1="12" x2="21" y2="12"/></svg>Scanner</div>
 
     <div class="nav-section-label">System</div>
-    <!-- Go Live button — mobile sidebar only -->
-    <div id="sidebar-golive-btn" onclick="openGoLive();closeSidebar();" style="display:none;margin:6px 14px 10px;padding:13px 18px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border-radius:50px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;align-items:center;gap:8px;justify-content:center;box-shadow:0 3px 14px rgba(192,122,80,0.4);">
-      <span style="width:9px;height:9px;background:#fff;border-radius:50%;display:inline-block;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></span>
-      Go Live
-    </div>
     <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Settings</div>
   </nav>
   <div class="sidebar-bottom">
