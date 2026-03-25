@@ -18,13 +18,13 @@
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);height:100vh;display:flex;overflow:hidden;}
 
 /* SIDEBAR */
-.sidebar{width:var(--sidebar-w);height:100vh;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:fixed;left:0;top:0;z-index:100;}
+.sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--border);position:fixed;left:0;top:0;bottom:0;z-index:100;display:flex;flex-direction:column;overflow:hidden;}
 .sidebar-logo{padding:18px 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .logo-mark{width:36px;height:36px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:1rem;}
 .logo-name{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--text);}
-.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0 8px;scrollbar-width:none;}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0 8px;scrollbar-width:none;min-height:0;}
 .sidebar-nav::-webkit-scrollbar{display:none;}
-.sidebar-bottom{border-top:1px solid var(--border);padding:14px 16px;background:#fff;}
+.sidebar-bottom{border-top:1px solid var(--border);padding:14px 16px;background:#fff;flex-shrink:0;}
 .nav-section-label{font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);padding:14px 20px 4px;}
 .nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:0.88rem;font-weight:500;color:var(--text-mid);transition:all 0.2s;position:relative;}
 .nav-item:hover{background:var(--brown-bg);color:var(--text);}
@@ -83,22 +83,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   body{overflow:hidden;}
   :root{--sidebar-w:280px;}
 
-  /* Sidebar scrolls as ONE unit on mobile — nav + bottom together */
+  /* On mobile, the entire sidebar scrolls as ONE list top to bottom */
   .sidebar{
     transform:translateX(-100%);
     transition:transform 0.3s ease;
     z-index:200;
+    display:block;
     overflow-y:auto;
     overflow-x:hidden;
     -webkit-overflow-scrolling:touch;
-    display:block;
-    height:100vh;
-    padding-bottom:env(safe-area-inset-bottom, 20px);
+    height:100%;
   }
   .sidebar.open{transform:translateX(0);}
-  .sidebar-logo{position:sticky;top:0;background:#fff;z-index:10;}
-  .sidebar-nav{overflow-y:visible;flex:none;}
-  .sidebar-bottom{position:static;margin-top:8px;}
+  .sidebar-logo{position:sticky;top:0;z-index:5;background:#fff;}
+  .sidebar-nav{display:block;overflow:visible;height:auto;flex:none;min-height:0;}
+  .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;}
 
   .main{margin-left:0;width:100%;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
   .content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
@@ -364,6 +363,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-item" onclick="nav(this,'scanner')"><svg viewBox="0 0 24 24"><path d="M3 9V5a2 2 0 012-2h4"/><path d="M15 3h4a2 2 0 012 2v4"/><path d="M21 15v4a2 2 0 01-2 2h-4"/><path d="M9 21H5a2 2 0 01-2-2v-4"/><line x1="3" y1="12" x2="21" y2="12"/></svg>Scanner</div>
 
     <div class="nav-section-label">System</div>
+    <div class="nav-item" onclick="nav(this,'livepreview')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/></svg>Live Preview</div>
     <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Settings</div>
   </nav>
   <div class="sidebar-bottom">
