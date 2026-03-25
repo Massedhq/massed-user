@@ -1331,8 +1331,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       document.getElementById('ev-date').value = '';
       document.getElementById('ev-time').value = '';
       document.getElementById('ev-location').value = '';
-      document.getElementById('ev-qty').value = '';
-      document.getElementById('ev-sale-price').value = '';
+      if(document.getElementById('ev-qty'))document.getElementById('ev-qty').value = '';
+      if(document.getElementById('ev-sale-price'))document.getElementById('ev-sale-price').value = '';
       document.getElementById('ev-tags').value = '';
       document.getElementById('ev-gallery-previews').innerHTML = '';
       document.getElementById('ev-cover-preview').innerHTML = '<input type="file" id="ev-cover-input" accept="image/*" style="display:none" onchange="handleEventCover(event)"><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><div style="font-size:0.82rem;color:var(--text-dim);margin-top:10px;">Click to upload cover image</div>';
@@ -1384,8 +1384,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       const date = document.getElementById('ev-date').value;
       const time = document.getElementById('ev-time').value;
       const location = document.getElementById('ev-location').value.trim();
-      const qty = parseInt(document.getElementById('ev-qty').value) || 0;
-      const salePrice = parseFloat(document.getElementById('ev-sale-price').value) || null;
+      const qty = 0;
+      const salePrice = null;
       const tagsRaw = document.getElementById('ev-tags').value;
       const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
       const coverUrl = document.getElementById('ev-cover-preview')._coverUrl || null;
@@ -1764,8 +1764,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       document.getElementById('ev-date').value = ev.date;
       document.getElementById('ev-time').value = ev.time;
       document.getElementById('ev-location').value = ev.location;
-      document.getElementById('ev-qty').value = ev.qty;
-      document.getElementById('ev-sale-price').value = ev.salePrice || '';
+      // qty field removed
+      // salePrice field removed
       document.getElementById('ev-tags').value = ev.tags.join(', ');
       if (ev.coverUrl) { const prev = document.getElementById('ev-cover-preview'); prev.style.backgroundImage = `url(${ev.coverUrl})`; prev.style.backgroundSize = 'cover'; prev._coverUrl = ev.coverUrl; }
       renderTicketTiers();
@@ -1965,10 +1965,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Massed Online Event</span>
             </div>
             <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Your Stream Link (Auto-Generated)</div>
-            <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+            <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:10px 12px;overflow:hidden;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2" style="flex-shrink:0;"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-              <span id="auto-stream-link" style="font-family:monospace;font-size:0.82rem;color:var(--brown-dark);font-weight:600;">https://stream.massed.io/</span>
-              <button onclick="copyStreamLink()" style="margin-left:auto;padding:5px 12px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;white-space:nowrap;">Copy Link</button>
+              <span id="auto-stream-link" style="font-family:monospace;font-size:0.78rem;color:var(--brown-dark);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0;">https://stream.massed.io/</span>
+              <button onclick="copyStreamLink()" style="flex-shrink:0;padding:5px 10px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;white-space:nowrap;">Copy</button>
             </div>
             <div style="margin-top:10px;background:var(--brown-bg);border-radius:8px;padding:10px;font-size:0.78rem;color:var(--brown-dark);line-height:1.5;">
               🔒 This link is unique to your event. Attendees must enter their ticket number to gain access. The link activates on your event date.
@@ -2017,19 +2017,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <input type="radio" name="ev-loc-type" value="after" onchange="toggleLocationField(this)" style="accent-color:var(--brown);"> Sent After Purchase
             </label>
           </div>
-          <input type="text" id="ev-location" placeholder="Venue name, city, state">
-        </div>
-
-        <!-- Total Tickets Available -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
-          <div class="form-field" style="margin:0;">
-            <label>Total Tickets Available</label>
-            <input type="number" id="ev-qty" placeholder="e.g. 200" min="1">
-          </div>
-          <div class="form-field" style="margin:0;">
-            <label>Sale Price (Optional Override)</label>
-            <input type="number" id="ev-sale-price" placeholder="0.00" step="0.01" min="0">
-          </div>
+          <input type="text" id="ev-location" placeholder="Venue name, city, state" style="width:100%;box-sizing:border-box;">
         </div>
 
         <!-- Delivery Method -->
