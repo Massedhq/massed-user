@@ -353,7 +353,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div class="nav-item" onclick="nav(this,'mediaprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Media Profile</div>
       <div class="nav-item" onclick="nav(this,'sociallinks')"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Social Links</div>
       <div class="nav-item" onclick="nav(this,'video')"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Promo Codes</div>
+      <div class="nav-item" onclick="nav(this,'promo')"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Promo / Referrals / Affiliates</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>Favicon & Branding</div>
     </div>
 
@@ -1903,6 +1903,323 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 }
     </style>
 
+    <!-- PROMO / REFERRALS / AFFILIATES -->
+    <div id="screen-promo" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Promo / Referrals / Affiliates</h2>
+        <p class="section-sub">Create and manage promo codes, referral links, and affiliate partnerships</p>
+      </div>
+
+      <!-- TAB SWITCHER -->
+      <div style="display:flex;gap:0;background:var(--cream2);border-radius:12px;padding:4px;margin-bottom:28px;width:fit-content;">
+        <button onclick="switchPromoTab('promo')" id="ptab-promo" style="padding:9px 22px;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;background:var(--brown);color:#fff;transition:all 0.2s;">Promo Codes</button>
+        <button onclick="switchPromoTab('referral')" id="ptab-referral" style="padding:9px 22px;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:transparent;color:var(--text-mid);transition:all 0.2s;">Referrals</button>
+        <button onclick="switchPromoTab('affiliate')" id="ptab-affiliate" style="padding:9px 22px;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:transparent;color:var(--text-mid);transition:all 0.2s;">Affiliates</button>
+      </div>
+
+      <!-- PROMO CODES TAB -->
+      <div id="promoTab-promo">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);">Your Promo Codes</div>
+          <button onclick="openPromoForm('promo')" style="padding:10px 18px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;box-shadow:0 2px 10px rgba(192,122,80,0.3);">+ Create Promo Code</button>
+        </div>
+        <div id="promo-list"><div style="text-align:center;padding:40px;color:var(--text-dim);font-size:0.88rem;background:#fff;border-radius:14px;border:1.5px dashed var(--border);">No promo codes yet. Create your first one!</div></div>
+      </div>
+
+      <!-- REFERRALS TAB -->
+      <div id="promoTab-referral" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);">Your Referral Links</div>
+          <button onclick="openPromoForm('referral')" style="padding:10px 18px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;box-shadow:0 2px 10px rgba(192,122,80,0.3);">+ Create Referral</button>
+        </div>
+        <div id="referral-list"><div style="text-align:center;padding:40px;color:var(--text-dim);font-size:0.88rem;background:#fff;border-radius:14px;border:1.5px dashed var(--border);">No referrals yet. Create your first one!</div></div>
+      </div>
+
+      <!-- AFFILIATES TAB -->
+      <div id="promoTab-affiliate" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);">Your Affiliates</div>
+          <button onclick="openPromoForm('affiliate')" style="padding:10px 18px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;box-shadow:0 2px 10px rgba(192,122,80,0.3);">+ Create Affiliate</button>
+        </div>
+        <div id="affiliate-list"><div style="text-align:center;padding:40px;color:var(--text-dim);font-size:0.88rem;background:#fff;border-radius:14px;border:1.5px dashed var(--border);">No affiliates yet. Create your first one!</div></div>
+      </div>
+    </div>
+
+    <!-- PROMO CREATE/EDIT MODAL -->
+    <div class="modal-overlay" id="modal-promo-form">
+      <div onclick="event.stopPropagation()" class="modal" style="max-width:560px;margin:auto;max-height:92vh;overflow-y:auto;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h2 class="modal-title" style="margin:0;" id="promo-form-title">Create Promo Code</h2>
+          <button onclick="closeModal('modal-promo-form')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+
+        <input type="hidden" id="promo-form-type">
+        <input type="hidden" id="promo-edit-id">
+
+        <!-- Person Info -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Contact Info</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-field" style="margin:0;">
+              <label>First Name</label>
+              <input type="text" id="pf-firstname" placeholder="First name">
+            </div>
+            <div class="form-field" style="margin:0;">
+              <label>Last Name</label>
+              <input type="text" id="pf-lastname" placeholder="Last name">
+            </div>
+          </div>
+          <div class="form-field" style="margin-top:12px;margin-bottom:0;">
+            <label>Email Address</label>
+            <input type="email" id="pf-email" placeholder="email@example.com">
+          </div>
+          <div class="form-field" style="margin-top:12px;margin-bottom:0;">
+            <label>Phone Number <span style="color:var(--text-dim);font-weight:400;">(Optional)</span></label>
+            <input type="tel" id="pf-phone" placeholder="+1 (555) 000-0000">
+          </div>
+        </div>
+
+        <!-- Social Media -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Social Media Handle</div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <!-- Custom icon dropdown -->
+            <div style="position:relative;flex-shrink:0;" id="platform-picker-wrap">
+              <input type="hidden" id="pf-social-platform" value="instagram">
+              <button type="button" onclick="togglePlatformPicker()" id="platform-picker-btn"
+                style="width:52px;height:42px;background:#fff;border:1px solid var(--border);border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;padding:0 8px;">
+                <span id="platform-selected-icon" style="display:flex;align-items:center;justify-content:center;width:24px;height:24px;"></span>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--text-mid)" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div id="platform-picker-dropdown"
+                style="display:none;position:absolute;top:48px;left:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:400;padding:8px;width:220px;">
+                <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;" id="platform-grid"></div>
+              </div>
+            </div>
+            <input type="text" id="pf-social-handle" placeholder="@yourhandle" style="flex:1;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;">
+          </div>
+        </div>
+
+        <!-- Message Box -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);">Welcome Message</div>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.78rem;font-weight:600;color:var(--text-mid);">
+              <input type="checkbox" id="pf-send-email" style="accent-color:var(--brown);"> Send via Email
+            </label>
+          </div>
+          <textarea id="pf-message" style="width:100%;padding:12px;background:#fff;border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;resize:vertical;min-height:110px;box-sizing:border-box;"></textarea>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:6px;">✏️ Edit the message above or leave as-is. Check "Send via Email" to also deliver this by email.</div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" onclick="closeModal('modal-promo-form')">Cancel</button>
+          <button class="btn-confirm" onclick="savePromoEntry()">Generate Link & QR →</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+    .promo-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;}
+    .promo-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;}
+    .promo-card-name{font-weight:700;font-size:1rem;color:var(--text);}
+    .promo-card-email{font-size:0.78rem;color:var(--text-dim);margin-top:2px;}
+    .promo-card-body{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;}
+    .promo-link-box{background:var(--cream);border-radius:10px;padding:12px;font-family:monospace;font-size:0.78rem;color:var(--brown-dark);font-weight:600;word-break:break-all;border:1px solid var(--border);}
+    .promo-qr{width:90px;height:90px;background:var(--cream2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);overflow:hidden;}
+    .promo-usage{display:inline-flex;align-items:center;gap:6px;background:var(--brown-bg2);color:var(--brown-dark);border-radius:20px;padding:4px 12px;font-size:0.75rem;font-weight:700;margin-top:10px;}
+    .promo-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+    .promo-btn{padding:8px 14px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:700;border:none;}
+    </style>
+
+    <script>
+    let promoData = {promo:[], referral:[], affiliate:[]};
+    let currentPromoTab = 'promo';
+
+    function switchPromoTab(tab) {
+      currentPromoTab = tab;
+      ['promo','referral','affiliate'].forEach(t => {
+        document.getElementById('promoTab-' + t).style.display = t === tab ? 'block' : 'none';
+        const btn = document.getElementById('ptab-' + t);
+        if (t === tab) { btn.style.background = 'var(--brown)'; btn.style.color = '#fff'; btn.style.fontWeight = '700'; }
+        else { btn.style.background = 'transparent'; btn.style.color = 'var(--text-mid)'; btn.style.fontWeight = '600'; }
+      });
+    }
+
+    const typeLabel = {promo:'Promo Code', referral:'Referral Link', affiliate:'Affiliate Link'};
+
+    function openPromoForm(type, editId) {
+      const t = type || currentPromoTab;
+      document.getElementById('promo-form-type').value = t;
+      document.getElementById('promo-edit-id').value = editId !== undefined ? editId : '';
+      document.getElementById('promo-form-title').textContent = (editId !== undefined ? 'Edit ' : 'Create ') + typeLabel[t];
+
+      if (editId !== undefined) {
+        const entry = promoData[t][editId];
+        document.getElementById('pf-firstname').value = entry.firstname || '';
+        document.getElementById('pf-lastname').value = entry.lastname || '';
+        document.getElementById('pf-email').value = entry.email || '';
+        document.getElementById('pf-phone').value = entry.phone || '';
+        document.getElementById('pf-social-platform').value = entry.platform || 'instagram';
+        document.getElementById('pf-social-handle').value = entry.handle || '';
+        document.getElementById('pf-message').value = entry.message || '';
+        document.getElementById('pf-send-email').checked = entry.sendEmail || false;
+        setTimeout(() => { buildPlatformPicker(); selectPlatform(entry.platform || 'instagram'); }, 30);
+      } else {
+        document.getElementById('pf-firstname').value = '';
+        document.getElementById('pf-lastname').value = '';
+        document.getElementById('pf-email').value = '';
+        document.getElementById('pf-phone').value = '';
+        document.getElementById('pf-social-platform').value = 'instagram';
+        document.getElementById('pf-social-handle').value = '';
+        document.getElementById('pf-send-email').checked = false;
+        setTimeout(() => { buildPlatformPicker(); }, 30);
+        const lbl = typeLabel[t];
+        document.getElementById('pf-message').value =
+          `Welcome! 🎉\n\nHere is your ${lbl}:\n[LINK]\n\nPlease save and share this link with your audience. Every successful transaction through your link is tracked automatically.\n\nThank you for partnering with us!`;
+      }
+      openModal('modal-promo-form');
+    }
+
+    function savePromoEntry() {
+      const t = document.getElementById('promo-form-type').value;
+      const firstname = document.getElementById('pf-firstname').value.trim();
+      const lastname = document.getElementById('pf-lastname').value.trim();
+      const email = document.getElementById('pf-email').value.trim();
+      if (!firstname || !lastname) { toast('Please enter a full name'); return; }
+      if (!email) { toast('Please enter an email address'); return; }
+
+      const editId = document.getElementById('promo-edit-id').value;
+      const slug = (firstname + '-' + lastname).toLowerCase().replace(/[^a-z0-9]+/g,'-');
+      const link = 'https://massed.io/r/' + slug + '-' + Math.random().toString(36).substr(2,5);
+
+      const entry = {
+        firstname, lastname, email,
+        phone: document.getElementById('pf-phone').value.trim(),
+        platform: document.getElementById('pf-social-platform').value,
+        handle: document.getElementById('pf-social-handle').value.trim(),
+        message: document.getElementById('pf-message').value,
+        sendEmail: document.getElementById('pf-send-email').checked,
+        link: editId !== '' ? promoData[t][editId].link : link,
+        uses: editId !== '' ? promoData[t][editId].uses : 0,
+        type: t
+      };
+
+      if (editId !== '') { promoData[t][editId] = entry; }
+      else { promoData[t].push(entry); }
+
+      renderPromoList(t);
+      closeModal('modal-promo-form');
+      toast('✓ ' + typeLabel[t] + ' saved' + (entry.sendEmail ? ' & email queued' : ''));
+    }
+
+    function deletePromoEntry(t, idx) {
+      if (!confirm('Delete this entry?')) return;
+      promoData[t].splice(idx, 1);
+      renderPromoList(t);
+      toast('Entry deleted');
+    }
+
+    const platformIcons = {
+      instagram: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="ig1" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="5.5" fill="url(#ig1)"/><rect x="2" y="2" width="20" height="20" rx="5.5" fill="none" stroke="none"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.1" fill="#fff"/></svg>`,
+      tiktok: `<svg viewBox="0 0 24 24" width="22" height="22" fill="#010101" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#010101"/><path d="M19.59 8.19a4.83 4.83 0 01-3.77-4.25V3.5h-2.95v11.67a2.47 2.47 0 01-2.47 2.13 2.47 2.47 0 01-2.47-2.47 2.47 2.47 0 012.47-2.47c.24 0 .46.04.67.09V9.5a5.72 5.72 0 00-.67-.04 5.72 5.72 0 00-5.72 5.72 5.72 5.72 0 005.72 5.72 5.72 5.72 0 005.71-5.72V9.35a8.18 8.18 0 004.78 1.52V7.94a4.85 4.85 0 01-1.3-.25z" fill="#fff"/><path d="M17.59 7.19a3.83 3.83 0 002.77 1.75V6.19a4.83 4.83 0 01-2.77-1v2z" fill="#fe2c55"/><path d="M14.87 15.18a2.47 2.47 0 01-2.47 2.12 2.47 2.47 0 01-2.47-2.47 2.47 2.47 0 012.47-2.47c.24 0 .46.04.67.09V9.5a5.72 5.72 0 00-.67-.04 5.72 5.72 0 00-5.72 5.72 5.72 5.72 0 005.72 5.72 5.72 5.72 0 005.71-5.72V9.35a8.18 8.18 0 004.78 1.52V7.94a4.83 4.83 0 01-3.77-4.25V2h-2.95v13.17z" fill="#69c9d0"/></svg>`,
+      youtube: `<svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#FF0000"/><path d="M20.5 8.2s-.2-1.4-.8-2c-.8-.8-1.7-.8-2.1-.9C15.3 5.1 12 5.1 12 5.1s-3.3 0-5.6.2c-.4.1-1.3.1-2.1.9-.6.6-.8 2-.8 2S3.3 9.8 3.3 11.4v1.5c0 1.5.2 3.1.2 3.1s.2 1.4.8 2c.8.8 1.8.8 2.3.8C8 19 12 19 12 19s3.3 0 5.6-.2c.4-.1 1.3-.1 2.1-.9.6-.6.8-2 .8-2s.2-1.6.2-3.1v-1.5c0-1.5-.2-3.1-.2-3.1z" fill="#fff"/><polygon points="10,8.5 10,15.5 16,12" fill="#FF0000"/></svg>`,
+      twitter: `<svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#000"/><path d="M17.53 4.5h2.47l-5.4 6.17L21 19.5h-4.97l-3.9-5.1-4.46 5.1H5.2l5.78-6.61L3.5 4.5h5.1l3.52 4.65L17.53 4.5zm-.87 13.5h1.37L7.45 5.9H6l10.66 12.1z" fill="#fff"/></svg>`,
+      facebook: `<svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#1877F2"/><path d="M16.5 12H14v8h-3.3v-8H9V9.2h1.7V7.5C10.7 5.6 11.8 4.5 13.9 4.5c.9 0 1.9.1 2.8.3v2.8h-1.6c-.8 0-1.1.4-1.1 1.1v1.5H16.8L16.5 12z" fill="#fff"/></svg>`,
+      pinterest: `<svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#E60023"/><path d="M12 2.5C6.75 2.5 2.5 6.75 2.5 12c0 3.9 2.3 7.3 5.7 8.9-.1-.7-.1-1.8.1-2.6.2-.7 1.3-5.5 1.3-5.5s-.3-.7-.3-1.7c0-1.6.9-2.8 2.3-2.8 1.1 0 1.6.8 1.6 1.8 0 1.1-.7 2.7-1 4.1-.3 1.2.6 2.2 1.8 2.2 2.1 0 3.7-2.2 3.7-5.4 0-2.8-2-4.8-4.9-4.8-3.3 0-5.3 2.5-5.3 5 0 1 .4 2 .9 2.6.1.1.1.2.1.3-.1.4-.3 1.2-.3 1.4 0 .2-.1.3-.3.2-1.5-.7-2.4-2.9-2.4-4.7 0-3.8 2.8-7.3 8-7.3 4.2 0 7.5 3 7.5 7 0 4.2-2.6 7.5-6.3 7.5-1.2 0-2.4-.6-2.8-1.4l-.8 2.9c-.3 1.1-.9 2.1-1.5 2.9.5.2 1.1.2 1.6.2C17.25 21.5 21.5 17.25 21.5 12S17.25 2.5 12 2.5z" fill="#fff"/></svg>`,
+      linkedin: `<svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#0A66C2"/><path d="M7 9.5H4.5v9H7v-9zM5.75 8.25a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm13.75 10.25h-2.5v-4.4c0-1.05-.02-2.4-1.46-2.4-1.46 0-1.69 1.14-1.69 2.32v4.48H11.5v-9H14v1.23h.04c.34-.65 1.18-1.34 2.42-1.34 2.59 0 3.07 1.7 3.07 3.92v5.19z" fill="#fff"/></svg>`,
+      amazon: `<svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#FF9900"/><path d="M14.5 13.5c-2.8 1.5-5.8.6-7.5-1.5 0 0 4.5 3 9-.5 0 0-1-1-1.5-2H14c-.3.8-.8 2.4 0 2.5z" fill="#fff"/><path d="M16 14.5c.5.2 1.3.6 1.5 1.5-2 1-4 1.5-6 1.5s-4-.5-5.5-1.5c.5-.5 1-.8 1.5-1 1.5 1.5 5.5 2 8.5-.5z" fill="#fff"/><path d="M6.5 9C6.8 7.5 8 6.5 9.5 6.5c2.5 0 3.5 2 3.5 4.5H9c.2-1 .5-1.5 1-2H8.5c-.5.5-.8 1.2-1 2H6.5C6.3 10.3 6.3 9.6 6.5 9z" fill="#fff"/></svg>`,
+      twitch: `<svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="5" fill="#9146FF"/><path d="M5 3.5L3.5 7v12H8v2.5h2.5L13 19h3.5l5-5V3.5H5zm14 11l-3 3h-3.5l-2.5 2.5V17.5H7V5.5h12V14.5z" fill="#fff"/><rect x="14" y="8" width="1.5" height="4.5" fill="#fff"/><rect x="10" y="8" width="1.5" height="4.5" fill="#fff"/></svg>`,
+      other: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--brown)" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>`
+    };
+
+    const platformNames = {instagram:'Instagram',tiktok:'TikTok',youtube:'YouTube',twitter:'X / Twitter',facebook:'Facebook',pinterest:'Pinterest',linkedin:'LinkedIn',amazon:'Amazon',twitch:'Twitch',other:'Other'};
+
+    function buildPlatformPicker() {
+      const grid = document.getElementById('platform-grid');
+      if (!grid) return;
+      grid.innerHTML = Object.keys(platformIcons).map(key => `
+        <button type="button" title="${platformNames[key]}"
+          onclick="selectPlatform('${key}')"
+          style="width:36px;height:36px;background:none;border:1px solid transparent;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;"
+          onmouseover="this.style.background='var(--cream2)';this.style.borderColor='var(--border)'"
+          onmouseout="this.style.background='none';this.style.borderColor='transparent'">
+          ${platformIcons[key]}
+        </button>`).join('');
+      selectPlatform('instagram');
+    }
+
+    function selectPlatform(key) {
+      document.getElementById('pf-social-platform').value = key;
+      document.getElementById('platform-selected-icon').innerHTML = platformIcons[key];
+      document.getElementById('platform-picker-dropdown').style.display = 'none';
+    }
+
+    function togglePlatformPicker() {
+      const dd = document.getElementById('platform-picker-dropdown');
+      dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.addEventListener('click', function(e) {
+      const wrap = document.getElementById('platform-picker-wrap');
+      if (wrap && !wrap.contains(e.target)) {
+        const dd = document.getElementById('platform-picker-dropdown');
+        if (dd) dd.style.display = 'none';
+      }
+    });
+
+    // Init picker when promo modal opens
+    const _origOpenModal = window.openModal;
+    window.openModal = function(id) {
+      _origOpenModal(id);
+      if (id === 'modal-promo-form') { buildPlatformPicker(); }
+    };
+
+    function renderPromoList(t) {
+      const container = document.getElementById(t + '-list');
+      if (!promoData[t].length) {
+        container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:0.88rem;background:#fff;border-radius:14px;border:1.5px dashed var(--border);">No ' + typeLabel[t].toLowerCase() + 's yet. Create your first one!</div>';
+        return;
+      }
+      container.innerHTML = promoData[t].map((e, i) => `
+        <div class="promo-card">
+          <div class="promo-card-header">
+            <div>
+              <div class="promo-card-name">${e.firstname} ${e.lastname}</div>
+              <div class="promo-card-email">${e.email}${e.phone ? ' · ' + e.phone : ''}${e.handle ? ' <span style="display:inline-flex;align-items:center;gap:4px;vertical-align:middle;">' + platformIcons[e.platform] + ' ' + e.handle + '</span>' : ''}</div>
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0;">
+              <button class="promo-btn" onclick="openPromoForm('${t}',${i})" style="background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);">✏️ Edit</button>
+              <button class="promo-btn" onclick="deletePromoEntry('${t}',${i})" style="background:#fee2e2;color:#dc2626;">🗑 Delete</button>
+            </div>
+          </div>
+          <div class="promo-card-body">
+            <div>
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Generated Link</div>
+              <div class="promo-link-box">${e.link}</div>
+              <div class="promo-usage">🔗 ${e.uses} successful use${e.uses !== 1 ? 's' : ''}</div>
+            </div>
+            <div>
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">QR Code</div>
+              <div class="promo-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=${encodeURIComponent(e.link)}" width="90" height="90" style="border-radius:8px;" alt="QR"></div>
+            </div>
+          </div>
+          <div class="promo-actions">
+            <button class="promo-btn" onclick="navigator.clipboard.writeText('${e.link}');toast('Link copied!')" style="background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--border);">📋 Copy Link</button>
+            <button class="promo-btn" onclick="toast('${e.sendEmail ? 'Email sent to ' + e.email : 'Enable Send via Email first'}')" style="background:${e.sendEmail ? 'linear-gradient(135deg,var(--brown-light),var(--brown-dark))' : 'var(--cream2)'};color:${e.sendEmail ? '#fff' : 'var(--text-mid)'};border:1px solid var(--border);">✉️ ${e.sendEmail ? 'Send Email' : 'No Email'}</button>
+            <button class="promo-btn" onclick="showPromoMessage('${t}',${i})" style="background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);">💬 View Message</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showPromoMessage(t, i) {
+      const e = promoData[t][i];
+      const msg = e.message.replace('[LINK]', e.link);
+      alert('Message for ' + e.firstname + ' ' + e.lastname + ':\n\n' + msg);
+    }
+    </script>
+
     <!-- COMING SOON -->
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
@@ -1952,10 +2269,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <option>Workshop</option>
               <option>Networking</option>
               <option>Party</option>
+              <option>Birthday Bash</option>
               <option>Brunch</option>
               <option>Watch Party</option>
               <option>Listening Party</option>
               <option>Award Show</option>
+              <option>Travel</option>
+              <option>Invitation</option>
               <option>Online</option>
               <option>Other</option>
             </select>
@@ -2039,6 +2359,41 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div class="form-field">
           <label>Event Tags</label>
           <input type="text" id="ev-tags" placeholder="e.g. Gathering, Social, Night Out (comma separated)">
+        </div>
+
+        <!-- RSVP Block -->
+        <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:18px;border:1px solid var(--border);">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;">RSVP</div>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+            <label style="font-size:0.88rem;font-weight:600;color:var(--text);">Is RSVP required for this event?</label>
+            <div style="display:flex;gap:14px;">
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+                <input type="radio" name="ev-rsvp" value="yes" onchange="toggleRsvpFields(this.value)" style="accent-color:var(--brown);"> Yes
+              </label>
+              <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
+                <input type="radio" name="ev-rsvp" value="no" checked onchange="toggleRsvpFields(this.value)" style="accent-color:var(--brown);"> No
+              </label>
+            </div>
+          </div>
+          <div id="rsvp-fields" style="display:none;">
+            <div style="background:#fff;border-radius:10px;padding:16px;border:1px solid var(--border);">
+              <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">RSVP Deadline</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-field" style="margin:0;">
+                  <label>RSVP Deadline Date</label>
+                  <input type="date" id="ev-rsvp-date">
+                </div>
+                <div class="form-field" style="margin:0;">
+                  <label>RSVP Deadline Time</label>
+                  <input type="time" id="ev-rsvp-time">
+                </div>
+              </div>
+              <div class="form-field" style="margin-top:12px;margin-bottom:0;">
+                <label>RSVP Confirmation Message (Optional)</label>
+                <textarea id="ev-rsvp-msg" placeholder="e.g. Please RSVP by the deadline above. Spots are limited!" style="min-height:70px;"></textarea>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Gallery -->
@@ -2419,6 +2774,10 @@ function toggleOnlineField(val) {
   const section = document.getElementById('online-link-section');
   section.style.display = val === 'Online' ? 'block' : 'none';
   if (val === 'Online') updateStreamLink();
+}
+
+function toggleRsvpFields(val) {
+  document.getElementById('rsvp-fields').style.display = val === 'yes' ? 'block' : 'none';
 }
 
 function updateStreamLink() {
@@ -3037,7 +3396,7 @@ function closeSidebar(){
 }
 
 // ── NAV ──────────────────────────────────────────────
-const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',coming:'Coming Soon'};
+const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',coming:'Coming Soon'};
 
 function nav(el, screen) {
   closeSidebar();
