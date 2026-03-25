@@ -130,8 +130,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
   /* Live preview */
   #screen-livepreview.active{flex-direction:column;}
-  .lp-left{display:block;padding:20px;flex:none;width:100%;}
-  .lp-right{display:block;width:100%;padding:20px 20px 60px;border-left:none;border-top:1px solid #333;overflow-y:visible;height:auto;}
+  .lp-left{padding:20px;flex:none;width:100%;}
+  .lp-right{width:100%;padding:20px 20px 60px;border-left:none;border-top:1px solid #333;height:auto;}
   .phone-frame{width:240px;height:480px;}
 
   /* Live banner */
@@ -286,15 +286,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 @media(max-width:768px){
   #screen-livepreview{
     min-height:auto;
-    height:auto !important;
-    display:block !important;
+    height:auto;
     padding-bottom:60px;
-    overflow:visible;
   }
   #screen-livepreview.active{
-    display:block !important;
-    height:auto !important;
-    overflow:visible !important;
+    height:auto;
   }
 }
 .lp-left{flex:1;display:flex;align-items:center;justify-content:center;padding:30px;}
