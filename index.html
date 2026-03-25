@@ -2000,6 +2000,43 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           </div>
         </div>
 
+        <!-- Product / Digital Product -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Link Created For</div>
+          <div class="form-field" style="margin:0;">
+            <label>Select Product or Service</label>
+            <select id="pf-product" style="width:100%;padding:11px 14px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--text);outline:none;" onchange="updatePromoMessage()">
+              <option value="">-- Select a product / service --</option>
+              <optgroup label="Digital Products">
+                <option value="Beauty Guide eBook — $29.99">Beauty Guide eBook — $29.99</option>
+                <option value="UGC Creator Course — $49.99">UGC Creator Course — $49.99</option>
+                <option value="Social Media Templates — $9.99">Social Media Templates — $9.99</option>
+              </optgroup>
+              <optgroup label="Physical Products">
+                <option value="Skincare Bundle — $34.99">Skincare Bundle — $34.99</option>
+                <option value="Branded Tote Bag — $22.00">Branded Tote Bag — $22.00</option>
+              </optgroup>
+              <optgroup label="Events / Tickets">
+                <option value="Networking Event — $15.00">Networking Event — $15.00</option>
+                <option value="Brand Building Workshop — $75.00">Brand Building Workshop — $75.00</option>
+              </optgroup>
+              <optgroup label="Services">
+                <option value="1-on-1 Consultation — $150.00">1-on-1 Consultation — $150.00</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option value="My Entire Store">My Entire Store</option>
+                <option value="Custom">Custom (type below)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div id="pf-product-custom-wrap" style="display:none;margin-top:10px;">
+            <div class="form-field" style="margin:0;">
+              <label>Custom Product / Service Name</label>
+              <input type="text" id="pf-product-custom" placeholder="e.g. My New Course — $99.00" oninput="updatePromoMessage()">
+            </div>
+          </div>
+        </div>
+
         <!-- Message Box -->
         <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -2064,6 +2101,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         document.getElementById('pf-social-handle').value = entry.handle || '';
         document.getElementById('pf-message').value = entry.message || '';
         document.getElementById('pf-send-email').checked = entry.sendEmail || false;
+        // Restore product
+        const sel = document.getElementById('pf-product');
+        const isCustom = entry.product && ![...sel.options].some(o => o.value === entry.product);
+        if (isCustom) {
+          sel.value = 'Custom';
+          document.getElementById('pf-product-custom').value = entry.product;
+          document.getElementById('pf-product-custom-wrap').style.display = 'block';
+        } else {
+          sel.value = entry.product || '';
+          document.getElementById('pf-product-custom-wrap').style.display = 'none';
+        }
         setTimeout(() => { buildPlatformPicker(); selectPlatform(entry.platform || 'instagram'); }, 30);
       } else {
         document.getElementById('pf-firstname').value = '';
@@ -2073,12 +2121,29 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         document.getElementById('pf-social-platform').value = 'instagram';
         document.getElementById('pf-social-handle').value = '';
         document.getElementById('pf-send-email').checked = false;
+        document.getElementById('pf-product').value = '';
+        document.getElementById('pf-product-custom').value = '';
+        document.getElementById('pf-product-custom-wrap').style.display = 'none';
         setTimeout(() => { buildPlatformPicker(); }, 30);
         const lbl = typeLabel[t];
         document.getElementById('pf-message').value =
           `Welcome! 🎉\n\nHere is your ${lbl}:\n[LINK]\n\nPlease save and share this link with your audience. Every successful transaction through your link is tracked automatically.\n\nThank you for partnering with us!`;
       }
       openModal('modal-promo-form');
+    }
+
+    function updatePromoMessage() {
+      const sel = document.getElementById('pf-product');
+      const isCustom = sel.value === 'Custom';
+      document.getElementById('pf-product-custom-wrap').style.display = isCustom ? 'block' : 'none';
+      const product = isCustom
+        ? document.getElementById('pf-product-custom').value.trim()
+        : sel.value;
+      if (!product) return;
+      const t = document.getElementById('promo-form-type').value || currentPromoTab;
+      const lbl = typeLabel[t] || 'Link';
+      document.getElementById('pf-message').value =
+        `Welcome! 🎉\n\nHere is your ${lbl} for: ${product}\n[LINK]\n\nPlease save and share this link with your audience. Every successful transaction through your link is tracked automatically.\n\nThank you for partnering with us!`;
     }
 
     function savePromoEntry() {
@@ -2089,6 +2154,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       if (!firstname || !lastname) { toast('Please enter a full name'); return; }
       if (!email) { toast('Please enter an email address'); return; }
 
+      const sel = document.getElementById('pf-product');
+      const product = sel.value === 'Custom'
+        ? document.getElementById('pf-product-custom').value.trim()
+        : sel.value;
+      if (!product) { toast('Please select a product or service'); return; }
+
       const editId = document.getElementById('promo-edit-id').value;
       const slug = (firstname + '-' + lastname).toLowerCase().replace(/[^a-z0-9]+/g,'-');
       const link = 'https://massed.io/r/' + slug + '-' + Math.random().toString(36).substr(2,5);
@@ -2098,6 +2169,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         phone: document.getElementById('pf-phone').value.trim(),
         platform: document.getElementById('pf-social-platform').value,
         handle: document.getElementById('pf-social-handle').value.trim(),
+        product,
         message: document.getElementById('pf-message').value,
         sendEmail: document.getElementById('pf-send-email').checked,
         link: editId !== '' ? promoData[t][editId].link : link,
@@ -2187,6 +2259,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div>
               <div class="promo-card-name">${e.firstname} ${e.lastname}</div>
               <div class="promo-card-email">${e.email}${e.phone ? ' · ' + e.phone : ''}${e.handle ? ' <span style="display:inline-flex;align-items:center;gap:4px;vertical-align:middle;">' + platformIcons[e.platform] + ' ' + e.handle + '</span>' : ''}</div>
+              ${e.product ? `<div style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:var(--brown-bg2);color:var(--brown-dark);border-radius:20px;padding:3px 10px;font-size:0.72rem;font-weight:700;">🛍 ${e.product}</div>` : ''}
             </div>
             <div style="display:flex;gap:6px;flex-shrink:0;">
               <button class="promo-btn" onclick="openPromoForm('${t}',${i})" style="background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);">✏️ Edit</button>
