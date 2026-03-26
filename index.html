@@ -1910,11 +1910,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <p class="section-sub">Create and manage promo codes, referral links, and affiliate partnerships</p>
       </div>
 
-      <!-- TAB SWITCHER -->
-      <div style="display:flex;gap:0;background:var(--cream2);border-radius:12px;padding:4px;margin-bottom:28px;width:fit-content;">
-        <button onclick="switchPromoTab('promo')" id="ptab-promo" style="padding:9px 22px;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;background:var(--brown);color:#fff;transition:all 0.2s;">Promo Codes</button>
-        <button onclick="switchPromoTab('referral')" id="ptab-referral" style="padding:9px 22px;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:transparent;color:var(--text-mid);transition:all 0.2s;">Referrals</button>
-        <button onclick="switchPromoTab('affiliate')" id="ptab-affiliate" style="padding:9px 22px;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:transparent;color:var(--text-mid);transition:all 0.2s;">Affiliates</button>
+      <!-- TAB SWITCHER with descriptions -->
+      <div style="display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;">
+        <button onclick="switchPromoTab('promo')" id="ptab-promo" style="padding:10px 20px;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--brown);color:#fff;transition:all 0.2s;text-align:left;min-width:130px;">
+          <div style="font-size:0.85rem;font-weight:700;">Promo Codes</div>
+          <div style="font-size:0.7rem;opacity:0.85;margin-top:2px;">↓ Discounts</div>
+        </button>
+        <button onclick="switchPromoTab('referral')" id="ptab-referral" style="padding:10px 20px;border:1px solid var(--border);border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text-mid);transition:all 0.2s;text-align:left;min-width:130px;">
+          <div style="font-size:0.85rem;font-weight:600;">Referrals</div>
+          <div style="font-size:0.7rem;margin-top:2px;">↓ Track Shares</div>
+        </button>
+        <button onclick="switchPromoTab('affiliate')" id="ptab-affiliate" style="padding:10px 20px;border:1px solid var(--border);border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;background:#fff;color:var(--text-mid);transition:all 0.2s;text-align:left;min-width:130px;">
+          <div style="font-size:0.85rem;font-weight:600;">Affiliates</div>
+          <div style="font-size:0.7rem;margin-top:2px;">↓ Earn Money</div>
+        </button>
       </div>
 
       <!-- PROMO CODES TAB -->
@@ -1946,8 +1955,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <!-- PROMO CREATE/EDIT MODAL -->
-    <div class="modal-overlay" id="modal-promo-form">
-      <div onclick="event.stopPropagation()" class="modal" style="max-width:560px;margin:auto;max-height:92vh;overflow-y:auto;">
+    <div class="modal-overlay" id="modal-promo-form" style="align-items:flex-start;padding:12px 0 40px;">
+      <div onclick="event.stopPropagation()" class="modal" style="width:calc(100% - 24px);max-width:560px;margin:auto;max-height:none;overflow-y:visible;box-sizing:border-box;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
           <h2 class="modal-title" style="margin:0;" id="promo-form-title">Create Promo Code</h2>
           <button onclick="closeModal('modal-promo-form')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
@@ -2049,15 +2058,83 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="font-size:0.72rem;color:var(--text-dim);margin-top:6px;">✏️ Edit the message above or leave as-is. Check "Send via Email" to also deliver this by email.</div>
         </div>
 
+        <!-- Custom Code (promo only) -->
+        <div id="pf-custom-code-section" style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;display:none;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Promo Code</div>
+          <div class="form-field" style="margin:0;">
+            <label>Your Promo Code <span style="color:var(--text-dim);font-weight:400;">(letters & numbers only)</span></label>
+            <input type="text" id="pf-promo-code" placeholder="e.g. SAVE20 or AVYADORE10" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:6px;">This is the code your audience will enter — e.g. <b>SAVE20</b></div>
+        </div>
+
+        <!-- Status Updates -->
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Status Updates</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:0.82rem;font-weight:600;color:var(--text-mid);">Send Updates</span>
+              <label style="position:relative;display:inline-block;width:42px;height:24px;cursor:pointer;">
+                <input type="checkbox" id="pf-status-toggle" onchange="toggleModalStatusUpdate()" style="opacity:0;width:0;height:0;">
+                <span id="pf-status-track" style="position:absolute;inset:0;background:var(--cream3);border-radius:24px;transition:0.3s;"></span>
+                <span id="pf-status-thumb" style="position:absolute;left:3px;top:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></span>
+              </label>
+            </div>
+            <div id="pf-status-freq-wrap" style="display:none;">
+              <select id="pf-status-frequency" style="padding:6px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--text);outline:none;cursor:pointer;">
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-top:8px;">Toggle on to automatically send progress & earnings updates to this person.</div>
+        </div>
+
+        <!-- Affiliate Earnings (shown only for affiliate type) -->
+        <div id="pf-affiliate-earnings" style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;display:none;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">💰 Affiliate Earnings</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-field" style="margin:0;">
+              <label>Commission Rate</label>
+              <input type="text" id="pf-commission" placeholder="e.g. 10% or $5 per sale">
+            </div>
+            <div class="form-field" style="margin:0;">
+              <label>Payout Schedule</label>
+              <select id="pf-payout-schedule" style="width:100%;padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;">
+                <option value="">-- Select schedule --</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">Bi-Weekly</option>
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field" style="margin-top:12px;margin-bottom:0;">
+            <label>Total Earned So Far</label>
+            <input type="text" id="pf-earned" placeholder="e.g. $0.00">
+          </div>
+        </div>
+
         <div class="modal-actions">
           <button class="btn-cancel" onclick="closeModal('modal-promo-form')">Cancel</button>
-          <button class="btn-confirm" onclick="savePromoEntry()">Generate Link & QR →</button>
+          <button class="btn-confirm" id="promo-submit-btn" onclick="savePromoEntry()">Generate Link & QR →</button>
         </div>
       </div>
     </div>
 
     <style>
     .promo-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;}
+    @media(max-width:600px){
+      .promo-card{padding:16px;}
+      .promo-card-body{grid-template-columns:1fr;gap:12px;}
+      .promo-card-header{flex-direction:column;gap:10px;}
+      .promo-card-header > div:last-child{width:100%;justify-content:flex-start;}
+      .promo-actions{gap:6px;}
+      .promo-btn{padding:8px 10px;font-size:0.75rem;}
+      .promo-link-box{font-size:0.72rem;word-break:break-all;}
+      #ptab-promo,#ptab-referral,#ptab-affiliate{min-width:100px;padding:8px 14px;}
+      #modal-promo-form .modal{padding:20px 16px !important;}
+    }
     .promo-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;gap:12px;}
     .promo-card-name{font-weight:700;font-size:1rem;color:var(--text);}
     .promo-card-email{font-size:0.78rem;color:var(--text-dim);margin-top:2px;}
@@ -2073,13 +2150,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     let promoData = {promo:[], referral:[], affiliate:[]};
     let currentPromoTab = 'promo';
 
+    function toggleStatusUpdate() {
+      const on = document.getElementById('status-update-toggle')?.checked;
+      if (!on) return;
+    }
+
+    function toggleModalStatusUpdate() {
+      const on = document.getElementById('pf-status-toggle').checked;
+      const track = document.getElementById('pf-status-track');
+      const thumb = document.getElementById('pf-status-thumb');
+      track.style.background = on ? 'var(--brown)' : 'var(--cream3)';
+      thumb.style.left = on ? '21px' : '3px';
+      document.getElementById('pf-status-freq-wrap').style.display = on ? 'block' : 'none';
+    }
+
     function switchPromoTab(tab) {
       currentPromoTab = tab;
       ['promo','referral','affiliate'].forEach(t => {
         document.getElementById('promoTab-' + t).style.display = t === tab ? 'block' : 'none';
         const btn = document.getElementById('ptab-' + t);
-        if (t === tab) { btn.style.background = 'var(--brown)'; btn.style.color = '#fff'; btn.style.fontWeight = '700'; }
-        else { btn.style.background = 'transparent'; btn.style.color = 'var(--text-mid)'; btn.style.fontWeight = '600'; }
+        if (t === tab) {
+          btn.style.background = 'var(--brown)';
+          btn.style.color = '#fff';
+          btn.style.fontWeight = '700';
+          btn.style.border = 'none';
+        } else {
+          btn.style.background = '#fff';
+          btn.style.color = 'var(--text-mid)';
+          btn.style.fontWeight = '600';
+          btn.style.border = '1px solid var(--border)';
+        }
       });
     }
 
@@ -2091,6 +2191,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       document.getElementById('promo-edit-id').value = editId !== undefined ? editId : '';
       document.getElementById('promo-form-title').textContent = (editId !== undefined ? 'Edit ' : 'Create ') + typeLabel[t];
 
+      // Show affiliate earnings section only for affiliates
+      document.getElementById('pf-affiliate-earnings').style.display = t === 'affiliate' ? 'block' : 'none';
+      // Show promo code field only for promo type
+      document.getElementById('pf-custom-code-section').style.display = t === 'promo' ? 'block' : 'none';
+      // Update submit button label
+      const btn = document.getElementById('promo-submit-btn');
+      if(btn) btn.textContent = editId !== undefined ? '✓ Save Changes' : 'Generate Link & QR →';
+
       if (editId !== undefined) {
         const entry = promoData[t][editId];
         document.getElementById('pf-firstname').value = entry.firstname || '';
@@ -2101,6 +2209,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         document.getElementById('pf-social-handle').value = entry.handle || '';
         document.getElementById('pf-message').value = entry.message || '';
         document.getElementById('pf-send-email').checked = entry.sendEmail || false;
+        // Status updates
+        document.getElementById('pf-status-toggle').checked = entry.statusUpdates || false;
+        document.getElementById('pf-status-track').style.background = entry.statusUpdates ? 'var(--brown)' : 'var(--cream3)';
+        document.getElementById('pf-status-thumb').style.left = entry.statusUpdates ? '21px' : '3px';
+        document.getElementById('pf-status-freq-wrap').style.display = entry.statusUpdates ? 'block' : 'none';
+        document.getElementById('pf-status-frequency').value = entry.statusFrequency || 'weekly';
+        if(t === 'promo') document.getElementById('pf-promo-code').value = entry.promoCode || '';
+        // Affiliate fields
+        if (t === 'affiliate') {
+          document.getElementById('pf-commission').value = entry.commission || '';
+          document.getElementById('pf-payout-schedule').value = entry.payoutSchedule || '';
+          document.getElementById('pf-earned').value = entry.earned || '';
+        }
         // Restore product
         const sel = document.getElementById('pf-product');
         const isCustom = entry.product && ![...sel.options].some(o => o.value === entry.product);
@@ -2121,6 +2242,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         document.getElementById('pf-social-platform').value = 'instagram';
         document.getElementById('pf-social-handle').value = '';
         document.getElementById('pf-send-email').checked = false;
+        document.getElementById('pf-status-toggle').checked = false;
+        document.getElementById('pf-status-track').style.background = 'var(--cream3)';
+        document.getElementById('pf-status-thumb').style.left = '3px';
+        document.getElementById('pf-status-freq-wrap').style.display = 'none';
+        document.getElementById('pf-status-frequency').value = 'weekly';
+        if (t === 'affiliate') {
+          document.getElementById('pf-commission').value = '';
+          document.getElementById('pf-payout-schedule').value = '';
+          document.getElementById('pf-earned').value = '';
+        }
         document.getElementById('pf-product').value = '';
         document.getElementById('pf-product-custom').value = '';
         document.getElementById('pf-product-custom-wrap').style.display = 'none';
@@ -2162,7 +2293,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
       const editId = document.getElementById('promo-edit-id').value;
       const slug = (firstname + '-' + lastname).toLowerCase().replace(/[^a-z0-9]+/g,'-');
-      const link = 'https://massed.io/r/' + slug + '-' + Math.random().toString(36).substr(2,5);
+      const customCode = t === 'promo' ? document.getElementById('pf-promo-code').value.trim() : '';
+      const link = t === 'promo' && customCode
+        ? 'https://massed.io/promo/' + customCode
+        : 'https://massed.io/r/' + slug + '-' + Math.random().toString(36).substr(2,5);
 
       const entry = {
         firstname, lastname, email,
@@ -2172,7 +2306,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         product,
         message: document.getElementById('pf-message').value,
         sendEmail: document.getElementById('pf-send-email').checked,
+        statusUpdates: document.getElementById('pf-status-toggle').checked,
+        statusFrequency: document.getElementById('pf-status-frequency').value,
+        commission: t === 'affiliate' ? document.getElementById('pf-commission').value.trim() : '',
+        payoutSchedule: t === 'affiliate' ? document.getElementById('pf-payout-schedule').value : '',
+        earned: t === 'affiliate' ? document.getElementById('pf-earned').value.trim() : '',
         link: editId !== '' ? promoData[t][editId].link : link,
+        promoCode: t === 'promo' && customCode ? customCode : (editId !== '' ? promoData[t][editId].promoCode : ''),
         uses: editId !== '' ? promoData[t][editId].uses : 0,
         type: t
       };
@@ -2270,7 +2410,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div>
               <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Generated Link</div>
               <div class="promo-link-box">${e.link}</div>
-              <div class="promo-usage">🔗 ${e.uses} successful use${e.uses !== 1 ? 's' : ''}</div>
+              <div class="promo-usage">
+                ${e.uses === 0
+                  ? '🚀 Ready To Share'
+                  : `🔗 ${e.uses + 1} use${e.uses + 1 !== 1 ? 's' : ''}`
+                }
+                ${e.type === 'affiliate' && e.earned ? `<span style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;background:rgba(34,197,94,0.1);color:#16a34a;border-radius:20px;padding:2px 8px;font-size:0.68rem;font-weight:700;">💰 $${parseFloat(e.earned).toFixed(2)} Earned to Date</span>` : ''}
+                ${e.type === 'affiliate' && e.payoutSchedule ? `<span style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;background:var(--brown-bg2);color:var(--brown-dark);border-radius:20px;padding:2px 8px;font-size:0.68rem;font-weight:700;">📅 ${e.payoutSchedule.charAt(0).toUpperCase()+e.payoutSchedule.slice(1)} Payout${e.commission ? ' · ' + e.commission : ''}</span>` : ''}
+                ${e.statusFrequency ? `<span style="display:inline-flex;align-items:center;gap:4px;margin-left:6px;background:rgba(99,102,241,0.1);color:#6366f1;border-radius:20px;padding:2px 8px;font-size:0.68rem;font-weight:700;">🔔 ${e.statusFrequency.charAt(0).toUpperCase()+e.statusFrequency.slice(1)} Updates</span>` : ''}
+              </div>
             </div>
             <div>
               <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">QR Code</div>
@@ -2279,7 +2427,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           </div>
           <div class="promo-actions">
             <button class="promo-btn" onclick="navigator.clipboard.writeText('${e.link}');toast('Link copied!')" style="background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--border);">📋 Copy Link</button>
-            <button class="promo-btn" onclick="toast('${e.sendEmail ? 'Email sent to ' + e.email : 'Enable Send via Email first'}')" style="background:${e.sendEmail ? 'linear-gradient(135deg,var(--brown-light),var(--brown-dark))' : 'var(--cream2)'};color:${e.sendEmail ? '#fff' : 'var(--text-mid)'};border:1px solid var(--border);">✉️ ${e.sendEmail ? 'Send Email' : 'No Email'}</button>
+            <button class="promo-btn" onclick="toast('${e.sendEmail ? 'Email sent to ' + e.email : 'Enable Send via Email first'}')" style="background:${e.sendEmail ? 'linear-gradient(135deg,var(--brown-light),var(--brown-dark))' : 'var(--cream2)'};color:${e.sendEmail ? '#fff' : 'var(--text-mid)'};border:1px solid var(--border);">✉️ ${e.sendEmail ? 'Send Email' : 'Send Update'}</button>
             <button class="promo-btn" onclick="showPromoMessage('${t}',${i})" style="background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);">💬 View Message</button>
           </div>
         </div>
