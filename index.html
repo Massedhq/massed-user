@@ -814,7 +814,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
       const mins = Math.floor(pendingVideoFile.duration / 60);
       const secs = Math.floor(pendingVideoFile.duration % 60).toString().padStart(2,'0');
-      videos.push({ id: Date.now(), title, genre, url: pendingVideoFile.url, duration: mins + ':' + secs });
+      videos.push({ id: Date.now(), title, genre, url: pendingVideoFile.url, duration: mins + ':' + secs, showcase: false });
       renderVideos();
       cancelVideoForm();
       toast('✓ Video saved!');
@@ -833,7 +833,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div class="video-title">${v.title}</div>
             <div class="video-meta">${v.duration} <span class="video-genre-badge">${v.genre}</span></div>
           </div>
-          <div class="video-actions">
+          <div class="video-actions" style="align-items:center;">
+            <label title="Show on public page" style="display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;margin-right:4px;">
+              <span style="font-size:0.58rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:${v.showcase?'var(--brown)':'var(--text-dim)'};">Showcase</span>
+              <div onclick="toggleVideoShowcase(${i})" style="width:36px;height:20px;border-radius:20px;background:${v.showcase?'var(--brown)':'#e5e7eb'};position:relative;transition:all 0.2s;cursor:pointer;">
+                <div style="position:absolute;top:2px;left:${v.showcase?'18px':'2px'};width:16px;height:16px;border-radius:50%;background:#fff;transition:all 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div>
+              </div>
+            </label>
             <button class="vid-btn" onclick="openVideoPlayer(${i})" title="View" style="background:var(--brown-bg2);border-color:var(--brown);">
               <svg viewBox="0 0 24 24" style="stroke:var(--brown);"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </button>
@@ -865,6 +871,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       player.pause();
       player.src = '';
       modal.classList.remove('open');
+    }
+
+    function toggleVideoShowcase(index) {
+      if (!videos[index]) return;
+      videos[index].showcase = !videos[index].showcase;
+      renderVideos();
+      toast(videos[index].showcase ? '✓ Added to public showcase' : 'Removed from showcase');
     }
 
     function moveVideo(index, dir) {
