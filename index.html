@@ -740,45 +740,82 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
     <style>
     /* ── Video card ── */
-    .video-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px;box-sizing:border-box;width:100%;}
-    .video-thumb{width:110px;min-width:110px;height:72px;border-radius:9px;background:#000;overflow:hidden;flex-shrink:0;position:relative;cursor:pointer;}
+    .video-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:16px;
+      margin-bottom:14px;
+      display:grid;
+      grid-template-columns:auto 1fr;
+      grid-template-rows:auto auto auto auto;
+      column-gap:14px;
+      row-gap:6px;
+      box-sizing:border-box;
+      width:100%;
+      overflow:hidden;
+    }
+    .video-thumb{
+      grid-column:1;
+      grid-row:1/5;
+      width:100px;
+      height:100px;
+      border-radius:10px;
+      background:#000;
+      overflow:hidden;
+      flex-shrink:0;
+      position:relative;
+      cursor:pointer;
+      align-self:start;
+    }
     .video-thumb video{width:100%;height:100%;object-fit:cover;}
     .video-thumb-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);}
     .video-thumb-overlay svg{width:22px;height:22px;fill:#fff;}
-    .video-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;}
-    .video-info{min-width:0;}
-    .video-title{font-size:0.92rem;font-weight:700;color:var(--text);margin-bottom:4px;word-break:break-word;}
-    .video-meta{font-size:0.75rem;color:var(--text-dim);}
-    .video-genre-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.65rem;font-weight:700;letter-spacing:0.05em;background:var(--brown-bg);color:var(--brown);margin-left:6px;}
-    .video-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-    .video-showcase-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 10px;border-radius:20px;border:1px solid var(--border);background:var(--cream);transition:all 0.2s;}
-    .video-showcase-toggle:hover{border-color:var(--brown);}
-    .vid-toggle-track{width:34px;height:18px;border-radius:20px;position:relative;flex-shrink:0;transition:background 0.2s;}
+    .video-title{grid-column:2;font-size:0.9rem;font-weight:700;color:var(--text);word-break:break-word;line-height:1.3;}
+    .video-meta{grid-column:2;font-size:0.75rem;color:var(--text-dim);}
+    .video-genre-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.65rem;font-weight:700;background:var(--brown-bg);color:var(--brown);}
+    .video-showcase-toggle{
+      grid-column:2;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      padding:5px 10px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      background:var(--cream);
+      width:fit-content;
+    }
+    .vid-toggle-track{width:32px;min-width:32px;height:18px;border-radius:20px;position:relative;transition:background 0.2s;}
     .vid-toggle-thumb{position:absolute;top:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
-    .vid-toggle-label{font-size:0.75rem;font-weight:600;white-space:nowrap;}
-    .video-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
-    .vid-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+    .vid-toggle-label{font-size:0.72rem;font-weight:600;white-space:nowrap;}
+    .video-actions{grid-column:2;display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+    .vid-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--cream);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
     .vid-btn:hover{background:var(--cream2);}
     .vid-btn svg{width:14px;height:14px;stroke:var(--text-mid);fill:none;stroke-width:2;}
     .vid-btn.delete:hover{background:#fee2e2;border-color:#fecaca;}
     .vid-btn.delete:hover svg{stroke:#dc2626;}
 
-    /* Tablet */
-    @media(max-width:768px){
-      .video-card{padding:14px;gap:12px;}
-      .video-thumb{width:96px;min-width:96px;height:64px;}
-    }
-
-    /* Mobile — iPhone & Android */
+    /* Mobile */
     @media(max-width:520px){
-      .video-card{flex-direction:column;padding:14px;gap:10px;}
-      .video-thumb{width:100%;min-width:unset;height:180px;border-radius:10px;}
-      .video-body{width:100%;}
-      .video-title{font-size:0.9rem;}
-      .video-footer{flex-direction:column;align-items:flex-start;gap:10px;}
-      .video-actions{width:100%;}
-      .vid-btn{width:40px;height:40px;}
-      .video-showcase-toggle{width:100%;justify-content:center;}
+      .video-card{
+        grid-template-columns:1fr;
+        grid-template-rows:auto;
+        padding:14px;
+        row-gap:10px;
+      }
+      .video-thumb{
+        grid-column:1;
+        grid-row:1;
+        width:100%;
+        height:180px;
+        border-radius:10px;
+      }
+      .video-title{grid-column:1;grid-row:2;}
+      .video-meta{grid-column:1;grid-row:3;}
+      .video-showcase-toggle{grid-column:1;grid-row:4;width:100%;justify-content:center;}
+      .video-actions{grid-column:1;grid-row:5;width:100%;}
+      .vid-btn{width:42px;height:42px;}
     }
     </style>
 
@@ -851,33 +888,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       if (videos.length === 0) { list.innerHTML = ''; return; }
       list.innerHTML = videos.map((v, i) => `
         <div class="video-card" id="vid-${v.id}">
-          <div class="video-thumb" onclick="openVideoPlayer(${i})" style="cursor:pointer;">
+          <div class="video-thumb" onclick="openVideoPlayer(${i})">
             <video src="${v.url}" muted preload="metadata"></video>
             <div class="video-thumb-overlay"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3" fill="#fff"/></svg></div>
           </div>
-          <div class="video-body">
-            <div class="video-info">
-              <div class="video-title">${v.title}</div>
-              <div class="video-meta">${v.duration} <span class="video-genre-badge">${v.genre}</span></div>
+          <div class="video-title">${v.title}</div>
+          <div class="video-meta">${v.duration}&nbsp;<span class="video-genre-badge">${v.genre}</span></div>
+          <div class="video-showcase-toggle" onclick="toggleVideoShowcase(${i})">
+            <div class="vid-toggle-track" style="background:${v.showcase?'var(--brown)':'#d1d5db'};">
+              <div class="vid-toggle-thumb" style="left:${v.showcase?'16px':'2px'};"></div>
             </div>
-            <div class="video-footer">
-              <div class="video-showcase-toggle" onclick="toggleVideoShowcase(${i})">
-                <div class="vid-toggle-track" style="background:${v.showcase?'var(--brown)':'#e5e7eb'};">
-                  <div class="vid-toggle-thumb" style="left:${v.showcase?'18px':'2px'};"></div>
-                </div>
-                <span class="vid-toggle-label" style="color:${v.showcase?'var(--brown)':'var(--text-dim)'};">
-                  ${v.showcase ? '✓ On Showcase' : 'Add to Showcase'}
-                </span>
-              </div>
-              <div class="video-actions">
-                <button class="vid-btn" onclick="openVideoPlayer(${i})" title="Play" style="background:var(--brown-bg2);border-color:var(--brown);">
-                  <svg viewBox="0 0 24 24" style="stroke:var(--brown);"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                </button>
-                <button class="vid-btn" onclick="moveVideo(${i},-1)" title="Move up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
-                <button class="vid-btn" onclick="moveVideo(${i},1)" title="Move down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
-                <button class="vid-btn delete" onclick="deleteVideo(${i})" title="Delete"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
-              </div>
-            </div>
+            <span class="vid-toggle-label" style="color:${v.showcase?'var(--brown)':'var(--text-dim)'};">
+              ${v.showcase ? '✓ Showcase On' : 'Add to Showcase'}
+            </span>
+          </div>
+          <div class="video-actions">
+            <button class="vid-btn" onclick="openVideoPlayer(${i})" title="Play" style="background:var(--brown-bg2);border-color:var(--brown);">
+              <svg viewBox="0 0 24 24" style="stroke:var(--brown);"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+            <button class="vid-btn" onclick="moveVideo(${i},-1)" title="Move up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></button>
+            <button class="vid-btn" onclick="moveVideo(${i},1)" title="Move down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></button>
+            <button class="vid-btn delete" onclick="deleteVideo(${i})" title="Delete"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
           </div>
         </div>
       `).join('');
