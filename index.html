@@ -60,12 +60,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .link-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
 .btn-logout{padding:8px 16px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;}
 .btn-logout:hover{background:var(--brown-dark);}
-.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;min-height:0;overscroll-behavior-y:contain;}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;min-height:0;}
 .content::-webkit-scrollbar{width:5px;}
 .content::-webkit-scrollbar-thumb{background:var(--cream3);border-radius:3px;}
 
 /* SCREENS */
-.screen{display:none;padding:40px;min-height:0;}
+.screen{display:none;padding:40px;}
 .screen.active{display:block;}
 #screen-livepreview.active{display:flex!important;padding:0!important;}
 
@@ -116,7 +116,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;}
 
   .main{margin-left:0;width:100%;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-  .content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior-y:contain;}
+  .content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
   .screen{padding:16px;padding-bottom:80px;}
   .topbar{padding:0 16px;flex-shrink:0;}
   .hamburger{display:flex !important;}
@@ -396,7 +396,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <button id="recovery-confirm-btn" onclick="confirmRecovery()" style="width:100%;padding:16px;background:linear-gradient(135deg,#E8C49A,#C49A6C,#8B6040);color:#1a0e06;font-family:'Georgia',serif;font-weight:900;font-size:1rem;letter-spacing:0.08em;border:none;border-radius:12px;cursor:pointer;opacity:0.4;pointer-events:none;transition:all 0.2s;">
       Select an option above to continue
     </button>
-    <p style="text-align:center;font-size:0.72rem;color:rgba(245,240,232,0.3);margin-top:14px;">Need help? Contact <a href="/cdn-cgi/l/email-protection#285b5d5858475a5c6845495b5b4d4c064147" style="color:#C49A6C;"><span class="__cf_email__" data-cfemail="20535550504f5254604d41535345440e494f">[email&#160;protected]</span></a></p>
+    <p style="text-align:center;font-size:0.72rem;color:rgba(245,240,232,0.3);margin-top:14px;">Need help? Contact <a href="/cdn-cgi/l/email-protection#aad9dfdadac5d8deeac7cbd9d9cfce84c3c5" style="color:#C49A6C;"><span class="__cf_email__" data-cfemail="7e0d0b0e0e110c0a3e131f0d0d1b1a501711">[email&#160;protected]</span></a></p>
   </div>
 </div>
 
@@ -662,6 +662,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <button id="csub-incoming" onclick="collabSubTab('incoming')" style="padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">📥 Incoming <span id="incoming-badge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.65rem;margin-left:3px;">2</span></button>
           <button id="csub-active" onclick="collabSubTab('active')" style="padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">💬 Active</button>
           <button id="csub-docs" onclick="collabSubTab('docs')" style="padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">📁 Documents</button>
+
         </div>
 
         <!-- BROWSE SUB-TAB -->
@@ -702,16 +703,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="font-weight:800;font-size:1rem;color:var(--text);margin-bottom:4px;">Documents</div>
           <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;">Signed NDAs and collaboration documents</div>
 
-          <!-- Search/Filter bar -->
+          <!-- Search & Filter -->
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
             <input type="text" id="doc-search" oninput="filterDocs()" placeholder="🔍 Search by date or collaborator..." style="flex:1;min-width:160px;padding:9px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;">
-            <select id="doc-filter-name" onchange="filterDocs()" style="padding:9px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;color:var(--text);">
+            <select id="doc-filter-name" onchange="filterDocs()" style="padding:9px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;">
               <option value="">All Collaborators</option>
-            </select>
-            <select id="doc-filter-type" onchange="filterDocs()" style="padding:9px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;color:var(--text);">
-              <option value="">All Types</option>
-              <option value="NDA">NDA</option>
-              <option value="Agreement">Agreement</option>
             </select>
           </div>
 
@@ -3007,8 +3003,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <!-- Current Plan -->
         <div style="background:linear-gradient(135deg,#2d1a0e,#1a0e06);border-radius:16px;padding:24px;color:#F5F0E8;">
           <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C49A6C;margin-bottom:8px;">Current Plan</div>
-          <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#C49A6C;margin-bottom:4px;">Creator Pro</div>
-          <div style="font-size:0.85rem;color:rgba(245,240,232,0.6);margin-bottom:16px;">$30.00 / month · Next billing: Apr 21, 2026</div>
+          <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#C49A6C;margin-bottom:4px;">Creator — $30/mo</div>
+          <div style="font-size:0.85rem;color:rgba(245,240,232,0.6);margin-bottom:6px;">$30.00 / month · Next billing: Apr 21, 2026</div>
+          <div style="font-size:0.78rem;color:rgba(245,240,232,0.45);margin-bottom:16px;line-height:1.6;">Pay $30/month for 12 months → Graduate to 24 months FREE → then $79.99/year. That's it.</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button style="padding:8px 18px;background:rgba(196,154,108,0.2);color:#C49A6C;border:1px solid rgba(196,154,108,0.4);border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;" onclick="toast('Plan management coming soon')">Manage Plan</button>
             <button style="padding:8px 18px;background:transparent;color:rgba(245,240,232,0.5);border:1px solid rgba(245,240,232,0.2);border-radius:9px;cursor:pointer;font-size:0.82rem;" onclick="toast('Contact support to cancel')">Cancel Plan</button>
@@ -3039,16 +3036,36 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </div>
           </div>
           <div style="font-size:0.82rem;color:rgba(245,240,232,0.65);margin-bottom:16px;line-height:1.6;">
-            You are <strong style="color:#22c55e;" id="grad-months-left">21 months</strong> away from graduating to a <strong style="color:#F5F0E8;">FREE 2-Year Plan</strong>. Enjoy all the benefits — keep every single earning with <strong style="color:#22c55e;">zero payments</strong> for 2 full years. 🎉
+            You are <strong style="color:#22c55e;" id="grad-months-left">9 months</strong> away from graduating. Pay <strong style="color:#F5F0E8;">$30/month for 12 months</strong> and you unlock a <strong style="color:#22c55e;">FREE 24-month plan</strong> — keep every single earning with zero payments for 2 full years. After that, just <strong style="color:#22c55e;">$79.99/year</strong>. Nothing more, nothing less. 🎉
           </div>
           <!-- Progress bar -->
-          <div style="margin-bottom:8px;">
+          <div style="margin-bottom:12px;">
             <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:rgba(245,240,232,0.5);margin-bottom:6px;">
-              <span>Month 3 of 24</span>
-              <span>12.5% complete</span>
+              <span>Month 3 of 12</span>
+              <span>25% complete</span>
             </div>
             <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;">
-              <div style="height:100%;width:12.5%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:10px;"></div>
+              <div style="height:100%;width:25%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:10px;"></div>
+            </div>
+          </div>
+          <!-- Plan roadmap -->
+          <div style="display:flex;align-items:center;gap:0;margin-bottom:12px;">
+            <div style="flex:1;text-align:center;padding:8px 4px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);border-radius:8px 0 0 8px;">
+              <div style="font-size:0.6rem;color:rgba(34,197,94,0.8);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Phase 1</div>
+              <div style="font-size:0.78rem;font-weight:700;color:#fff;">$30/mo × 12</div>
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);">Building period</div>
+            </div>
+            <div style="width:24px;text-align:center;color:rgba(255,255,255,0.3);font-size:0.8rem;">→</div>
+            <div style="flex:1;text-align:center;padding:8px 4px;background:rgba(34,197,94,0.25);border:1px solid rgba(34,197,94,0.5);border-radius:0;">
+              <div style="font-size:0.6rem;color:rgba(34,197,94,0.9);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Phase 2</div>
+              <div style="font-size:0.78rem;font-weight:700;color:#22c55e;">FREE × 24 mo</div>
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);">Graduation reward</div>
+            </div>
+            <div style="width:24px;text-align:center;color:rgba(255,255,255,0.3);font-size:0.8rem;">→</div>
+            <div style="flex:1;text-align:center;padding:8px 4px;background:rgba(196,154,108,0.15);border:1px solid rgba(196,154,108,0.3);border-radius:0 8px 8px 0;">
+              <div style="font-size:0.6rem;color:#C49A6C;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Phase 3</div>
+              <div style="font-size:0.78rem;font-weight:700;color:#C49A6C;">$79.99/yr</div>
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);">Forever after</div>
             </div>
           </div>
           <div style="font-size:0.72rem;color:rgba(34,197,94,0.7);">✓ Keep paying monthly to stay on track for graduation</div>
@@ -3096,17 +3113,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
       </div>
     </div>
-
-
-      
-<!-- ── PLATFORM SUPPORT TAB ── -->
+      <!-- ── PLATFORM SUPPORT TAB ── -->
       <div id="stab-support-content" style="display:none;flex-direction:column;gap:20px;max-width:700px;">
 
-        <!-- Header -->
+        <!-- Hero -->
         <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:16px;padding:28px;color:#fff;">
           <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:8px;">Platform Support</div>
           <div style="font-family:'Georgia',serif;font-size:1.6rem;font-weight:900;margin-bottom:8px;">How to use MASSED</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Everything you need to know about setting up and operating your MASSED profile, store and collaborations.</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Everything you need to know about setting up and operating your MASSED creator profile.</div>
         </div>
 
         <!-- Media Profile Guide -->
@@ -3118,68 +3132,121 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <div style="font-size:0.72rem;color:var(--text-dim);">Your public identity on MASSED</div>
             </div>
           </div>
-          <div style="padding:20px 22px;">
-            <div style="font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:16px;">
-              <strong>What it is:</strong> Your Media Profile is your public-facing identity on MASSED. It's the first thing collaborators, customers and partners see when they visit your page at <span style="color:var(--brown);font-weight:700;">massed.io/yourusername</span>. Think of it as your digital business card — it represents your brand across every product, service and collaboration you offer.
+          <div style="padding:20px 22px;display:flex;flex-direction:column;gap:12px;">
+            <div style="font-size:0.85rem;color:var(--text);line-height:1.8;"><strong>What it is:</strong> Your Media Profile is your public-facing page at <span style="color:var(--brown);font-weight:700;">massed.io/yourusername</span>. It is the first thing collaborators, customers and partners see. Think of it as your digital business card — it represents your entire brand.</div>
+            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+              <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📸 Photo &amp; Name</div>
+              <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Upload a clear professional photo or brand logo. Add your display name and a title or role (e.g. "Beauty Consultant", "Lash Tech") so visitors immediately know what you do.</div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📸 Photo & Name</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Upload a clear, professional photo of yourself or your brand logo. Add your display name exactly as you want it shown publicly. Add a title or role (e.g. "UGC Creator", "Beauty Consultant", "Real Estate Agent") to help visitors understand what you do immediately.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">✍️ Bio</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Write a short, engaging bio that tells your story. Include what you specialize in, who you serve and what makes your brand unique. This bio appears on your public page and is seen by potential collaborators and customers. Keep it authentic and under 200 words for best results.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🏷️ Category</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Select the category that best describes your niche (Beauty & Wellness, Fashion, Real Estate, Fitness, etc.). This helps MASSED surface your profile to the right audience and makes it easier for collaborators to find you by genre.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📞 Contact Info</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Add your email, phone (optional) and website. These appear on your public profile so potential partners and customers can reach you directly. Your email is also used for platform notifications, order confirmations and collaboration messages.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🤝 Collaboration Tab</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Inside Media Profile you'll find the <strong>Collaboration</strong> tab. This is where you set up your collaboration profile, choose your genres, and toggle yourself visible so other creators can find and connect with you. You can browse other creators by genre, send connection requests, accept or decline incoming requests, message accepted collaborators, and sign legally-binding NDAs — all within MASSED.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">💡 Pro Tips</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">
-                  <div style="margin-bottom:4px;">✓ Always use a high-resolution photo — profiles with photos get 3x more views</div>
-                  <div style="margin-bottom:4px;">✓ Keep your bio updated when your services or focus changes</div>
-                  <div style="margin-bottom:4px;">✓ Select multiple genres in Collaboration to appear in more searches</div>
-                  <div style="margin-bottom:4px;">✓ Save your profile after every edit — changes are not auto-saved</div>
-                  <div>✓ Your Media Profile is connected to your Store, so a strong profile increases conversions</div>
-                </div>
+            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+              <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">✍️ Bio</div>
+              <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Write a short authentic bio that tells your story, who you serve, and what makes your brand unique. Keep it under 200 words. This appears on your public page and is read by potential collaborators and customers.</div>
+            </div>
+            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+              <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🏷️ Category</div>
+              <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Select the category that best matches your niche — Beauty &amp; Wellness, Fashion, Real Estate, Fitness, etc. This helps MASSED surface your profile to the right audience and makes it easier for collaborators to discover you.</div>
+            </div>
+            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+              <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📞 Contact Info</div>
+              <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Add your email, phone (optional) and website. These appear on your public profile so partners and customers can reach you directly. Your email is also used for platform notifications and order confirmations.</div>
+            </div>
+            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+              <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🤝 Collaboration Tab</div>
+              <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Inside Media Profile you will find the Collaboration tab. Set up your collaboration profile, choose your genres, and toggle yourself visible so other creators can find and connect with you. You can browse by genre, send connection requests, accept or decline requests, message accepted collaborators, and sign legally-binding NDAs — all within MASSED.</div>
+            </div>
+            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+              <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">💡 Tips</div>
+              <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">
+                <div style="margin-bottom:3px;">✓ Use a high-resolution photo — profiles with photos get 3× more views</div>
+                <div style="margin-bottom:3px;">✓ Keep your bio updated when your focus changes</div>
+                <div style="margin-bottom:3px;">✓ Select multiple genres in Collaboration to appear in more searches</div>
+                <div>✓ Always click Save after editing — changes are not auto-saved</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Quick Help Links -->
+        <!-- Quick Links — open as modal popups, NOT nav -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;">
           <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Quick Help</div>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <button onclick="nav(null,'mediaprofile')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
-              <span style="font-weight:700;font-size:0.85rem;">👤 Go to Media Profile</span>
+            <button onclick="openModal('modal-help-mediaprofile')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <span style="font-weight:700;font-size:0.85rem;">👤 How to set up Media Profile</span>
               <span style="color:var(--text-dim);">→</span>
             </button>
-            <button onclick="nav(null,'mystore')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
-              <span style="font-weight:700;font-size:0.85rem;">🛍️ Set Up My Store</span>
+            <button onclick="openModal('modal-help-store')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <span style="font-weight:700;font-size:0.85rem;">🛍️ How to set up My Store</span>
               <span style="color:var(--text-dim);">→</span>
             </button>
-            <button onclick="nav(null,'salespayouts')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
-              <span style="font-weight:700;font-size:0.85rem;">💰 View Sales & Payouts</span>
+            <button onclick="openModal('modal-help-sales')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <span style="font-weight:700;font-size:0.85rem;">💰 Understanding Sales &amp; Payouts</span>
               <span style="color:var(--text-dim);">→</span>
             </button>
-            <button onclick="toast('Live chat support coming soon!')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
+            <button onclick="toast('Live support coming soon!')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
               <span style="font-weight:700;font-size:0.85rem;">💬 Contact Support</span>
               <span style="color:var(--text-dim);">→</span>
             </button>
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- HELP MODALS (popups — do not navigate away) -->
+    <div id="modal-help-mediaprofile" class="modal-overlay">
+      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">👤 Media Profile Guide</h2>
+          <button onclick="closeModal('modal-help-mediaprofile')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;">
+          <p><strong>Where to find it:</strong> Tap <em>Media Profile</em> in the left sidebar.</p>
+          <p><strong>What to do:</strong></p>
+          <p>1. Upload your photo or brand logo using the Upload button.</p>
+          <p>2. Enter your Display Name exactly as you want it shown publicly.</p>
+          <p>3. Add your Title/Role so visitors instantly know what you do.</p>
+          <p>4. Write your Bio — keep it authentic, under 200 words.</p>
+          <p>5. Select your Category to help the platform match you to the right audience.</p>
+          <p>6. Add your Contact Info — email is required, phone and website are optional.</p>
+          <p>7. Click <strong>Save Profile</strong> when done.</p>
+          <p><strong>Collaboration tab:</strong> Inside Media Profile, tap the Collaboration tab to toggle your visibility on, choose your genres, and start connecting with other creators.</p>
+        </div>
+        <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-mediaprofile')">Got it</button>
+      </div>
+    </div>
+
+    <div id="modal-help-store" class="modal-overlay">
+      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">🛍️ My Store Guide</h2>
+          <button onclick="closeModal('modal-help-store')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;">
+          <p><strong>Where to find it:</strong> Tap <em>My Store</em> in the left sidebar.</p>
+          <p><strong>What it does:</strong> My Store controls what products and services appear on your public MASSED page.</p>
+          <p>1. Toggle <strong>Store Live</strong> on to make your store visible to the public.</p>
+          <p>2. Use the <strong>What's In Your Store</strong> toggles to show or hide each product type — Digital Products, Physical Products, Courses, Bookings, Events, Services, Links and Videos.</p>
+          <p>3. Your Store URL is shown at the top — copy and share it anywhere.</p>
+          <p><strong>Tip:</strong> Only turn on the product types you actually have set up so your store looks clean and professional.</p>
+        </div>
+        <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-store')">Got it</button>
+      </div>
+    </div>
+
+    <div id="modal-help-sales" class="modal-overlay">
+      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">💰 Sales &amp; Payouts Guide</h2>
+          <button onclick="closeModal('modal-help-sales')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;">
+          <p><strong>Where to find it:</strong> Tap <em>Sales &amp; Payouts</em> in the left sidebar.</p>
+          <p><strong>Sales tab:</strong> Shows your revenue, sessions, funnel stats, traffic channels with world map, top products and social analysis.</p>
+          <p><strong>Payout tab:</strong> Shows your available balance, processing funds, earnings breakdown by source and your full transaction feed. Switch to Affiliate Earnings to see commissions from referrals.</p>
+          <p><strong>Withdrawing:</strong> Connect your Stripe account in Settings → Stripe to enable payouts directly to your bank account.</p>
+          <p><strong>Graduation:</strong> Pay $30/month for 12 months → graduate to 24 months FREE → then $79.99/year. Track your progress in Settings → Billing.</p>
+        </div>
+        <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-sales')">Got it</button>
       </div>
     </div>
 
@@ -3223,7 +3290,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <!-- SALES & PAYOUTS SCREEN -->
-    <div id="screen-salespayouts" class="screen" style="touch-action:pan-y;">
+    <div id="screen-salespayouts" class="screen">
 
       <!-- Top tabs -->
       <div style="display:flex;gap:4px;background:rgba(196,154,108,0.08);border:1px solid rgba(196,154,108,0.15);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;">
@@ -4926,7 +4993,6 @@ let activeCollabs = [];
 let currentDeclineId = null;
 let currentActiveCollab = null;
 let ndaSigned = false;
-let signedDocuments = [];
 let collabMessages = {};
 
 function collabSubTab(tab) {
@@ -5113,7 +5179,7 @@ function signNDA() {
     collabMessages[currentActiveCollab.id].push({sender:'me', text:'NDA sent — please review and sign', isDoc:true});
     var thread = document.getElementById('collab-msg-thread');
     if (thread) renderMsgThread(thread, collabMessages[currentActiveCollab.id]);
-    // Simulate other party signing after 2 seconds — adds to documents
+    // Simulate other party signing after 2 seconds — saves to Documents
     setTimeout(function() {
       var doc = {
         id: Date.now(),
@@ -5123,16 +5189,14 @@ function signNDA() {
         color: currentActiveCollab.color,
         dateSigned: signedDate,
         status: 'Fully Executed',
-        content: generateNDAText(currentActiveCollab.name, signedDate)
+        content: buildNDAText(currentActiveCollab.name, signedDate)
       };
       signedDocuments.push(doc);
-      // Update dropdown
       populateDocFilter();
-      // Update NDA banner to fully signed
-      document.getElementById('nda-status-text').textContent = '✓ Both parties have signed — document saved to Documents tab.';
+      document.getElementById('nda-status-text').textContent = '✓ Both parties signed — saved to Documents.';
       document.getElementById('nda-btn').textContent = '✅ NDA Executed';
       document.getElementById('nda-btn').style.background = '#16a34a';
-      toast('🎉 ' + currentActiveCollab.name + ' signed the NDA! Document saved to Documents tab.');
+      toast('🎉 ' + currentActiveCollab.name + ' signed the NDA! Saved to Documents.');
       if (collabMessages[currentActiveCollab.id]) {
         collabMessages[currentActiveCollab.id].push({sender:'them', text:'I have signed the NDA ✍️', isDoc:false});
         if (thread) renderMsgThread(thread, collabMessages[currentActiveCollab.id]);
@@ -5219,10 +5283,11 @@ function downloadDoc(id) {
   var blob = new Blob([doc.content], {type:'text/plain'});
   var a = document.createElement('a');
   a
-  toast('✓ Document downloaded!');
+  toast('\u2713 Document downloaded!');
 }
 
-// ── CORE NAV & UI ──────────────────────────────────────────────────────────
+// ── CORE UI ────────────────────────────────────────────────────────────────────
+
 function toggleSidebar() {
   var sb = document.querySelector('.sidebar');
   var ov = document.getElementById('sidebar-overlay');
@@ -5286,14 +5351,14 @@ function nav(el, screen) {
 
 function spTab(tab) {
   var isS = tab === 'sales';
-  var sales = document.getElementById('sp-sales');
-  var payout = document.getElementById('sp-payout');
-  if (sales) sales.style.display = isS ? 'block' : 'none';
-  if (payout) payout.style.display = isS ? 'none' : 'block';
-  var sbtn = document.getElementById('sp-tab-sales');
-  var pbtn = document.getElementById('sp-tab-payout');
-  if (sbtn) { sbtn.style.background = isS ? 'var(--brown)' : 'transparent'; sbtn.style.color = isS ? '#fff' : 'var(--text-dim)'; }
-  if (pbtn) { pbtn.style.background = isS ? 'transparent' : 'var(--brown)'; pbtn.style.color = isS ? 'var(--text-dim)' : '#fff'; }
+  ['sp-sales','sp-payout'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = (id === 'sp-sales') === isS ? 'block' : 'none';
+  });
+  var sb = document.getElementById('sp-tab-sales');
+  var pb = document.getElementById('sp-tab-payout');
+  if (sb) { sb.style.background = isS ? 'var(--brown)' : 'transparent'; sb.style.color = isS ? '#fff' : 'var(--text-dim)'; }
+  if (pb) { pb.style.background = isS ? 'transparent' : 'var(--brown)'; pb.style.color = isS ? 'var(--text-dim)' : '#fff'; }
 }
 
 function spSubTab(sub) {
@@ -5334,20 +5399,6 @@ function toggleStoreLive(cb) {
   }
 }
 
-// Video player
-function openVideoPlayer(v) {
-  var modal = document.getElementById('video-player-modal');
-  var player = document.getElementById('video-player-el');
-  var title = document.getElementById('video-player-title');
-  var genre = document.getElementById('video-player-genre');
-  if (!modal || !player) return;
-  player.src = v.url;
-  if (title) title.textContent = v.title;
-  if (genre) genre.textContent = v.genre + ' · ' + v.duration;
-  modal.classList.add('open');
-  player.play().catch(function(){});
-}
-
 function closeVideoPlayer() {
   var modal = document.getElementById('video-player-modal');
   var player = document.getElementById('video-player-el');
@@ -5355,9 +5406,7 @@ function closeVideoPlayer() {
   if (modal) modal.classList.remove('open');
 }
 
-// Map tooltip
 document.addEventListener('DOMContentLoaded', function() {
-  // Session restore
   var lastScreen = '';
   try { lastScreen = sessionStorage.getItem('massedScreen') || ''; } catch(e){}
   if (lastScreen && document.getElementById('screen-' + lastScreen)) {
@@ -5365,17 +5414,11 @@ document.addEventListener('DOMContentLoaded', function() {
   } else {
     nav(null, 'dashboard');
   }
-
-  // Camera nav override (safe)
   var _orig = nav;
   nav = function(el, screen) {
-    try {
-      if (typeof cameraStream !== 'undefined' && cameraStream && screen !== 'scanner') stopCamera();
-    } catch(e){}
+    try { if (typeof cameraStream !== 'undefined' && cameraStream && screen !== 'scanner') stopCamera(); } catch(e){}
     _orig(el, screen);
   };
-
-  // Map tooltip
   var tooltip = document.getElementById('map-tooltip');
   if (tooltip) {
     document.querySelectorAll('.us-state').forEach(function(s) {
@@ -5393,6 +5436,88 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+// ── DOCUMENTS SYSTEM ──────────────────────────────────────────────────────────
+var signedDocuments = [];
+
+function buildNDAText(name, date) {
+  return 'NON-DISCLOSURE AGREEMENT\n\nEntered into as of ' + date.toLocaleDateString() + ' between You (MASSED User) and ' + name + '.\n\nBoth parties agree to keep all shared Confidential Information strictly private and not disclose it to any third party. This covers business strategies, creative works, personal brand assets, financial data, and all proprietary information shared during the collaboration.\n\nThis document has been digitally signed by both parties within the MASSED platform and shall serve as a legally binding agreement.\n\nParty A (You): Signed ' + date.toLocaleDateString() + '\nParty B (' + name + '): Signed ' + date.toLocaleDateString();
+}
+
+function populateDocFilter() {
+  var sel = document.getElementById('doc-filter-name');
+  if (!sel) return;
+  var existing = Array.from(sel.options).map(function(o){ return o.value; });
+  signedDocuments.forEach(function(d) {
+    if (!existing.includes(d.collaborator)) {
+      var opt = document.createElement('option');
+      opt.value = d.collaborator;
+      opt.textContent = d.collaborator;
+      sel.appendChild(opt);
+    }
+  });
+}
+
+function renderDocs() {
+  populateDocFilter();
+  filterDocs();
+}
+
+function filterDocs() {
+  var search = document.getElementById('doc-search') ? document.getElementById('doc-search').value.toLowerCase() : '';
+  var nameFilter = document.getElementById('doc-filter-name') ? document.getElementById('doc-filter-name').value : '';
+  var filtered = signedDocuments.filter(function(d) {
+    var matchSearch = !search || d.collaborator.toLowerCase().includes(search) || d.dateSigned.toLocaleDateString().includes(search);
+    var matchName = !nameFilter || d.collaborator === nameFilter;
+    return matchSearch && matchName;
+  });
+  var list = document.getElementById('docs-list');
+  if (!list) return;
+  if (filtered.length === 0) {
+    list.innerHTML = signedDocuments.length === 0
+      ? '<div style="text-align:center;padding:48px 20px;color:var(--text-dim);"><div style="font-size:2.5rem;margin-bottom:12px;">📁</div><div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;">No documents yet</div><div style="font-size:0.78rem;">When both parties sign an NDA it will automatically appear here.</div></div>'
+      : '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:0.85rem;">No documents match your search.</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(function(d) {
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;">' +
+      '<div style="display:flex;align-items:center;gap:12px;">' +
+        '<div style="width:44px;height:44px;border-radius:10px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">📄</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-weight:800;font-size:0.9rem;">' + d.type + ' — ' + d.collaborator + '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap;">' +
+            '<span style="font-size:0.72rem;color:var(--text-dim);">Signed ' + d.dateSigned.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) + '</span>' +
+            '<span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">✓ ' + d.status + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;flex-shrink:0;">' +
+          '<button onclick="viewDoc(' + d.id + ')" style="padding:7px 12px;background:var(--brown-bg);color:var(--brown);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">View</button>' +
+          '<button onclick="downloadDoc(' + d.id + ')" style="padding:7px 12px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">⬇ Save</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function viewDoc(id) {
+  var doc = signedDocuments.find(function(d){ return d.id === id; });
+  if (!doc) return;
+  var w = window.open('','_blank','width=700,height=600');
+  if (!w) { toast('Please allow popups to view the document'); return; }
+  w.document.write('<html><head><title>' + doc.type + ' — ' + doc.collaborator + '</title><style>body{font-family:Georgia,serif;padding:40px;max-width:640px;margin:0 auto;line-height:1.8;color:#222;}h1{font-size:1.4rem;text-align:center;margin-bottom:30px;}pre{white-space:pre-wrap;font-family:Georgia,serif;}</style></head><body><h1>' + doc.type + '</h1><pre>' + doc.content + '</pre></body></html>');
+  w.document.close();
+}
+
+function downloadDoc(id) {
+  var doc = signedDocuments.find(function(d){ return d.id === id; });
+  if (!doc) return;
+  var blob = new Blob([doc.content], {type:'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = doc.type + '_' + doc.collaborator.replace(/\s/g,'_') + '_' + doc.dateSigned.toISOString().slice(0,10) + '.txt';
+  a.click();
+  toast('✓ Document downloaded!');
+}
 
 </script>
 </body>
