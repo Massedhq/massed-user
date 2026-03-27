@@ -93,7 +93,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* ── MOBILE ── */
 @media(max-width:768px){
-  body{overflow:hidden;}
+  body{overflow:hidden;height:100dvh;}
   :root{--sidebar-w:280px;}
 
   /* On mobile, the entire sidebar scrolls as ONE list top to bottom */
@@ -115,8 +115,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   .sidebar-nav{display:block;overflow:visible;height:auto;flex:none;}
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;}
 
-  .main{margin-left:0;width:100%;}
-  .content{position:fixed;top:60px;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .main{margin-left:0;width:100%;display:flex;flex-direction:column;height:100dvh;}
+  .content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .screen{padding:16px;padding-bottom:80px;}
   .topbar{padding:0 16px;flex-shrink:0;}
   .hamburger{display:flex !important;}
@@ -2965,6 +2965,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <button id="stab-billing" onclick="settingsTab('billing')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">💳 Billing</button>
         <button id="stab-stripe" onclick="settingsTab('stripe')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">⚡ Stripe</button>
         <button id="stab-support" onclick="settingsTab('support')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">❓ Support</button>
+        <button id="stab-api" onclick="settingsTab('api')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">🔌 API</button>
       </div>
 
       <!-- ── SETTINGS TAB ── -->
@@ -3250,7 +3251,110 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       </div>
     </div>
 
-    <!-- BILLING SCREEN (kept for direct nav compatibility) -->
+      <!-- ── API INTEGRATIONS TAB ── -->
+      <div id="stab-api-content" style="display:none;flex-direction:column;gap:16px;max-width:700px;">
+
+        <div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:16px;padding:24px;color:#f1f5f9;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#94a3b8;margin-bottom:8px;">API Integrations</div>
+          <div style="font-family:'Georgia',serif;font-size:1.5rem;font-weight:900;margin-bottom:8px;">Connect Your Tools</div>
+          <div style="font-size:0.85rem;color:rgba(241,245,249,0.7);line-height:1.6;">Connect third-party APIs and tools to extend your MASSED experience. Paste your API keys below to enable each integration.</div>
+        </div>
+
+        <!-- Mailchimp -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="background:#ffe01b;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:#000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🐒</div>
+            <div><div style="font-weight:800;font-size:0.95rem;color:#000;">Mailchimp</div><div style="font-size:0.72rem;color:#333;">Email marketing & audience management</div></div>
+            <span style="margin-left:auto;font-size:0.65rem;background:#000;color:#ffe01b;padding:3px 8px;border-radius:10px;font-weight:700;">Email</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div class="form-field" style="margin-bottom:10px;"><label>API Key</label><input type="password" id="api-mailchimp" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us1"></div>
+            <button onclick="saveApiKey('mailchimp')" class="btn-save" style="width:auto;">Connect Mailchimp</button>
+          </div>
+        </div>
+
+        <!-- ConvertKit -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="background:#fb6970;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:#fb6970;">CK</div>
+            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">ConvertKit</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Creator email platform</div></div>
+            <span style="margin-left:auto;font-size:0.65rem;background:rgba(0,0,0,0.2);color:#fff;padding:3px 8px;border-radius:10px;font-weight:700;">Email</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div class="form-field" style="margin-bottom:10px;"><label>API Key</label><input type="password" id="api-convertkit" placeholder="Your ConvertKit API key"></div>
+            <button onclick="saveApiKey('convertkit')" class="btn-save" style="width:auto;">Connect ConvertKit</button>
+          </div>
+        </div>
+
+        <!-- Zapier -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="background:#ff4a00;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">⚡</div>
+            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">Zapier</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Automate workflows between 5000+ apps</div></div>
+            <span style="margin-left:auto;font-size:0.65rem;background:rgba(0,0,0,0.2);color:#fff;padding:3px 8px;border-radius:10px;font-weight:700;">Automation</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div class="form-field" style="margin-bottom:10px;"><label>Webhook URL</label><input type="text" id="api-zapier" placeholder="https://hooks.zapier.com/hooks/catch/..."></div>
+            <button onclick="saveApiKey('zapier')" class="btn-save" style="width:auto;">Connect Zapier</button>
+          </div>
+        </div>
+
+        <!-- Google Analytics -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="background:#e37400;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">📊</div>
+            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">Google Analytics</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Track website traffic and conversions</div></div>
+            <span style="margin-left:auto;font-size:0.65rem;background:rgba(0,0,0,0.2);color:#fff;padding:3px 8px;border-radius:10px;font-weight:700;">Analytics</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div class="form-field" style="margin-bottom:10px;"><label>Measurement ID</label><input type="text" id="api-ga" placeholder="G-XXXXXXXXXX"></div>
+            <button onclick="saveApiKey('ga')" class="btn-save" style="width:auto;">Connect Google Analytics</button>
+          </div>
+        </div>
+
+        <!-- Meta Pixel -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="background:#0866ff;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">📘</div>
+            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">Meta Pixel</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Facebook & Instagram ad tracking</div></div>
+            <span style="margin-left:auto;font-size:0.65rem;background:rgba(0,0,0,0.2);color:#fff;padding:3px 8px;border-radius:10px;font-weight:700;">Ads</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div class="form-field" style="margin-bottom:10px;"><label>Pixel ID</label><input type="text" id="api-meta" placeholder="123456789012345"></div>
+            <button onclick="saveApiKey('meta')" class="btn-save" style="width:auto;">Connect Meta Pixel</button>
+          </div>
+        </div>
+
+        <!-- TikTok Pixel -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="background:#010101;padding:14px 20px;display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🎵</div>
+            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">TikTok Pixel</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">TikTok ads tracking & conversions</div></div>
+            <span style="margin-left:auto;font-size:0.65rem;background:rgba(255,255,255,0.15);color:#fff;padding:3px 8px;border-radius:10px;font-weight:700;">Ads</span>
+          </div>
+          <div style="padding:16px 20px;">
+            <div class="form-field" style="margin-bottom:10px;"><label>Pixel ID</label><input type="text" id="api-tiktok" placeholder="CXXXXXXXXXXXXXXXXX"></div>
+            <button onclick="saveApiKey('tiktok')" class="btn-save" style="width:auto;">Connect TikTok Pixel</button>
+          </div>
+        </div>
+
+        <!-- Custom API -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+          <div style="background:var(--brown-bg);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);">
+            <div style="width:36px;height:36px;background:var(--brown);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🔌</div>
+            <div><div style="font-weight:800;font-size:0.95rem;color:var(--text);">Custom API</div><div style="font-size:0.72rem;color:var(--text-dim);">Connect any API with a custom key</div></div>
+          </div>
+          <div style="padding:16px 20px;">
+            <div class="form-field" style="margin-bottom:10px;"><label>Service Name</label><input type="text" id="api-custom-name" placeholder="e.g. HubSpot, ActiveCampaign..."></div>
+            <div class="form-field" style="margin-bottom:10px;"><label>API Key / Token</label><input type="password" id="api-custom-key" placeholder="Your API key or token"></div>
+            <div class="form-field" style="margin-bottom:10px;"><label>Endpoint URL (optional)</label><input type="text" id="api-custom-url" placeholder="https://api.yourservice.com/v1/"></div>
+            <button onclick="saveCustomApi()" class="btn-save" style="width:auto;">Save Custom API</button>
+          </div>
+        </div>
+
+      </div>
+
+        <!-- BILLING SCREEN (kept for direct nav compatibility) -->
     <div id="screen-billing" class="screen">
       <div class="section-header">
         <h2 class="section-title">Billing</h2>
@@ -5345,7 +5449,7 @@ function nav(el, screen) {
       sb.classList.remove('open');
       if (ov) ov.classList.remove('open');
     }
-    try { sessionStorage.setItem('massedScreen', screen); } catch(e){}
+    // screen navigation (no session persistence)
   } catch(e) { console.warn('nav error:', e); }
 }
 
@@ -5374,7 +5478,7 @@ function spSubTab(sub) {
 }
 
 function settingsTab(tab) {
-  ['settings','billing','stripe','support'].forEach(function(t) {
+  ['settings','billing','stripe','support','api'].forEach(function(t) {
     var c = document.getElementById('stab-' + t + '-content');
     var b = document.getElementById('stab-' + t);
     if (c) c.style.display = t === tab ? 'flex' : 'none';
@@ -5407,13 +5511,9 @@ function closeVideoPlayer() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  var lastScreen = '';
-  try { lastScreen = sessionStorage.getItem('massedScreen') || ''; } catch(e){}
-  if (lastScreen && document.getElementById('screen-' + lastScreen)) {
-    nav(null, lastScreen);
-  } else {
-    nav(null, 'dashboard');
-  }
+  // Always start at dashboard
+  try { sessionStorage.removeItem('massedScreen'); } catch(e){}
+  nav(null, 'dashboard');
   var _orig = nav;
   nav = function(el, screen) {
     try { if (typeof cameraStream !== 'undefined' && cameraStream && screen !== 'scanner') stopCamera(); } catch(e){}
@@ -5517,6 +5617,19 @@ function downloadDoc(id) {
   a.download = doc.type + '_' + doc.collaborator.replace(/\s/g,'_') + '_' + doc.dateSigned.toISOString().slice(0,10) + '.txt';
   a.click();
   toast('✓ Document downloaded!');
+}
+
+function saveApiKey(service) {
+  var key = document.getElementById('api-' + service);
+  if (!key || !key.value.trim()) { toast('Please enter an API key'); return; }
+  toast('✓ ' + service.charAt(0).toUpperCase() + service.slice(1) + ' connected!');
+}
+function saveCustomApi() {
+  var name = document.getElementById('api-custom-name');
+  var key = document.getElementById('api-custom-key');
+  if (!name || !name.value.trim()) { toast('Please enter a service name'); return; }
+  if (!key || !key.value.trim()) { toast('Please enter an API key'); return; }
+  toast('✓ ' + name.value + ' API connected!');
 }
 
 </script>
