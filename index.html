@@ -1271,9 +1271,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       const player = document.getElementById('video-player-el');
       const title = document.getElementById('video-player-title');
       const genre = document.getElementById('video-player-genre');
+      if (!modal || !player) return;
       player.src = v.url;
-      title.textContent = v.title;
-      genre.textContent = v.genre + ' · ' + v.duration;
+      if (title) title.textContent = v.title;
+      if (genre) genre.textContent = v.genre + ' · ' + v.duration;
       modal.classList.add('open');
       player.play();
     }
@@ -1281,9 +1282,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     function closeVideoPlayer() {
       const modal = document.getElementById('video-player-modal');
       const player = document.getElementById('video-player-el');
-      player.pause();
-      player.src = '';
-      modal.classList.remove('open');
+      if (player) { player.pause(); player.src = ''; }
+      if (modal) modal.classList.remove('open');
     }
 
     function toggleVideoShowcase(index) {
@@ -2797,15 +2797,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     });
 
     // Init picker when promo modal opens
+    const _origOpenModal = window.openModal;
     window.openModal = function(id) {
-  const modal = document.getElementById(id);
-  if (modal) modal.classList.add('open');
-  if (id === 'modal-promo-form') { buildPlatformPicker(); }
-};
-window.closeModal = function(id) {
-  const modal = document.getElementById(id);
-  if (modal) modal.classList.remove('open');
-};
+      _origOpenModal(id);
+      if (id === 'modal-promo-form') { buildPlatformPicker(); }
+    };
 
     function renderPromoList(t) {
       const container = document.getElementById(t + '-list');
@@ -4485,10 +4481,16 @@ function downloadSplitCard(source) {
 
 // ── CORE NAV & UI ──────────────────────────────────────────────────────────────
 function toggleSidebar() {
-  var sb = document.getElementById('sidebar');
+  var sb = document.querySelector('.sidebar');
   var ov = document.getElementById('sidebar-overlay');
-  sb.classList.toggle('open');
+  if (sb) sb.classList.toggle('open');
   if (ov) ov.classList.toggle('open');
+}
+function closeSidebar() {
+  var sb = document.querySelector('.sidebar');
+  var ov = document.getElementById('sidebar-overlay');
+  if (sb) sb.classList.remove('open');
+  if (ov) ov.classList.remove('open');
 }
 
 const pageTitles = {
@@ -4521,7 +4523,7 @@ function nav(el, screen) {
     if (target) target.classList.add('active');
     var pt = document.getElementById('page-title');
     if (pt) pt.textContent = pageTitles[screen] || '';
-    var sb = document.getElementById('sidebar');
+    var sb = document.querySelector('.sidebar');
     var ov = document.getElementById('sidebar-overlay');
     if (sb && sb.classList.contains('open')) {
       sb.classList.remove('open');
