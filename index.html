@@ -60,12 +60,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .link-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
 .btn-logout{padding:8px 16px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;}
 .btn-logout:hover{background:var(--brown-dark);}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;min-height:0;}
+.content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;min-height:0;overscroll-behavior-y:contain;}
 .content::-webkit-scrollbar{width:5px;}
 .content::-webkit-scrollbar-thumb{background:var(--cream3);border-radius:3px;}
 
 /* SCREENS */
-.screen{display:none;padding:40px;}
+.screen{display:none;padding:40px;min-height:0;}
 .screen.active{display:block;}
 #screen-livepreview.active{display:flex!important;padding:0!important;}
 
@@ -116,7 +116,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;}
 
   .main{margin-left:0;width:100%;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-  .content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
+  .content{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior-y:contain;}
   .screen{padding:16px;padding-bottom:80px;}
   .topbar{padding:0 16px;flex-shrink:0;}
   .hamburger{display:flex !important;}
@@ -396,7 +396,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <button id="recovery-confirm-btn" onclick="confirmRecovery()" style="width:100%;padding:16px;background:linear-gradient(135deg,#E8C49A,#C49A6C,#8B6040);color:#1a0e06;font-family:'Georgia',serif;font-weight:900;font-size:1rem;letter-spacing:0.08em;border:none;border-radius:12px;cursor:pointer;opacity:0.4;pointer-events:none;transition:all 0.2s;">
       Select an option above to continue
     </button>
-    <p style="text-align:center;font-size:0.72rem;color:rgba(245,240,232,0.3);margin-top:14px;">Need help? Contact <a href="/cdn-cgi/l/email-protection#6c1f191c1c031e182c010d1f1f0908420503" style="color:#C49A6C;"><span class="__cf_email__" data-cfemail="3744424747584543775a5644445253195e58">[email&#160;protected]</span></a></p>
+    <p style="text-align:center;font-size:0.72rem;color:rgba(245,240,232,0.3);margin-top:14px;">Need help? Contact <a href="/cdn-cgi/l/email-protection#285b5d5858475a5c6845495b5b4d4c064147" style="color:#C49A6C;"><span class="__cf_email__" data-cfemail="20535550504f5254604d41535345440e494f">[email&#160;protected]</span></a></p>
   </div>
 </div>
 
@@ -1271,10 +1271,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       const player = document.getElementById('video-player-el');
       const title = document.getElementById('video-player-title');
       const genre = document.getElementById('video-player-genre');
-      if (!modal || !player) return;
       player.src = v.url;
-      if (title) title.textContent = v.title;
-      if (genre) genre.textContent = v.genre + ' · ' + v.duration;
+      title.textContent = v.title;
+      genre.textContent = v.genre + ' · ' + v.duration;
       modal.classList.add('open');
       player.play();
     }
@@ -1282,8 +1281,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     function closeVideoPlayer() {
       const modal = document.getElementById('video-player-modal');
       const player = document.getElementById('video-player-el');
-      if (player) { player.pause(); player.src = ''; }
-      if (modal) modal.classList.remove('open');
+      player.pause();
+      player.src = '';
+      modal.classList.remove('open');
     }
 
     function toggleVideoShowcase(index) {
@@ -3223,7 +3223,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <!-- SALES & PAYOUTS SCREEN -->
-    <div id="screen-salespayouts" class="screen">
+    <div id="screen-salespayouts" class="screen" style="touch-action:pan-y;">
 
       <!-- Top tabs -->
       <div style="display:flex;gap:4px;background:rgba(196,154,108,0.08);border:1px solid rgba(196,154,108,0.15);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;">
@@ -4213,8 +4213,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 
 <div id="toast"></div>
-
 <script>
+
 // ── ONLINE EVENT FIELD TOGGLE ─────────────────────────
 function toggleOnlineField(val) {
   const section = document.getElementById('online-link-section');
@@ -4479,58 +4479,762 @@ function downloadSplitCard(source) {
   toast('✓ Payment card downloaded! Share via text or email.');
 }
 
-// ── CORE NAV & UI ──────────────────────────────────────────────────────────────
+function completeCheckout() {
+  const btn = document.getElementById('complete-purchase-btn');
+  const isSplit = paymentType === 'split';
+  btn.textContent = isSplit ? 'Generating Card...' : 'Processing...';
+  btn.disabled = true;
+  setTimeout(() => {
+    closeModal('modal-checkout');
+    btn.disabled = false;
+    if (isSplit) {
+      // Auto-download the split card
+      downloadSplitCard();
+      toast('🤝 Payment card ready! Download it and share with your group.');
+    } else {
+      const cart = window._cart;
+      if (cart && cart.ev) {
+        cart.ev._selectedCart = cart.cartItems;
+        currentEventIndex = events.indexOf(cart.ev);
+        openTicketViewFromCart();
+      }
+      toast('🎉 Purchase complete! Your tickets are ready.');
+    }
+  }, 2000);
+}
+
+
+function openTicketViewFromCart() {
+  const ev = events[currentEventIndex];
+  if (!ev) return;
+  const cart = ev._selectedCart || [];
+  const dateStr = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : 'Date TBD';
+  const isOnline = ev.type === 'Online';
+
+  // Build all tickets for all tiers in cart
+  let allTickets = [];
+  cart.forEach(item => {
+    for (let i=0; i<item.qty; i++) {
+      allTickets.push({ tier: item.tier, index: allTickets.length+1 });
+    }
+  });
+
+  const totalTickets = allTickets.length;
+  const ticketsHTML = allTickets.map((t, idx) => {
+    const ticketNum = generateTicketNumber(ev.id, t.tier.type, idx+1);
+    const price = parseFloat(t.tier.price)||0;
+    return `
+      <div style="background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;position:relative;">
+        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:20px;">Ticket ${idx+1} of ${totalTickets}</div>
+        <h3 style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.1rem;margin-bottom:6px;padding-right:60px;text-align:left;">${ev.name}</h3>
+        <div style="text-align:left;margin-bottom:4px;">
+          <span style="background:rgba(192,122,80,0.3);color:var(--brown-light);font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;">${t.tier.type}</span>
+          ${isOnline?'<span style="background:rgba(37,99,235,0.2);color:#60a5fa;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-left:6px;">🌐 Online</span>':''}
+        </div>
+        <p style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:14px;text-align:left;">${isOnline?'Use your ticket number to access the event':'Show QR code at entrance'}</p>
+        <div style="background:#fff;border-radius:12px;padding:12px;display:inline-block;margin-bottom:12px;">
+          <svg id="qr-${idx}" viewBox="0 0 100 100" width="130" height="130" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 12px;display:inline-block;margin-bottom:14px;">
+          <div style="color:rgba(255,255,255,0.35);font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Ticket Number</div>
+          <div style="color:var(--brown-light);font-family:monospace;font-size:0.88rem;font-weight:800;letter-spacing:0.08em;">${ticketNum}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:left;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Venue</div><div style="font-size:0.8rem;color:#fff;font-weight:600;">${isOnline?'Online Event':ev.location||'TBD'}</div></div>
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Date & Time</div><div style="font-size:0.78rem;color:#fff;font-weight:600;">${dateStr}${ev.time?' • '+ev.time:''}</div></div>
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Type</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:700;">${t.tier.type}</div></div>
+            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Price</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:800;">${price===0?'Free':'$'+price.toFixed(2)}</div></div>
+          </div>
+          ${t.tier.description?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Includes</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;">${t.tier.description}</div></div>`:''}
+          ${isOnline?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Massed Stream Link</div><div style="background:rgba(192,122,80,0.12);border:1px solid rgba(192,122,80,0.25);border-radius:8px;padding:10px;"><div style="color:rgba(255,255,255,0.5);font-size:0.72rem;margin-bottom:6px;">Enter ticket number <strong style="color:var(--brown-light);">${ticketNum}</strong></div><div style="color:var(--brown-light);font-family:monospace;font-size:0.78rem;font-weight:600;word-break:break-all;">${ev.onlineLink||'https://stream.massed.io/'+ev.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}</div></div></div>`:''}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('multi-ticket-container').innerHTML = ticketsHTML;
+  document.getElementById('multi-ticket-title').textContent = totalTickets > 1 ? `Your ${totalTickets} Tickets` : 'Your Ticket';
+  document.getElementById('multi-ticket-total').textContent = '';
+
+  allTickets.forEach((t, idx) => {
+    const ticketNum = generateTicketNumber(ev.id, t.tier.type, idx+1);
+    setTimeout(()=>generateQR(ticketNum,'qr-'+idx), 80+idx*30);
+  });
+
+  openModal('modal-your-ticket');
+}
+
+
+
+
+// ── SCANNER ───────────────────────────────────────────
+let scanStats = {total:0, valid:0, invalid:0};
+let checkedInList = [];
+let cameraStream = null;
+let scanInterval = null;
+let torchOn = false;
+let lastScanned = null;
+let lastScannedTime = 0;
+
+// Load jsQR library dynamically
+function loadJsQR(callback) {
+  if (window.jsQR) { callback(); return; }
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js';
+  script.onload = callback;
+  script.onerror = () => toast('Failed to load QR scanner library');
+  document.head.appendChild(script);
+}
+
+function startCamera() {
+  loadJsQR(() => {
+    const constraints = {
+      video: {
+        facingMode: { ideal: 'environment' }, // use back camera
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      }
+    };
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(stream => {
+        cameraStream = stream;
+        const video = document.getElementById('camera-feed');
+        video.srcObject = stream;
+        video.play();
+        // Show camera UI
+        document.getElementById('camera-placeholder').style.display = 'none';
+        document.getElementById('scan-frame-overlay').style.display = 'block';
+        document.getElementById('btn-start-camera').style.display = 'none';
+        document.getElementById('btn-stop-camera').style.display = 'flex';
+        // Show torch button if supported
+        const track = stream.getVideoTracks()[0];
+        if (track && track.getCapabilities && track.getCapabilities().torch) {
+          document.getElementById('btn-torch').style.display = 'flex';
+        }
+        document.getElementById('scan-status').textContent = '🟢 Scanning — point at a QR code';
+        document.getElementById('scan-result').style.display = 'none';
+        // Start scanning frames
+        video.addEventListener('loadedmetadata', () => startFrameScan(video));
+      })
+      .catch(err => {
+        let msg = 'Camera access denied.';
+        if (err.name === 'NotFoundError') msg = 'No camera found on this device.';
+        else if (err.name === 'NotAllowedError') msg = 'Camera permission denied. Please allow camera access.';
+        document.getElementById('scan-status').textContent = '⚠️ ' + msg;
+        toast('⚠️ ' + msg);
+      });
+  });
+}
+
+function startFrameScan(video) {
+  const canvas = document.getElementById('camera-canvas');
+  const ctx = canvas.getContext('2d');
+  scanInterval = setInterval(() => {
+    if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: 'dontInvert'
+    });
+    if (code && code.data) {
+      const now = Date.now();
+      // Debounce — don't re-scan the same code within 3 seconds
+      if (code.data !== lastScanned || now - lastScannedTime > 3000) {
+        lastScanned = code.data;
+        lastScannedTime = now;
+        processScannedTicket(code.data, false);
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      }
+    }
+  }, 200);
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(t => t.stop());
+    cameraStream = null;
+  }
+  clearInterval(scanInterval);
+  scanInterval = null;
+  const video = document.getElementById('camera-feed');
+  video.srcObject = null;
+  document.getElementById('camera-placeholder').style.display = 'flex';
+  document.getElementById('scan-frame-overlay').style.display = 'none';
+  document.getElementById('btn-start-camera').style.display = 'flex';
+  document.getElementById('btn-stop-camera').style.display = 'none';
+  document.getElementById('btn-torch').style.display = 'none';
+  document.getElementById('scan-status').textContent = 'Click Start Camera to begin scanning';
+  torchOn = false;
+}
+
+function toggleTorch() {
+  if (!cameraStream) return;
+  const track = cameraStream.getVideoTracks()[0];
+  if (!track) return;
+  torchOn = !torchOn;
+  track.applyConstraints({ advanced: [{ torch: torchOn }] })
+    .then(() => {
+      document.getElementById('btn-torch').style.background = torchOn ? '#fef3c7' : 'var(--cream2)';
+    })
+    .catch(() => toast('Torch not supported on this device'));
+}
+
+function verifyTicket() {
+  const val = document.getElementById('manual-ticket-input').value.trim().toUpperCase();
+  if (!val) { toast('Please enter a ticket number'); return; }
+  processScannedTicket(val, true);
+}
+
+function processScannedTicket(ticketId, isManual) {
+  // Check against locally created tickets
+  let foundEvent = null, foundTier = null;
+  events.forEach(ev => {
+    if (!ev.tiers) return;
+    ev.tiers.forEach(t => {
+      // Match any ticket number that belongs to this event + tier
+      const prefix = 'TKT-' + ev.id.toString().slice(-5) + '-' + t.type.replace(/[^A-Z]/gi,'').substring(0,3).toUpperCase().padEnd(3,'X');
+      if (ticketId.startsWith(prefix) || ticketId.startsWith('TKT-'+ev.id.toString().slice(-5))) {
+        foundEvent = ev; foundTier = t;
+      }
+    });
+  });
+
+  const isValid = foundEvent !== null && ticketId.startsWith('TKT-') && ticketId.length >= 10;
+  const resultEl = document.getElementById(isManual ? 'verify-result' : 'scan-result');
+
+  scanStats.total++;
+  if (isValid) {
+    scanStats.valid++;
+    checkedInList.unshift({ id: ticketId, name: foundEvent.name, tier: foundTier ? foundTier.type : '', time: new Date().toLocaleTimeString(), valid: true });
+    resultEl.style.cssText = 'display:block;padding:14px;border-radius:10px;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);margin-top:12px;';
+    resultEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:2rem;">✅</span>
+        <div>
+          <div style="font-weight:700;color:#16a34a;font-size:0.95rem;">Valid Ticket</div>
+          <div style="font-size:0.78rem;color:var(--text-mid);margin-top:2px;">${ticketId}</div>
+          <div style="font-size:0.78rem;color:var(--text-mid);">${foundEvent.name} · ${foundTier ? foundTier.type : ''}</div>
+        </div>
+      </div>`;
+    if (!isManual) document.getElementById('scan-status').textContent = '✅ Valid — keep scanning';
+  } else {
+    scanStats.invalid++;
+    checkedInList.unshift({ id: ticketId, time: new Date().toLocaleTimeString(), valid: false });
+    resultEl.style.cssText = 'display:block;padding:14px;border-radius:10px;background:#fff1f2;border:1px solid #fecaca;margin-top:12px;';
+    resultEl.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:2rem;">❌</span>
+        <div>
+          <div style="font-weight:700;color:#dc2626;font-size:0.95rem;">Invalid Ticket</div>
+          <div style="font-size:0.78rem;color:var(--text-mid);margin-top:2px;">${ticketId}</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);">Not found in system</div>
+        </div>
+      </div>`;
+    if (!isManual) document.getElementById('scan-status').textContent = '❌ Invalid — keep scanning';
+  }
+
+  // Update stats
+  document.getElementById('scan-total').textContent = scanStats.total;
+  document.getElementById('scan-valid').textContent = scanStats.valid;
+  document.getElementById('scan-invalid').textContent = scanStats.invalid;
+
+  // Update checked-in list
+  document.getElementById('checked-in-list').innerHTML = checkedInList.slice(0,6).map(c => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--cream);border-radius:8px;margin-bottom:6px;">
+      <div>
+        <div style="font-family:monospace;font-size:0.7rem;color:var(--text);font-weight:600;">${c.id}</div>
+        ${c.name ? `<div style="font-size:0.65rem;color:var(--text-dim);">${c.name}${c.tier?' · '+c.tier:''}</div>` : ''}
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <span style="font-size:0.65rem;color:var(--text-dim);">${c.time}</span>
+        <span style="font-size:1rem;">${c.valid ? '✅' : '❌'}</span>
+      </div>
+    </div>
+  `).join('') || '<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:0.82rem;">No check-ins yet</div>';
+
+  // Auto-clear result after 4 seconds when using camera
+  if (!isManual) setTimeout(() => { if (resultEl) resultEl.style.display = 'none'; }, 4000);
+}
+
+// Stop camera when leaving scanner screen
+document.addEventListener('DOMContentLoaded', function() {
+  var _origNavCamera = nav;
+  nav = function(el, screen) {
+    if (screen !== 'scanner' && cameraStream) stopCamera();
+    _origNavCamera(el, screen);
+  };
+});
+
+// ── ONLINE EVENT ACCESS ───────────────────────────────
+function openOnlineAccess(evIdx) {
+  const ev = events[evIdx];
+  const streamLink = ev.onlineLink || ('https://stream.massed.io/' + ev.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''));
+  document.getElementById('online-ev-name').textContent = ev.name;
+  const dateStr = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
+  document.getElementById('online-ev-date').textContent = dateStr + (ev.time?' • '+ev.time:'');
+  document.getElementById('online-ticket-input').value = '';
+  document.getElementById('online-verify-result').style.display = 'none';
+  document.getElementById('online-access-granted').style.display = 'none';
+  document.getElementById('online-event-link-btn').href = streamLink;
+  const displayEl = document.getElementById('online-stream-link-display');
+  if (displayEl) displayEl.textContent = streamLink;
+  openModal('modal-online-access');
+}
+
+function verifyOnlineAccess() {
+  const val = document.getElementById('online-ticket-input').value.trim().toUpperCase();
+  if (!val) { toast('Please enter your ticket number'); return; }
+  const resultEl = document.getElementById('online-verify-result');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div style="color:rgba(255,255,255,0.5);font-size:0.85rem;">🔍 Verifying...</div>';
+  setTimeout(() => {
+    const isValid = val.startsWith('TKT-') && val.length > 10;
+    if (isValid) {
+      resultEl.style.display = 'none';
+      document.getElementById('online-access-granted').style.display = 'block';
+    } else {
+      resultEl.innerHTML = '<div style="color:#f87171;font-weight:600;">❌ Invalid ticket number. Please check and try again.</div>';
+    }
+  }, 1200);
+}
+
+function downloadOnlineLink() {
+  toast('📥 Event access link downloaded!');
+}
+
+// ── TICKET NUMBER GENERATION ──────────────────────────
+function generateTicketNumber(evId, tierType, index) {
+  const evPart = evId.toString().slice(-5).toUpperCase();
+  const tierPart = tierType.replace(/[^A-Z]/gi,'').substring(0,3).toUpperCase().padEnd(3,'X');
+  const numPart = String(index).padStart(4,'0');
+  return `TKT-${evPart}-${tierPart}-${numPart}`;
+}
+// ── MORE MENU ─────────────────────────────────────────
+function toggleMoreMenu() {
+  const menu = document.getElementById('more-menu');
+  const isOpen = menu.style.display === 'block';
+  menu.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) setTimeout(() => document.addEventListener('click', closeMoreMenuOutside), 10);
+}
+function closeMoreMenu() {
+  const menu = document.getElementById('more-menu');
+  if (menu) menu.style.display = 'none';
+  document.removeEventListener('click', closeMoreMenuOutside);
+}
+function closeMoreMenuOutside(e) {
+  const menu = document.getElementById('more-menu');
+  const trigger = document.getElementById('btn-more-trigger');
+  if (menu && !menu.contains(e.target) && trigger && !trigger.contains(e.target)) closeMoreMenu();
+}
+function goToLivePreview() {
+  closeMoreMenu();
+  nav(null, 'livepreview');
+}
+
+// ── COLLABORATION ─────────────────────────────────────────────────────────────
+const collabProfiles = [
+  {name:'Avy Adore',tagline:'Beauty & Real Estate Creator',genres:['Beauty','Real Estate','Wellness'],color:'#8B6040',initials:'AA',bio:'Looking to collab with wellness and beauty brands for UGC and brand deals.'},
+  {name:'Shanay Evans',tagline:'Lash Tech & MUA Artist',genres:['Lash Tech','MUA Artist','Beauty'],color:'#d6249f',initials:'SE',bio:'Lash artist open to beauty collabs, product reviews and tutorials.'},
+  {name:'Erica Love',tagline:'Nail Tech & Apparel',genres:['Nail Tech','Apparel'],color:'#7c3aed',initials:'EL',bio:'Nail tech creating content around nail art and fashion styling.'},
+  {name:'Jordan Miles',tagline:'Fitness Coach & Speaker',genres:['Fitness','Speaker','Coaching'],color:'#2563eb',initials:'JM',bio:'Certified fitness coach looking for wellness and supplement brand collabs.'},
+  {name:'Nova Belle',tagline:'Hair Products & Beauty',genres:['Hair Products','Beauty','Apparel'],color:'#16a34a',initials:'NB',bio:'Natural hair creator open to product collaborations.'},
+  {name:'Kai Monroe',tagline:'Real Estate & Finance',genres:['Real Estate','Finance','Consulting'],color:'#ca8a04',initials:'KM',bio:'Real estate investor looking for finance and wealth collab opportunities.'},
+  {name:'Sara West',tagline:'Esthetician & Wellness',genres:['Esthetician','Wellness','Beauty'],color:'#db2777',initials:'SW',bio:'Licensed esthetician open to skincare and wellness brand collabs.'},
+  {name:'Marcus Bell',tagline:'Digital Ebooks & Coaching',genres:['Digital Ebooks','Coaching','Consulting'],color:'#0891b2',initials:'MB',bio:'Author and business coach looking for digital product collabs.'},
+];
+
+let activeCollabFilter = 'all';
+
+function mpTab(tab) {
+  document.getElementById('mptab-profile-content').style.display = tab === 'profile' ? 'block' : 'none';
+  document.getElementById('mptab-collab-content').style.display = tab === 'collab' ? 'block' : 'none';
+  var pb = document.getElementById('mptab-profile');
+  var cb = document.getElementById('mptab-collab');
+  pb.style.background = tab === 'profile' ? 'var(--brown)' : 'transparent';
+  pb.style.color = tab === 'profile' ? '#fff' : 'var(--text-dim)';
+  cb.style.background = tab === 'collab' ? 'var(--brown)' : 'transparent';
+  cb.style.color = tab === 'collab' ? '#fff' : 'var(--text-dim)';
+  if (tab === 'collab') renderCollabGrid('all');
+}
+
+function toggleGenre(el) {
+  el.classList.toggle('selected');
+}
+
+function toggleCollab(cb) {
+  var track = document.getElementById('collab-track');
+  var thumb = document.getElementById('collab-thumb');
+  if (cb.checked) {
+    track.style.background = 'var(--brown)';
+    thumb.style.left = '25px';
+    toast('✓ You are now visible to collaborators!');
+  } else {
+    track.style.background = '#e5e7eb';
+    thumb.style.left = '3px';
+    toast('Collaboration visibility turned off');
+  }
+}
+
+function saveCollabProfile() {
+  var name = document.getElementById('collab-name').value.trim();
+  var selected = Array.from(document.querySelectorAll('.collab-genre-tag.selected')).map(t => t.textContent);
+  if (!name) { toast('Please enter your display name'); return; }
+  if (selected.length === 0) { toast('Please select at least one genre'); return; }
+  toast('✓ Collaboration profile saved! (' + selected.length + ' genres selected)');
+}
+
+function filterCollabs(btn, genre) {
+  document.querySelectorAll('.collab-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeCollabFilter = genre;
+  renderCollabGrid(genre);
+}
+
+function renderCollabGrid(genre) {
+  var grid = document.getElementById('collab-grid');
+  if (!grid) return;
+  var filtered = genre === 'all' ? collabProfiles : collabProfiles.filter(p => p.genres.includes(genre));
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-dim);font-size:0.85rem;">No collaborators found for this genre yet.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(p => `
+    <div class="collab-card">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="collab-card-avatar" style="background:${p.color};">${p.initials}</div>
+        <div>
+          <div class="collab-card-name">${p.name}</div>
+          <div class="collab-card-tagline">${p.tagline}</div>
+        </div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.5;">${p.bio}</div>
+      <div class="collab-card-genres">${p.genres.map(g => `<span class="collab-card-genre">${g}</span>`).join('')}</div>
+      <button class="collab-connect-btn" onclick="toast('Connection request sent to ${p.name}! 🤝')">Connect →</button>
+    </div>
+  `).join('');
+}
+
+// ── COLLABORATION FULL SYSTEM ─────────────────────────────────────────────────
+const incomingRequests = [
+  {id:1, name:'Nova Belle', tagline:'Hair Products & Beauty', genres:['Hair Products','Beauty'], color:'#16a34a', initials:'NB', message:'Hi! I love your content. Would love to collaborate on a beauty series!'},
+  {id:2, name:'Marcus Bell', tagline:'Digital Ebooks & Coaching', genres:['Digital Ebooks','Coaching'], color:'#0891b2', initials:'MB', message:'Hey! Thinking we could do a joint digital product together. Let me know!'},
+];
+let activeCollabs = [];
+let currentDeclineId = null;
+let currentActiveCollab = null;
+let ndaSigned = false;
+let signedDocuments = [];
+let collabMessages = {};
+
+function collabSubTab(tab) {
+  ['browse','incoming','active','docs'].forEach(function(t) {
+    document.getElementById('csub-' + t + '-content').style.display = t === tab ? 'block' : 'none';
+    var btn = document.getElementById('csub-' + t);
+    btn.style.background = t === tab ? 'var(--brown)' : 'transparent';
+    btn.style.color = t === tab ? '#fff' : 'var(--text-dim)';
+  });
+  if (tab === 'incoming') renderIncoming();
+  if (tab === 'active') renderActive();
+  if (tab === 'docs') renderDocs();
+}
+
+function renderIncoming() {
+  var list = document.getElementById('incoming-list');
+  if (!list) return;
+  if (incomingRequests.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:0.85rem;">No incoming requests yet.</div>';
+    return;
+  }
+  list.innerHTML = incomingRequests.map(function(r) {
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+        '<div style="width:44px;height:44px;border-radius:50%;background:' + r.color + ';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;flex-shrink:0;">' + r.initials + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-weight:800;font-size:0.9rem;">' + r.name + '</div>' +
+          '<div style="font-size:0.72rem;color:var(--text-dim);">' + r.tagline + '</div>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;">' + r.genres.map(function(g){return '<span style="padding:2px 8px;border-radius:10px;font-size:0.65rem;font-weight:700;background:var(--brown-bg);color:var(--brown);">' + g + '</span>';}).join('') + '</div>' +
+        '</div>' +
+      '</div>' +
+      (r.message ? '<div style="background:var(--cream);border-radius:8px;padding:10px 12px;font-size:0.8rem;color:var(--text);margin-bottom:12px;font-style:italic;">"' + r.message + '"</div>' : '') +
+      '<div style="display:flex;gap:8px;">' +
+        '<button onclick="declineRequest(' + r.id + ')" data-name="' + r.name + '" style="flex:1;padding:9px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;">&#10005; Decline</button>' +
+        '<button onclick="acceptRequest(' + r.id + ')" style="flex:2;padding:9px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;">&#10003; Accept Collaboration</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function acceptRequest(id) {
+  var req = incomingRequests.find(function(r){ return r.id === id; });
+  if (!req) return;
+  // Remove from incoming
+  var idx = incomingRequests.findIndex(function(r){ return r.id === id; });
+  incomingRequests.splice(idx, 1);
+  // Add to active
+  activeCollabs.push(req);
+  collabMessages[id] = [];
+  // Update badge
+  var badge = document.getElementById('incoming-badge');
+  if (badge) badge.textContent = incomingRequests.length;
+  toast('✓ Collaboration with ' + req.name + ' accepted! 🎉');
+  collabSubTab('active');
+}
+
+function declineRequest(id) {
+  currentDeclineId = id;
+  var req = incomingRequests.find(function(r){ return r.id === id; });
+  document.getElementById('decline-name').textContent = req ? req.name : '';
+  document.getElementById('decline-message').value = '';
+  openModal('modal-collab-decline');
+}
+
+function confirmDecline() {
+  var msg = document.getElementById('decline-message').value.trim();
+  var req = incomingRequests.find(function(r){ return r.id === currentDeclineId; });
+  var idx = incomingRequests.findIndex(function(r){ return r.id === currentDeclineId; });
+  if (idx > -1) incomingRequests.splice(idx, 1);
+  var badge = document.getElementById('incoming-badge');
+  if (badge) badge.textContent = incomingRequests.length;
+  closeModal('modal-collab-decline');
+  toast(msg ? 'Request declined with message sent.' : 'Request declined.');
+  renderIncoming();
+}
+
+function renderActive() {
+  var list = document.getElementById('active-list');
+  if (!list) return;
+  if (activeCollabs.length === 0) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:0.85rem;">No active collaborations yet. Accept an incoming request to get started!</div>';
+    return;
+  }
+  list.innerHTML = activeCollabs.map(function(c) {
+    var msgs = collabMessages[c.id] || [];
+    var lastMsg = msgs.length ? msgs[msgs.length-1].text : 'No messages yet';
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;cursor:pointer;" onclick="openActiveCollab(' + c.id + ')">' +
+      '<div style="display:flex;align-items:center;gap:12px;">' +
+        '<div style="width:44px;height:44px;border-radius:50%;background:' + c.color + ';display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;flex-shrink:0;">' + c.initials + '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-weight:800;font-size:0.9rem;">' + c.name + '</div>' +
+          '<div style="font-size:0.72rem;color:var(--text-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + lastMsg + '</div>' +
+        '</div>' +
+        '<div style="flex-shrink:0;"><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:3px 8px;border-radius:10px;font-weight:700;">Active</span></div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function openActiveCollab(id) {
+  var c = activeCollabs.find(function(x){ return x.id === id; });
+  if (!c) return;
+  currentActiveCollab = c;
+  ndaSigned = false;
+  document.getElementById('active-modal-avatar').style.background = c.color;
+  document.getElementById('active-modal-avatar').textContent = c.initials;
+  document.getElementById('active-modal-name').textContent = c.name;
+  document.getElementById('nda-btn').textContent = 'View & Send NDA';
+  document.getElementById('nda-status-text').textContent = 'Protect your collaboration. Send an NDA for both parties to sign.';
+  document.getElementById('nda-btn').style.background = '#6366f1';
+  // Render messages
+  var thread = document.getElementById('collab-msg-thread');
+  var msgs = collabMessages[id] || [];
+  renderMsgThread(thread, msgs);
+  openModal('modal-collab-active');
+}
+
+function renderMsgThread(thread, msgs) {
+  if (msgs.length === 0) {
+    thread.innerHTML = '<div style="text-align:center;font-size:0.72rem;color:var(--text-dim);">Collaboration started — say hello! 👋</div>';
+    return;
+  }
+  thread.innerHTML = msgs.map(function(m) {
+    var isMe = m.sender === 'me';
+    return '<div style="display:flex;justify-content:' + (isMe?'flex-end':'flex-start') + ';">' +
+      '<div style="max-width:75%;background:' + (isMe?'var(--brown)':'#fff') + ';color:' + (isMe?'#fff':'var(--text)') + ';padding:8px 12px;border-radius:' + (isMe?'14px 14px 4px 14px':'14px 14px 14px 4px') + ';font-size:0.82rem;border:' + (isMe?'none':'1px solid var(--border)') + ';">' +
+        (m.isDoc ? '<div style="display:flex;align-items:center;gap:6px;"><span>📄</span><span style="font-weight:700;">' + m.text + '</span></div>' : m.text) +
+      '</div></div>';
+  }).join('');
+  thread.scrollTop = thread.scrollHeight;
+}
+
+function sendCollabMsg() {
+  if (!currentActiveCollab) return;
+  var input = document.getElementById('collab-msg-input');
+  var text = input.value.trim();
+  if (!text) return;
+  if (!collabMessages[currentActiveCollab.id]) collabMessages[currentActiveCollab.id] = [];
+  collabMessages[currentActiveCollab.id].push({sender:'me', text:text});
+  input.value = '';
+  var thread = document.getElementById('collab-msg-thread');
+  renderMsgThread(thread, collabMessages[currentActiveCollab.id]);
+  // Simulate reply after 1.5s
+  setTimeout(function() {
+    collabMessages[currentActiveCollab.id].push({sender:'them', text:'Thanks for your message! Looking forward to working together 🙌'});
+    renderMsgThread(thread, collabMessages[currentActiveCollab.id]);
+    renderActive();
+  }, 1500);
+}
+
+function showNDA() {
+  if (currentActiveCollab) {
+    document.getElementById('nda-signer-a').textContent = 'You (MASSED User)';
+    document.getElementById('nda-date-a').textContent = ndaSigned ? '✓ Signed ' + new Date().toLocaleDateString() : 'Pending signature';
+    document.getElementById('nda-signer-b').textContent = currentActiveCollab.name;
+    document.getElementById('nda-date-b').textContent = 'Pending signature';
+    var signBtn = document.getElementById('nda-sign-btn');
+    if (ndaSigned) {
+      signBtn.textContent = '✓ You have signed — awaiting other party';
+      signBtn.style.background = '#16a34a';
+      signBtn.disabled = true;
+    } else {
+      signBtn.textContent = '✍️ I Agree & Sign';
+      signBtn.style.background = '#6366f1';
+      signBtn.disabled = false;
+    }
+  }
+  openModal('modal-nda');
+}
+
+function signNDA() {
+  ndaSigned = true;
+  var signedDate = new Date();
+  document.getElementById('nda-date-a').textContent = '✓ Signed ' + signedDate.toLocaleDateString();
+  var signBtn = document.getElementById('nda-sign-btn');
+  signBtn.textContent = '✓ Signed — awaiting ' + (currentActiveCollab ? currentActiveCollab.name : 'other party');
+  signBtn.style.background = '#16a34a';
+  signBtn.disabled = true;
+  document.getElementById('nda-status-text').textContent = '✓ You signed — waiting for ' + (currentActiveCollab ? currentActiveCollab.name : 'other party') + ' to sign.';
+  document.getElementById('nda-btn').textContent = '📄 NDA Pending';
+  document.getElementById('nda-btn').style.background = '#f59e0b';
+  if (currentActiveCollab) {
+    if (!collabMessages[currentActiveCollab.id]) collabMessages[currentActiveCollab.id] = [];
+    collabMessages[currentActiveCollab.id].push({sender:'me', text:'NDA sent — please review and sign', isDoc:true});
+    var thread = document.getElementById('collab-msg-thread');
+    if (thread) renderMsgThread(thread, collabMessages[currentActiveCollab.id]);
+    // Simulate other party signing after 2 seconds — adds to documents
+    setTimeout(function() {
+      var doc = {
+        id: Date.now(),
+        type: 'NDA',
+        collaborator: currentActiveCollab.name,
+        initials: currentActiveCollab.initials,
+        color: currentActiveCollab.color,
+        dateSigned: signedDate,
+        status: 'Fully Executed',
+        content: generateNDAText(currentActiveCollab.name, signedDate)
+      };
+      signedDocuments.push(doc);
+      // Update dropdown
+      populateDocFilter();
+      // Update NDA banner to fully signed
+      document.getElementById('nda-status-text').textContent = '✓ Both parties have signed — document saved to Documents tab.';
+      document.getElementById('nda-btn').textContent = '✅ NDA Executed';
+      document.getElementById('nda-btn').style.background = '#16a34a';
+      toast('🎉 ' + currentActiveCollab.name + ' signed the NDA! Document saved to Documents tab.');
+      if (collabMessages[currentActiveCollab.id]) {
+        collabMessages[currentActiveCollab.id].push({sender:'them', text:'I have signed the NDA ✍️', isDoc:false});
+        if (thread) renderMsgThread(thread, collabMessages[currentActiveCollab.id]);
+        renderActive();
+      }
+    }, 2000);
+  }
+  toast('✓ NDA signed and sent to ' + (currentActiveCollab ? currentActiveCollab.name : 'collaborator') + '!');
+  setTimeout(function(){ closeModal('modal-nda'); }, 800);
+}
+
+function generateNDAText(name, date) {
+  return 'NON-DISCLOSURE AGREEMENT\n\nThis Non-Disclosure Agreement is entered into as of ' + date.toLocaleDateString() + ' between You (MASSED User) and ' + name + '.\n\nBoth parties agree to keep all shared information confidential and not disclose to any third party. This agreement covers business strategies, creative works, personal brand assets, and all proprietary information shared during the collaboration.\n\nThis document has been digitally signed by both parties and serves as a legally binding agreement.';
+}
+
+function populateDocFilter() {
+  var sel = document.getElementById('doc-filter-name');
+  if (!sel) return;
+  var existing = Array.from(sel.options).map(function(o){ return o.value; });
+  signedDocuments.forEach(function(d) {
+    if (!existing.includes(d.collaborator)) {
+      var opt = document.createElement('option');
+      opt.value = d.collaborator;
+      opt.textContent = d.collaborator;
+      sel.appendChild(opt);
+    }
+  });
+}
+
+function renderDocs() {
+  populateDocFilter();
+  filterDocs();
+}
+
+function filterDocs() {
+  var search = (document.getElementById('doc-search') ? document.getElementById('doc-search').value.toLowerCase() : '');
+  var nameFilter = (document.getElementById('doc-filter-name') ? document.getElementById('doc-filter-name').value : '');
+  var typeFilter = (document.getElementById('doc-filter-type') ? document.getElementById('doc-filter-type').value : '');
+  var filtered = signedDocuments.filter(function(d) {
+    var matchSearch = !search || d.collaborator.toLowerCase().includes(search) || d.dateSigned.toLocaleDateString().includes(search);
+    var matchName = !nameFilter || d.collaborator === nameFilter;
+    var matchType = !typeFilter || d.type === typeFilter;
+    return matchSearch && matchName && matchType;
+  });
+  var list = document.getElementById('docs-list');
+  if (!list) return;
+  if (filtered.length === 0) {
+    list.innerHTML = signedDocuments.length === 0
+      ? '<div style="text-align:center;padding:48px 20px;color:var(--text-dim);"><div style="font-size:2.5rem;margin-bottom:12px;">📁</div><div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;">No documents yet</div><div style="font-size:0.78rem;">When both parties sign an NDA it will automatically appear here.</div></div>'
+      : '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:0.85rem;">No documents match your search.</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(function(d) {
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;">' +
+      '<div style="display:flex;align-items:center;gap:12px;">' +
+        '<div style="width:44px;height:44px;border-radius:10px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">📄</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-weight:800;font-size:0.9rem;">' + d.type + ' — ' + d.collaborator + '</div>' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap;">' +
+            '<span style="font-size:0.72rem;color:var(--text-dim);">Signed ' + d.dateSigned.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) + '</span>' +
+            '<span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">✓ ' + d.status + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;flex-shrink:0;">' +
+          '<button onclick="viewDoc(' + d.id + ')" style="padding:7px 12px;background:var(--brown-bg);color:var(--brown);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">View</button>' +
+          '<button onclick="downloadDoc(' + d.id + ')" style="padding:7px 12px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">⬇ Save</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function viewDoc(id) {
+  var doc = signedDocuments.find(function(d){ return d.id === id; });
+  if (!doc) return;
+  var w = window.open('','_blank','width=700,height=600');
+  w.document.write('<html><head><title>' + doc.type + ' — ' + doc.collaborator + '</title><style>body{font-family:Georgia,serif;padding:40px;max-width:640px;margin:0 auto;line-height:1.8;color:#222;}h1{font-size:1.4rem;text-align:center;}pre{white-space:pre-wrap;font-family:Georgia,serif;}</style></head><body><h1>' + doc.type + '</h1><pre>' + doc.content + '</pre></body></html>');
+  w.document.close();
+}
+
+function downloadDoc(id) {
+  var doc = signedDocuments.find(function(d){ return d.id === id; });
+  if (!doc) return;
+  var blob = new Blob([doc.content], {type:'text/plain'});
+  var a = document.createElement('a');
+  a
+  toast('✓ Document downloaded!');
+}
+
+// ── CORE NAV & UI ──────────────────────────────────────────────────────────
 function toggleSidebar() {
   var sb = document.querySelector('.sidebar');
   var ov = document.getElementById('sidebar-overlay');
   if (sb) sb.classList.toggle('open');
   if (ov) ov.classList.toggle('open');
 }
+
 function closeSidebar() {
   var sb = document.querySelector('.sidebar');
   var ov = document.getElementById('sidebar-overlay');
   if (sb) sb.classList.remove('open');
   if (ov) ov.classList.remove('open');
-}
-
-const pageTitles = {
-  dashboard:'Dashboard',
-  showcase:'Showcase',
-  mystore:'My Store',
-  weblinks:'Web Links',
-  mediaprofile:'Media Profile',
-  sociallinks:'Social Links',
-  video:'Video',
-  analytics:'Analytics',
-  reviews:'Reviews',
-  tickets:'Events / Tickets',
-  scanner:'Ticket Scanner',
-  livepreview:'Live Preview',
-  promo:'Promo / Referrals / Affiliates',
-  settings:'Settings',
-  billing:'Billing',
-  salespayouts:'Sales & Payouts',
-  coming:'Coming Soon'
-};
-
-function nav(el, screen) {
-  if (!screen) return;
-  try {
-    document.querySelectorAll('.nav-item').forEach(function(n){ if(n) n.classList.remove('active'); });
-    if (el && el.classList) el.classList.add('active');
-    document.querySelectorAll('.screen').forEach(function(s){ if(s) s.classList.remove('active'); });
-    var target = document.getElementById('screen-' + screen);
-    if (target) target.classList.add('active');
-    var pt = document.getElementById('page-title');
-    if (pt) pt.textContent = pageTitles[screen] || '';
-    var sb = document.querySelector('.sidebar');
-    var ov = document.getElementById('sidebar-overlay');
-    if (sb && sb.classList.contains('open')) {
-      sb.classList.remove('open');
-      if (ov) ov.classList.remove('open');
-    }
-    try { sessionStorage.setItem('massedScreen', screen); } catch(e){}
-  } catch(e) { console.warn('nav error:', e); }
 }
 
 function openModal(id) {
@@ -4548,28 +5252,38 @@ function toast(msg) {
   if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  setTimeout(function(){ if (t) t.classList.remove('show'); }, 3000);
 }
 
-// Restore session
-document.addEventListener('DOMContentLoaded', function() {
-  var lastScreen = '';
-  try { lastScreen = sessionStorage.getItem('massedScreen') || ''; } catch(e){}
-  if (lastScreen && document.getElementById('screen-' + lastScreen)) {
-    nav(null, lastScreen);
-  } else {
-    nav(null, 'dashboard');
-  }
+var pageTitles = {
+  dashboard:'Dashboard', showcase:'Showcase', mystore:'My Store',
+  weblinks:'Web Links', mediaprofile:'Media Profile', sociallinks:'Social Links',
+  video:'Video', analytics:'Analytics', reviews:'Reviews',
+  tickets:'Events / Tickets', scanner:'Ticket Scanner', livepreview:'Live Preview',
+  promo:'Promo / Referrals / Affiliates', settings:'Settings', billing:'Billing',
+  salespayouts:'Sales & Payouts', coming:'Coming Soon'
+};
 
-  // Camera nav override
-  var _origNavCamera = nav;
-  nav = function(el, screen) {
-    if (typeof cameraStream !== 'undefined' && screen !== 'scanner' && cameraStream) stopCamera();
-    _origNavCamera(el, screen);
-  };
-});
+function nav(el, screen) {
+  if (!screen) return;
+  try {
+    document.querySelectorAll('.nav-item').forEach(function(n){ if (n) n.classList.remove('active'); });
+    if (el && el.classList) el.classList.add('active');
+    document.querySelectorAll('.screen').forEach(function(s){ if (s) s.classList.remove('active'); });
+    var target = document.getElementById('screen-' + screen);
+    if (target) target.classList.add('active');
+    var pt = document.getElementById('page-title');
+    if (pt) pt.textContent = pageTitles[screen] || '';
+    var sb = document.querySelector('.sidebar');
+    var ov = document.getElementById('sidebar-overlay');
+    if (sb && sb.classList.contains('open')) {
+      sb.classList.remove('open');
+      if (ov) ov.classList.remove('open');
+    }
+    try { sessionStorage.setItem('massedScreen', screen); } catch(e){}
+  } catch(e) { console.warn('nav error:', e); }
+}
 
-// spTab
 function spTab(tab) {
   var isS = tab === 'sales';
   var sales = document.getElementById('sp-sales');
@@ -4603,30 +5317,6 @@ function settingsTab(tab) {
   });
 }
 
-function mpTab(tab) {
-  var pc = document.getElementById('mptab-profile-content');
-  var cc = document.getElementById('mptab-collab-content');
-  if (pc) pc.style.display = tab === 'profile' ? 'block' : 'none';
-  if (cc) cc.style.display = tab === 'collab' ? 'block' : 'none';
-  var pb = document.getElementById('mptab-profile');
-  var cb = document.getElementById('mptab-collab');
-  if (pb) { pb.style.background = tab === 'profile' ? 'var(--brown)' : 'transparent'; pb.style.color = tab === 'profile' ? '#fff' : 'var(--text-dim)'; }
-  if (cb) { cb.style.background = tab === 'collab' ? 'var(--brown)' : 'transparent'; cb.style.color = tab === 'collab' ? '#fff' : 'var(--text-dim)'; }
-  if (tab === 'collab') renderCollabGrid('all');
-}
-
-function collabSubTab(tab) {
-  ['browse','incoming','active','docs'].forEach(function(t) {
-    var c = document.getElementById('csub-' + t + '-content');
-    var b = document.getElementById('csub-' + t);
-    if (c) c.style.display = t === tab ? 'block' : 'none';
-    if (b) { b.style.background = t === tab ? 'var(--brown)' : 'transparent'; b.style.color = t === tab ? '#fff' : 'var(--text-dim)'; }
-  });
-  if (tab === 'incoming') renderIncoming();
-  if (tab === 'active') renderActive();
-  if (tab === 'docs') renderDocs();
-}
-
 function toggleStoreLive(cb) {
   var track = document.getElementById('store-live-track');
   var thumb = document.getElementById('store-live-thumb');
@@ -4634,33 +5324,74 @@ function toggleStoreLive(cb) {
   if (cb.checked) {
     if (track) track.style.background = 'var(--brown)';
     if (thumb) thumb.style.left = '22px';
-    if (label) { label.textContent = '● Live at massed.io/username'; label.style.color = 'var(--green)'; }
+    if (label) label.textContent = '● Live at massed.io/username';
     toast('✓ Store is now live!');
   } else {
     if (track) track.style.background = '#e5e7eb';
     if (thumb) thumb.style.left = '2px';
-    if (label) { label.textContent = '○ Store is offline'; label.style.color = 'var(--text-dim)'; }
+    if (label) label.textContent = '○ Store is offline';
     toast('Store taken offline.');
   }
 }
 
-// Traffic map tooltip
+// Video player
+function openVideoPlayer(v) {
+  var modal = document.getElementById('video-player-modal');
+  var player = document.getElementById('video-player-el');
+  var title = document.getElementById('video-player-title');
+  var genre = document.getElementById('video-player-genre');
+  if (!modal || !player) return;
+  player.src = v.url;
+  if (title) title.textContent = v.title;
+  if (genre) genre.textContent = v.genre + ' · ' + v.duration;
+  modal.classList.add('open');
+  player.play().catch(function(){});
+}
+
+function closeVideoPlayer() {
+  var modal = document.getElementById('video-player-modal');
+  var player = document.getElementById('video-player-el');
+  if (player) { player.pause(); player.src = ''; }
+  if (modal) modal.classList.remove('open');
+}
+
+// Map tooltip
 document.addEventListener('DOMContentLoaded', function() {
+  // Session restore
+  var lastScreen = '';
+  try { lastScreen = sessionStorage.getItem('massedScreen') || ''; } catch(e){}
+  if (lastScreen && document.getElementById('screen-' + lastScreen)) {
+    nav(null, lastScreen);
+  } else {
+    nav(null, 'dashboard');
+  }
+
+  // Camera nav override (safe)
+  var _orig = nav;
+  nav = function(el, screen) {
+    try {
+      if (typeof cameraStream !== 'undefined' && cameraStream && screen !== 'scanner') stopCamera();
+    } catch(e){}
+    _orig(el, screen);
+  };
+
+  // Map tooltip
   var tooltip = document.getElementById('map-tooltip');
-  if (!tooltip) return;
-  document.querySelectorAll('.us-state').forEach(function(s) {
-    s.style.cursor = 'pointer';
-    s.addEventListener('mouseenter', function(e) {
-      tooltip.style.display = 'block';
-      tooltip.textContent = s.getAttribute('data-state') + ' — ' + s.getAttribute('data-traffic');
+  if (tooltip) {
+    document.querySelectorAll('.us-state').forEach(function(s) {
+      s.style.cursor = 'pointer';
+      s.addEventListener('mouseenter', function(e) {
+        tooltip.style.display = 'block';
+        tooltip.textContent = s.getAttribute('data-state') + ' — ' + s.getAttribute('data-traffic');
+      });
+      s.addEventListener('mousemove', function(e) {
+        var rect = s.closest('svg').parentElement.getBoundingClientRect();
+        tooltip.style.left = (e.clientX - rect.left + 8) + 'px';
+        tooltip.style.top = (e.clientY - rect.top - 30) + 'px';
+      });
+      s.addEventListener('mouseleave', function() { tooltip.style.display = 'none'; });
     });
-    s.addEventListener('mousemove', function(e) {
-      var rect = s.closest('svg').parentElement.getBoundingClientRect();
-      tooltip.style.left = (e.clientX - rect.left + 8) + 'px';
-      tooltip.style.top = (e.clientY - rect.top - 30) + 'px';
-    });
-    s.addEventListener('mouseleave', function() { tooltip.style.display = 'none'; });
-  });
+  }
 });
 
 </script>
