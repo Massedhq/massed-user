@@ -70,6 +70,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 #screen-livepreview.active{display:flex!important;padding:0!important;}
 
 /* MOBILE FLOATING GO LIVE — removed, Go Live is in sidebar-bottom */
+/* ── COLLABORATION ── */
+.collab-genre-tag{padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;background:var(--cream);border:1.5px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all 0.15s;user-select:none;}
+.collab-genre-tag.selected{background:var(--brown-bg);border-color:var(--brown);color:var(--brown);font-weight:700;}
+.collab-filter-btn{padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;background:var(--cream);border:1.5px solid var(--border);color:var(--text-dim);cursor:pointer;transition:all 0.15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.collab-filter-btn.active{background:var(--brown);border-color:var(--brown);color:#fff;}
+.collab-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;transition:box-shadow 0.2s;}
+.collab-card:hover{box-shadow:0 4px 16px rgba(139,96,64,0.12);}
+.collab-card-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;color:#fff;flex-shrink:0;}
+.collab-card-name{font-weight:800;font-size:0.9rem;color:var(--text);}
+.collab-card-tagline{font-size:0.75rem;color:var(--text-dim);margin-top:1px;}
+.collab-card-genres{display:flex;flex-wrap:wrap;gap:5px;}
+.collab-card-genre{padding:2px 8px;border-radius:10px;font-size:0.65rem;font-weight:700;background:var(--brown-bg);color:var(--brown);}
+.collab-connect-btn{width:100%;padding:9px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;margin-top:auto;}
 /* HAMBURGER — hidden on desktop, flex on mobile */
 .hamburger{width:40px;height:40px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;padding:0;}
 .hamburger svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:2;}
@@ -312,6 +325,81 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 <body>
 
 <!-- SIDEBAR OVERLAY -->
+<!-- RECOVERY MODE OVERLAY -->
+<div id="recovery-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#1a0e06,#0d0a04);overflow-y:auto;padding:20px;">
+  <div style="max-width:480px;margin:40px auto;padding:0 4px;">
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="width:72px;height:72px;background:rgba(239,68,68,0.15);border:2px solid rgba(239,68,68,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#ef4444" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <h1 style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#ef4444;margin:0 0 8px;">Account Recovery</h1>
+      <p style="color:rgba(245,240,232,0.6);font-size:0.88rem;line-height:1.6;">Your last payment of <strong style="color:#F5F0E8;">$30.00</strong> was not processed.<br>Choose how you'd like to resolve this to restore full access.</p>
+    </div>
+
+    <!-- Balance Due -->
+    <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:14px;padding:18px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(239,68,68,0.8);margin-bottom:4px;">Balance Due</div>
+        <div style="font-size:2rem;font-weight:900;color:#ef4444;font-family:'Georgia',serif;">$30.00</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.72rem;color:rgba(245,240,232,0.4);">Due since</div>
+        <div style="font-size:0.85rem;color:rgba(245,240,232,0.7);font-weight:600;" id="recovery-due-date">Apr 1, 2026</div>
+      </div>
+    </div>
+
+    <!-- Option 1: Pay Now -->
+    <div id="recovery-option-pay" style="background:rgba(196,154,108,0.08);border:2px solid rgba(196,154,108,0.4);border-radius:16px;padding:22px;margin-bottom:16px;cursor:pointer;transition:all 0.2s;" onclick="selectRecoveryOption('pay')" onmouseover="this.style.borderColor='rgba(196,154,108,0.8)'" onmouseout="this.style.borderColor='rgba(196,154,108,0.4)'">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="width:44px;height:44px;background:rgba(196,154,108,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#C49A6C" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-weight:800;font-size:1rem;color:#C49A6C;">Pay Now — $30.00</div>
+            <span style="background:rgba(34,197,94,0.15);color:#22c55e;border:1px solid rgba(34,197,94,0.3);padding:2px 10px;border-radius:20px;font-size:0.65rem;font-weight:700;">INSTANT RESTORE</span>
+          </div>
+          <div style="font-size:0.82rem;color:rgba(245,240,232,0.6);line-height:1.5;">Pay the full $30.00 now and your account is immediately restored to <strong style="color:#F5F0E8;">Active</strong> status with full earnings and $0 balance.</div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:5px;">
+            <div style="font-size:0.75rem;color:rgba(196,154,108,0.8);">✓ Account restored instantly</div>
+            <div style="font-size:0.75rem;color:rgba(196,154,108,0.8);">✓ Zero balance — no deductions</div>
+            <div style="font-size:0.75rem;color:rgba(196,154,108,0.8);">✓ 100% earnings restored</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option 2: Auto Recovery -->
+    <div id="recovery-option-auto" style="background:rgba(99,102,241,0.06);border:2px solid rgba(99,102,241,0.25);border-radius:16px;padding:22px;margin-bottom:28px;cursor:pointer;transition:all 0.2s;" onclick="selectRecoveryOption('auto')" onmouseover="this.style.borderColor='rgba(99,102,241,0.6)'" onmouseout="this.style.borderColor='rgba(99,102,241,0.25)'">
+      <div style="display:flex;align-items:flex-start;gap:14px;">
+        <div style="width:44px;height:44px;background:rgba(99,102,241,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#818cf8" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-weight:800;font-size:1rem;color:#818cf8;">Auto-Recovery</div>
+            <span style="background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.3);padding:2px 10px;border-radius:20px;font-size:0.65rem;font-weight:700;">20% DEDUCTION</span>
+          </div>
+          <div style="font-size:0.82rem;color:rgba(245,240,232,0.6);line-height:1.5;">20% of each sale goes toward clearing your $30.00 balance. Once cleared, deductions stop automatically and your account returns to <strong style="color:#F5F0E8;">Active</strong> status.</div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:5px;">
+            <div style="font-size:0.75rem;color:rgba(129,140,248,0.8);">✓ No upfront payment needed</div>
+            <div style="font-size:0.75rem;color:rgba(129,140,248,0.8);">✓ Access restored immediately</div>
+            <div style="font-size:0.75rem;color:rgba(129,140,248,0.8);">✓ Auto-clears — no manual action</div>
+            <div style="font-size:0.75rem;color:rgba(239,68,68,0.7);">✗ 20% deducted per sale until cleared</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Button -->
+    <button id="recovery-confirm-btn" onclick="confirmRecovery()" style="width:100%;padding:16px;background:linear-gradient(135deg,#E8C49A,#C49A6C,#8B6040);color:#1a0e06;font-family:'Georgia',serif;font-weight:900;font-size:1rem;letter-spacing:0.08em;border:none;border-radius:12px;cursor:pointer;opacity:0.4;pointer-events:none;transition:all 0.2s;">
+      Select an option above to continue
+    </button>
+    <p style="text-align:center;font-size:0.72rem;color:rgba(245,240,232,0.3);margin-top:14px;">Need help? Contact <a href="/cdn-cgi/l/email-protection#6c1f191c1c031e182c010d1f1f0908420503" style="color:#C49A6C;"><span class="__cf_email__" data-cfemail="3744424747584543775a5644445253195e58">[email&#160;protected]</span></a></p>
+  </div>
+</div>
+
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
@@ -327,6 +415,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
     <div class="nav-item" onclick="nav(this,'showcase')">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>Showcase
+    </div>
+    <div class="nav-item" onclick="nav(this,'mystore')">
+      <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>My Store
     </div>
 
     <div class="nav-group-header" onclick="toggleGroup(this)">
@@ -363,17 +454,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
     <div class="nav-group-body" id="group-finance">
       <div class="nav-item" onclick="nav(this,'analytics')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Sales & Payouts</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 6v6l4 2"/></svg>Stripe</div>
+      <div class="nav-item" onclick="nav(this,'salespayouts')"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Sales & Payouts</div>
     </div>
 
     <div class="nav-section-label">Trust & Community</div>
     <div class="nav-item" onclick="nav(this,'reviews')"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews</div>
-    <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Collaboration</div>
     <div class="nav-item" onclick="nav(this,'scanner')"><svg viewBox="0 0 24 24"><path d="M3 9V5a2 2 0 012-2h4"/><path d="M15 3h4a2 2 0 012 2v4"/><path d="M21 15v4a2 2 0 01-2 2h-4"/><path d="M9 21H5a2 2 0 01-2-2v-4"/><line x1="3" y1="12" x2="21" y2="12"/></svg>Scanner</div>
 
     <div class="nav-section-label">System</div>
-    <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Settings</div>
+    <div class="nav-item" onclick="nav(this,'settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</div>
   </nav>
   <div class="sidebar-bottom">
     <div class="user-card">
@@ -472,26 +561,287 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <!-- MEDIA PROFILE -->
     <div id="screen-mediaprofile" class="screen">
       <div class="section-header"><h2 class="section-title">Media Profile</h2><p class="section-sub">Set up how you appear on your public page</p></div>
-      <div class="profile-grid">
-        <div class="profile-card">
-          <div class="card-label">Photo & Name</div>
-          <div class="avatar-upload" onclick="toast('Photo upload coming soon')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Upload</span></div>
-          <div class="form-field"><label>Display Name</label><input type="text" placeholder="Your name"></div>
-          <div class="form-field"><label>Title / Role</label><input type="text" placeholder="e.g. UGC Creator, Beauty Consultant"></div>
-        </div>
-        <div class="profile-card">
-          <div class="card-label">About</div>
-          <div class="form-field"><label>Bio</label><textarea placeholder="Tell your audience about yourself..."></textarea></div>
-          <div class="form-field"><label>Category</label><select><option>Beauty & Wellness</option><option>Fashion</option><option>Real Estate</option><option>Fitness</option><option>Content Creator</option><option>Business & Finance</option><option>Other</option></select></div>
-        </div>
-        <div class="profile-card full">
-          <div class="card-label">Contact Info</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
-            <div class="form-field" style="margin:0"><label>Email</label><input type="email" placeholder="your@email.com"></div>
-            <div class="form-field" style="margin:0"><label>Phone</label><input type="tel" placeholder="+1 (000) 000-0000"></div>
-            <div class="form-field" style="margin:0"><label>Website</label><input type="url" placeholder="yourwebsite.com"></div>
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:4px;background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;">
+        <button id="mptab-profile" onclick="mpTab('profile')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:var(--brown);color:#fff;transition:all 0.2s;">👤 Profile</button>
+        <button id="mptab-collab" onclick="mpTab('collab')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">🤝 Collaboration</button>
+      </div>
+
+      <!-- PROFILE TAB -->
+      <div id="mptab-profile-content">
+        <div class="profile-grid">
+          <div class="profile-card">
+            <div class="card-label">Photo & Name</div>
+            <div class="avatar-upload" onclick="toast('Photo upload coming soon')"><svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg><span>Upload</span></div>
+            <div class="form-field"><label>Display Name</label><input type="text" placeholder="Your name"></div>
+            <div class="form-field"><label>Title / Role</label><input type="text" placeholder="e.g. UGC Creator, Beauty Consultant"></div>
           </div>
-          <div style="margin-top:18px;"><button class="btn-save" onclick="toast('✓ Profile saved!')">Save Profile</button></div>
+          <div class="profile-card">
+            <div class="card-label">About</div>
+            <div class="form-field"><label>Bio</label><textarea placeholder="Tell your audience about yourself..."></textarea></div>
+            <div class="form-field"><label>Category</label><select><option>Beauty & Wellness</option><option>Fashion</option><option>Real Estate</option><option>Fitness</option><option>Content Creator</option><option>Business & Finance</option><option>Other</option></select></div>
+          </div>
+          <div class="profile-card full">
+            <div class="card-label">Contact Info</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+              <div class="form-field" style="margin:0"><label>Email</label><input type="email" placeholder="your@email.com"></div>
+              <div class="form-field" style="margin:0"><label>Phone</label><input type="tel" placeholder="+1 (000) 000-0000"></div>
+              <div class="form-field" style="margin:0"><label>Website</label><input type="url" placeholder="yourwebsite.com"></div>
+            </div>
+            <div style="margin-top:18px;"><button class="btn-save" onclick="toast('✓ Profile saved!')">Save Profile</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLLABORATION TAB -->
+      <div id="mptab-collab-content" style="display:none;">
+
+        <!-- My Collaboration Card -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+            <div>
+              <div style="font-weight:800;font-size:1rem;color:var(--text);">My Collaboration Profile</div>
+              <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Toggle on to be visible to others looking to collaborate</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:48px;height:26px;cursor:pointer;">
+              <input type="checkbox" id="collab-toggle" onchange="toggleCollab(this)" style="opacity:0;width:0;height:0;">
+              <span id="collab-track" style="position:absolute;inset:0;background:#e5e7eb;border-radius:26px;transition:0.2s;"></span>
+              <span id="collab-thumb" style="position:absolute;top:3px;left:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></span>
+            </label>
+          </div>
+
+          <div style="display:grid;grid-template-columns:80px 1fr;gap:18px;align-items:flex-start;">
+            <!-- Photo upload -->
+            <div>
+              <div style="width:80px;height:80px;border-radius:50%;background:var(--brown-bg);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;" onclick="toast('Photo upload coming soon')" id="collab-photo">
+                <svg viewBox="0 0 24 24" width="28" fill="none" stroke="var(--brown)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div style="font-size:0.62rem;color:var(--text-dim);text-align:center;margin-top:4px;cursor:pointer;" onclick="toast('Photo upload coming soon')">Upload Photo</div>
+            </div>
+            <div>
+              <div class="form-field" style="margin-bottom:12px;"><label>Display Name</label><input type="text" placeholder="Your name" id="collab-name"></div>
+              <div class="form-field" style="margin-bottom:12px;"><label>Tagline</label><input type="text" placeholder="e.g. Beauty Creator & Educator" id="collab-tagline"></div>
+              <div class="form-field" style="margin-bottom:0;"><label>Bio for Collaboration</label><textarea placeholder="What you're looking for in a collab partner..." id="collab-bio" style="min-height:70px;"></textarea></div>
+            </div>
+          </div>
+
+          <!-- Genres -->
+          <div style="margin-top:16px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:10px;">My Genres <span style="color:var(--text-dim);font-weight:400;text-transform:none;letter-spacing:0;">(select all that apply)</span></div>
+            <div id="collab-genres" style="display:flex;flex-wrap:wrap;gap:8px;">
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Wellness</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Beauty</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Real Estate</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Consulting</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Speaker</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Car Sales</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Hair Products</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Digital Ebooks</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Nail Tech</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">MUA Artist</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Esthetician</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Lash Tech</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Apparel</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Fitness</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Food & Bev</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Photography</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Music</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Finance</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Tech</span>
+              <span class="collab-genre-tag" onclick="toggleGenre(this)">Coaching</span>
+            </div>
+          </div>
+
+          <button class="btn-save" style="margin-top:18px;" onclick="saveCollabProfile()">Save Collaboration Profile</button>
+        </div>
+
+        <!-- Sub-tabs: Browse / Incoming / Active -->
+        <div style="display:flex;gap:4px;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:20px;width:fit-content;">
+          <button id="csub-browse" onclick="collabSubTab('browse')" style="padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:var(--brown);color:#fff;transition:all 0.2s;">🔍 Browse</button>
+          <button id="csub-incoming" onclick="collabSubTab('incoming')" style="padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">📥 Incoming <span id="incoming-badge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 6px;font-size:0.65rem;margin-left:3px;">2</span></button>
+          <button id="csub-active" onclick="collabSubTab('active')" style="padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">💬 Active</button>
+          <button id="csub-docs" onclick="collabSubTab('docs')" style="padding:7px 16px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">📁 Documents</button>
+        </div>
+
+        <!-- BROWSE SUB-TAB -->
+        <div id="csub-browse-content">
+          <div style="font-weight:800;font-size:1rem;color:var(--text);margin-bottom:4px;">Browse Collaborators</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:14px;">People open to collaboration on MASSED</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+            <button class="collab-filter-btn active" onclick="filterCollabs(this,'all')">All</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Beauty')">Beauty</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Wellness')">Wellness</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Real Estate')">Real Estate</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Lash Tech')">Lash Tech</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'MUA Artist')">MUA Artist</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Nail Tech')">Nail Tech</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Fitness')">Fitness</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Apparel')">Apparel</button>
+            <button class="collab-filter-btn" onclick="filterCollabs(this,'Hair Products')">Hair Products</button>
+          </div>
+          <div id="collab-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;"></div>
+        </div>
+
+        <!-- INCOMING SUB-TAB -->
+        <div id="csub-incoming-content" style="display:none;">
+          <div style="font-weight:800;font-size:1rem;color:var(--text);margin-bottom:4px;">Incoming Requests</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;">People who want to collaborate with you</div>
+          <div id="incoming-list"></div>
+        </div>
+
+        <!-- ACTIVE SUB-TAB -->
+        <div id="csub-active-content" style="display:none;">
+          <div style="font-weight:800;font-size:1rem;color:var(--text);margin-bottom:4px;">Active Collaborations</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;">Your accepted collaborations — message, share docs and sign NDAs</div>
+          <div id="active-list"></div>
+        </div>
+
+        <!-- DOCUMENTS TAB -->
+        <div id="csub-docs-content" style="display:none;">
+          <div style="font-weight:800;font-size:1rem;color:var(--text);margin-bottom:4px;">Documents</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;">Signed NDAs and collaboration documents</div>
+
+          <!-- Search/Filter bar -->
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+            <input type="text" id="doc-search" oninput="filterDocs()" placeholder="🔍 Search by date or collaborator..." style="flex:1;min-width:160px;padding:9px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;">
+            <select id="doc-filter-name" onchange="filterDocs()" style="padding:9px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;color:var(--text);">
+              <option value="">All Collaborators</option>
+            </select>
+            <select id="doc-filter-type" onchange="filterDocs()" style="padding:9px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;color:var(--text);">
+              <option value="">All Types</option>
+              <option value="NDA">NDA</option>
+              <option value="Agreement">Agreement</option>
+            </select>
+          </div>
+
+          <!-- Documents list -->
+          <div id="docs-list">
+            <div style="text-align:center;padding:48px 20px;color:var(--text-dim);">
+              <div style="font-size:2.5rem;margin-bottom:12px;">📁</div>
+              <div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;">No documents yet</div>
+              <div style="font-size:0.78rem;">When both parties sign an NDA it will automatically appear here.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DECLINE MODAL -->
+    <div id="modal-collab-decline" class="modal-overlay">
+      <div class="modal" style="max-width:440px;width:90%;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">Decline Request</h2>
+          <button onclick="closeModal('modal-collab-decline')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:16px;">You are declining a collaboration request from <strong id="decline-name" style="color:var(--text);"></strong>. You can optionally include a message.</p>
+        <div class="form-field">
+          <label>Message (Optional)</label>
+          <textarea id="decline-message" placeholder="e.g. Thank you for reaching out! At this time I'm focusing on other projects..." style="min-height:90px;"></textarea>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:4px;">
+          <button class="btn-cancel" onclick="closeModal('modal-collab-decline')" style="flex:1;">Cancel</button>
+          <button onclick="confirmDecline()" style="flex:1;padding:11px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:9px;cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;">Decline</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVE COLLAB MODAL (messaging + NDA) -->
+    <div id="modal-collab-active" class="modal-overlay">
+      <div class="modal" style="max-width:560px;width:90%;max-height:88vh;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div id="active-modal-avatar" style="width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;"></div>
+            <div>
+              <div id="active-modal-name" style="font-weight:800;font-size:0.95rem;"></div>
+              <div style="font-size:0.72rem;color:#16a34a;">● Active Collaboration</div>
+            </div>
+          </div>
+          <button onclick="closeModal('modal-collab-active')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+
+        <!-- NDA Banner -->
+        <div id="nda-banner" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);border-radius:10px;padding:12px 14px;margin-bottom:14px;flex-shrink:0;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+            <div>
+              <div style="font-weight:700;font-size:0.85rem;color:#4f46e5;">🔒 Non-Disclosure Agreement</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;" id="nda-status-text">Protect your collaboration. Send an NDA for both parties to sign.</div>
+            </div>
+            <button id="nda-btn" onclick="showNDA()" style="padding:7px 14px;background:#6366f1;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:700;font-family:'DM Sans',sans-serif;white-space:nowrap;">View & Send NDA</button>
+          </div>
+        </div>
+
+        <!-- Message thread -->
+        <div id="collab-msg-thread" style="flex:1;overflow-y:auto;background:var(--cream);border-radius:10px;padding:14px;min-height:180px;max-height:260px;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
+          <div style="text-align:center;font-size:0.72rem;color:var(--text-dim);">Collaboration started — say hello! 👋</div>
+        </div>
+
+        <!-- Attachments + Message input -->
+        <div style="flex-shrink:0;">
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <button onclick="toast('Document upload coming soon')" style="padding:7px 12px;background:var(--cream);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:600;color:var(--text-dim);">📎 Attach Doc</button>
+            <button onclick="showNDA()" style="padding:7px 12px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:600;color:#6366f1;">📄 Send NDA</button>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="collab-msg-input" placeholder="Type a message..." style="flex:1;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;" onkeydown="if(event.key==='Enter')sendCollabMsg()">
+            <button onclick="sendCollabMsg()" style="padding:10px 18px;background:var(--brown);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NDA MODAL -->
+    <div id="modal-nda" class="modal-overlay">
+      <div class="modal" style="max-width:600px;width:90%;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div>
+            <h2 class="modal-title" style="margin:0;">Non-Disclosure Agreement</h2>
+            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">MASSED Platform — Collaboration NDA</div>
+          </div>
+          <button onclick="closeModal('modal-nda')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+
+        <!-- NDA Document -->
+        <div style="background:#fafaf8;border:1px solid var(--border);border-radius:12px;padding:24px;font-size:0.82rem;line-height:1.8;color:var(--text);margin-bottom:20px;" id="nda-document">
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-weight:900;font-size:1.1rem;letter-spacing:0.05em;">NON-DISCLOSURE AGREEMENT</div>
+            <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">MASSED Platform — Collaboration Agreement</div>
+          </div>
+          <p>This Non-Disclosure Agreement ("<strong>Agreement</strong>") is entered into as of the date of digital acceptance by and between the two collaborating parties on the MASSED platform ("<strong>Party A</strong>" and "<strong>Party B</strong>," collectively the "<strong>Parties</strong>").</p>
+          <p><strong>1. PURPOSE.</strong> The Parties wish to explore and engage in a professional collaboration ("<strong>Purpose</strong>"). In connection with this Purpose, each Party may disclose or receive certain Confidential Information.</p>
+          <p><strong>2. CONFIDENTIAL INFORMATION.</strong> "Confidential Information" means any non-public information disclosed by one Party to the other, including but not limited to: business strategies, marketing plans, financial data, client information, creative works, personal brand assets, trade secrets, product plans, pricing, and any other proprietary information, whether disclosed orally, in writing, or digitally through the MASSED platform.</p>
+          <p><strong>3. OBLIGATIONS.</strong> Each Party agrees to: (a) hold all Confidential Information in strict confidence; (b) not disclose Confidential Information to any third party without prior written consent; (c) use Confidential Information solely for the Purpose of this collaboration; (d) protect the Confidential Information with at least the same degree of care used to protect its own confidential information, but no less than reasonable care.</p>
+          <p><strong>4. EXCLUSIONS.</strong> This Agreement does not apply to information that: (a) is or becomes publicly known through no breach of this Agreement; (b) was known to the receiving Party prior to disclosure; (c) is independently developed without use of Confidential Information; (d) is required to be disclosed by law or court order.</p>
+          <p><strong>5. INTELLECTUAL PROPERTY.</strong> Nothing in this Agreement grants either Party any rights in the other Party's intellectual property, trademarks, copyrights, or brand assets. All creative works, brand materials, and content produced during the collaboration remain the property of their respective creators unless separately agreed upon in writing.</p>
+          <p><strong>6. TERM.</strong> This Agreement shall remain in effect for a period of two (2) years from the date of acceptance, or until the collaboration is formally concluded, whichever is later.</p>
+          <p><strong>7. REMEDIES.</strong> Each Party acknowledges that breach of this Agreement may cause irreparable harm for which monetary damages may be insufficient, and agrees that the non-breaching Party shall be entitled to seek equitable relief in addition to any other remedies available.</p>
+          <p><strong>8. DIGITAL ACCEPTANCE.</strong> By clicking "I Agree & Sign" within the MASSED platform, each Party acknowledges that they have read, understood, and agree to be legally bound by the terms of this Agreement. The Parties agree that this digital signature constitutes a valid and legally binding signature equivalent to a handwritten signature under applicable law.</p>
+          <p><strong>9. GOVERNING LAW.</strong> This Agreement shall be governed by the laws of the jurisdiction in which the MASSED platform operates, without regard to conflict of law principles.</p>
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+              <div style="font-size:0.72rem;font-weight:700;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.1em;">Party A (You)</div>
+              <div id="nda-signer-a" style="font-size:0.85rem;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:4px;min-height:24px;"></div>
+              <div id="nda-date-a" style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;"></div>
+            </div>
+            <div>
+              <div style="font-size:0.72rem;font-weight:700;color:var(--text-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.1em;">Party B (Collaborator)</div>
+              <div id="nda-signer-b" style="font-size:0.85rem;font-weight:700;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:4px;min-height:24px;"></div>
+              <div id="nda-date-b" style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sign actions -->
+        <div id="nda-sign-section">
+          <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.2);border-radius:10px;padding:14px;margin-bottom:14px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+            <strong style="color:#4f46e5;">⚠️ Legal Notice:</strong> By clicking "I Agree & Sign" below, you acknowledge that this digital signature is legally binding and that this Agreement shall serve as a valid legal document. Both parties must sign for the NDA to take effect.
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn-cancel" onclick="closeModal('modal-nda')" style="flex:1;">Close</button>
+            <button id="nda-sign-btn" onclick="signNDA()" style="flex:2;padding:12px;background:#6366f1;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;font-size:0.88rem;">✍️ I Agree & Sign</button>
+          </div>
         </div>
       </div>
     </div>
@@ -819,7 +1169,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     }
     </style>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     let videos = [];
     let pendingVideoFile = null;
 
@@ -2447,11 +2797,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     });
 
     // Init picker when promo modal opens
-    const _origOpenModal = window.openModal;
     window.openModal = function(id) {
-      _origOpenModal(id);
-      if (id === 'modal-promo-form') { buildPlatformPicker(); }
-    };
+  const modal = document.getElementById(id);
+  if (modal) modal.classList.add('open');
+  if (id === 'modal-promo-form') { buildPlatformPicker(); }
+};
+window.closeModal = function(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.classList.remove('open');
+};
 
     function renderPromoList(t) {
       const container = document.getElementById(t + '-list');
@@ -2508,6 +2862,815 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </script>
 
     <!-- COMING SOON -->
+    <!-- MY STORE SCREEN -->
+    <div id="screen-mystore" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">My Store</h2>
+        <p class="section-sub">Your public storefront — manage what appears on your MASSED page</p>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Store Status</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <div>
+              <div style="font-weight:700;font-size:0.9rem;color:var(--text);">Store Live</div>
+              <div style="font-size:0.75rem;color:var(--text-dim);">Your store is visible to the public</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;">
+              <input type="checkbox" id="store-live-toggle" checked onchange="toggleStoreLive(this)" style="opacity:0;width:0;height:0;">
+              <span id="store-live-track" style="position:absolute;inset:0;background:var(--brown);border-radius:24px;transition:0.2s;"></span>
+              <span id="store-live-thumb" style="position:absolute;top:2px;left:22px;width:20px;height:20px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></span>
+            </label>
+          </div>
+          <div style="font-size:0.78rem;color:var(--green);font-weight:600;" id="store-status-label">● Live at massed.io/username</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Store URL</div>
+          <div style="font-family:monospace;font-size:0.88rem;color:var(--brown-dark);background:var(--cream);padding:10px 14px;border-radius:9px;margin-bottom:12px;">massed.io/username</div>
+          <button class="btn-save" onclick="navigator.clipboard.writeText('https://massed.io/username');toast('✓ Link copied!')">Copy Link</button>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">What's In Your Store</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Digital Products</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Physical Products</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Courses</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Bookings</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Events</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Services</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Links</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
+          <span style="font-size:0.88rem;font-weight:600;color:var(--text);">Videos</span>
+          <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;">
+            <input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Visibility updated')">
+            <span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span>
+            <span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SETTINGS SCREEN -->
+    <div id="screen-settings" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Settings</h2>
+        <p class="section-sub">Manage your account and plan</p>
+      </div>
+
+      <!-- Settings Tabs -->
+      <div style="display:flex;gap:4px;background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;flex-wrap:wrap;">
+        <button id="stab-settings" onclick="settingsTab('settings')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:var(--brown);color:#fff;transition:all 0.2s;">⚙️ Settings</button>
+        <button id="stab-billing" onclick="settingsTab('billing')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">💳 Billing</button>
+        <button id="stab-stripe" onclick="settingsTab('stripe')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">⚡ Stripe</button>
+        <button id="stab-support" onclick="settingsTab('support')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">❓ Support</button>
+      </div>
+
+      <!-- ── SETTINGS TAB ── -->
+      <div id="stab-settings-content" style="display:flex;flex-direction:column;gap:16px;max-width:600px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Account</div>
+          <div class="form-field"><label>Display Name</label><input type="text" placeholder="Your name"></div>
+          <div class="form-field"><label>Email</label><input type="email" placeholder="your@email.com"></div>
+          <div class="form-field"><label>Password</label><input type="password" placeholder="Change password"></div>
+          <button class="btn-save" onclick="toast('✓ Account updated!')">Save Changes</button>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Notifications</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+            <div><div style="font-weight:600;font-size:0.88rem;">Email notifications</div><div style="font-size:0.75rem;color:var(--text-dim);">Get notified about sales and activity</div></div>
+            <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;"><input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Updated')"><span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span><span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);">
+            <div><div style="font-weight:600;font-size:0.88rem;">SMS alerts</div><div style="font-size:0.75rem;color:var(--text-dim);">Receive text alerts for important events</div></div>
+            <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;"><input type="checkbox" style="opacity:0;width:0;height:0;" onchange="toast('Updated')"><span style="position:absolute;inset:0;background:#e5e7eb;border-radius:20px;transition:0.2s;"></span><span style="position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span></label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">
+            <div><div style="font-weight:600;font-size:0.88rem;">Marketing emails</div><div style="font-size:0.75rem;color:var(--text-dim);">Tips, updates and announcements</div></div>
+            <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer;"><input type="checkbox" checked style="opacity:0;width:0;height:0;" onchange="toast('Updated')"><span style="position:absolute;inset:0;background:var(--brown);border-radius:20px;transition:0.2s;"></span><span style="position:absolute;top:2px;left:18px;width:16px;height:16px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span></label>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Danger Zone</div>
+          <button style="padding:10px 20px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.85rem;" onclick="toast('Contact support to delete your account')">Delete Account</button>
+        </div>
+      </div>
+
+      <!-- ── BILLING TAB ── -->
+      <div id="stab-billing-content" style="display:none;flex-direction:column;gap:16px;max-width:600px;">
+
+        <!-- Current Plan -->
+        <div style="background:linear-gradient(135deg,#2d1a0e,#1a0e06);border-radius:16px;padding:24px;color:#F5F0E8;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C49A6C;margin-bottom:8px;">Current Plan</div>
+          <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#C49A6C;margin-bottom:4px;">Creator Pro</div>
+          <div style="font-size:0.85rem;color:rgba(245,240,232,0.6);margin-bottom:16px;">$30.00 / month · Next billing: Apr 21, 2026</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button style="padding:8px 18px;background:rgba(196,154,108,0.2);color:#C49A6C;border:1px solid rgba(196,154,108,0.4);border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;" onclick="toast('Plan management coming soon')">Manage Plan</button>
+            <button style="padding:8px 18px;background:transparent;color:rgba(245,240,232,0.5);border:1px solid rgba(245,240,232,0.2);border-radius:9px;cursor:pointer;font-size:0.82rem;" onclick="toast('Contact support to cancel')">Cancel Plan</button>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Payment Method</div>
+          <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--cream);border-radius:10px;margin-bottom:14px;">
+            <div style="width:44px;height:30px;background:#1a1f71;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 38 24" width="32"><rect width="38" height="24" rx="4" fill="#1a1f71"/><circle cx="15" cy="12" r="7" fill="#EB001B"/><circle cx="23" cy="12" r="7" fill="#F79E1B" opacity="0.9"/></svg>
+            </div>
+            <div><div style="font-weight:700;font-size:0.88rem;">•••• •••• •••• 4821</div><div style="font-size:0.75rem;color:var(--text-dim);">Expires 08/27</div></div>
+            <button style="margin-left:auto;padding:6px 14px;background:var(--cream2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;" onclick="toast('Card management coming soon')">Update</button>
+          </div>
+          <button style="width:100%;padding:12px;background:var(--cream);border:2px dashed var(--border);border-radius:10px;cursor:pointer;font-size:0.85rem;color:var(--text-dim);font-weight:600;" onclick="toast('Add payment method coming soon')">+ Add Payment Method</button>
+        </div>
+
+        <!-- Graduation Progress -->
+        <div style="background:linear-gradient(135deg,#0d1a0e,#0a1206);border:1px solid rgba(34,197,94,0.3);border-radius:16px;padding:24px;color:#F5F0E8;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(34,197,94,0.06);border-radius:50%;"></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span style="font-size:1.6rem;">🎓</span>
+            <div>
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(34,197,94,0.8);margin-bottom:2px;">Graduation Countdown</div>
+              <div style="font-family:'Georgia',serif;font-size:1.1rem;font-weight:900;color:#22c55e;">Free 2-Year Plan</div>
+            </div>
+          </div>
+          <div style="font-size:0.82rem;color:rgba(245,240,232,0.65);margin-bottom:16px;line-height:1.6;">
+            You are <strong style="color:#22c55e;" id="grad-months-left">21 months</strong> away from graduating to a <strong style="color:#F5F0E8;">FREE 2-Year Plan</strong>. Enjoy all the benefits — keep every single earning with <strong style="color:#22c55e;">zero payments</strong> for 2 full years. 🎉
+          </div>
+          <!-- Progress bar -->
+          <div style="margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:rgba(245,240,232,0.5);margin-bottom:6px;">
+              <span>Month 3 of 24</span>
+              <span>12.5% complete</span>
+            </div>
+            <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;">
+              <div style="height:100%;width:12.5%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:10px;"></div>
+            </div>
+          </div>
+          <div style="font-size:0.72rem;color:rgba(34,197,94,0.7);">✓ Keep paying monthly to stay on track for graduation</div>
+        </div>
+
+        <!-- Billing History -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Billing History</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.85rem;">Creator Pro — Monthly</div><div style="font-size:0.72rem;color:var(--text-dim);">Apr 1, 2026</div></div><div style="text-align:right;"><div style="font-weight:700;font-size:0.88rem;">$30.00</div><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">Paid</span></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.85rem;">Creator Pro — Monthly</div><div style="font-size:0.72rem;color:var(--text-dim);">Mar 1, 2026</div></div><div style="text-align:right;"><div style="font-weight:700;font-size:0.88rem;">$30.00</div><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">Paid</span></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;"><div><div style="font-weight:600;font-size:0.85rem;">Creator Pro — Monthly</div><div style="font-size:0.72rem;color:var(--text-dim);">Feb 1, 2026</div></div><div style="text-align:right;"><div style="font-weight:700;font-size:0.88rem;">$30.00</div><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">Paid</span></div></div>
+        </div>
+      </div>
+
+      <!-- ── STRIPE TAB ── -->
+      <div id="stab-stripe-content" style="display:none;flex-direction:column;gap:16px;max-width:600px;">
+        <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:16px;padding:24px;color:#F5F0E8;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div style="width:48px;height:48px;background:#635bff;border-radius:12px;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 24 24" width="28" fill="#fff"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.594-7.305h.003z"/></svg>
+            </div>
+            <div>
+              <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:900;color:#fff;">Stripe Integration</div>
+              <div style="font-size:0.78rem;color:rgba(255,255,255,0.5);">Process payments & receive payouts</div>
+            </div>
+          </div>
+          <div style="font-size:0.82rem;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:20px;">Connect your Stripe account to start accepting payments for your products, courses, bookings and services. Payouts are sent directly to your bank account.</div>
+          <button onclick="toast('Stripe connection coming soon')" style="padding:12px 24px;background:#635bff;color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:0.88rem;width:100%;">Connect Stripe Account →</button>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Stripe Features</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;"><div style="width:36px;height:36px;background:#f0f0ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">💳</div><div><div style="font-weight:700;font-size:0.88rem;">Instant Payouts</div><div style="font-size:0.75rem;color:var(--text-dim);">Debit card payouts in minutes</div></div></div>
+            <div style="display:flex;align-items:flex-start;gap:12px;"><div style="width:36px;height:36px;background:#f0f0ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">🏦</div><div><div style="font-weight:700;font-size:0.88rem;">Standard Payouts</div><div style="font-size:0.75rem;color:var(--text-dim);">Bank transfer in 1–3 business days</div></div></div>
+            <div style="display:flex;align-items:flex-start;gap:12px;"><div style="width:36px;height:36px;background:#f0f0ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">🔒</div><div><div style="font-weight:700;font-size:0.88rem;">Secure Checkout</div><div style="font-size:0.75rem;color:var(--text-dim);">PCI-compliant payment processing</div></div></div>
+            <div style="display:flex;align-items:flex-start;gap:12px;"><div style="width:36px;height:36px;background:#f0f0ff;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">🌍</div><div><div style="font-weight:700;font-size:0.88rem;">135+ Currencies</div><div style="font-size:0.75rem;color:var(--text-dim);">Accept payments from anywhere in the world</div></div></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Stripe Status</div>
+          <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--cream);border-radius:10px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></div>
+            <div style="font-size:0.85rem;color:var(--text);">Not connected — <span style="color:var(--brown);font-weight:600;">Connect above to enable payments</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+      
+<!-- ── PLATFORM SUPPORT TAB ── -->
+      <div id="stab-support-content" style="display:none;flex-direction:column;gap:20px;max-width:700px;">
+
+        <!-- Header -->
+        <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:16px;padding:28px;color:#fff;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:8px;">Platform Support</div>
+          <div style="font-family:'Georgia',serif;font-size:1.6rem;font-weight:900;margin-bottom:8px;">How to use MASSED</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Everything you need to know about setting up and operating your MASSED profile, store and collaborations.</div>
+        </div>
+
+        <!-- Media Profile Guide -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+          <div style="background:var(--brown-bg);padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;background:var(--brown);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">👤</div>
+            <div>
+              <div style="font-weight:800;font-size:0.95rem;color:var(--text);">Media Profile</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);">Your public identity on MASSED</div>
+            </div>
+          </div>
+          <div style="padding:20px 22px;">
+            <div style="font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:16px;">
+              <strong>What it is:</strong> Your Media Profile is your public-facing identity on MASSED. It's the first thing collaborators, customers and partners see when they visit your page at <span style="color:var(--brown);font-weight:700;">massed.io/yourusername</span>. Think of it as your digital business card — it represents your brand across every product, service and collaboration you offer.
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📸 Photo & Name</div>
+                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Upload a clear, professional photo of yourself or your brand logo. Add your display name exactly as you want it shown publicly. Add a title or role (e.g. "UGC Creator", "Beauty Consultant", "Real Estate Agent") to help visitors understand what you do immediately.</div>
+              </div>
+              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">✍️ Bio</div>
+                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Write a short, engaging bio that tells your story. Include what you specialize in, who you serve and what makes your brand unique. This bio appears on your public page and is seen by potential collaborators and customers. Keep it authentic and under 200 words for best results.</div>
+              </div>
+              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🏷️ Category</div>
+                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Select the category that best describes your niche (Beauty & Wellness, Fashion, Real Estate, Fitness, etc.). This helps MASSED surface your profile to the right audience and makes it easier for collaborators to find you by genre.</div>
+              </div>
+              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📞 Contact Info</div>
+                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Add your email, phone (optional) and website. These appear on your public profile so potential partners and customers can reach you directly. Your email is also used for platform notifications, order confirmations and collaboration messages.</div>
+              </div>
+              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🤝 Collaboration Tab</div>
+                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Inside Media Profile you'll find the <strong>Collaboration</strong> tab. This is where you set up your collaboration profile, choose your genres, and toggle yourself visible so other creators can find and connect with you. You can browse other creators by genre, send connection requests, accept or decline incoming requests, message accepted collaborators, and sign legally-binding NDAs — all within MASSED.</div>
+              </div>
+              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">💡 Pro Tips</div>
+                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">
+                  <div style="margin-bottom:4px;">✓ Always use a high-resolution photo — profiles with photos get 3x more views</div>
+                  <div style="margin-bottom:4px;">✓ Keep your bio updated when your services or focus changes</div>
+                  <div style="margin-bottom:4px;">✓ Select multiple genres in Collaboration to appear in more searches</div>
+                  <div style="margin-bottom:4px;">✓ Save your profile after every edit — changes are not auto-saved</div>
+                  <div>✓ Your Media Profile is connected to your Store, so a strong profile increases conversions</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Help Links -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Quick Help</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <button onclick="nav(null,'mediaprofile')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
+              <span style="font-weight:700;font-size:0.85rem;">👤 Go to Media Profile</span>
+              <span style="color:var(--text-dim);">→</span>
+            </button>
+            <button onclick="nav(null,'mystore')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
+              <span style="font-weight:700;font-size:0.85rem;">🛍️ Set Up My Store</span>
+              <span style="color:var(--text-dim);">→</span>
+            </button>
+            <button onclick="nav(null,'salespayouts')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
+              <span style="font-weight:700;font-size:0.85rem;">💰 View Sales & Payouts</span>
+              <span style="color:var(--text-dim);">→</span>
+            </button>
+            <button onclick="toast('Live chat support coming soon!')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
+              <span style="font-weight:700;font-size:0.85rem;">💬 Contact Support</span>
+              <span style="color:var(--text-dim);">→</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BILLING SCREEN (kept for direct nav compatibility) -->
+    <div id="screen-billing" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Billing</h2>
+        <p class="section-sub">Manage your MASSED subscription and payment method</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:600px;">
+        <div style="background:linear-gradient(135deg,#2d1a0e,#1a0e06);border-radius:16px;padding:24px;color:#F5F0E8;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C49A6C;margin-bottom:8px;">Current Plan</div>
+          <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#C49A6C;margin-bottom:4px;">Creator Pro</div>
+          <div style="font-size:0.85rem;color:rgba(245,240,232,0.6);margin-bottom:16px;">$30.00 / month · Next billing: Apr 21, 2026</div>
+          <div style="display:flex;gap:10px;">
+            <button style="padding:8px 18px;background:rgba(196,154,108,0.2);color:#C49A6C;border:1px solid rgba(196,154,108,0.4);border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;" onclick="toast('Plan management coming soon')">Manage Plan</button>
+            <button style="padding:8px 18px;background:transparent;color:rgba(245,240,232,0.5);border:1px solid rgba(245,240,232,0.2);border-radius:9px;cursor:pointer;font-size:0.82rem;" onclick="toast('Contact support to cancel')">Cancel Plan</button>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Payment Method</div>
+          <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--cream);border-radius:10px;margin-bottom:14px;">
+            <div style="width:44px;height:30px;background:#1a1f71;border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 38 24" width="32"><rect width="38" height="24" rx="4" fill="#1a1f71"/><circle cx="15" cy="12" r="7" fill="#EB001B"/><circle cx="23" cy="12" r="7" fill="#F79E1B" opacity="0.9"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:700;font-size:0.88rem;">•••• •••• •••• 4821</div>
+              <div style="font-size:0.75rem;color:var(--text-dim);">Expires 08/27</div>
+            </div>
+            <button style="margin-left:auto;padding:6px 14px;background:var(--cream2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;" onclick="toast('Card management coming soon')">Update</button>
+          </div>
+          <button style="width:100%;padding:12px;background:var(--cream);border:2px dashed var(--border);border-radius:10px;cursor:pointer;font-size:0.85rem;color:var(--text-dim);font-weight:600;" onclick="toast('Add payment method coming soon')">+ Add Payment Method</button>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Billing History</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.85rem;">Creator Pro — Monthly</div><div style="font-size:0.72rem;color:var(--text-dim);">Apr 1, 2026</div></div><div style="text-align:right;"><div style="font-weight:700;font-size:0.88rem;">$30.00</div><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">Paid</span></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.85rem;">Creator Pro — Monthly</div><div style="font-size:0.72rem;color:var(--text-dim);">Mar 1, 2026</div></div><div style="text-align:right;"><div style="font-weight:700;font-size:0.88rem;">$30.00</div><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">Paid</span></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;"><div><div style="font-weight:600;font-size:0.85rem;">Creator Pro — Monthly</div><div style="font-size:0.72rem;color:var(--text-dim);">Feb 1, 2026</div></div><div style="text-align:right;"><div style="font-weight:700;font-size:0.88rem;">$30.00</div><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">Paid</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALES & PAYOUTS SCREEN -->
+    <div id="screen-salespayouts" class="screen">
+
+      <!-- Top tabs -->
+      <div style="display:flex;gap:4px;background:rgba(196,154,108,0.08);border:1px solid rgba(196,154,108,0.15);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;">
+        <button id="sp-tab-sales" onclick="spTab('sales')" style="padding:9px 28px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;background:var(--brown);color:#fff;transition:all 0.2s;">Sales</button>
+        <button id="sp-tab-payout" onclick="spTab('payout')" style="padding:9px 28px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">Payout</button>
+      </div>
+
+      <!-- ═══ SALES TAB ═══ -->
+      <div id="sp-sales" style="display:block;">
+
+        <!-- Stats -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:22px;">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Today Revenue</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">$2,635</div>
+            <div style="font-size:0.72rem;color:#16a34a;margin-top:4px;">↑ 15% vs yesterday</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Today Sessions</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">354</div>
+            <div style="font-size:0.72rem;color:#16a34a;margin-top:4px;">↑ 4.6% vs yesterday</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Available Payout</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">$2,992</div>
+            <div style="font-size:0.72rem;color:#16a34a;margin-top:4px;">↑ 25.8% this month</div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Purchases</div>
+            <div style="font-size:1.6rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">354</div>
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">11.2K sessions</div>
+          </div>
+        </div>
+
+        <!-- Sales Funnel -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text);">Sales Funnel</div>
+            <span style="font-size:0.72rem;color:var(--text-dim);">Last 30 days</span>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;">
+            <div style="text-align:center;"><div style="font-size:0.62rem;color:var(--text-dim);margin-bottom:4px;">Purchase</div><div style="font-size:1.2rem;font-weight:800;color:#8B6040;">354</div></div>
+            <div style="text-align:center;"><div style="font-size:0.62rem;color:var(--text-dim);margin-bottom:4px;">Add to Cart</div><div style="font-size:1.2rem;font-weight:800;color:#a07050;">992</div></div>
+            <div style="text-align:center;"><div style="font-size:0.62rem;color:var(--text-dim);margin-bottom:4px;">Product View</div><div style="font-size:1.2rem;font-weight:800;color:#b08060;">5.7K</div></div>
+            <div style="text-align:center;"><div style="font-size:0.62rem;color:var(--text-dim);margin-bottom:4px;">Session</div><div style="font-size:1.2rem;font-weight:800;color:#c49a6c;">11.2K</div></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="height:10px;background:var(--cream);border-radius:6px;overflow:hidden;"><div style="height:100%;width:100%;background:#8B6040;border-radius:6px;"></div></div>
+            <div style="height:10px;background:var(--cream);border-radius:6px;overflow:hidden;"><div style="height:100%;width:28%;background:#a07050;border-radius:6px;"></div></div>
+            <div style="height:10px;background:var(--cream);border-radius:6px;overflow:hidden;"><div style="height:100%;width:16%;background:#b08060;border-radius:6px;"></div></div>
+            <div style="height:10px;background:var(--cream);border-radius:6px;overflow:hidden;"><div style="height:100%;width:10%;background:#c49a6c;border-radius:6px;"></div></div>
+          </div>
+        </div>
+
+        <!-- Traffic + Top Products -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+            <div style="font-weight:700;font-size:0.92rem;margin-bottom:14px;">Traffic Channels</div>
+
+            <!-- World Map with US States -->
+            <div style="position:relative;background:#f0ebe4;border-radius:10px;overflow:hidden;margin-bottom:14px;">
+              <svg id="traffic-map" viewBox="0 0 1000 520" style="width:100%;display:block;" xmlns="http://www.w3.org/2000/svg">
+                <!-- Ocean background -->
+                <rect width="1000" height="520" fill="#e8e0d8"/>
+
+                <!-- WORLD CONTINENTS -->
+                <!-- North America bulk -->
+                <path d="M120,60 L230,50 L270,80 L285,130 L265,175 L240,195 L210,210 L185,215 L160,205 L138,178 L118,148 L105,115 Z" fill="#C49A6C" opacity="0.45"/>
+                <!-- Greenland -->
+                <path d="M260,20 L310,15 L330,35 L320,60 L295,70 L265,55 Z" fill="#C49A6C" opacity="0.3"/>
+                <!-- Central America -->
+                <path d="M185,215 L210,210 L218,230 L212,248 L200,255 L190,245 L185,228 Z" fill="#C49A6C" opacity="0.35"/>
+                <!-- South America -->
+                <path d="M205,260 L248,248 L278,268 L290,315 L280,365 L260,405 L238,415 L215,395 L205,352 L198,308 L202,278 Z" fill="#C49A6C" opacity="0.4"/>
+                <!-- Europe -->
+                <path d="M435,45 L478,38 L512,50 L525,75 L518,100 L500,115 L475,112 L452,98 L436,78 Z" fill="#8B6040" opacity="0.65"/>
+                <!-- Scandinavia -->
+                <path d="M460,20 L490,15 L500,35 L490,55 L470,58 L455,42 Z" fill="#C49A6C" opacity="0.4"/>
+                <!-- Africa -->
+                <path d="M445,120 L492,108 L525,122 L535,158 L530,205 L518,248 L502,278 L480,288 L458,278 L442,248 L437,202 L440,158 Z" fill="#C49A6C" opacity="0.4"/>
+                <!-- Russia -->
+                <path d="M520,25 L680,15 L800,25 L820,55 L800,80 L730,88 L655,82 L575,78 L538,62 Z" fill="#C49A6C" opacity="0.38"/>
+                <!-- Middle East -->
+                <path d="M518,105 L562,95 L595,108 L605,138 L585,158 L552,162 L522,148 L512,125 Z" fill="#C49A6C" opacity="0.38"/>
+                <!-- South Asia / India -->
+                <path d="M592,115 L645,108 L668,125 L662,172 L645,188 L618,184 L596,162 L582,138 Z" fill="#8B6040" opacity="0.6"/>
+                <!-- SE Asia -->
+                <path d="M682,135 L725,125 L745,142 L748,172 L732,188 L710,188 L690,172 L678,152 Z" fill="#C49A6C" opacity="0.35"/>
+                <!-- China/East Asia -->
+                <path d="M660,72 L738,62 L788,72 L798,105 L775,128 L742,135 L700,128 L665,112 L650,92 Z" fill="#8B6040" opacity="0.58"/>
+                <!-- Japan -->
+                <path d="M798,82 L815,76 L825,88 L818,108 L800,112 L790,100 Z" fill="#C49A6C" opacity="0.5"/>
+                <!-- Australia -->
+                <path d="M718,262 L782,250 L825,268 L838,305 L826,342 L802,355 L770,352 L742,332 L726,300 L718,278 Z" fill="#C49A6C" opacity="0.38"/>
+                <!-- New Zealand -->
+                <path d="M858,320 L870,310 L878,328 L872,345 L860,342 Z" fill="#C49A6C" opacity="0.3"/>
+
+                <!-- US STATES (simplified but recognizable) -->
+                <!-- West Coast -->
+                <!-- California -->
+                <path d="M95,155 L112,148 L118,168 L115,210 L105,225 L90,215 L85,195 L88,172 Z" fill="#8B6040" opacity="0.8" class="us-state" data-state="California" data-traffic="18.2%"/>
+                <!-- Oregon -->
+                <path d="M88,130 L112,125 L118,148 L112,148 L95,155 L85,145 Z" fill="#a07050" opacity="0.7" class="us-state" data-state="Oregon" data-traffic="4.1%"/>
+                <!-- Washington -->
+                <path d="M88,110 L115,105 L118,125 L112,125 L88,130 Z" fill="#a07050" opacity="0.65" class="us-state" data-state="Washington" data-traffic="5.3%"/>
+                <!-- Nevada -->
+                <path d="M112,148 L128,142 L135,165 L130,195 L115,210 L118,168 Z" fill="#b08060" opacity="0.6" class="us-state" data-state="Nevada" data-traffic="2.1%"/>
+                <!-- Arizona -->
+                <path d="M115,210 L130,195 L145,198 L148,225 L130,228 L105,225 Z" fill="#b08060" opacity="0.55" class="us-state" data-state="Arizona" data-traffic="3.2%"/>
+                <!-- Utah -->
+                <path d="M128,142 L148,138 L152,162 L148,165 L135,165 Z" fill="#b08060" opacity="0.55" class="us-state" data-state="Utah" data-traffic="1.8%"/>
+                <!-- Colorado -->
+                <path d="M148,138 L175,135 L178,158 L152,162 Z" fill="#b08060" opacity="0.55" class="us-state" data-state="Colorado" data-traffic="2.4%"/>
+                <!-- New Mexico -->
+                <path d="M148,165 L152,162 L178,158 L182,185 L148,188 Z" fill="#b08060" opacity="0.5" class="us-state" data-state="New Mexico" data-traffic="1.2%"/>
+                <!-- Texas - HIGH TRAFFIC -->
+                <path d="M148,188 L182,185 L198,188 L205,210 L195,235 L175,245 L155,240 L140,225 Z" fill="#8B6040" opacity="0.85" class="us-state" data-state="Texas" data-traffic="12.4%"/>
+                <!-- Montana -->
+                <path d="M118,95 L165,88 L172,108 L148,112 L118,110 Z" fill="#c49a6c" opacity="0.5" class="us-state" data-state="Montana" data-traffic="0.8%"/>
+                <!-- Idaho -->
+                <path d="M118,110 L135,108 L138,128 L125,142 L118,130 Z" fill="#c49a6c" opacity="0.5" class="us-state" data-state="Idaho" data-traffic="0.9%"/>
+                <!-- Wyoming -->
+                <path d="M135,108 L165,105 L168,128 L138,128 Z" fill="#c49a6c" opacity="0.48" class="us-state" data-state="Wyoming" data-traffic="0.5%"/>
+                <!-- North Dakota -->
+                <path d="M165,88 L198,85 L200,102 L172,108 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="North Dakota" data-traffic="0.4%"/>
+                <!-- South Dakota -->
+                <path d="M172,108 L200,102 L202,118 L175,120 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="South Dakota" data-traffic="0.4%"/>
+                <!-- Nebraska -->
+                <path d="M175,120 L202,118 L205,132 L178,135 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="Nebraska" data-traffic="0.7%"/>
+                <!-- Kansas -->
+                <path d="M178,135 L205,132 L208,148 L178,150 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="Kansas" data-traffic="0.9%"/>
+                <!-- Oklahoma -->
+                <path d="M178,150 L208,148 L212,165 L195,168 L178,168 Z" fill="#b08060" opacity="0.55" class="us-state" data-state="Oklahoma" data-traffic="1.4%"/>
+                <!-- Minnesota -->
+                <path d="M198,85 L225,82 L228,102 L210,108 L200,102 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="Minnesota" data-traffic="1.8%"/>
+                <!-- Iowa -->
+                <path d="M205,108 L228,105 L230,122 L208,125 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="Iowa" data-traffic="1.0%"/>
+                <!-- Missouri -->
+                <path d="M208,125 L230,122 L235,142 L210,145 Z" fill="#c49a6c" opacity="0.48" class="us-state" data-state="Missouri" data-traffic="1.5%"/>
+                <!-- Arkansas -->
+                <path d="M210,145 L235,142 L238,160 L210,162 Z" fill="#b08060" opacity="0.52" class="us-state" data-state="Arkansas" data-traffic="1.0%"/>
+                <!-- Louisiana -->
+                <path d="M210,162 L238,160 L240,175 L220,180 L210,175 Z" fill="#b08060" opacity="0.6" class="us-state" data-state="Louisiana" data-traffic="1.8%"/>
+                <!-- Wisconsin -->
+                <path d="M225,82 L248,80 L252,98 L230,102 L228,88 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="Wisconsin" data-traffic="1.2%"/>
+                <!-- Illinois -->
+                <path d="M230,102 L252,100 L255,122 L232,125 Z" fill="#b08060" opacity="0.55" class="us-state" data-state="Illinois" data-traffic="2.8%"/>
+                <!-- Indiana -->
+                <path d="M252,100 L268,98 L270,118 L255,122 Z" fill="#b08060" opacity="0.52" class="us-state" data-state="Indiana" data-traffic="1.4%"/>
+                <!-- Michigan upper -->
+                <path d="M248,75 L272,72 L278,88 L252,92 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="Michigan" data-traffic="2.2%"/>
+                <!-- Ohio -->
+                <path d="M268,98 L288,95 L292,115 L270,118 Z" fill="#b08060" opacity="0.58" class="us-state" data-state="Ohio" data-traffic="2.5%"/>
+                <!-- Kentucky -->
+                <path d="M255,122 L292,118 L295,135 L258,138 Z" fill="#b08060" opacity="0.52" class="us-state" data-state="Kentucky" data-traffic="1.2%"/>
+                <!-- Tennessee -->
+                <path d="M258,138 L295,135 L298,148 L260,152 Z" fill="#b08060" opacity="0.55" class="us-state" data-state="Tennessee" data-traffic="1.8%"/>
+                <!-- Mississippi -->
+                <path d="M238,160 L258,155 L260,175 L240,178 Z" fill="#b08060" opacity="0.52" class="us-state" data-state="Mississippi" data-traffic="0.9%"/>
+                <!-- Alabama -->
+                <path d="M258,155 L278,152 L280,175 L260,178 Z" fill="#b08060" opacity="0.55" class="us-state" data-state="Alabama" data-traffic="1.1%"/>
+                <!-- Georgia - HIGH -->
+                <path d="M278,152 L302,148 L308,172 L285,178 L280,175 Z" fill="#8B6040" opacity="0.78" class="us-state" data-state="Georgia" data-traffic="5.2%"/>
+                <!-- Florida - HIGH -->
+                <path d="M280,175 L308,172 L315,195 L308,218 L295,225 L275,215 L268,195 Z" fill="#8B6040" opacity="0.85" class="us-state" data-state="Florida" data-traffic="9.8%"/>
+                <!-- South Carolina -->
+                <path d="M295,138 L318,135 L322,155 L302,158 Z" fill="#b08060" opacity="0.6" class="us-state" data-state="South Carolina" data-traffic="1.4%"/>
+                <!-- North Carolina -->
+                <path d="M292,125 L325,120 L328,138 L295,142 Z" fill="#b08060" opacity="0.58" class="us-state" data-state="North Carolina" data-traffic="2.1%"/>
+                <!-- Virginia -->
+                <path d="M288,112 L322,108 L325,125 L292,128 Z" fill="#b08060" opacity="0.58" class="us-state" data-state="Virginia" data-traffic="2.4%"/>
+                <!-- West Virginia -->
+                <path d="M285,108 L305,105 L308,118 L288,122 Z" fill="#c49a6c" opacity="0.5" class="us-state" data-state="West Virginia" data-traffic="0.6%"/>
+                <!-- Pennsylvania -->
+                <path d="M285,95 L320,92 L322,108 L288,112 Z" fill="#b08060" opacity="0.62" class="us-state" data-state="Pennsylvania" data-traffic="3.2%"/>
+                <!-- New York - HIGH -->
+                <path d="M300,78 L338,72 L342,92 L320,95 L305,98 Z" fill="#8B6040" opacity="0.82" class="us-state" data-state="New York" data-traffic="8.5%"/>
+                <!-- Maryland/Delaware -->
+                <path d="M310,100 L325,98 L326,108 L312,110 Z" fill="#c49a6c" opacity="0.5" class="us-state" data-state="Maryland" data-traffic="1.2%"/>
+                <!-- New Jersey -->
+                <path d="M325,92 L338,90 L340,105 L326,108 Z" fill="#b08060" opacity="0.6" class="us-state" data-state="New Jersey" data-traffic="2.1%"/>
+                <!-- Connecticut/RI/MA -->
+                <path d="M338,78 L355,75 L358,88 L340,92 Z" fill="#b08060" opacity="0.65" class="us-state" data-state="Massachusetts" data-traffic="2.8%"/>
+                <!-- Vermont/NH/Maine -->
+                <path d="M345,62 L368,58 L372,78 L355,82 L345,78 Z" fill="#c49a6c" opacity="0.48" class="us-state" data-state="New England" data-traffic="1.5%"/>
+                <!-- Alaska -->
+                <path d="M40,200 L80,192 L88,215 L72,232 L45,228 L35,215 Z" fill="#c49a6c" opacity="0.4" class="us-state" data-state="Alaska" data-traffic="0.3%"/>
+                <!-- Hawaii -->
+                <path d="M75,265 L88,260 L92,270 L82,278 L72,272 Z" fill="#c49a6c" opacity="0.45" class="us-state" data-state="Hawaii" data-traffic="0.5%"/>
+
+                <!-- INTERNATIONAL TRAFFIC DOTS -->
+                <circle cx="480" cy="68" r="8" fill="#8B6040" opacity="0.9"/>
+                <circle cx="480" cy="68" r="14" fill="#C49A6C" opacity="0.25"/>
+                <circle cx="480" cy="68" r="3" fill="#fff" opacity="0.9"/>
+                <text x="496" y="72" font-size="11" fill="#5a3020" font-family="sans-serif" font-weight="700">UK</text>
+
+                <circle cx="628" cy="152" r="9" fill="#8B6040" opacity="0.85"/>
+                <circle cx="628" cy="152" r="15" fill="#C49A6C" opacity="0.22"/>
+                <circle cx="628" cy="152" r="3" fill="#fff" opacity="0.9"/>
+                <text x="642" y="156" font-size="11" fill="#5a3020" font-family="sans-serif" font-weight="700">India</text>
+
+                <circle cx="718" cy="98" r="10" fill="#8B6040" opacity="0.8"/>
+                <circle cx="718" cy="98" r="16" fill="#C49A6C" opacity="0.2"/>
+                <circle cx="718" cy="98" r="4" fill="#fff" opacity="0.9"/>
+                <text x="732" y="102" font-size="11" fill="#5a3020" font-family="sans-serif" font-weight="700">China</text>
+
+                <circle cx="468" cy="198" r="7" fill="#C49A6C" opacity="0.75"/>
+                <circle cx="468" cy="198" r="12" fill="#C49A6C" opacity="0.2"/>
+                <circle cx="468" cy="198" r="3" fill="#fff" opacity="0.8"/>
+                <text x="480" y="202" font-size="11" fill="#5a3020" font-family="sans-serif" font-weight="700">Nigeria</text>
+
+                <circle cx="248" cy="312" r="7" fill="#C49A6C" opacity="0.7"/>
+                <circle cx="248" cy="312" r="11" fill="#C49A6C" opacity="0.18"/>
+                <circle cx="248" cy="312" r="3" fill="#fff" opacity="0.8"/>
+                <text x="258" y="316" font-size="11" fill="#5a3020" font-family="sans-serif" font-weight="700">Brazil</text>
+
+                <circle cx="778" cy="308" r="6" fill="#C49A6C" opacity="0.65"/>
+                <circle cx="778" cy="308" r="10" fill="#C49A6C" opacity="0.18"/>
+                <circle cx="778" cy="308" r="3" fill="#fff" opacity="0.8"/>
+                <text x="788" y="312" font-size="11" fill="#5a3020" font-family="sans-serif" font-weight="700">AU</text>
+
+                <!-- Map title -->
+                <text x="8" y="18" font-size="13" fill="#8B6040" font-family="sans-serif" font-weight="700">Live Traffic Map</text>
+              </svg>
+
+              <!-- Tooltip -->
+              <div id="map-tooltip" style="display:none;position:absolute;background:rgba(44,26,14,0.92);color:#F5F0E8;padding:6px 12px;border-radius:8px;font-size:0.75rem;font-weight:700;pointer-events:none;z-index:10;white-space:nowrap;"></div>
+            </div>
+
+            <!-- Top States list -->
+            <div style="margin-bottom:12px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Top US States</div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;"><span>🗽 New York</span><div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:5px;background:var(--cream);border-radius:3px;"><div style="height:100%;width:85%;background:#8B6040;border-radius:3px;"></div></div><span style="color:var(--brown);font-weight:700;width:32px;text-align:right;">8.5%</span></div></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;"><span>☀️ California</span><div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:5px;background:var(--cream);border-radius:3px;"><div style="height:100%;width:78%;background:#8B6040;border-radius:3px;"></div></div><span style="color:var(--brown);font-weight:700;width:32px;text-align:right;">7.8%</span></div></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;"><span>🌴 Florida</span><div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:5px;background:var(--cream);border-radius:3px;"><div style="height:100%;width:72%;background:#8B6040;border-radius:3px;"></div></div><span style="color:var(--brown);font-weight:700;width:32px;text-align:right;">7.2%</span></div></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;"><span>⭐ Texas</span><div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:5px;background:var(--cream);border-radius:3px;"><div style="height:100%;width:65%;background:#a07050;border-radius:3px;"></div></div><span style="color:var(--brown);font-weight:700;width:32px;text-align:right;">6.5%</span></div></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.78rem;"><span>🍑 Georgia</span><div style="display:flex;align-items:center;gap:6px;"><div style="width:60px;height:5px;background:var(--cream);border-radius:3px;"><div style="height:100%;width:52%;background:#b08060;border-radius:3px;"></div></div><span style="color:var(--brown);font-weight:700;width:32px;text-align:right;">5.2%</span></div></div>
+              </div>
+            </div>
+
+            <!-- Channel bars -->
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">By Source</div>
+            <div style="margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px;"><span>Direct</span><span style="color:var(--brown);font-weight:700;">60.1%</span></div>
+              <div style="height:6px;background:var(--cream);border-radius:4px;"><div style="height:100%;width:60%;background:var(--brown);border-radius:4px;"></div></div>
+            </div>
+            <div style="margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px;"><span>Instagram</span><span style="color:var(--brown);font-weight:700;">24.3%</span></div>
+              <div style="height:6px;background:var(--cream);border-radius:4px;"><div style="height:100%;width:24%;background:var(--brown);border-radius:4px;"></div></div>
+            </div>
+            <div style="margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px;"><span>TikTok</span><span style="color:var(--brown);font-weight:700;">10.2%</span></div>
+              <div style="height:6px;background:var(--cream);border-radius:4px;"><div style="height:100%;width:10%;background:var(--brown);border-radius:4px;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:4px;"><span>Other</span><span style="color:var(--brown);font-weight:700;">5.4%</span></div>
+              <div style="height:6px;background:var(--cream);border-radius:4px;"><div style="height:100%;width:5%;background:var(--brown);border-radius:4px;"></div></div>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+            <div style="font-weight:700;font-size:0.92rem;margin-bottom:14px;">Top Products</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--cream2);">
+              <div><div style="font-size:0.82rem;font-weight:600;">Digital Product A</div><div style="font-size:0.7rem;color:var(--text-dim);">4,354 sold</div></div>
+              <span style="font-size:0.72rem;color:#16a34a;font-weight:700;">↑ 1.3%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--cream2);">
+              <div><div style="font-size:0.82rem;font-weight:600;">Course Bundle</div><div style="font-size:0.7rem;color:var(--text-dim);">1,821 sold</div></div>
+              <span style="font-size:0.72rem;color:#16a34a;font-weight:700;">↑ 8.2%</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+              <div><div style="font-size:0.82rem;font-weight:600;">Physical Item</div><div style="font-size:0.7rem;color:var(--text-dim);">903 sold</div></div>
+              <span style="font-size:0.72rem;color:#ef4444;font-weight:700;">↓ 0.4%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Analysis -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-weight:700;font-size:0.92rem;margin-bottom:14px;">Social Analysis</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+            <div style="font-size:0.82rem;font-weight:600;width:80px;flex-shrink:0;">Website</div>
+            <div style="flex:1;height:28px;background:var(--cream);border-radius:8px;overflow:hidden;"><div style="height:100%;width:85%;background:#C49A6C;border-radius:8px;opacity:0.85;"></div></div>
+            <div style="font-size:0.75rem;color:var(--text-dim);width:30px;text-align:right;">85%</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+            <div style="font-size:0.82rem;font-weight:600;width:80px;flex-shrink:0;">Instagram</div>
+            <div style="flex:1;height:28px;background:var(--cream);border-radius:8px;overflow:hidden;"><div style="height:100%;width:70%;background:#E1306C;border-radius:8px;opacity:0.85;"></div></div>
+            <div style="font-size:0.75rem;color:var(--text-dim);width:30px;text-align:right;">70%</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:0.82rem;font-weight:600;width:80px;flex-shrink:0;">Facebook</div>
+            <div style="flex:1;height:28px;background:var(--cream);border-radius:8px;overflow:hidden;"><div style="height:100%;width:40%;background:#1877F2;border-radius:8px;opacity:0.85;"></div></div>
+            <div style="font-size:0.75rem;color:var(--text-dim);width:30px;text-align:right;">40%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PAYOUT TAB ═══ -->
+      <div id="sp-payout" style="display:none;">
+
+        <!-- Sub-tabs -->
+        <div style="display:flex;gap:4px;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:3px;margin-bottom:20px;width:fit-content;">
+          <button id="sp-sub-payout" onclick="spSubTab('payout')" style="padding:7px 20px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;background:var(--brown);color:#fff;transition:all 0.2s;">Payout</button>
+          <button id="sp-sub-affiliate" onclick="spSubTab('affiliate')" style="padding:7px 20px;border-radius:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">Affiliate Earnings</button>
+        </div>
+
+        <!-- ── PAYOUT SUB ── -->
+        <div id="sp-payout-content">
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Balance Breakdown</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Available Now</div>
+              <div style="font-size:1.7rem;font-weight:900;color:#16a34a;font-family:'Georgia',serif;">$2,992</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Ready for Withdrawal</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Processing</div>
+              <div style="font-size:1.7rem;font-weight:900;color:#f59e0b;font-family:'Georgia',serif;">$1,120</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Clearing Payments</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Held</div>
+              <div style="font-size:1.7rem;font-weight:900;color:#ef4444;font-family:'Georgia',serif;">$30</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Recovery Mode</div>
+            </div>
+          </div>
+
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Earnings Overview</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">This Month</div>
+              <div style="font-size:1.8rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">$2,992</div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                <span style="font-size:0.75rem;color:#16a34a;font-weight:700;">+19%</span>
+                <span style="font-size:0.72rem;color:var(--text-dim);">vs Last Month</span>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;">Revenue Sources</div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Products</span><span style="font-weight:700;color:var(--brown);">$1,800</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Courses</span><span style="font-weight:700;color:var(--brown);">$700</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Bookings</span><span style="font-weight:700;color:var(--brown);">$520</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Links</span><span style="font-weight:700;color:var(--brown);">$492</span></div>
+            </div>
+          </div>
+
+          <button onclick="toast('Payout method setup coming soon')" style="width:100%;padding:14px;background:var(--cream);border:2px dashed var(--border);border-radius:12px;cursor:pointer;font-size:0.88rem;font-weight:700;color:var(--brown);margin-bottom:22px;">+ Add Payout Method</button>
+
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Transaction Feed</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">🔒 Products</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Today at 11:03 AM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$1,800</span>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">📅 Booking</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Yesterday 5:34 PM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">—</span>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">🎓 Course Sale</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Apr 20 at 1:15 PM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$720</span>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">🔗 Affiliate Commission</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#f59e0b;font-size:0.72rem;">⏳ Processing</span><span style="color:var(--text-dim);font-size:0.72rem;">Apr 19 at 10:12 AM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$492</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── AFFILIATE SUB ── -->
+        <div id="sp-affiliate-content" style="display:none;">
+          <button onclick="toast('Withdraw coming soon')" style="margin-bottom:20px;padding:10px 20px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:0.85rem;">Withdraw Affiliate Earnings</button>
+
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Balance Breakdown</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:22px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Available</div>
+              <div style="font-size:1.6rem;font-weight:900;color:#16a34a;font-family:'Georgia',serif;">$842</div>
+              <div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">— Ready for Withdrawal</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Pending</div>
+              <div style="font-size:1.6rem;font-weight:900;color:#f59e0b;font-family:'Georgia',serif;">$210</div>
+              <div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">— Clearing Payments</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
+              <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Paid Out</div>
+              <div style="font-size:1.6rem;font-weight:900;color:#6366f1;font-family:'Georgia',serif;">$3,400</div>
+              <div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">— All-Time Total</div>
+            </div>
+          </div>
+
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Top Creators</div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--cream2);">
+              <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.82rem;flex-shrink:0;">CR</div>
+              <div style="flex:1;"><div style="font-weight:700;font-size:0.88rem;">@creatorname</div><div style="font-size:0.72rem;color:var(--text-dim);">Today at 11:03 AM</div></div>
+              <div style="font-weight:800;font-size:1rem;color:var(--brown);">$120</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--cream2);">
+              <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.82rem;flex-shrink:0;">LA</div>
+              <div style="flex:1;"><div style="font-weight:700;font-size:0.88rem;">@lashartist</div><div style="font-size:0.72rem;color:var(--text-dim);">Yesterday at 5:34 PM</div></div>
+              <div style="font-weight:800;font-size:1rem;color:var(--brown);">$80</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;">
+              <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.82rem;flex-shrink:0;">GC</div>
+              <div style="flex:1;"><div style="font-weight:700;font-size:0.88rem;">@gymcoach</div><div style="font-size:0.72rem;color:var(--text-dim);">Apr 20 at 8:21 PM</div></div>
+              <div style="font-weight:800;font-size:1rem;color:var(--brown);">$45</div>
+            </div>
+          </div>
+
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Transaction Feed</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">+ $12 Referral</div>
+              <div style="font-size:0.72rem;color:#16a34a;">✓ Completed</div>
+              <div style="font-size:0.7rem;color:var(--text-dim);">Today at 11:03 AM</div>
+              <div style="font-weight:800;font-size:1rem;color:var(--brown);margin-top:6px;">$120</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">📦 Product Sale</div>
+              <div style="font-size:0.72rem;color:#16a34a;">✓ Completed</div>
+              <div style="font-size:0.7rem;color:var(--text-dim);">Apr 19 at 11:13 AM</div>
+              <div style="font-weight:800;font-size:1rem;color:var(--brown);margin-top:6px;">$120</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">🔗 $8 Link Click</div>
+              <div style="font-size:0.72rem;color:#16a34a;">✓ Completed</div>
+              <div style="font-size:0.7rem;color:var(--text-dim);">Yesterday at 5:34 PM</div>
+              <div style="font-weight:800;font-size:1rem;color:var(--brown);margin-top:6px;">$80</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;">
+              <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">🔗 $12 Referral</div>
+              <div style="font-size:0.72rem;color:#f59e0b;">⏳ Pending</div>
+              <div style="font-size:0.7rem;color:var(--text-dim);">Apr 19 at 10:12 AM</div>
+              <div style="font-weight:800;font-size:1rem;color:var(--brown);margin-top:6px;">$88</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
         <div class="coming-box">
@@ -3320,658 +4483,184 @@ function downloadSplitCard(source) {
   toast('✓ Payment card downloaded! Share via text or email.');
 }
 
-function completeCheckout() {
-  const btn = document.getElementById('complete-purchase-btn');
-  const isSplit = paymentType === 'split';
-  btn.textContent = isSplit ? 'Generating Card...' : 'Processing...';
-  btn.disabled = true;
-  setTimeout(() => {
-    closeModal('modal-checkout');
-    btn.disabled = false;
-    if (isSplit) {
-      // Auto-download the split card
-      downloadSplitCard();
-      toast('🤝 Payment card ready! Download it and share with your group.');
-    } else {
-      const cart = window._cart;
-      if (cart && cart.ev) {
-        cart.ev._selectedCart = cart.cartItems;
-        currentEventIndex = events.indexOf(cart.ev);
-        openTicketViewFromCart();
-      }
-      toast('🎉 Purchase complete! Your tickets are ready.');
-    }
-  }, 2000);
+// ── CORE NAV & UI ──────────────────────────────────────────────────────────────
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  if (ov) ov.classList.toggle('open');
 }
 
-
-function openTicketViewFromCart() {
-  const ev = events[currentEventIndex];
-  if (!ev) return;
-  const cart = ev._selectedCart || [];
-  const dateStr = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : 'Date TBD';
-  const isOnline = ev.type === 'Online';
-
-  // Build all tickets for all tiers in cart
-  let allTickets = [];
-  cart.forEach(item => {
-    for (let i=0; i<item.qty; i++) {
-      allTickets.push({ tier: item.tier, index: allTickets.length+1 });
-    }
-  });
-
-  const totalTickets = allTickets.length;
-  const ticketsHTML = allTickets.map((t, idx) => {
-    const ticketNum = generateTicketNumber(ev.id, t.tier.type, idx+1);
-    const price = parseFloat(t.tier.price)||0;
-    return `
-      <div style="background:linear-gradient(135deg,#2d1500,#1a0a00);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;position:relative;">
-        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:0.65rem;font-weight:700;padding:3px 8px;border-radius:20px;">Ticket ${idx+1} of ${totalTickets}</div>
-        <h3 style="font-family:'DM Serif Display',serif;color:#fff;font-size:1.1rem;margin-bottom:6px;padding-right:60px;text-align:left;">${ev.name}</h3>
-        <div style="text-align:left;margin-bottom:4px;">
-          <span style="background:rgba(192,122,80,0.3);color:var(--brown-light);font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;">${t.tier.type}</span>
-          ${isOnline?'<span style="background:rgba(37,99,235,0.2);color:#60a5fa;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;margin-left:6px;">🌐 Online</span>':''}
-        </div>
-        <p style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-bottom:14px;text-align:left;">${isOnline?'Use your ticket number to access the event':'Show QR code at entrance'}</p>
-        <div style="background:#fff;border-radius:12px;padding:12px;display:inline-block;margin-bottom:12px;">
-          <svg id="qr-${idx}" viewBox="0 0 100 100" width="130" height="130" xmlns="http://www.w3.org/2000/svg"></svg>
-        </div>
-        <div style="background:rgba(255,255,255,0.06);border-radius:8px;padding:8px 12px;display:inline-block;margin-bottom:14px;">
-          <div style="color:rgba(255,255,255,0.35);font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Ticket Number</div>
-          <div style="color:var(--brown-light);font-family:monospace;font-size:0.88rem;font-weight:800;letter-spacing:0.08em;">${ticketNum}</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:left;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Venue</div><div style="font-size:0.8rem;color:#fff;font-weight:600;">${isOnline?'Online Event':ev.location||'TBD'}</div></div>
-            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Date & Time</div><div style="font-size:0.78rem;color:#fff;font-weight:600;">${dateStr}${ev.time?' • '+ev.time:''}</div></div>
-            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Type</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:700;">${t.tier.type}</div></div>
-            <div><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Price</div><div style="font-size:0.8rem;color:var(--brown-light);font-weight:800;">${price===0?'Free':'$'+price.toFixed(2)}</div></div>
-          </div>
-          ${t.tier.description?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Includes</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5;">${t.tier.description}</div></div>`:''}
-          ${isOnline?`<div style="padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);margin-top:10px;"><div style="font-size:0.58rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;">Massed Stream Link</div><div style="background:rgba(192,122,80,0.12);border:1px solid rgba(192,122,80,0.25);border-radius:8px;padding:10px;"><div style="color:rgba(255,255,255,0.5);font-size:0.72rem;margin-bottom:6px;">Enter ticket number <strong style="color:var(--brown-light);">${ticketNum}</strong></div><div style="color:var(--brown-light);font-family:monospace;font-size:0.78rem;font-weight:600;word-break:break-all;">${ev.onlineLink||'https://stream.massed.io/'+ev.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}</div></div></div>`:''}
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  document.getElementById('multi-ticket-container').innerHTML = ticketsHTML;
-  document.getElementById('multi-ticket-title').textContent = totalTickets > 1 ? `Your ${totalTickets} Tickets` : 'Your Ticket';
-  document.getElementById('multi-ticket-total').textContent = '';
-
-  allTickets.forEach((t, idx) => {
-    const ticketNum = generateTicketNumber(ev.id, t.tier.type, idx+1);
-    setTimeout(()=>generateQR(ticketNum,'qr-'+idx), 80+idx*30);
-  });
-
-  openModal('modal-your-ticket');
-}
-
-
-
-
-// ── SCANNER ───────────────────────────────────────────
-let scanStats = {total:0, valid:0, invalid:0};
-let checkedInList = [];
-let cameraStream = null;
-let scanInterval = null;
-let torchOn = false;
-let lastScanned = null;
-let lastScannedTime = 0;
-
-// Load jsQR library dynamically
-function loadJsQR(callback) {
-  if (window.jsQR) { callback(); return; }
-  const script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js';
-  script.onload = callback;
-  script.onerror = () => toast('Failed to load QR scanner library');
-  document.head.appendChild(script);
-}
-
-function startCamera() {
-  loadJsQR(() => {
-    const constraints = {
-      video: {
-        facingMode: { ideal: 'environment' }, // use back camera
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-      }
-    };
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then(stream => {
-        cameraStream = stream;
-        const video = document.getElementById('camera-feed');
-        video.srcObject = stream;
-        video.play();
-        // Show camera UI
-        document.getElementById('camera-placeholder').style.display = 'none';
-        document.getElementById('scan-frame-overlay').style.display = 'block';
-        document.getElementById('btn-start-camera').style.display = 'none';
-        document.getElementById('btn-stop-camera').style.display = 'flex';
-        // Show torch button if supported
-        const track = stream.getVideoTracks()[0];
-        if (track && track.getCapabilities && track.getCapabilities().torch) {
-          document.getElementById('btn-torch').style.display = 'flex';
-        }
-        document.getElementById('scan-status').textContent = '🟢 Scanning — point at a QR code';
-        document.getElementById('scan-result').style.display = 'none';
-        // Start scanning frames
-        video.addEventListener('loadedmetadata', () => startFrameScan(video));
-      })
-      .catch(err => {
-        let msg = 'Camera access denied.';
-        if (err.name === 'NotFoundError') msg = 'No camera found on this device.';
-        else if (err.name === 'NotAllowedError') msg = 'Camera permission denied. Please allow camera access.';
-        document.getElementById('scan-status').textContent = '⚠️ ' + msg;
-        toast('⚠️ ' + msg);
-      });
-  });
-}
-
-function startFrameScan(video) {
-  const canvas = document.getElementById('camera-canvas');
-  const ctx = canvas.getContext('2d');
-  scanInterval = setInterval(() => {
-    if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
-      inversionAttempts: 'dontInvert'
-    });
-    if (code && code.data) {
-      const now = Date.now();
-      // Debounce — don't re-scan the same code within 3 seconds
-      if (code.data !== lastScanned || now - lastScannedTime > 3000) {
-        lastScanned = code.data;
-        lastScannedTime = now;
-        processScannedTicket(code.data, false);
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-      }
-    }
-  }, 200);
-}
-
-function stopCamera() {
-  if (cameraStream) {
-    cameraStream.getTracks().forEach(t => t.stop());
-    cameraStream = null;
-  }
-  clearInterval(scanInterval);
-  scanInterval = null;
-  const video = document.getElementById('camera-feed');
-  video.srcObject = null;
-  document.getElementById('camera-placeholder').style.display = 'flex';
-  document.getElementById('scan-frame-overlay').style.display = 'none';
-  document.getElementById('btn-start-camera').style.display = 'flex';
-  document.getElementById('btn-stop-camera').style.display = 'none';
-  document.getElementById('btn-torch').style.display = 'none';
-  document.getElementById('scan-status').textContent = 'Click Start Camera to begin scanning';
-  torchOn = false;
-}
-
-function toggleTorch() {
-  if (!cameraStream) return;
-  const track = cameraStream.getVideoTracks()[0];
-  if (!track) return;
-  torchOn = !torchOn;
-  track.applyConstraints({ advanced: [{ torch: torchOn }] })
-    .then(() => {
-      document.getElementById('btn-torch').style.background = torchOn ? '#fef3c7' : 'var(--cream2)';
-    })
-    .catch(() => toast('Torch not supported on this device'));
-}
-
-function verifyTicket() {
-  const val = document.getElementById('manual-ticket-input').value.trim().toUpperCase();
-  if (!val) { toast('Please enter a ticket number'); return; }
-  processScannedTicket(val, true);
-}
-
-function processScannedTicket(ticketId, isManual) {
-  // Check against locally created tickets
-  let foundEvent = null, foundTier = null;
-  events.forEach(ev => {
-    if (!ev.tiers) return;
-    ev.tiers.forEach(t => {
-      // Match any ticket number that belongs to this event + tier
-      const prefix = 'TKT-' + ev.id.toString().slice(-5) + '-' + t.type.replace(/[^A-Z]/gi,'').substring(0,3).toUpperCase().padEnd(3,'X');
-      if (ticketId.startsWith(prefix) || ticketId.startsWith('TKT-'+ev.id.toString().slice(-5))) {
-        foundEvent = ev; foundTier = t;
-      }
-    });
-  });
-
-  const isValid = foundEvent !== null && ticketId.startsWith('TKT-') && ticketId.length >= 10;
-  const resultEl = document.getElementById(isManual ? 'verify-result' : 'scan-result');
-
-  scanStats.total++;
-  if (isValid) {
-    scanStats.valid++;
-    checkedInList.unshift({ id: ticketId, name: foundEvent.name, tier: foundTier ? foundTier.type : '', time: new Date().toLocaleTimeString(), valid: true });
-    resultEl.style.cssText = 'display:block;padding:14px;border-radius:10px;background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);margin-top:12px;';
-    resultEl.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span style="font-size:2rem;">✅</span>
-        <div>
-          <div style="font-weight:700;color:#16a34a;font-size:0.95rem;">Valid Ticket</div>
-          <div style="font-size:0.78rem;color:var(--text-mid);margin-top:2px;">${ticketId}</div>
-          <div style="font-size:0.78rem;color:var(--text-mid);">${foundEvent.name} · ${foundTier ? foundTier.type : ''}</div>
-        </div>
-      </div>`;
-    if (!isManual) document.getElementById('scan-status').textContent = '✅ Valid — keep scanning';
-  } else {
-    scanStats.invalid++;
-    checkedInList.unshift({ id: ticketId, time: new Date().toLocaleTimeString(), valid: false });
-    resultEl.style.cssText = 'display:block;padding:14px;border-radius:10px;background:#fff1f2;border:1px solid #fecaca;margin-top:12px;';
-    resultEl.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span style="font-size:2rem;">❌</span>
-        <div>
-          <div style="font-weight:700;color:#dc2626;font-size:0.95rem;">Invalid Ticket</div>
-          <div style="font-size:0.78rem;color:var(--text-mid);margin-top:2px;">${ticketId}</div>
-          <div style="font-size:0.78rem;color:var(--text-dim);">Not found in system</div>
-        </div>
-      </div>`;
-    if (!isManual) document.getElementById('scan-status').textContent = '❌ Invalid — keep scanning';
-  }
-
-  // Update stats
-  document.getElementById('scan-total').textContent = scanStats.total;
-  document.getElementById('scan-valid').textContent = scanStats.valid;
-  document.getElementById('scan-invalid').textContent = scanStats.invalid;
-
-  // Update checked-in list
-  document.getElementById('checked-in-list').innerHTML = checkedInList.slice(0,6).map(c => `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--cream);border-radius:8px;margin-bottom:6px;">
-      <div>
-        <div style="font-family:monospace;font-size:0.7rem;color:var(--text);font-weight:600;">${c.id}</div>
-        ${c.name ? `<div style="font-size:0.65rem;color:var(--text-dim);">${c.name}${c.tier?' · '+c.tier:''}</div>` : ''}
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-        <span style="font-size:0.65rem;color:var(--text-dim);">${c.time}</span>
-        <span style="font-size:1rem;">${c.valid ? '✅' : '❌'}</span>
-      </div>
-    </div>
-  `).join('') || '<div style="text-align:center;padding:20px;color:var(--text-dim);font-size:0.82rem;">No check-ins yet</div>';
-
-  // Auto-clear result after 4 seconds when using camera
-  if (!isManual) setTimeout(() => { if (resultEl) resultEl.style.display = 'none'; }, 4000);
-}
-
-// Stop camera when leaving scanner screen
-const _origNav = nav;
-nav = function(el, screen) {
-  if (screen !== 'scanner' && cameraStream) stopCamera();
-  _origNav(el, screen);
+const pageTitles = {
+  dashboard:'Dashboard',
+  showcase:'Showcase',
+  mystore:'My Store',
+  weblinks:'Web Links',
+  mediaprofile:'Media Profile',
+  sociallinks:'Social Links',
+  video:'Video',
+  analytics:'Analytics',
+  reviews:'Reviews',
+  tickets:'Events / Tickets',
+  scanner:'Ticket Scanner',
+  livepreview:'Live Preview',
+  promo:'Promo / Referrals / Affiliates',
+  settings:'Settings',
+  billing:'Billing',
+  salespayouts:'Sales & Payouts',
+  coming:'Coming Soon'
 };
 
-// ── ONLINE EVENT ACCESS ───────────────────────────────
-function openOnlineAccess(evIdx) {
-  const ev = events[evIdx];
-  const streamLink = ev.onlineLink || ('https://stream.massed.io/' + ev.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''));
-  document.getElementById('online-ev-name').textContent = ev.name;
-  const dateStr = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) : '';
-  document.getElementById('online-ev-date').textContent = dateStr + (ev.time?' • '+ev.time:'');
-  document.getElementById('online-ticket-input').value = '';
-  document.getElementById('online-verify-result').style.display = 'none';
-  document.getElementById('online-access-granted').style.display = 'none';
-  document.getElementById('online-event-link-btn').href = streamLink;
-  const displayEl = document.getElementById('online-stream-link-display');
-  if (displayEl) displayEl.textContent = streamLink;
-  openModal('modal-online-access');
-}
-
-function verifyOnlineAccess() {
-  const val = document.getElementById('online-ticket-input').value.trim().toUpperCase();
-  if (!val) { toast('Please enter your ticket number'); return; }
-  const resultEl = document.getElementById('online-verify-result');
-  resultEl.style.display = 'block';
-  resultEl.innerHTML = '<div style="color:rgba(255,255,255,0.5);font-size:0.85rem;">🔍 Verifying...</div>';
-  setTimeout(() => {
-    const isValid = val.startsWith('TKT-') && val.length > 10;
-    if (isValid) {
-      resultEl.style.display = 'none';
-      document.getElementById('online-access-granted').style.display = 'block';
-    } else {
-      resultEl.innerHTML = '<div style="color:#f87171;font-weight:600;">❌ Invalid ticket number. Please check and try again.</div>';
-    }
-  }, 1200);
-}
-
-function downloadOnlineLink() {
-  toast('📥 Event access link downloaded!');
-}
-
-// ── TICKET NUMBER GENERATION ──────────────────────────
-function generateTicketNumber(evId, tierType, index) {
-  const evPart = evId.toString().slice(-5).toUpperCase();
-  const tierPart = tierType.replace(/[^A-Z]/gi,'').substring(0,3).toUpperCase().padEnd(3,'X');
-  const numPart = String(index).padStart(4,'0');
-  return `TKT-${evPart}-${tierPart}-${numPart}`;
-}
-// ── MORE MENU ─────────────────────────────────────────
-function toggleMoreMenu() {
-  const menu = document.getElementById('more-menu');
-  const isOpen = menu.style.display === 'block';
-  menu.style.display = isOpen ? 'none' : 'block';
-  if (!isOpen) setTimeout(() => document.addEventListener('click', closeMoreMenuOutside), 10);
-}
-function closeMoreMenu() {
-  const menu = document.getElementById('more-menu');
-  if (menu) menu.style.display = 'none';
-  document.removeEventListener('click', closeMoreMenuOutside);
-}
-function closeMoreMenuOutside(e) {
-  const menu = document.getElementById('more-menu');
-  const trigger = document.getElementById('btn-more-trigger');
-  if (menu && !menu.contains(e.target) && trigger && !trigger.contains(e.target)) closeMoreMenu();
-}
-function goToLivePreview() {
-  closeMoreMenu();
-  nav(null, 'livepreview');
-}
-
-function toggleSidebar(){
-  document.querySelector('.sidebar').classList.toggle('open');
-  document.getElementById('sidebar-overlay').classList.toggle('visible');
-}
-function closeSidebar(){
-  document.querySelector('.sidebar').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('visible');
-}
-
-// ── NAV ──────────────────────────────────────────────
-const pageTitles = {dashboard:'Dashboard',showcase:'Showcase',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',coming:'Coming Soon'};
-
 function nav(el, screen) {
-  closeSidebar();
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + screen).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (el && el.classList.contains('nav-item')) el.classList.add('active');
-  document.getElementById('page-title').textContent = pageTitles[screen] || '';
-  if (screen === 'livepreview') {
-    startDuration();
-    setTimeout(() => { lpInit(); }, 50);
-  } else {
-    stopDuration();
-  }
-}
-
-// ── COLLAPSE GROUPS ───────────────────────────────────
-function toggleGroup(header) {
-  const body = header.nextElementSibling;
-  if (header.classList.contains('closed')) {
-    header.classList.remove('closed');
-    body.style.maxHeight = body.scrollHeight + 'px';
-  } else {
-    header.classList.add('closed');
-    body.style.maxHeight = '0';
-  }
-}
-
-window.addEventListener('load', function() {
-  document.querySelectorAll('.nav-group-body').forEach(function(b) {
-    b.style.overflow = 'hidden';
-    b.style.transition = 'max-height 0.3s ease';
-    b.style.maxHeight = b.scrollHeight + 'px';
-  });
-  renderTicketTiers();
-});
-
-// ── SHOWCASE ──────────────────────────────────────────
-function pickTemplate(card) {
-  document.querySelectorAll('.template-card').forEach(c => { c.classList.remove('selected'); const b = c.querySelector('.template-badge'); if (b) b.remove(); });
-  card.classList.add('selected');
-  const b = document.createElement('span'); b.className = 'template-badge'; b.textContent = 'SELECTED';
-  card.querySelector('.template-info').appendChild(b);
-  toast('✓ Template selected!');
-}
-
-// ── GO LIVE ───────────────────────────────────────────
-let liveMode = null;
-let currentProduct = null;
-let saleTimerInterval = null;
-let saleTimerSeconds = 0;
-
-function openGoLive() {
-  liveMode = null;
-  document.querySelectorAll('.live-opt').forEach(o => o.classList.remove('selected'));
-  const btn = document.getElementById('btn-next');
-  btn.disabled = true;
-  openModal('modal-golive');
-}
-
-function pickMode(mode) {
-  liveMode = mode;
-  document.querySelectorAll('.live-opt').forEach(o => o.classList.remove('selected'));
-  document.getElementById('opt-' + mode).classList.add('selected');
-  document.getElementById('btn-next').disabled = false;
-}
-
-function liveNext() {
-  if (!liveMode) return;
-  closeModal('modal-golive');
-  if (liveMode === 'live') {
-    goLiveOnly();
-  } else {
-    document.getElementById('sell-product').value = '';
-    document.getElementById('sell-details').style.display = 'none';
-    document.getElementById('btn-go-sell').disabled = true;
-    openModal('modal-sell');
-  }
-}
-
-function onSellProduct() {
-  const sel = document.getElementById('sell-product');
-  const opt = sel.options[sel.selectedIndex];
-  const details = document.getElementById('sell-details');
-  const btn = document.getElementById('btn-go-sell');
-  if (!sel.value) { details.style.display = 'none'; btn.disabled = true; return; }
-  document.getElementById('sell-orig').value = opt.getAttribute('data-price');
-  document.getElementById('sell-sale').value = (parseFloat(opt.getAttribute('data-price')) * 0.8).toFixed(2);
-  details.style.display = 'block';
-  btn.disabled = false;
-}
-
-function goLiveOnly() {
-  currentProduct = null;
-  showBanner();
-  toast('🔴 You\'re live at massed.io/username!');
-}
-
-function startLiveAndSell() {
-  const sel = document.getElementById('sell-product');
-  const opt = sel.options[sel.selectedIndex];
-  if (!sel.value) return;
-  const orig = parseFloat(opt.getAttribute('data-price'));
-  const sale = parseFloat(document.getElementById('sell-sale').value) || orig;
-  const mins = parseInt(document.getElementById('sell-timer').value) || 0;
-  currentProduct = { name: sel.value, orig, sale, mins };
-  closeModal('modal-sell');
-  showBanner();
-  showProductOnBanner();
-  if (mins > 0) startSaleTimer(mins * 60);
-  toast('🔴 Live & Sell started!');
-}
-
-function showBanner() {
-  document.getElementById('live-banner').classList.add('visible');
-  document.querySelector('.content').style.paddingBottom = '70px';
-}
-
-function showProductOnBanner() {
-  if (!currentProduct) return;
-  document.getElementById('banner-product').classList.add('visible');
-  document.getElementById('banner-pname').textContent = currentProduct.name;
-  document.getElementById('banner-price').textContent = '$' + currentProduct.sale.toFixed(2);
-  document.getElementById('btn-close-prod').style.display = 'inline-flex';
-  document.getElementById('btn-bring-back').style.display = 'none';
-  if (currentProduct.mins === 0) document.getElementById('banner-timer-wrap').style.display = 'none';
-}
-
-function startSaleTimer(seconds) {
-  saleTimerSeconds = seconds;
-  clearInterval(saleTimerInterval);
-  document.getElementById('banner-timer-wrap').style.display = 'block';
-  updateSaleTimerDisplay();
-  saleTimerInterval = setInterval(() => {
-    saleTimerSeconds--;
-    updateSaleTimerDisplay();
-    if (saleTimerSeconds <= 0) {
-      clearInterval(saleTimerInterval);
-      closeProduct();
-      toast('⏱ Timer ended — price returned to $' + currentProduct.orig.toFixed(2));
+  if (!screen) return;
+  try {
+    document.querySelectorAll('.nav-item').forEach(function(n){ if(n) n.classList.remove('active'); });
+    if (el && el.classList) el.classList.add('active');
+    document.querySelectorAll('.screen').forEach(function(s){ if(s) s.classList.remove('active'); });
+    var target = document.getElementById('screen-' + screen);
+    if (target) target.classList.add('active');
+    var pt = document.getElementById('page-title');
+    if (pt) pt.textContent = pageTitles[screen] || '';
+    var sb = document.getElementById('sidebar');
+    var ov = document.getElementById('sidebar-overlay');
+    if (sb && sb.classList.contains('open')) {
+      sb.classList.remove('open');
+      if (ov) ov.classList.remove('open');
     }
-  }, 1000);
+    try { sessionStorage.setItem('massedScreen', screen); } catch(e){}
+  } catch(e) { console.warn('nav error:', e); }
 }
 
-function updateSaleTimerDisplay() {
-  const m = Math.floor(saleTimerSeconds / 60).toString().padStart(2, '0');
-  const s = (saleTimerSeconds % 60).toString().padStart(2, '0');
-  document.getElementById('banner-timer').textContent = m + ':' + s;
+function openModal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.add('open');
 }
 
-function closeProduct() {
-  clearInterval(saleTimerInterval);
-  document.getElementById('banner-product').classList.remove('visible');
-  document.getElementById('btn-close-prod').style.display = 'none';
-  document.getElementById('btn-bring-back').style.display = 'inline-flex';
-  toast('Product closed. Click "Bring Back" to show it again.');
+function closeModal(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
 }
 
-function bringBackProduct() {
-  if (!currentProduct) return;
-  showProductOnBanner();
-  toast('Product is back on your live!');
-}
-
-function endLive() {
-  if (!confirm('Are you sure you want to end your live?')) return;
-  clearInterval(saleTimerInterval);
-  currentProduct = null;
-  document.getElementById('live-banner').classList.remove('visible');
-  document.querySelector('.content').style.paddingBottom = '0';
-  toast('Live ended. Thanks for going live!');
-}
-
-// ── LIVE PREVIEW ──────────────────────────────────────
-let lpTimerInterval = null, lpTimerSecs = 0;
-let durationInterval = null, durationSecs = 0;
-
-function lpInit() {
-  document.getElementById('lp-product').value = 'Beauty Guide eBook|29.99';
-  lpUpdateProduct();
-  lpStartTimer();
-}
-
-function lpUpdateProduct() {
-  const val = document.getElementById('lp-product').value;
-  if (!val) return;
-  const parts = val.split('|');
-  const name = parts[0], price = parseFloat(parts[1]);
-  document.getElementById('phone-pname').textContent = name;
-  document.getElementById('phone-orig').textContent = '$' + price.toFixed(2);
-  document.getElementById('lp-sale-input').value = (price * 0.7).toFixed(2);
-  lpUpdatePrice();
-}
-
-function lpUpdatePrice() {
-  const val = document.getElementById('lp-product').value;
-  if (!val) return;
-  const orig = parseFloat(val.split('|')[1]);
-  const sale = parseFloat(document.getElementById('lp-sale-input').value) || orig;
-  document.getElementById('phone-sale').textContent = '$' + sale.toFixed(2);
-  const disc = Math.round((1 - sale / orig) * 100);
-  document.getElementById('phone-disc').textContent = disc > 0 ? disc + '% OFF' : '';
-  document.getElementById('phone-product-card').style.display = 'block';
-}
-
-function lpStartTimer() {
-  clearInterval(lpTimerInterval);
-  const mins = parseInt(document.getElementById('lp-timer-sel').value) || 0;
-  if (mins === 0) { document.getElementById('phone-timer').textContent = '∞'; return; }
-  lpTimerSecs = mins * 60;
-  updateLpTimerDisplay();
-  lpTimerInterval = setInterval(() => {
-    lpTimerSecs--;
-    updateLpTimerDisplay();
-    if (lpTimerSecs <= 0) { clearInterval(lpTimerInterval); lpCloseProduct(); }
-  }, 1000);
-}
-
-function updateLpTimerDisplay() {
-  const m = Math.floor(lpTimerSecs / 60).toString().padStart(2, '0');
-  const s = (lpTimerSecs % 60).toString().padStart(2, '0');
-  document.getElementById('phone-timer').textContent = m + ':' + s;
-}
-
-function lpCloseProduct() { document.getElementById('phone-product-card').style.display = 'none'; clearInterval(lpTimerInterval); }
-function lpBringBack() { document.getElementById('phone-product-card').style.display = 'block'; lpStartTimer(); }
-
-function startDuration() {
-  durationSecs = 0;
-  clearInterval(durationInterval);
-  durationInterval = setInterval(() => {
-    durationSecs++;
-    const m = Math.floor(durationSecs / 60).toString().padStart(2, '0');
-    const s = (durationSecs % 60).toString().padStart(2, '0');
-    const el = document.getElementById('lp-duration');
-    if (el) el.textContent = m + ':' + s;
-  }, 1000);
-}
-function stopDuration() { clearInterval(durationInterval); }
-
-// ── PAUSE ─────────────────────────────────────────────
-let isPaused = false;
-
-function togglePause() {
-  isPaused = !isPaused;
-  const btn = document.getElementById('btn-pause');
-  const dot = document.querySelector('.live-dot');
-  const label = document.querySelector('.live-label');
-  if (isPaused) {
-    clearInterval(saleTimerInterval);
-    btn.textContent = '▶ Resume';
-    btn.style.background = '#dcfce7';
-    btn.style.color = '#16a34a';
-    dot.style.background = '#f59e0b';
-    dot.style.animation = 'none';
-    label.textContent = 'PAUSED';
-    label.style.color = '#f59e0b';
-    toast('⏸ Live paused');
-  } else {
-    if (currentProduct && saleTimerSeconds > 0) startSaleTimer(saleTimerSeconds);
-    btn.textContent = '⏸ Pause';
-    btn.style.background = '#fef3c7';
-    btn.style.color = '#d97706';
-    dot.style.background = '#ef4444';
-    dot.style.animation = 'pulse 1.5s infinite';
-    label.textContent = 'LIVE';
-    label.style.color = '#ef4444';
-    toast('▶ Live resumed');
-  }
-}
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-document.addEventListener('click', function(e) {
-  // Only close modal if clicking DIRECTLY on the dark backdrop — not any child
-  const overlays = document.querySelectorAll('.modal-overlay.open');
-  overlays.forEach(overlay => {
-    if (e.target === overlay) overlay.classList.remove('open');
-  });
-});
-
-// ── TOAST ─────────────────────────────────────────────
 function toast(msg) {
-  const t = document.getElementById('toast');
+  var t = document.getElementById('toast');
+  if (!t) return;
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
 }
+
+// Restore session
+document.addEventListener('DOMContentLoaded', function() {
+  var lastScreen = '';
+  try { lastScreen = sessionStorage.getItem('massedScreen') || ''; } catch(e){}
+  if (lastScreen && document.getElementById('screen-' + lastScreen)) {
+    nav(null, lastScreen);
+  } else {
+    nav(null, 'dashboard');
+  }
+
+  // Camera nav override
+  var _origNavCamera = nav;
+  nav = function(el, screen) {
+    if (typeof cameraStream !== 'undefined' && screen !== 'scanner' && cameraStream) stopCamera();
+    _origNavCamera(el, screen);
+  };
+});
+
+// spTab
+function spTab(tab) {
+  var isS = tab === 'sales';
+  var sales = document.getElementById('sp-sales');
+  var payout = document.getElementById('sp-payout');
+  if (sales) sales.style.display = isS ? 'block' : 'none';
+  if (payout) payout.style.display = isS ? 'none' : 'block';
+  var sbtn = document.getElementById('sp-tab-sales');
+  var pbtn = document.getElementById('sp-tab-payout');
+  if (sbtn) { sbtn.style.background = isS ? 'var(--brown)' : 'transparent'; sbtn.style.color = isS ? '#fff' : 'var(--text-dim)'; }
+  if (pbtn) { pbtn.style.background = isS ? 'transparent' : 'var(--brown)'; pbtn.style.color = isS ? 'var(--text-dim)' : '#fff'; }
+}
+
+function spSubTab(sub) {
+  var isP = sub === 'payout';
+  var pc = document.getElementById('sp-payout-content');
+  var ac = document.getElementById('sp-affiliate-content');
+  if (pc) pc.style.display = isP ? 'block' : 'none';
+  if (ac) ac.style.display = isP ? 'none' : 'block';
+  var pb = document.getElementById('sp-sub-payout');
+  var ab = document.getElementById('sp-sub-affiliate');
+  if (pb) { pb.style.background = isP ? 'var(--brown)' : 'transparent'; pb.style.color = isP ? '#fff' : 'var(--text-dim)'; }
+  if (ab) { ab.style.background = isP ? 'transparent' : 'var(--brown)'; ab.style.color = isP ? 'var(--text-dim)' : '#fff'; }
+}
+
+function settingsTab(tab) {
+  ['settings','billing','stripe','support'].forEach(function(t) {
+    var c = document.getElementById('stab-' + t + '-content');
+    var b = document.getElementById('stab-' + t);
+    if (c) c.style.display = t === tab ? 'flex' : 'none';
+    if (b) { b.style.background = t === tab ? 'var(--brown)' : 'transparent'; b.style.color = t === tab ? '#fff' : 'var(--text-dim)'; }
+  });
+}
+
+function mpTab(tab) {
+  var pc = document.getElementById('mptab-profile-content');
+  var cc = document.getElementById('mptab-collab-content');
+  if (pc) pc.style.display = tab === 'profile' ? 'block' : 'none';
+  if (cc) cc.style.display = tab === 'collab' ? 'block' : 'none';
+  var pb = document.getElementById('mptab-profile');
+  var cb = document.getElementById('mptab-collab');
+  if (pb) { pb.style.background = tab === 'profile' ? 'var(--brown)' : 'transparent'; pb.style.color = tab === 'profile' ? '#fff' : 'var(--text-dim)'; }
+  if (cb) { cb.style.background = tab === 'collab' ? 'var(--brown)' : 'transparent'; cb.style.color = tab === 'collab' ? '#fff' : 'var(--text-dim)'; }
+  if (tab === 'collab') renderCollabGrid('all');
+}
+
+function collabSubTab(tab) {
+  ['browse','incoming','active','docs'].forEach(function(t) {
+    var c = document.getElementById('csub-' + t + '-content');
+    var b = document.getElementById('csub-' + t);
+    if (c) c.style.display = t === tab ? 'block' : 'none';
+    if (b) { b.style.background = t === tab ? 'var(--brown)' : 'transparent'; b.style.color = t === tab ? '#fff' : 'var(--text-dim)'; }
+  });
+  if (tab === 'incoming') renderIncoming();
+  if (tab === 'active') renderActive();
+  if (tab === 'docs') renderDocs();
+}
+
+function toggleStoreLive(cb) {
+  var track = document.getElementById('store-live-track');
+  var thumb = document.getElementById('store-live-thumb');
+  var label = document.getElementById('store-status-label');
+  if (cb.checked) {
+    if (track) track.style.background = 'var(--brown)';
+    if (thumb) thumb.style.left = '22px';
+    if (label) { label.textContent = '● Live at massed.io/username'; label.style.color = 'var(--green)'; }
+    toast('✓ Store is now live!');
+  } else {
+    if (track) track.style.background = '#e5e7eb';
+    if (thumb) thumb.style.left = '2px';
+    if (label) { label.textContent = '○ Store is offline'; label.style.color = 'var(--text-dim)'; }
+    toast('Store taken offline.');
+  }
+}
+
+// Traffic map tooltip
+document.addEventListener('DOMContentLoaded', function() {
+  var tooltip = document.getElementById('map-tooltip');
+  if (!tooltip) return;
+  document.querySelectorAll('.us-state').forEach(function(s) {
+    s.style.cursor = 'pointer';
+    s.addEventListener('mouseenter', function(e) {
+      tooltip.style.display = 'block';
+      tooltip.textContent = s.getAttribute('data-state') + ' — ' + s.getAttribute('data-traffic');
+    });
+    s.addEventListener('mousemove', function(e) {
+      var rect = s.closest('svg').parentElement.getBoundingClientRect();
+      tooltip.style.left = (e.clientX - rect.left + 8) + 'px';
+      tooltip.style.top = (e.clientY - rect.top - 30) + 'px';
+    });
+    s.addEventListener('mouseleave', function() { tooltip.style.display = 'none'; });
+  });
+});
+
 </script>
 </body>
 </html>
