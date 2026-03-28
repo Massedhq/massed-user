@@ -247,6 +247,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .wl-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow 0.2s;}
 .wl-card-outer{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.2s;break-inside:avoid;}
 .wl-card-outer:hover{box-shadow:0 6px 24px rgba(192,122,80,0.14);transform:translateY(-2px);}
+.bk-svc-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.2s;}
+.bk-svc-card:hover{box-shadow:0 6px 24px rgba(192,122,80,0.12);transform:translateY(-2px);}
+.bk-time-btn{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:sans-serif;font-size:0.8rem;font-weight:600;}
+.bk-time-btn.bk-time-sel{background:var(--brown);border-color:var(--brown);color:#fff;}
 .wl-card:hover{box-shadow:0 4px 20px rgba(192,122,80,0.12);}
 .wl-card-body{display:flex;align-items:stretch;gap:0;}
 .wl-drag{width:36px;display:flex;align-items:center;justify-content:center;cursor:grab;color:var(--text-dim);flex-shrink:0;background:var(--cream);border-right:1px solid var(--border);}
@@ -472,7 +476,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
     <div class="nav-group-body" id="group-build">
       <div class="nav-item" onclick="nav(this,'weblinks')"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>Web Links</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Booking</div>
+      <div class="nav-item" onclick="nav(this,'booking')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Booking</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Services</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Subscriptions / Memberships / Subs</div>
       <div class="nav-item" onclick="nav(this,'tickets')"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010-6h20a3 3 0 010 6"/><path d="M2 9v11a2 2 0 002 2h16a2 2 0 002-2V9"/><path d="M12 9v13"/></svg>Events / Tickets</div>
@@ -488,7 +492,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div class="nav-item" onclick="nav(this,'sociallinks')"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Social Links</div>
       <div class="nav-item" onclick="nav(this,'video')"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div>
       <div class="nav-item" onclick="nav(this,'promo')"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Promo / Referrals / Affiliates</div>
-      <div class="nav-item" onclick="nav(this,'browsericon')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>Browser Icon</div>
+      <div class="nav-item" onclick="nav(this,'browsericon')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>Branding / Browser Icon</div>
     </div>
 
     <div class="nav-group-header" onclick="toggleGroup(this)">
@@ -3248,17 +3252,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
         <!-- ── PRIVACY POLICY ── -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">🔒 Privacy Policy</div>
-          <div style="display:flex;flex-direction:column;gap:12px;font-size:0.83rem;color:var(--text-mid);line-height:1.8;">
-            <div><strong style="color:var(--text);">What We Collect</strong><br>Name, email, phone, profile content, and payment details you provide. Usage data (pages visited, features used, device type) to improve the platform.</div>
-            <div style="height:1px;background:var(--border);"></div>
-            <div><strong style="color:var(--text);">How We Use It</strong><br>To operate your account, process payouts, send opted-in notifications, and improve MASSED. We never sell your personal data to third parties.</div>
-            <div style="height:1px;background:var(--border);"></div>
-            <div><strong style="color:var(--text);">Your Rights</strong><br>Access, update, or delete your data at any time. Request a data export or deletion by contacting support — we respond within 30 days.</div>
-            <div style="height:1px;background:var(--border);"></div>
-            <div><strong style="color:var(--text);">Cookies</strong><br>Essential cookies only to keep you logged in. No third-party advertising cookies.</div>
-            <div style="height:1px;background:var(--border);"></div>
-            <div style="font-size:0.78rem;color:var(--text-dim);">Questions? <strong style="color:var(--brown);">privacy@massed.io</strong> · Last updated March 2026</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:4px;">🔒 Privacy Policy</div>
+              <div style="font-size:0.8rem;color:var(--text-dim);">How we collect, use, and protect your data</div>
+            </div>
+            <button onclick="openModal('modal-help-privacy')" style="padding:9px 18px;background:var(--brown-bg);color:var(--brown);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;white-space:nowrap;">View Policy →</button>
           </div>
         </div>
 
@@ -3286,31 +3285,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
 
         <!-- ── LANGUAGE ── -->
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">🌐 Display Language</div>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div class="lang-option" onclick="selectLanguage(this,'en')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--brown-bg);border:2px solid var(--brown);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇺🇸</span><span style="font-weight:700;font-size:0.88rem;">English</span></div><span style="color:var(--brown);font-weight:700;font-size:0.78rem;">✓ Selected</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'es')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇪🇸</span><span style="font-weight:700;font-size:0.88rem;">Español</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Spanish</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'fr')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇫🇷</span><span style="font-weight:700;font-size:0.88rem;">Français</span></div><span style="font-size:0.78rem;color:var(--text-dim);">French</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'pt')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇧🇷</span><span style="font-weight:700;font-size:0.88rem;">Português</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Portuguese</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'de')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇩🇪</span><span style="font-weight:700;font-size:0.88rem;">Deutsch</span></div><span style="font-size:0.78rem;color:var(--text-dim);">German</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'ar')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇸🇦</span><span style="font-weight:700;font-size:0.88rem;">العربية</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Arabic</span></div>
-          </div>
-          <div style="margin-top:12px;font-size:0.75rem;color:var(--text-dim);">💡 More languages coming soon. Changes your dashboard language only.</div>
-        </div>
-
         <!-- ── LANGUAGE ── -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">🌐 Display Language</div>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div class="lang-option" onclick="selectLanguage(this,'en')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--brown-bg);border:2px solid var(--brown);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇺🇸</span><span style="font-weight:700;font-size:0.88rem;">English</span></div><span style="color:var(--brown);font-weight:700;font-size:0.78rem;">✓ Selected</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'es')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇪🇸</span><span style="font-weight:700;font-size:0.88rem;">Español</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Spanish</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'fr')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇫🇷</span><span style="font-weight:700;font-size:0.88rem;">Français</span></div><span style="font-size:0.78rem;color:var(--text-dim);">French</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'pt')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇧🇷</span><span style="font-weight:700;font-size:0.88rem;">Português</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Portuguese</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'de')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇩🇪</span><span style="font-weight:700;font-size:0.88rem;">Deutsch</span></div><span style="font-size:0.78rem;color:var(--text-dim);">German</span></div>
-            <div class="lang-option" onclick="selectLanguage(this,'ar')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇸🇦</span><span style="font-weight:700;font-size:0.88rem;">العربية</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Arabic</span></div>
-          </div>
-          <div style="margin-top:12px;font-size:0.75rem;color:var(--text-dim);">💡 More languages coming soon.</div>
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">🌐 Display Language</div>
+          <select onchange="selectLanguage(this, this.value)" style="width:100%;padding:11px 14px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.9rem;color:var(--text);outline:none;cursor:pointer;">
+            <option value="en">🇺🇸 English</option>
+            <option value="es">🇪🇸 Español — Spanish</option>
+            <option value="fr">🇫🇷 Français — French</option>
+            <option value="pt">🇧🇷 Português — Portuguese</option>
+            <option value="de">🇩🇪 Deutsch — German</option>
+            <option value="ar">🇸🇦 العربية — Arabic</option>
+          </select>
+          <div style="margin-top:10px;font-size:0.75rem;color:var(--text-dim);">💡 More languages coming soon. Changes your dashboard language only.</div>
         </div>
 
       </div>
@@ -4136,7 +4122,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div id="screen-browsericon" class="screen">
 
       <div class="section-header">
-        <h2 class="section-title">Browser Icon</h2>
+        <h2 class="section-title">Branding / Browser Icon</h2>
         <p class="section-sub">Upload a favicon — shown in the browser tab when visitors open your MASSED page</p>
       </div>
 
@@ -4192,14 +4178,209 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;line-height:1.6;">
           <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Makes your page feel like a real website — not just a link</span></div>
           <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Builds instant trust with visitors</span></div>
-          <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Gives you the "this is mine" feeling of ownership</span></div>
-          <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Separates MASSED from every other link tool</span></div>
+
         </div>
       </div>
 
       <!-- Apply -->
       <button class="btn-save" onclick="saveFavicon()" style="width:100%;padding:14px;font-size:0.9rem;box-sizing:border-box;">Apply Browser Icon to My Page →</button>
 
+    </div>
+
+
+    <!-- BOOKING SCREEN -->
+    <div id="screen-booking" class="screen">
+
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+        <div>
+          <h2 class="section-title">Booking</h2>
+          <p class="section-sub">Let clients book your time — directly from your MASSED page</p>
+        </div>
+        <button onclick="openModal('modal-add-service')" style="display:flex;align-items:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;box-shadow:0 4px 14px rgba(192,122,80,0.3);flex-shrink:0;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Service
+        </button>
+      </div>
+
+      <!-- Booking Toggle -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-weight:800;font-size:0.95rem;color:var(--text);">Booking Page Live</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:2px;">Clients can book your services on your MASSED page</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:48px;height:26px;cursor:pointer;flex-shrink:0;">
+          <input type="checkbox" id="booking-live-toggle" checked onchange="toggleBookingLive(this)" style="opacity:0;width:0;height:0;">
+          <span id="booking-live-track" style="position:absolute;inset:0;background:var(--brown);border-radius:26px;transition:0.2s;"></span>
+          <span id="booking-live-thumb" style="position:absolute;top:4px;left:26px;width:18px;height:18px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></span>
+        </label>
+      </div>
+
+      <!-- Category Filter Chips -->
+      <div id="booking-cat-filters" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;">
+        <button class="bk-cat active" onclick="filterBookingCat(this,'all')" style="padding:8px 18px;border-radius:20px;border:1.5px solid var(--brown);background:var(--brown);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;">All</button>
+        <button class="bk-cat" onclick="filterBookingCat(this,'Hair')" style="padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;">Hair</button>
+        <button class="bk-cat" onclick="filterBookingCat(this,'Beauty')" style="padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;">Beauty</button>
+        <button class="bk-cat" onclick="filterBookingCat(this,'Wellness')" style="padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;">Wellness</button>
+        <button class="bk-cat" onclick="filterBookingCat(this,'Consulting')" style="padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;">Consulting</button>
+        <button class="bk-cat" onclick="filterBookingCat(this,'Other')" style="padding:8px 18px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.8rem;">Other</button>
+      </div>
+
+      <!-- Services grid -->
+      <div id="booking-services-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-bottom:24px;"></div>
+
+      <!-- Empty state -->
+      <div id="booking-empty" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:48px 28px;text-align:center;display:none;">
+        <div style="font-size:2.5rem;margin-bottom:12px;">📅</div>
+        <div style="font-family:'Georgia',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">No services yet</div>
+        <div style="font-size:0.85rem;color:var(--text-dim);margin-bottom:18px;">Add your first bookable service to start accepting appointments.</div>
+        <button onclick="openModal('modal-add-service')" style="padding:11px 24px;background:var(--brown);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;">+ Add Service</button>
+      </div>
+
+    </div>
+
+    <!-- ADD SERVICE MODAL -->
+    <div id="modal-add-service" class="modal-overlay" onclick="closeModal('modal-add-service')">
+      <div class="modal" style="max-width:500px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <h2 class="modal-title" style="margin:0;">Add Service</h2>
+          <button onclick="closeModal('modal-add-service')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-field">
+            <label>Service Name</label>
+            <input type="text" id="svc-name" placeholder="e.g. Full Set Lashes, Haircut, Consultation">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-field" style="margin:0;">
+              <label>Price ($)</label>
+              <input type="number" id="svc-price" placeholder="0.00" min="0" step="0.01">
+            </div>
+            <div class="form-field" style="margin:0;">
+              <label>Duration</label>
+              <select id="svc-duration">
+                <option>30 min</option>
+                <option>45 min</option>
+                <option selected>1 hour</option>
+                <option>1.5 hours</option>
+                <option>2 hours</option>
+                <option>2.5 hours</option>
+                <option>3 hours</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Category</label>
+            <select id="svc-category">
+              <option>Hair</option>
+              <option>Beauty</option>
+              <option>Wellness</option>
+              <option>Consulting</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Description (optional)</label>
+            <textarea id="svc-desc" placeholder="Describe what's included..." style="min-height:70px;"></textarea>
+          </div>
+          <!-- Deposit section -->
+          <div style="background:var(--cream);border-radius:12px;padding:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div>
+                <div style="font-weight:800;font-size:0.9rem;">Require Deposit</div>
+                <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Client pays deposit to secure their booking</div>
+              </div>
+              <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
+                <input type="checkbox" id="svc-deposit-toggle" onchange="toggleDepositField(this)" style="opacity:0;width:0;height:0;">
+                <span id="svc-deposit-track" style="position:absolute;inset:0;background:#e5e7eb;border-radius:24px;transition:0.2s;"></span>
+                <span id="svc-deposit-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+              </label>
+            </div>
+            <div id="svc-deposit-field" style="display:none;">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="form-field" style="margin:0;">
+                  <label>Deposit Amount ($)</label>
+                  <input type="number" id="svc-deposit-amount" placeholder="e.g. 25.00" min="0" step="0.01">
+                </div>
+                <div class="form-field" style="margin:0;">
+                  <label>Type</label>
+                  <select id="svc-deposit-type">
+                    <option>Fixed amount</option>
+                    <option>% of total</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top:8px;font-size:0.75rem;color:var(--text-dim);">Remaining balance is collected at time of service.</div>
+            </div>
+          </div>
+          <!-- Cover image -->
+          <div class="form-field" style="margin:0;">
+            <label>Service Photo (optional)</label>
+            <div onclick="document.getElementById('svc-img-input').click()" id="svc-img-zone" style="border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:#fff;">
+              <input type="file" id="svc-img-input" accept="image/*" style="display:none;" onchange="previewSvcImage(event)">
+              <div id="svc-img-preview" style="display:none;"><img id="svc-img-thumb" style="width:100%;height:100px;object-fit:cover;border-radius:8px;" src=""></div>
+              <div id="svc-img-placeholder" style="font-size:0.8rem;color:var(--text-dim);">📷 Tap to upload a photo</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button class="btn-cancel" onclick="closeModal('modal-add-service')">Cancel</button>
+          <button class="btn-save" style="flex:1;" onclick="saveService()">Add Service</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOK SERVICE MODAL (customer view) -->
+    <div id="modal-book-service" class="modal-overlay" onclick="closeModal('modal-book-service')">
+      <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <h2 class="modal-title" style="margin:0;" id="book-svc-title">Book Service</h2>
+          <button onclick="closeModal('modal-book-service')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div id="book-svc-meta" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:18px;"></div>
+
+        <!-- Calendar -->
+        <div style="margin-bottom:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <button onclick="changeBookMonth(-1)" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.9rem;">‹</button>
+            <div id="book-month-label" style="font-weight:800;font-size:0.95rem;"></div>
+            <button onclick="changeBookMonth(1)" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:0.9rem;">›</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;">
+            <div style="font-size:0.68rem;font-weight:700;color:var(--text-dim);padding:4px;">Sun</div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--text-dim);padding:4px;">Mon</div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--text-dim);padding:4px;">Tue</div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--text-dim);padding:4px;">Wed</div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--text-dim);padding:4px;">Thu</div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--text-dim);padding:4px;">Fri</div>
+            <div style="font-size:0.68rem;font-weight:700;color:var(--text-dim);padding:4px;">Sat</div>
+          </div>
+          <div id="book-calendar-days" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;"></div>
+        </div>
+
+        <!-- Time slots -->
+        <div style="margin-bottom:18px;">
+          <div style="font-weight:800;font-size:0.88rem;margin-bottom:10px;">Select Time</div>
+          <div id="book-time-slots" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+        </div>
+
+        <!-- Selected summary -->
+        <div id="book-summary" style="display:none;background:var(--cream);border-radius:10px;padding:14px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="book-summary-text" style="font-weight:700;color:var(--text);"></span>
+          </div>
+        </div>
+
+        <!-- Deposit notice -->
+        <div id="book-deposit-notice" style="display:none;background:linear-gradient(135deg,rgba(192,122,80,0.08),rgba(192,122,80,0.04));border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:6px;">Deposit Required</div>
+          <div id="book-deposit-text" style="font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:4px;"></div>
+          <div style="font-size:0.75rem;color:var(--text-dim);">Deposit secures your date. Remaining balance due at time of service.</div>
+        </div>
+
+        <button id="book-confirm-btn" onclick="confirmBooking()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:800;font-size:0.95rem;box-shadow:0 4px 16px rgba(192,122,80,0.4);" disabled>Select a date &amp; time</button>
+      </div>
     </div>
 
     <div id="screen-coming" class="screen">
@@ -6177,7 +6358,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',browsericon:'Browser Icon',payoutsettings:'My Payout Earnings',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Booking',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',coming:'Coming Soon'};
 
 function nav(el,screen) {
   if(!screen) return;
@@ -6620,6 +6801,291 @@ function renderWebLinks() {
     if (btn.dataset.wlVis) toggleWebLinkVisibility(parseInt(btn.dataset.wlVis));
   };
 }
+
+// ── BOOKING ────────────────────────────────────────────────────────────────────
+var bookingServices = [
+  { id:1, name:'Classic Haircut', price:45, duration:'1 hour', category:'Hair', desc:'Precision cut tailored to your style.', deposit:true, depositAmt:15, depositType:'Fixed amount', cover:null, visible:true },
+  { id:2, name:'Full Set Lashes', price:120, duration:'2 hours', category:'Beauty', desc:'Volume lash set with premium extensions.', deposit:true, depositAmt:30, depositType:'Fixed amount', cover:null, visible:true },
+  { id:3, name:'Deep Tissue Massage', price:90, duration:'1 hour', category:'Wellness', desc:'60-minute deep tissue massage.', deposit:false, depositAmt:0, depositType:'Fixed amount', cover:null, visible:true },
+  { id:4, name:'Brand Consultation', price:150, duration:'1.5 hours', category:'Consulting', desc:'1-on-1 brand strategy session.', deposit:true, depositAmt:50, depositType:'Fixed amount', cover:null, visible:true },
+];
+var bkServiceIdCounter = 10;
+var activeBookingCat = 'all';
+var bookCurrentMonth = new Date().getMonth();
+var bookCurrentYear = new Date().getFullYear();
+var bookSelectedDay = null;
+var bookSelectedTime = null;
+var currentBookingService = null;
+var bookingTimes = ['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM'];
+
+function toggleBookingLive(cb) {
+  var track = document.getElementById('booking-live-track');
+  var thumb = document.getElementById('booking-live-thumb');
+  if (cb.checked) {
+    track.style.background = 'var(--brown)';
+    thumb.style.left = '26px';
+    toast('✓ Booking page is live!');
+  } else {
+    track.style.background = '#e5e7eb';
+    thumb.style.left = '3px';
+    toast('Booking page hidden from your profile');
+  }
+}
+
+function toggleDepositField(cb) {
+  var field = document.getElementById('svc-deposit-field');
+  var track = document.getElementById('svc-deposit-track');
+  var thumb = document.getElementById('svc-deposit-thumb');
+  field.style.display = cb.checked ? 'block' : 'none';
+  track.style.background = cb.checked ? 'var(--brown)' : '#e5e7eb';
+  thumb.style.left = cb.checked ? '23px' : '3px';
+}
+
+function previewSvcImage(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById('svc-img-thumb').src = ev.target.result;
+    document.getElementById('svc-img-preview').style.display = 'block';
+    document.getElementById('svc-img-placeholder').style.display = 'none';
+    window._svcPendingCover = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveService() {
+  var name = document.getElementById('svc-name').value.trim();
+  var price = parseFloat(document.getElementById('svc-price').value) || 0;
+  var duration = document.getElementById('svc-duration').value;
+  var category = document.getElementById('svc-category').value;
+  var desc = document.getElementById('svc-desc').value.trim();
+  var depositOn = document.getElementById('svc-deposit-toggle').checked;
+  var depositAmt = parseFloat(document.getElementById('svc-deposit-amount').value) || 0;
+  var depositType = document.getElementById('svc-deposit-type').value;
+  if (!name) { toast('Please enter a service name'); return; }
+  var svc = {
+    id: bkServiceIdCounter++,
+    name: name, price: price, duration: duration,
+    category: category, desc: desc,
+    deposit: depositOn, depositAmt: depositAmt, depositType: depositType,
+    cover: window._svcPendingCover || null, visible: true
+  };
+  bookingServices.push(svc);
+  // reset form
+  ['svc-name','svc-price','svc-desc','svc-deposit-amount'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('svc-deposit-toggle').checked = false;
+  document.getElementById('svc-deposit-field').style.display = 'none';
+  document.getElementById('svc-deposit-track').style.background = '#e5e7eb';
+  document.getElementById('svc-deposit-thumb').style.left = '3px';
+  document.getElementById('svc-img-preview').style.display = 'none';
+  document.getElementById('svc-img-placeholder').style.display = 'block';
+  window._svcPendingCover = null;
+  closeModal('modal-add-service');
+  renderBookingServices();
+  toast('✓ Service added!');
+}
+
+function filterBookingCat(btn, cat) {
+  document.querySelectorAll('.bk-cat').forEach(function(b) {
+    b.style.background = '#fff';
+    b.style.color = 'var(--text-dim)';
+    b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = 'var(--brown)';
+  btn.style.color = '#fff';
+  btn.style.borderColor = 'var(--brown)';
+  activeBookingCat = cat;
+  renderBookingServices();
+}
+
+function toggleServiceVisibility(id) {
+  var svc = bookingServices.find(function(s){ return s.id === id; });
+  if (svc) {
+    svc.visible = !svc.visible;
+    renderBookingServices();
+    toast(svc.visible ? '✓ Service visible' : 'Service hidden');
+  }
+}
+
+function deleteService(id) {
+  bookingServices = bookingServices.filter(function(s){ return s.id !== id; });
+  renderBookingServices();
+  toast('Service removed');
+}
+
+function renderBookingServices() {
+  var grid = document.getElementById('booking-services-grid');
+  var empty = document.getElementById('booking-empty');
+  if (!grid) return;
+  var filtered = activeBookingCat === 'all' ? bookingServices : bookingServices.filter(function(s){ return s.category === activeBookingCat; });
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  grid.innerHTML = filtered.map(function(svc) {
+    var coverStyle = svc.cover
+      ? 'background:url(' + svc.cover + ') center/cover no-repeat;'
+      : 'background:linear-gradient(135deg,#1a0a00,#3d1800);';
+    var depositBadge = svc.deposit
+      ? '<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:rgba(192,122,80,0.12);color:var(--brown);border-radius:8px;font-size:0.65rem;font-weight:700;">💳 Deposit: $' + svc.depositAmt + '</span>'
+      : '';
+    var visColor = svc.visible ? 'var(--brown)' : 'var(--text-dim)';
+    var visLabel = svc.visible ? 'Visible' : 'Hidden';
+    return '<div class="bk-svc-card">'
+      + '<div style="height:140px;' + coverStyle + 'position:relative;">'
+      + '<div style="position:absolute;inset:0;background:rgba(0,0,0,0.25);display:flex;align-items:flex-end;padding:12px;">'
+      + '<span style="background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);color:#fff;font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:12px;">' + svc.category + '</span>'
+      + '</div>'
+      + '</div>'
+      + '<div style="padding:14px;">'
+      + '<div style="font-family:Georgia,serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:4px;">' + svc.name + '</div>'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
+      + '<span style="font-size:1rem;font-weight:900;color:var(--brown);">$' + svc.price.toFixed(2) + '</span>'
+      + '<span style="font-size:0.75rem;color:var(--text-dim);">⏱ ' + svc.duration + '</span>'
+      + '</div>'
+      + (depositBadge ? '<div style="margin-bottom:10px;">' + depositBadge + '</div>' : '')
+      + '<button onclick="openBookService(' + svc.id + ')" style="width:100%;padding:10px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:10px;">Book Now</button>'
+      + '<div style="display:flex;align-items:center;gap:6px;border-top:1px solid var(--border);padding-top:10px;">'
+      + '<button onclick="toggleServiceVisibility(' + svc.id + ')" style="flex:1;padding:6px;background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;color:' + visColor + ';">' + visLabel + '</button>'
+      + '<button onclick="deleteService(' + svc.id + ')" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;">Delete</button>'
+      + '</div>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function openBookService(id) {
+  var svc = bookingServices.find(function(s){ return s.id === id; });
+  if (!svc) return;
+  currentBookingService = svc;
+  bookSelectedDay = null;
+  bookSelectedTime = null;
+  document.getElementById('book-svc-title').textContent = svc.name;
+  document.getElementById('book-svc-meta').textContent = '$' + svc.price.toFixed(2) + ' · ' + svc.duration;
+  document.getElementById('book-summary').style.display = 'none';
+  document.getElementById('book-confirm-btn').disabled = true;
+  document.getElementById('book-confirm-btn').textContent = 'Select a date & time';
+  var depositNotice = document.getElementById('book-deposit-notice');
+  if (svc.deposit && svc.depositAmt > 0) {
+    depositNotice.style.display = 'block';
+    var label = svc.depositType === '% of total' ? svc.depositAmt + '% of $' + svc.price.toFixed(2) + ' = $' + (svc.price * svc.depositAmt / 100).toFixed(2) : '$' + svc.depositAmt.toFixed(2);
+    document.getElementById('book-deposit-text').textContent = 'Deposit due now: ' + label;
+  } else {
+    depositNotice.style.display = 'none';
+  }
+  bookCurrentMonth = new Date().getMonth();
+  bookCurrentYear = new Date().getFullYear();
+  renderBookCalendar();
+  renderBookTimeSlots();
+  openModal('modal-book-service');
+}
+
+function renderBookCalendar() {
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('book-month-label').textContent = months[bookCurrentMonth] + ' ' + bookCurrentYear;
+  var firstDay = new Date(bookCurrentYear, bookCurrentMonth, 1).getDay();
+  var daysInMonth = new Date(bookCurrentYear, bookCurrentMonth + 1, 0).getDate();
+  var today = new Date();
+  var html = '';
+  for (var i = 0; i < firstDay; i++) html += '<div></div>';
+  for (var d = 1; d <= daysInMonth; d++) {
+    var date = new Date(bookCurrentYear, bookCurrentMonth, d);
+    var isPast = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    var isSelected = bookSelectedDay === d && bookCurrentMonth === new Date().getMonth();
+    var bg = isSelected ? 'var(--brown)' : 'transparent';
+    var color = isPast ? '#ccc' : (isSelected ? '#fff' : 'var(--text)');
+    var cursor = isPast ? 'default' : 'pointer';
+    html += '<div onclick="' + (isPast ? '' : 'selectBookDay(' + d + ')') + '" style="padding:7px 4px;border-radius:8px;font-size:0.82rem;font-weight:600;background:' + bg + ';color:' + color + ';cursor:' + cursor + ';text-align:center;">' + d + '</div>';
+  }
+  document.getElementById('book-calendar-days').innerHTML = html;
+}
+
+function changeBookMonth(dir) {
+  bookCurrentMonth += dir;
+  if (bookCurrentMonth > 11) { bookCurrentMonth = 0; bookCurrentYear++; }
+  if (bookCurrentMonth < 0) { bookCurrentMonth = 11; bookCurrentYear--; }
+  bookSelectedDay = null;
+  bookSelectedTime = null;
+  renderBookCalendar();
+  renderBookTimeSlots();
+  updateBookSummary();
+}
+
+function selectBookDay(d) {
+  bookSelectedDay = d;
+  renderBookCalendar();
+  updateBookSummary();
+}
+
+function renderBookTimeSlots() {
+  var html = bookingTimes.map(function(t) {
+    var sel = t === bookSelectedTime;
+    return '<button data-bk-time="' + t + '" class="bk-time-btn' + (sel ? ' bk-time-sel' : '') + '">' + t + '</button>';
+  }).join('');
+  var slotsEl = document.getElementById('book-time-slots');
+  slotsEl.innerHTML = html;
+  slotsEl.onclick = function(e) {
+    var btn = e.target.closest('.bk-time-btn');
+    if (!btn) return;
+    bookSelectedTime = btn.dataset.bkTime;
+    renderBookTimeSlots();
+    updateBookSummary();
+  };
+}
+
+function selectBookTime(btn, t) {
+  bookSelectedTime = t;
+  renderBookTimeSlots();
+  updateBookSummary();
+}
+
+function updateBookSummary() {
+  var summaryEl = document.getElementById('book-summary');
+  var summaryText = document.getElementById('book-summary-text');
+  var btn = document.getElementById('book-confirm-btn');
+  if (bookSelectedDay && bookSelectedTime) {
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    summaryText.textContent = months[bookCurrentMonth] + ' ' + bookSelectedDay + ', ' + bookCurrentYear + ' · ' + bookSelectedTime;
+    summaryEl.style.display = 'block';
+    var svc = currentBookingService;
+    var depositLabel = '';
+    if (svc && svc.deposit && svc.depositAmt > 0) {
+      var amt = svc.depositType === '% of total' ? (svc.price * svc.depositAmt / 100).toFixed(2) : svc.depositAmt.toFixed(2);
+      depositLabel = 'Pay Deposit $' + amt + ' → Book';
+    } else {
+      depositLabel = 'Confirm Booking';
+    }
+    btn.textContent = depositLabel;
+    btn.disabled = false;
+  } else {
+    summaryEl.style.display = 'none';
+    btn.textContent = 'Select a date & time';
+    btn.disabled = true;
+  }
+}
+
+function confirmBooking() {
+  var svc = currentBookingService;
+  if (!svc || !bookSelectedDay || !bookSelectedTime) return;
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dateStr = months[bookCurrentMonth] + ' ' + bookSelectedDay + ', ' + bookCurrentYear;
+  if (svc.deposit && svc.depositAmt > 0) {
+    var amt = svc.depositType === '% of total' ? (svc.price * svc.depositAmt / 100).toFixed(2) : svc.depositAmt.toFixed(2);
+    closeModal('modal-book-service');
+    toast('✓ Deposit of $' + amt + ' collected! Booking confirmed for ' + dateStr + ' at ' + bookSelectedTime);
+  } else {
+    closeModal('modal-book-service');
+    toast('✓ Booking confirmed for ' + dateStr + ' at ' + bookSelectedTime + '!');
+  }
+}
+
+// Render on load
+document.addEventListener('DOMContentLoaded', function() {
+  renderBookingServices();
+});
 </script>
 <!-- BODY-LEVEL MODALS — position:fixed works correctly here -->
 
@@ -6775,7 +7241,14 @@ function renderWebLinks() {
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔗 Web Links</div>
-        <p>Add any URL to your public page — websites, landing pages, booking links, portfolios, or anything you want your audience to tap. Each link appears as a button on your MASSED profile.</p>
+        <p>Add any URL to your public page — websites, landing pages, booking links, portfolios, or anything you want your audience to tap. Each link appears as a card on your MASSED profile with a cover image, title, and Open Link button.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📅 Booking</div>
+        <p>Found in the sidebar under <strong>Booking</strong>. Add bookable services — each with a name, price, duration, category, description, and optional cover photo. Toggle <strong>Booking Page Live</strong> to make your booking page visible on your MASSED profile.</p>
+        <p style="margin-top:6px;"><strong>Deposit system:</strong> When adding a service, toggle <strong>Require Deposit</strong> on and set a fixed dollar amount or percentage. When a client books, they pay the deposit upfront to secure their date and time. The remaining balance is collected at the time of service.</p>
+        <p style="margin-top:6px;"><strong>How clients book:</strong> They tap <strong>Book Now</strong> on your service card, pick a date from the calendar, select a time slot, and confirm. If a deposit is required the button shows the deposit amount — tapping it completes payment and locks in the booking.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
@@ -7260,7 +7733,7 @@ function renderWebLinks() {
       <p>4. Optionally set a <strong>Browser Tab Title</strong> — this is the text that appears next to your icon in the tab (e.g. "Ava Stone | Creator").</p>
       <p>5. Click <strong>Apply Browser Icon to My Page</strong> to save and publish it to your MASSED link page.</p>
       <p><strong>Why it matters:</strong></p>
-      <p>✓ Makes your page feel like a real website — not just a link<br>✓ Builds trust when visitors open your page<br>✓ Gives you the "this is mine" feeling of ownership<br>✓ Separates MASSED from "just another link tool"</p>
+      <p>✓ Makes your page feel like a real website — not just a link<br>✓ Builds trust when visitors open your page</p>
       <p><strong>Tips:</strong> Use your logo or a clean version of your brand mark. Avoid text-heavy images — they won't be readable at 16×16px. A simple symbol or initial works best.</p>
     </div>
     <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-browsericon')">Got it</button>
@@ -7318,6 +7791,29 @@ function renderWebLinks() {
       <p style="font-size:0.75rem;color:var(--text-dim);">For language settings go to Settings → Language tab.</p>
     </div>
     <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-language')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-help-booking" class="modal-overlay" onclick="closeModal('modal-help-booking')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">📅 Booking Guide</h2>
+      <button onclick="closeModal('modal-help-booking')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:65vh;overflow-y:auto;">
+      <p><strong>What it is:</strong> Booking lets you add services that clients can book directly from your MASSED page — with date selection, time slots, and deposit collection built in.</p>
+      <p><strong>Where to find it:</strong> Tap <em>Booking</em> in the sidebar under the Build section.</p>
+      <p><strong>Adding a service:</strong></p>
+      <p>1. Click <strong>+ Add Service</strong> in the top right.</p>
+      <p>2. Enter the service name, price, duration, and category.</p>
+      <p>3. Add an optional description and cover photo.</p>
+      <p>4. Toggle <strong>Require Deposit</strong> on if you want clients to pay upfront. Set a fixed dollar amount or a percentage of the total. The remaining balance is collected at time of service.</p>
+      <p>5. Click <strong>Add Service</strong> to save and publish the card.</p>
+      <p><strong>How the deposit works:</strong> When a client taps Book Now, they select a date from the calendar and pick a time slot. If a deposit is required, the confirm button shows the deposit amount (e.g. "Pay Deposit $30 → Book"). Tapping it processes the deposit and locks in the appointment.</p>
+      <p><strong>Managing services:</strong> Each service card has a <strong>Visible/Hidden</strong> toggle to control whether it shows on your profile, and a <strong>Delete</strong> button to remove it.</p>
+      <p><strong>Booking Page Live toggle:</strong> At the top of the Booking screen — flip this on to make your entire booking page visible on your MASSED profile. Flip it off to hide all booking from visitors.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-booking')">Got it</button>
   </div>
 </div>
 
