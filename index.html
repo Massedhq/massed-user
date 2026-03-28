@@ -100,16 +100,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   /* Sidebar slides in from left */
   .sidebar{
     transform:translateX(-100%);
-    transition:transform 0.3s ease;
+    transition:transform 0.28s ease;
     z-index:200;
-    display:flex;
+    display:flex !important;
     flex-direction:column;
     overflow:hidden;
     height:100dvh;
+    width:var(--sidebar-w);
+    position:fixed;
+    top:0;
+    left:0;
+    bottom:0;
     box-sizing:border-box;
+    will-change:transform;
   }
-  .sidebar .sidebar-nav{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .sidebar.open{transform:translateX(0);}
+  .sidebar .sidebar-nav{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;}
+  .sidebar.open{transform:translateX(0) !important;}
   .sidebar-logo{position:sticky;top:0;z-index:5;background:#fff;flex-shrink:0;}
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;flex-shrink:0;}
 
@@ -5232,6 +5238,26 @@ function toggleSocialVisibility(wrap, sid) {
 }
 
 
+// Handle browser back/forward buttons
+window.addEventListener('popstate', function(e) {
+  if(e.state && e.state.screen) {
+    var screens = document.querySelectorAll('.screen');
+    screens.forEach(function(s){ s.classList.remove('active'); });
+    var target = document.getElementById('screen-' + e.state.screen);
+    if(target) target.classList.add('active');
+    var pt = document.getElementById('page-title');
+    if(pt && pageTitles) pt.textContent = pageTitles[e.state.screen] || '';
+    // Close sidebar if open
+    var sb = document.querySelector('.sidebar');
+    var ov = document.getElementById('sidebar-overlay');
+    if(sb) sb.classList.remove('open');
+    if(ov) ov.classList.remove('open');
+  } else {
+    // No state means we're back at the start — go to dashboard
+    nav(null, 'dashboard');
+  }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
   var _origNavCamera = nav;
   nav = function(el, screen) {
@@ -5787,6 +5813,10 @@ var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',web
 function nav(el,screen) {
   if(!screen) return;
   try {
+    // Push state for back button support (skip in iframes to avoid SecurityError)
+    if(window.history && window.history.pushState && window.self === window.top) {
+      window.history.pushState({screen:screen}, '', '#'+screen);
+    }
     document.querySelectorAll('.nav-item').forEach(function(n){if(n)n.classList.remove('active');});
     if(el&&el.classList) el.classList.add('active');
     document.querySelectorAll('.screen').forEach(function(s){if(s)s.classList.remove('active');});
