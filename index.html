@@ -142,9 +142,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   #screen-tickets > div:first-of-type{grid-template-columns:1fr 1fr;}
 
   /* Live preview */
-  #screen-livepreview.active{flex-direction:column;}
+  #screen-livepreview.active{flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .lp-left{padding:20px;flex:none;width:100%;}
-  .lp-right{width:100%;padding:20px 20px 60px;border-left:none;border-top:1px solid #333;height:auto;}
+  .lp-right{width:100%;padding:20px 20px 120px;border-left:none;border-top:1px solid #333;height:auto;overflow-y:visible;}
   .phone-frame{width:240px;height:480px;}
 
   /* Live banner */
@@ -215,6 +215,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* SOCIAL */
 .social-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.social-item{position:relative;}
+.social-toggle{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.sl-toggle-wrap{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--text-dim);cursor:pointer;}
+.sl-toggle{width:34px;height:20px;border-radius:20px;background:#e5e7eb;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
+.sl-toggle.on{background:var(--brown);}
+.sl-toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:left 0.2s;}
+.sl-toggle.on::after{left:17px;}
 .social-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
 .social-icon{width:36px;height:36px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;}
 .social-item input{flex:1;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;}
@@ -426,6 +433,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div class="nav-item" onclick="nav(this,'coming')" style="padding-left:36px;font-size:0.82rem;">
         <svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>Physical Products
       </div>
+      <div class="nav-item" onclick="nav(this,'coming')" style="padding-left:36px;font-size:0.82rem;">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Courses
+      </div>
     </div>
 
     <div class="nav-group-header" onclick="toggleGroup(this)">
@@ -434,14 +444,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
     <div class="nav-group-body" id="group-build">
       <div class="nav-item" onclick="nav(this,'weblinks')"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>Web Links</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>Digital Products</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>Physical Products</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Booking</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Services</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Subscriptions</div>
+      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Subscriptions / Memberships / Subs</div>
       <div class="nav-item" onclick="nav(this,'tickets')"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010-6h20a3 3 0 010 6"/><path d="M2 9v11a2 2 0 002 2h16a2 2 0 002-2V9"/><path d="M12 9v13"/></svg>Events / Tickets</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Listings</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>Courses</div>
     </div>
 
     <div class="nav-group-header" onclick="toggleGroup(this)">
@@ -463,6 +470,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-group-body" id="group-finance">
       <div class="nav-item" onclick="nav(this,'analytics')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</div>
       <div class="nav-item" onclick="nav(this,'salespayouts')"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Sales & Payouts</div>
+      <div class="nav-item" onclick="openModal('modal-payout-settings')" style="padding-left:36px;font-size:0.82rem;">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Payout Settings
+      </div>
     </div>
 
     <div class="nav-section-label">Trust & Community</div>
@@ -574,6 +584,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div style="display:flex;gap:4px;background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;width:fit-content;">
         <button id="mptab-profile" onclick="mpTab('profile')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:var(--brown);color:#fff;transition:all 0.2s;">👤 Profile</button>
         <button id="mptab-collab" onclick="mpTab('collab')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">🤝 Collaboration</button>
+        <button id="mptab-hearts" onclick="mpTab('hearts')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">❤️ My Hearts</button>
       </div>
 
       <!-- PROFILE TAB -->
@@ -739,6 +750,91 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
 
       </div>
+
+      <!-- MY HEARTS TAB -->
+      <div id="mptab-hearts-content" style="display:none;">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+
+          <!-- Stats -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+              <div style="font-size:2rem;margin-bottom:4px;">❤️</div>
+              <div style="font-size:1.8rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">248</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">Total Hearts</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+              <div style="font-size:2rem;margin-bottom:4px;">📈</div>
+              <div style="font-size:1.8rem;font-weight:900;color:#16a34a;font-family:'Georgia',serif;">+12</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">This Week</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+              <div style="font-size:2rem;margin-bottom:4px;">👁️</div>
+              <div style="font-size:1.8rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">1.4K</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:2px;">Profile Views</div>
+            </div>
+          </div>
+
+          <!-- People who hearted -->
+          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
+            <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+              <div style="font-weight:800;font-size:0.95rem;">People Who Saved Your Profile</div>
+              <span style="font-size:0.75rem;color:var(--text-dim);">248 total</span>
+            </div>
+            <div style="padding:12px 20px;display:flex;flex-direction:column;gap:2px;">
+              <!-- Sample hearts -->
+              <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--cream2);">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#f9a8d4,#ec4899);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;flex-shrink:0;">JL</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.88rem;">Jordan Lee</div>
+                  <div style="font-size:0.75rem;color:var(--text-dim);">@jordanlee · Hearted 2 days ago</div>
+                </div>
+                <span style="font-size:1.2rem;">❤️</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--cream2);">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#86efac,#22c55e);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;flex-shrink:0;">MR</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.88rem;">Maya Rodriguez</div>
+                  <div style="font-size:0.75rem;color:var(--text-dim);">@mayarod · Hearted 3 days ago</div>
+                </div>
+                <span style="font-size:1.2rem;">❤️</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--cream2);">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#93c5fd,#3b82f6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;flex-shrink:0;">DK</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.88rem;">Devon King</div>
+                  <div style="font-size:0.75rem;color:var(--text-dim);">@devonking · Hearted 5 days ago</div>
+                </div>
+                <span style="font-size:1.2rem;">❤️</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--cream2);">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#fcd34d,#f59e0b);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;flex-shrink:0;">AS</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.88rem;">Ava Stone</div>
+                  <div style="font-size:0.75rem;color:var(--text-dim);">@avastone · Hearted 1 week ago</div>
+                </div>
+                <span style="font-size:1.2rem;">❤️</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;padding:10px 0;">
+                <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#c4b5fd,#8b5cf6);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:0.9rem;flex-shrink:0;">TW</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.88rem;">Tyler Woods</div>
+                  <div style="font-size:0.75rem;color:var(--text-dim);">@tylerw · Hearted 1 week ago</div>
+                </div>
+                <span style="font-size:1.2rem;">❤️</span>
+              </div>
+            </div>
+            <div style="padding:14px 20px;background:var(--cream);text-align:center;">
+              <button onclick="toast('Loading more...')" style="background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:700;color:var(--brown);font-family:'DM Sans',sans-serif;">View all 248 hearts →</button>
+            </div>
+          </div>
+
+          <!-- Note -->
+          <div style="background:var(--brown-bg);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:0.8rem;color:var(--text-mid);line-height:1.6;">
+            ❤️ When someone saves or hearts your profile on MASSED they appear here. You can view their profile and connect with them through the Collaboration tab.
+          </div>
+
+        </div>
+      </div>
     </div>
 
     <!-- DECLINE MODAL -->
@@ -874,6 +970,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="Instagram username">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'ig')">
+              <div class="sl-toggle" id="sl-ig"></div>
+              <span id="sl-ig-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
         <!-- X / Twitter -->
@@ -884,6 +986,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="X / Twitter username">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'tw')">
+              <div class="sl-toggle" id="sl-tw"></div>
+              <span id="sl-tw-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
         <!-- TikTok -->
@@ -894,6 +1002,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="TikTok username">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'tt')">
+              <div class="sl-toggle" id="sl-tt"></div>
+              <span id="sl-tt-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
         <!-- YouTube -->
@@ -904,6 +1018,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="YouTube channel">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'yt')">
+              <div class="sl-toggle" id="sl-yt"></div>
+              <span id="sl-yt-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
         <!-- Facebook -->
@@ -914,6 +1034,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="Facebook page">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'fb')">
+              <div class="sl-toggle" id="sl-fb"></div>
+              <span id="sl-fb-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
         <!-- Pinterest -->
@@ -924,6 +1050,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="Pinterest username">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'pi')">
+              <div class="sl-toggle" id="sl-pi"></div>
+              <span id="sl-pi-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
         <!-- LinkedIn -->
@@ -934,6 +1066,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="LinkedIn profile">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'li')">
+              <div class="sl-toggle" id="sl-li"></div>
+              <span id="sl-li-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
         <!-- Amazon -->
@@ -944,6 +1082,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </svg>
           </div>
           <input type="text" placeholder="Amazon storefront">
+          <div class="social-toggle">
+            <div class="sl-toggle-wrap" onclick="toggleSocialVisibility(this,'am')">
+              <div class="sl-toggle" id="sl-am"></div>
+              <span id="sl-am-label">Hidden from profile</span>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -2985,7 +3129,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <button id="stab-stripe" onclick="settingsTab('stripe')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">⚡ Stripe</button>
         <button id="stab-support" onclick="settingsTab('support')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">❓ Support</button>
         <button id="stab-api" onclick="settingsTab('api')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">🔌 API</button>
-        <button id="stab-support" onclick="settingsTab('support')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">❓ Support</button>
+       
       </div>
 
       <!-- ── SETTINGS TAB ── -->
@@ -3040,32 +3184,52 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <svg viewBox="0 0 38 24" width="32"><rect width="38" height="24" rx="4" fill="#1a1f71"/><circle cx="15" cy="12" r="7" fill="#EB001B"/><circle cx="23" cy="12" r="7" fill="#F79E1B" opacity="0.9"/></svg>
             </div>
             <div><div style="font-weight:700;font-size:0.88rem;">•••• •••• •••• 4821</div><div style="font-size:0.75rem;color:var(--text-dim);">Expires 08/27</div></div>
-            <button style="margin-left:auto;padding:6px 14px;background:var(--cream2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;" onclick="toast('Card management coming soon')">Update</button>
+            <button style="margin-left:auto;padding:6px 14px;background:var(--cream2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;" onclick="openModal('modal-update-payment')">Update</button>
           </div>
-          <button style="width:100%;padding:12px;background:var(--cream);border:2px dashed var(--border);border-radius:10px;cursor:pointer;font-size:0.85rem;color:var(--text-dim);font-weight:600;" onclick="toast('Add payment method coming soon')">+ Add Payment Method</button>
+          <button style="width:100%;padding:12px;background:var(--cream);border:2px dashed var(--border);border-radius:10px;cursor:pointer;font-size:0.85rem;color:var(--text-dim);font-weight:600;" onclick="openModal('modal-add-payment')">+ Add Payment Method</button>
         </div>
 
         <!-- Graduation Progress -->
         <div style="background:linear-gradient(135deg,#0d1a0e,#0a1206);border:1px solid rgba(34,197,94,0.3);border-radius:16px;padding:24px;color:#F5F0E8;position:relative;overflow:hidden;">
-          <div style="position:absolute;top:-20px;right:-20px;width:100px;height:100px;background:rgba(34,197,94,0.06);border-radius:50%;"></div>
+          <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:rgba(34,197,94,0.06);border-radius:50%;"></div>
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
             <span style="font-size:1.6rem;">🎓</span>
             <div>
               <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(34,197,94,0.8);margin-bottom:2px;">Graduation Countdown</div>
-              <div style="font-family:'Georgia',serif;font-size:1.1rem;font-weight:900;color:#22c55e;">Free 2-Year Plan</div>
+              <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:900;color:#22c55e;">Free 2-Year Plan</div>
             </div>
           </div>
-          <div style="font-size:0.82rem;color:rgba(245,240,232,0.65);margin-bottom:16px;line-height:1.6;">
-            You are <strong style="color:#22c55e;" id="grad-months-left">21 months</strong> away from graduating to a <strong style="color:#F5F0E8;">FREE 2-Year Plan</strong>. Enjoy all the benefits — keep every single earning with <strong style="color:#22c55e;">zero payments</strong> for 2 full years. 🎉
+          <div style="font-size:0.85rem;color:rgba(245,240,232,0.75);margin-bottom:16px;line-height:1.7;">
+            You are <strong style="color:#22c55e;">9 months</strong> away from graduating. Pay <strong style="color:#F5F0E8;">$30/month for 12 months</strong> and you unlock a <strong style="color:#22c55e;">FREE 24-month plan</strong> — keep every single earning with zero payments for 2 full years. After that, just <strong style="color:#F5F0E8;">$79.99/year</strong>. Nothing more, nothing less. 🎉
           </div>
           <!-- Progress bar -->
-          <div style="margin-bottom:8px;">
+          <div style="margin-bottom:16px;">
             <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:rgba(245,240,232,0.5);margin-bottom:6px;">
-              <span>Month 3 of 24</span>
-              <span>12.5% complete</span>
+              <span>Month 3 of 12</span>
+              <span>25% complete</span>
             </div>
             <div style="height:8px;background:rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;">
-              <div style="height:100%;width:12.5%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:10px;"></div>
+              <div style="height:100%;width:25%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:10px;"></div>
+            </div>
+          </div>
+          <!-- Phase breakdown -->
+          <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px;margin-bottom:14px;">
+            <div style="background:rgba(34,197,94,0.2);border:1px solid rgba(34,197,94,0.4);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(34,197,94,0.7);margin-bottom:4px;">Phase 1</div>
+              <div style="font-weight:900;font-size:0.95rem;color:#F5F0E8;">$30/mo × 12</div>
+              <div style="font-size:0.68rem;color:rgba(245,240,232,0.5);margin-top:2px;">Building period</div>
+            </div>
+            <div style="color:rgba(245,240,232,0.4);font-size:1rem;">→</div>
+            <div style="background:rgba(34,197,94,0.3);border:1px solid rgba(34,197,94,0.6);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(34,197,94,0.8);margin-bottom:4px;">Phase 2</div>
+              <div style="font-weight:900;font-size:0.95rem;color:#22c55e;">FREE × 24 mo</div>
+              <div style="font-size:0.68rem;color:rgba(34,197,94,0.6);margin-top:2px;">Graduation reward</div>
+            </div>
+            <div style="color:rgba(245,240,232,0.4);font-size:1rem;">→</div>
+            <div style="background:rgba(196,154,108,0.15);border:1px solid rgba(196,154,108,0.3);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:0.55rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(196,154,108,0.7);margin-bottom:4px;">Phase 3</div>
+              <div style="font-weight:900;font-size:0.95rem;color:#C49A6C;">$79.99/yr</div>
+              <div style="font-size:0.68rem;color:rgba(196,154,108,0.5);margin-top:2px;">Forever after</div>
             </div>
           </div>
           <div style="font-size:0.72rem;color:rgba(34,197,94,0.7);">✓ Keep paying monthly to stay on track for graduation</div>
@@ -3120,218 +3284,73 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:16px;padding:28px;color:#fff;">
           <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:8px;">Platform Support</div>
           <div style="font-family:'Georgia',serif;font-size:1.6rem;font-weight:900;margin-bottom:8px;">How to use MASSED</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Everything you need to know about setting up and operating your MASSED profile, store and collaborations.</div>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Click any Quick Help guide below for a full popup walkthrough. Use Contact Support to send a message or create a ticket.</div>
         </div>
 
-        <!-- Media Profile Guide -->
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
-          <div style="background:var(--brown-bg);padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;background:var(--brown);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">👤</div>
-            <div>
-              <div style="font-weight:800;font-size:0.95rem;color:var(--text);">Media Profile</div>
-              <div style="font-size:0.72rem;color:var(--text-dim);">Your public identity on MASSED</div>
-            </div>
-          </div>
-          <div style="padding:20px 22px;">
-            <div style="font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:16px;">
-              <strong>What it is:</strong> Your Media Profile is your public-facing identity on MASSED. It's the first thing collaborators, customers and partners see when they visit your page at <span style="color:var(--brown);font-weight:700;">massed.io/yourusername</span>. Think of it as your digital business card — it represents your brand across every product, service and collaboration you offer.
-            </div>
-            <div style="display:flex;flex-direction:column;gap:12px;">
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📸 Photo & Name</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Upload a clear, professional photo of yourself or your brand logo. Add your display name exactly as you want it shown publicly. Add a title or role (e.g. "UGC Creator", "Beauty Consultant", "Real Estate Agent") to help visitors understand what you do immediately.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">✍️ Bio</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Write a short, engaging bio that tells your story. Include what you specialize in, who you serve and what makes your brand unique. This bio appears on your public page and is seen by potential collaborators and customers. Keep it authentic and under 200 words for best results.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🏷️ Category</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Select the category that best describes your niche (Beauty & Wellness, Fashion, Real Estate, Fitness, etc.). This helps MASSED surface your profile to the right audience and makes it easier for collaborators to find you by genre.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📞 Contact Info</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Add your email, phone (optional) and website. These appear on your public profile so potential partners and customers can reach you directly. Your email is also used for platform notifications, order confirmations and collaboration messages.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🤝 Collaboration Tab</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Inside Media Profile you'll find the <strong>Collaboration</strong> tab. This is where you set up your collaboration profile, choose your genres, and toggle yourself visible so other creators can find and connect with you. You can browse other creators by genre, send connection requests, accept or decline incoming requests, message accepted collaborators, and sign legally-binding NDAs — all within MASSED.</div>
-              </div>
-              <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-                <div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">💡 Pro Tips</div>
-                <div style="font-size:0.8rem;color:var(--text);line-height:1.6;">
-                  <div style="margin-bottom:4px;">✓ Always use a high-resolution photo — profiles with photos get 3x more views</div>
-                  <div style="margin-bottom:4px;">✓ Keep your bio updated when your services or focus changes</div>
-                  <div style="margin-bottom:4px;">✓ Select multiple genres in Collaboration to appear in more searches</div>
-                  <div style="margin-bottom:4px;">✓ Save your profile after every edit — changes are not auto-saved</div>
-                  <div>✓ Your Media Profile is connected to your Store, so a strong profile increases conversions</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Help Links -->
+        <!-- Quick Help Guides — open as popups ONLY -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Quick Help</div>
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Quick Help Guides</div>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <button onclick="nav(null,'mediaprofile')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
-              <span style="font-weight:700;font-size:0.85rem;">👤 Go to Media Profile</span>
-              <span style="color:var(--text-dim);">→</span>
+            <button onclick="openModal('modal-help-mediaprofile')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">👤 Media Profile — What it is & How to use it</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Your public page, bio, category, collaboration setup</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
             </button>
-            <button onclick="nav(null,'mystore')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
-              <span style="font-weight:700;font-size:0.85rem;">🛍️ Set Up My Store</span>
-              <span style="color:var(--text-dim);">→</span>
+            <button onclick="openModal('modal-help-store')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🛍️ My Store — What it is & How to use it</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Store setup, product toggles, going live</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
             </button>
-            <button onclick="nav(null,'salespayouts')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
-              <span style="font-weight:700;font-size:0.85rem;">💰 View Sales & Payouts</span>
-              <span style="color:var(--text-dim);">→</span>
+            <button onclick="openModal('modal-help-sales')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">💰 Sales & Payouts — What it is & How to use it</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Revenue, traffic, payouts, affiliate earnings</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
             </button>
-            <button onclick="toast('Live chat support coming soon!')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;">
-              <span style="font-weight:700;font-size:0.85rem;">💬 Contact Support</span>
-              <span style="color:var(--text-dim);">→</span>
+            <button onclick="openModal('modal-help-system')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🗺️ How the Entire MASSED System Works</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Full platform walkthrough — every tab, every feature explained</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
+            </button>
+            <button onclick="openModal('modal-help-faq')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">❓ Frequently Asked Questions</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Common questions about MASSED answered</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
             </button>
           </div>
         </div>
 
-      <!-- ── PLATFORM SUPPORT TAB ── -->
-      <div id="stab-support-content" style="display:none;flex-direction:column;gap:20px;max-width:700px;">
-        <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:16px;padding:28px;color:#fff;">
-          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:8px;">Platform Support</div>
-          <div style="font-family:'Georgia',serif;font-size:1.6rem;font-weight:900;margin-bottom:8px;">How to use MASSED</div>
-          <div style="font-size:0.85rem;color:rgba(255,255,255,0.8);line-height:1.6;">Everything you need to know about setting up and operating your MASSED creator profile.</div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;">
-          <div style="background:var(--brown-bg);padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
-            <div style="width:36px;height:36px;background:var(--brown);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">👤</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:var(--text);">Media Profile</div><div style="font-size:0.72rem;color:var(--text-dim);">Your public identity on MASSED</div></div>
-          </div>
-          <div style="padding:20px 22px;display:flex;flex-direction:column;gap:12px;">
-            <div style="font-size:0.85rem;color:var(--text);line-height:1.8;"><strong>What it is:</strong> Your Media Profile is your public page at <span style="color:var(--brown);font-weight:700;">massed.io/yourusername</span> — your digital business card for collaborators, customers and partners.</div>
-            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;"><div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">📸 Photo & Name</div><div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Upload a professional photo or logo. Add your display name and role so visitors immediately know what you do.</div></div>
-            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;"><div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">✍️ Bio</div><div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Write an authentic bio under 200 words. Tell your story, who you serve, and what makes your brand unique.</div></div>
-            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;"><div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🏷️ Category</div><div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Select your niche category to help MASSED surface your profile to the right audience.</div></div>
-            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;"><div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">🤝 Collaboration Tab</div><div style="font-size:0.8rem;color:var(--text);line-height:1.6;">Inside Media Profile, tap Collaboration to set your genres, toggle visibility, browse other creators, and sign NDAs — all within MASSED.</div></div>
-            <div style="background:var(--cream);border-radius:10px;padding:14px 16px;"><div style="font-weight:700;font-size:0.85rem;color:var(--brown);margin-bottom:4px;">💡 Tips</div><div style="font-size:0.8rem;color:var(--text);line-height:1.6;"><div>✓ High-res photo = 3× more profile views</div><div>✓ Update your bio when your focus changes</div><div>✓ Always click Save — changes are not auto-saved</div></div></div>
-          </div>
-        </div>
+        <!-- Contact Support -->
         <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Quick Help</div>
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Contact Support</div>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <button onclick="openModal('modal-help-mediaprofile')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;"><span style="font-weight:700;font-size:0.85rem;">👤 How to set up Media Profile</span><span style="color:var(--text-dim);">→</span></button>
-            <button onclick="openModal('modal-help-store')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;"><span style="font-weight:700;font-size:0.85rem;">🛍️ How to set up My Store</span><span style="color:var(--text-dim);">→</span></button>
-            <button onclick="openModal('modal-help-sales')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;"><span style="font-weight:700;font-size:0.85rem;">💰 Understanding Sales & Payouts</span><span style="color:var(--text-dim);">→</span></button>
-            <button onclick="toast('Live support coming soon!')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;"><span style="font-weight:700;font-size:0.85rem;">💬 Contact Support</span><span style="color:var(--text-dim);">→</span></button>
+            <button onclick="openModal('modal-contact-support')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">💬 Send a Message to Support</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">General inquiries, questions, feedback</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
+            </button>
+            <button onclick="openModal('modal-contact-support')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🎫 Create a Support Ticket</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Technical issues, billing problems, account help</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
+            </button>
+          </div>
+          <div style="margin-top:14px;padding:12px;background:var(--cream);border-radius:10px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+            📬 Our support team responds within 24–48 hours. For urgent billing issues include your account email in your message.
           </div>
         </div>
+
       </div>
-
       <!-- ── API INTEGRATIONS TAB ── -->
-      <div id="stab-api-content" style="display:none;flex-direction:column;gap:16px;max-width:700px;">
-        <div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:16px;padding:24px;color:#f1f5f9;">
-          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#94a3b8;margin-bottom:8px;">API Integrations</div>
-          <div style="font-family:'Georgia',serif;font-size:1.5rem;font-weight:900;margin-bottom:8px;">Connect Your Tools</div>
-          <div style="font-size:0.85rem;color:rgba(241,245,249,0.7);line-height:1.6;">Connect third-party APIs to extend your MASSED experience.</div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-          <div style="background:#ffe01b;padding:14px 20px;display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;background:#000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🐒</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:#000;">Mailchimp</div><div style="font-size:0.72rem;color:#333;">Email marketing & audience management</div></div>
-          </div>
-          <div style="padding:16px 20px;"><div class="form-field" style="margin-bottom:10px;"><label>API Key</label><input type="password" id="api-mailchimp" placeholder="xxxxxxxxxxxxxxxx-us1"></div><button onclick="saveApiKey('mailchimp')" class="btn-save" style="width:auto;">Connect Mailchimp</button></div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-          <div style="background:#fb6970;padding:14px 20px;display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:900;color:#fb6970;">CK</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">ConvertKit</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Creator email platform</div></div>
-          </div>
-          <div style="padding:16px 20px;"><div class="form-field" style="margin-bottom:10px;"><label>API Key</label><input type="password" id="api-convertkit" placeholder="Your ConvertKit API key"></div><button onclick="saveApiKey('convertkit')" class="btn-save" style="width:auto;">Connect ConvertKit</button></div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-          <div style="background:#ff4a00;padding:14px 20px;display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">⚡</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">Zapier</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Automate workflows between 5000+ apps</div></div>
-          </div>
-          <div style="padding:16px 20px;"><div class="form-field" style="margin-bottom:10px;"><label>Webhook URL</label><input type="text" id="api-zapier" placeholder="https://hooks.zapier.com/hooks/catch/..."></div><button onclick="saveApiKey('zapier')" class="btn-save" style="width:auto;">Connect Zapier</button></div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-          <div style="background:#e37400;padding:14px 20px;display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">📊</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">Google Analytics</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Track website traffic and conversions</div></div>
-          </div>
-          <div style="padding:16px 20px;"><div class="form-field" style="margin-bottom:10px;"><label>Measurement ID</label><input type="text" id="api-ga" placeholder="G-XXXXXXXXXX"></div><button onclick="saveApiKey('ga')" class="btn-save" style="width:auto;">Connect Google Analytics</button></div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-          <div style="background:#0866ff;padding:14px 20px;display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">📘</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">Meta Pixel</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.8);">Facebook & Instagram ad tracking</div></div>
-          </div>
-          <div style="padding:16px 20px;"><div class="form-field" style="margin-bottom:10px;"><label>Pixel ID</label><input type="text" id="api-meta" placeholder="123456789012345"></div><button onclick="saveApiKey('meta')" class="btn-save" style="width:auto;">Connect Meta Pixel</button></div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-          <div style="background:#010101;padding:14px 20px;display:flex;align-items:center;gap:12px;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🎵</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:#fff;">TikTok Pixel</div><div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">TikTok ads tracking & conversions</div></div>
-          </div>
-          <div style="padding:16px 20px;"><div class="form-field" style="margin-bottom:10px;"><label>Pixel ID</label><input type="text" id="api-tiktok" placeholder="CXXXXXXXXXXXXXXXXX"></div><button onclick="saveApiKey('tiktok')" class="btn-save" style="width:auto;">Connect TikTok Pixel</button></div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-          <div style="background:var(--brown-bg);padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);">
-            <div style="width:36px;height:36px;background:var(--brown);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🔌</div>
-            <div><div style="font-weight:800;font-size:0.95rem;color:var(--text);">Custom API</div><div style="font-size:0.72rem;color:var(--text-dim);">Connect any service with a custom key</div></div>
-          </div>
-          <div style="padding:16px 20px;">
-            <div class="form-field" style="margin-bottom:10px;"><label>Service Name</label><input type="text" id="api-custom-name" placeholder="e.g. HubSpot, ActiveCampaign..."></div>
-            <div class="form-field" style="margin-bottom:10px;"><label>API Key / Token</label><input type="password" id="api-custom-key" placeholder="Your API key or token"></div>
-            <div class="form-field" style="margin-bottom:10px;"><label>Endpoint URL (optional)</label><input type="text" id="api-custom-url" placeholder="https://api.yourservice.com/v1/"></div>
-            <button onclick="saveCustomApi()" class="btn-save" style="width:auto;">Save Custom API</button>
+      <div id="stab-api-content" style="display:none;flex-direction:column;gap:20px;max-width:700px;">
+        <div style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:16px;padding:40px 28px;color:#f1f5f9;text-align:center;">
+          <div style="font-size:3rem;margin-bottom:16px;">🔌</div>
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#94a3b8;margin-bottom:10px;">API Integrations</div>
+          <div style="font-family:'Georgia',serif;font-size:1.6rem;font-weight:900;margin-bottom:14px;">Coming Soon</div>
+          <div style="font-size:0.88rem;color:rgba(241,245,249,0.65);line-height:1.7;max-width:420px;margin:0 auto;">Connect Mailchimp, ConvertKit, Zapier, Google Analytics, Meta Pixel, TikTok Pixel and more. API integrations are coming in the next update.</div>
+          <div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;font-size:0.75rem;color:rgba(241,245,249,0.6);">🐒 Mailchimp</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;font-size:0.75rem;color:rgba(241,245,249,0.6);">⚡ Zapier</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;font-size:0.75rem;color:rgba(241,245,249,0.6);">📊 Google Analytics</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;font-size:0.75rem;color:rgba(241,245,249,0.6);">📘 Meta Pixel</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;font-size:0.75rem;color:rgba(241,245,249,0.6);">🎵 TikTok Pixel</span>
+            <span style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;font-size:0.75rem;color:rgba(241,245,249,0.6);">🔌 Custom API</span>
           </div>
         </div>
       </div>
 
-      </div>
-    </div>
-
-    <!-- HELP MODALS -->
-    <div id="modal-help-mediaprofile" class="modal-overlay">
-      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><h2 class="modal-title" style="margin:0;">👤 Media Profile Guide</h2><button onclick="closeModal('modal-help-mediaprofile')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button></div>
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;">
-          <p><strong>Where:</strong> Tap Media Profile in the left sidebar.</p>
-          <p>1. Upload your photo or logo using the Upload button.</p>
-          <p>2. Enter your Display Name and Title/Role.</p>
-          <p>3. Write your Bio — keep it authentic, under 200 words.</p>
-          <p>4. Select your Category to match you to the right audience.</p>
-          <p>5. Add Contact Info — email required, phone/website optional.</p>
-          <p>6. Click <strong>Save Profile</strong> when done.</p>
-          <p><strong>Collaboration tab:</strong> Toggle visibility on, pick genres, browse creators, send requests, message, and sign NDAs.</p>
-        </div>
-        <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-mediaprofile')">Got it</button>
-      </div>
-    </div>
-    <div id="modal-help-store" class="modal-overlay">
-      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><h2 class="modal-title" style="margin:0;">🛍️ My Store Guide</h2><button onclick="closeModal('modal-help-store')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button></div>
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;">
-          <p><strong>Where:</strong> Tap My Store in the left sidebar.</p>
-          <p>1. Toggle <strong>Store Live</strong> to make your store visible publicly.</p>
-          <p>2. Use <strong>What's In Your Store</strong> toggles to show/hide product types.</p>
-          <p>3. Copy your Store URL and share it anywhere.</p>
-          <p>Digital Products and Physical Products appear as sub-items under My Store in the sidebar.</p>
-        </div>
-        <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-store')">Got it</button>
-      </div>
-    </div>
-    <div id="modal-help-sales" class="modal-overlay">
-      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><h2 class="modal-title" style="margin:0;">💰 Sales & Payouts Guide</h2><button onclick="closeModal('modal-help-sales')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button></div>
-        <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;">
-          <p><strong>Where:</strong> Tap Sales & Payouts in the left sidebar.</p>
-          <p><strong>Sales tab:</strong> Revenue, sessions, funnel, traffic map, top products, social analysis.</p>
-          <p><strong>Payout tab:</strong> Available balance, earnings breakdown, transaction feed, affiliate commissions.</p>
-          <p><strong>Withdrawing:</strong> Connect Stripe in Settings → Stripe to enable bank payouts.</p>
-        </div>
-        <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-sales')">Got it</button>
       </div>
     </div>
 
@@ -3361,9 +3380,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <div style="font-weight:700;font-size:0.88rem;">•••• •••• •••• 4821</div>
               <div style="font-size:0.75rem;color:var(--text-dim);">Expires 08/27</div>
             </div>
-            <button style="margin-left:auto;padding:6px 14px;background:var(--cream2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;" onclick="toast('Card management coming soon')">Update</button>
+            <button style="margin-left:auto;padding:6px 14px;background:var(--cream2);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;" onclick="openModal('modal-update-payment')">Update</button>
           </div>
-          <button style="width:100%;padding:12px;background:var(--cream);border:2px dashed var(--border);border-radius:10px;cursor:pointer;font-size:0.85rem;color:var(--text-dim);font-weight:600;" onclick="toast('Add payment method coming soon')">+ Add Payment Method</button>
+          <button style="width:100%;padding:12px;background:var(--cream);border:2px dashed var(--border);border-radius:10px;cursor:pointer;font-size:0.85rem;color:var(--text-dim);font-weight:600;" onclick="openModal('modal-add-payment')">+ Add Payment Method</button>
         </div>
         <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
           <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Billing History</div>
@@ -3399,7 +3418,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div style="font-size:0.72rem;color:#16a34a;margin-top:4px;">↑ 4.6% vs yesterday</div>
           </div>
           <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Available Payout</div>
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Ready for Payout to Earners</div>
             <div style="font-size:1.6rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">$2,992</div>
             <div style="font-size:0.72rem;color:#16a34a;margin-top:4px;">↑ 25.8% this month</div>
           </div>
@@ -3685,71 +3704,118 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
         <!-- ── PAYOUT SUB ── -->
         <div id="sp-payout-content">
-          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Balance Breakdown</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px;">
-            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Available Now</div>
-              <div style="font-size:1.7rem;font-weight:900;color:#16a34a;font-family:'Georgia',serif;">$2,992</div>
-              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Ready for Withdrawal</div>
+
+          <!-- Breadcrumb -->
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:20px;">Sales & Payouts / <strong style="color:var(--text);">Payouts</strong></div>
+
+          <!-- Title -->
+          <div style="font-family:'Georgia',serif;font-size:2rem;font-weight:900;color:var(--text);margin-bottom:24px;">Payouts</div>
+          <div style="height:1px;background:var(--border);margin-bottom:24px;"></div>
+
+          <!-- Balance Cards -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+            <div style="background:linear-gradient(135deg,#1a1208,#2d1e0a);border:1px solid rgba(196,154,108,0.2);border-radius:14px;padding:24px;">
+              <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,240,232,0.5);margin-bottom:10px;">Available Balance</div>
+              <div style="font-size:2rem;font-weight:900;color:#F5F0E8;font-family:'Georgia',serif;">$1,250.00</div>
             </div>
-            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Processing</div>
-              <div style="font-size:1.7rem;font-weight:900;color:#f59e0b;font-family:'Georgia',serif;">$1,120</div>
-              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Clearing Payments</div>
-            </div>
-            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Held</div>
-              <div style="font-size:1.7rem;font-weight:900;color:#ef4444;font-family:'Georgia',serif;">$30</div>
-              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Recovery Mode</div>
+            <div style="background:linear-gradient(135deg,#1a1208,#2d1e0a);border:1px solid rgba(196,154,108,0.2);border-radius:14px;padding:24px;">
+              <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,240,232,0.5);margin-bottom:10px;">Pending Balance</div>
+              <div style="font-size:2rem;font-weight:900;color:#F5F0E8;font-family:'Georgia',serif;">$300.00</div>
             </div>
           </div>
 
-          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Earnings Overview</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;">
-            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-              <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">This Month</div>
-              <div style="font-size:1.8rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">$2,992</div>
-              <div style="display:flex;justify-content:space-between;margin-top:8px;">
-                <span style="font-size:0.75rem;color:#16a34a;font-weight:700;">+19%</span>
-                <span style="font-size:0.72rem;color:var(--text-dim);">vs Last Month</span>
+          <!-- Withdraw Button -->
+          <button onclick="openModal('modal-withdraw-funds')" style="width:100%;padding:16px;background:linear-gradient(135deg,#C49A6C,#A0784A);color:#1a0e06;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:800;letter-spacing:0.02em;margin-bottom:28px;box-shadow:0 4px 20px rgba(196,154,108,0.3);">Withdraw Funds</button>
+
+          <div style="height:1px;background:var(--border);margin-bottom:24px;"></div>
+
+          <!-- Payout Settings Section -->
+          <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:16px;font-style:italic;">Payout Settings</div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+
+            <!-- Bank Account -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
+              <div style="width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--brown)" stroke-width="1.8"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+              </div>
+              <div style="flex:1;"><div style="font-weight:700;font-size:0.92rem;">Bank Account</div></div>
+              <div style="font-family:monospace;font-size:0.88rem;color:var(--text-dim);">•••• 1234</div>
+              <div style="width:1px;height:24px;background:var(--border);"></div>
+              <button onclick="openModal('modal-payout-settings')" style="background:none;border:none;cursor:pointer;color:var(--brown);font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0 4px;">Edit</button>
+            </div>
+
+            <!-- Debit Card -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
+              <div style="width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--brown)" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              </div>
+              <div style="flex:1;"><div style="font-weight:700;font-size:0.92rem;">Debit Card</div></div>
+              <div style="font-family:monospace;font-size:0.88rem;color:var(--text-dim);">•••• 5678</div>
+              <div style="width:1px;height:24px;background:var(--border);"></div>
+              <button onclick="openModal('modal-add-payment')" style="background:none;border:none;cursor:pointer;color:var(--brown);font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0 4px;">Add Card</button>
+            </div>
+
+            <!-- Payout Speed -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
+              <div style="width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="var(--brown)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <div style="flex:1;"><div style="font-weight:700;font-size:0.92rem;">Payout Speed</div></div>
+              <div style="font-size:0.85rem;color:var(--text-dim);">Standard (3-5 Days)</div>
+              <div style="width:1px;height:24px;background:var(--border);"></div>
+              <button onclick="openModal('modal-payout-settings')" style="background:none;border:none;cursor:pointer;color:var(--brown);font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0 4px;">Change</button>
+            </div>
+
+          </div>
+
+          <!-- Earnings Overview -->
+          <div style="margin-top:28px;">
+            <div style="height:1px;background:var(--border);margin-bottom:24px;"></div>
+            <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Earnings Overview</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;">
+              <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+                <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">This Month</div>
+                <div style="font-size:1.8rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">$2,992</div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                  <span style="font-size:0.75rem;color:#16a34a;font-weight:700;">+19%</span>
+                  <span style="font-size:0.72rem;color:var(--text-dim);">vs Last Month</span>
+                </div>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+                <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;">Revenue Sources</div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Products</span><span style="font-weight:700;color:var(--brown);">$1,800</span></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Courses</span><span style="font-weight:700;color:var(--brown);">$720</span></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Bookings</span><span style="font-weight:700;color:var(--brown);">$252</span></div>
+                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Links</span><span style="font-weight:700;color:var(--brown);">$220</span></div>
               </div>
             </div>
-            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-              <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;">Revenue Sources</div>
-              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Products</span><span style="font-weight:700;color:var(--brown);">$1,800</span></div>
-              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Courses</span><span style="font-weight:700;color:var(--brown);">$700</span></div>
-              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Bookings</span><span style="font-weight:700;color:var(--brown);">$520</span></div>
-              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Links</span><span style="font-weight:700;color:var(--brown);">$492</span></div>
+
+            <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Transaction Feed</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+                <div><div style="font-weight:700;font-size:0.88rem;">🔒 Products</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 20</div></div>
+                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$1,800</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+                <div><div style="font-weight:700;font-size:0.88rem;">🎓 Course Sale</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 18</div></div>
+                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$720</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+                <div><div style="font-weight:700;font-size:0.88rem;">📅 Booking</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 15</div></div>
+                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$252</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+                <div><div style="font-weight:700;font-size:0.88rem;">🔗 Affiliate Commission</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 12</div></div>
+                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$220</span>
+              </div>
             </div>
           </div>
 
-          <button onclick="toast('Payout method setup coming soon')" style="width:100%;padding:14px;background:var(--cream);border:2px dashed var(--border);border-radius:12px;cursor:pointer;font-size:0.88rem;font-weight:700;color:var(--brown);margin-bottom:22px;">+ Add Payout Method</button>
-
-          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Transaction Feed</div>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-              <div><div style="font-weight:700;font-size:0.88rem;">🔒 Products</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Today at 11:03 AM</span></div></div>
-              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$1,800</span>
-            </div>
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-              <div><div style="font-weight:700;font-size:0.88rem;">📅 Booking</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Yesterday 5:34 PM</span></div></div>
-              <span style="font-weight:800;font-size:1rem;color:var(--brown);">—</span>
-            </div>
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-              <div><div style="font-weight:700;font-size:0.88rem;">🎓 Course Sale</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Apr 20 at 1:15 PM</span></div></div>
-              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$720</span>
-            </div>
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-              <div><div style="font-weight:700;font-size:0.88rem;">🔗 Affiliate Commission</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#f59e0b;font-size:0.72rem;">⏳ Processing</span><span style="color:var(--text-dim);font-size:0.72rem;">Apr 19 at 10:12 AM</span></div></div>
-              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$492</span>
-            </div>
-          </div>
         </div>
 
         <!-- ── AFFILIATE SUB ── -->
         <div id="sp-affiliate-content" style="display:none;">
-          <button onclick="toast('Withdraw coming soon')" style="margin-bottom:20px;padding:10px 20px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:700;font-size:0.85rem;">Withdraw Affiliate Earnings</button>
-
           <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Balance Breakdown</div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:22px;">
             <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
@@ -3773,18 +3839,30 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px;">
             <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--cream2);">
               <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.82rem;flex-shrink:0;">CR</div>
-              <div style="flex:1;"><div style="font-weight:700;font-size:0.88rem;">@creatorname</div><div style="font-size:0.72rem;color:var(--text-dim);">Today at 11:03 AM</div></div>
-              <div style="font-weight:800;font-size:1rem;color:var(--brown);">$120</div>
+              <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:0.88rem;">@creatorname</div><div style="font-size:0.72rem;color:var(--text-dim);">Today at 11:03 AM</div></div>
+              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                <span style="font-size:0.65rem;font-weight:700;background:#fef9c3;color:#ca8a04;padding:3px 8px;border-radius:10px;">Pending</span>
+                <div style="font-weight:800;font-size:1rem;color:var(--brown);">$120</div>
+                <button onclick="payCreator(this,'@creatorname','$120')" style="padding:5px 10px;background:var(--brown);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;">Pay Now</button>
+              </div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--cream2);">
               <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.82rem;flex-shrink:0;">LA</div>
-              <div style="flex:1;"><div style="font-weight:700;font-size:0.88rem;">@lashartist</div><div style="font-size:0.72rem;color:var(--text-dim);">Yesterday at 5:34 PM</div></div>
-              <div style="font-weight:800;font-size:1rem;color:var(--brown);">$80</div>
+              <div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:0.88rem;">@lashartist</div><div style="font-size:0.72rem;color:var(--text-dim);">Yesterday at 5:34 PM</div></div>
+              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                <span style="font-size:0.65rem;font-weight:700;background:#dcfce7;color:#16a34a;padding:3px 8px;border-radius:10px;">Paid</span>
+                <div style="font-weight:800;font-size:1rem;color:var(--brown);">$80</div>
+                <button onclick="toast('@lashartist already paid')" style="padding:5px 10px;background:var(--cream2);color:var(--text-dim);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;" disabled>Paid</button>
+              </div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;">
               <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.82rem;flex-shrink:0;">GC</div>
               <div style="flex:1;"><div style="font-weight:700;font-size:0.88rem;">@gymcoach</div><div style="font-size:0.72rem;color:var(--text-dim);">Apr 20 at 8:21 PM</div></div>
-              <div style="font-weight:800;font-size:1rem;color:var(--brown);">$45</div>
+              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                <span style="font-size:0.65rem;font-weight:700;background:#fef9c3;color:#ca8a04;padding:3px 8px;border-radius:10px;">Pending</span>
+                <div style="font-weight:800;font-size:1rem;color:var(--brown);">$45</div>
+                <button onclick="payCreator(this,'@gymcoach','$45')" style="padding:5px 10px;background:var(--brown);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;">Pay Now</button>
+              </div>
             </div>
           </div>
 
@@ -4943,6 +5021,109 @@ function stopLive() {
 }
 
 
+function submitWithdrawal() {
+  var amt = document.getElementById('withdraw-amount');
+  if (!amt || !amt.value || parseFloat(amt.value) <= 0) { toast('Please enter an amount to withdraw'); return; }
+  if (parseFloat(amt.value) > 1250) { toast('Amount exceeds available balance'); return; }
+  closeModal('modal-withdraw-funds');
+  if (amt) amt.value = '';
+  toast('✓ Withdrawal of $' + parseFloat(document.getElementById('withdraw-amount') ? 0 : 0).toFixed(2) + ' initiated! Arrives in 3-5 business days.');
+}
+
+function payCreator(btn, handle, amount) {
+  btn.textContent = 'Paying...';
+  btn.disabled = true;
+  btn.style.background = 'var(--cream2)';
+  btn.style.color = 'var(--text-dim)';
+  setTimeout(function() {
+    btn.textContent = 'Paid';
+    btn.style.border = '1px solid var(--border)';
+    // Update the status badge
+    var row = btn.closest('div[style*="display:flex;align-items:center;gap:8px"]');
+    if (row) {
+      var badge = row.querySelector('span');
+      if (badge) {
+        badge.textContent = 'Paid';
+        badge.style.background = '#dcfce7';
+        badge.style.color = '#16a34a';
+      }
+    }
+    toast('✓ ' + amount + ' paid to ' + handle + '!');
+  }, 1200);
+}
+
+function updatePaymentMethod() {
+  var name = document.getElementById('upm-name');
+  var num = document.getElementById('upm-number');
+  var exp = document.getElementById('upm-expiry');
+  var cvv = document.getElementById('upm-cvv');
+  if (!name || !name.value.trim()) { toast('Please enter cardholder name'); return; }
+  if (!num || num.value.replace(/\s/g,'').length < 15) { toast('Please enter a valid card number'); return; }
+  if (!exp || !exp.value.trim()) { toast('Please enter expiry date'); return; }
+  if (!cvv || cvv.value.length < 3) { toast('Please enter CVV'); return; }
+  closeModal('modal-update-payment');
+  if (name) name.value = '';
+  if (num) num.value = '';
+  if (exp) exp.value = '';
+  if (cvv) cvv.value = '';
+  toast('✓ Payment method updated!');
+}
+
+function savePaymentMethod() {
+  var name = document.getElementById('pm-name');
+  var num = document.getElementById('pm-number');
+  var exp = document.getElementById('pm-expiry');
+  var cvv = document.getElementById('pm-cvv');
+  if (!name || !name.value.trim()) { toast('Please enter cardholder name'); return; }
+  if (!num || num.value.replace(/\s/g,'').length < 16) { toast('Please enter a valid card number'); return; }
+  if (!exp || !exp.value.trim()) { toast('Please enter expiry date'); return; }
+  if (!cvv || cvv.value.length < 3) { toast('Please enter CVV'); return; }
+  closeModal('modal-add-payment');
+  if (name) name.value = '';
+  if (num) num.value = '';
+  if (exp) exp.value = '';
+  if (cvv) cvv.value = '';
+  toast('✓ Payment method added successfully!');
+}
+
+function submitSupportTicket() {
+  var subject = document.getElementById('support-subject');
+  var message = document.getElementById('support-message');
+  var email = document.getElementById('support-email');
+  if (!subject || !subject.value) { toast('Please select a subject'); return; }
+  if (!message || !message.value.trim()) { toast('Please enter a message'); return; }
+  if (!email || !email.value.trim()) { toast('Please enter your email'); return; }
+  closeModal('modal-contact-support');
+  if (subject) subject.value = '';
+  if (message) message.value = '';
+  if (email) email.value = '';
+  toast('✓ Support message sent! We will reply within 24-48 hours.');
+}
+
+
+function toggleFaq(btn) {
+  var body = btn.nextElementSibling;
+  var arrow = btn.querySelector('.faq-arrow');
+  var isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+function toggleSocialVisibility(wrap, sid) {
+  var toggle = document.getElementById('sl-' + sid);
+  var label = document.getElementById('sl-' + sid + '-label');
+  if (!toggle) return;
+  var isOn = toggle.classList.contains('on');
+  if (isOn) {
+    toggle.classList.remove('on');
+    if (label) label.textContent = 'Hidden from profile';
+  } else {
+    toggle.classList.add('on');
+    if (label) label.textContent = 'Shown on profile';
+  }
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
   var _origNavCamera = nav;
   nav = function(el, screen) {
@@ -5034,8 +5215,11 @@ let activeCollabFilter = 'all';
 function mpTab(tab) {
   document.getElementById('mptab-profile-content').style.display = tab === 'profile' ? 'block' : 'none';
   document.getElementById('mptab-collab-content').style.display = tab === 'collab' ? 'block' : 'none';
+  var hc = document.getElementById('mptab-hearts-content');
+  if (hc) hc.style.display = tab === 'hearts' ? 'block' : 'none';
   var pb = document.getElementById('mptab-profile');
   var cb = document.getElementById('mptab-collab');
+  var hb = document.getElementById('mptab-hearts');
   pb.style.background = tab === 'profile' ? 'var(--brown)' : 'transparent';
   pb.style.color = tab === 'profile' ? '#fff' : 'var(--text-dim)';
   cb.style.background = tab === 'collab' ? 'var(--brown)' : 'transparent';
@@ -5477,11 +5661,14 @@ function settingsTab(tab) {
 function mpTab(tab) {
   var pc=document.getElementById('mptab-profile-content');
   var cc=document.getElementById('mptab-collab-content');
+  var hc=document.getElementById('mptab-hearts-content');
   if(pc) pc.style.display=tab==='profile'?'block':'none';
   if(cc) cc.style.display=tab==='collab'?'block':'none';
-  var pb=document.getElementById('mptab-profile'); var cb=document.getElementById('mptab-collab');
+  if(hc) hc.style.display=tab==='hearts'?'block':'none';
+  var pb=document.getElementById('mptab-profile'); var cb=document.getElementById('mptab-collab'); var hb=document.getElementById('mptab-hearts');
   if(pb){pb.style.background=tab==='profile'?'var(--brown)':'transparent';pb.style.color=tab==='profile'?'#fff':'var(--text-dim)';}
   if(cb){cb.style.background=tab==='collab'?'var(--brown)':'transparent';cb.style.color=tab==='collab'?'#fff':'var(--text-dim)';}
+  if(hb){hb.style.background=tab==='hearts'?'var(--brown)':'transparent';hb.style.color=tab==='hearts'?'#fff':'var(--text-dim)';}
   if(tab==='collab') renderCollabGrid('all');
 }
 
@@ -5571,13 +5758,20 @@ function liveNext() {
 
 function onSellProduct() {
   var sel = document.getElementById('sell-product');
-  var priceInput = document.getElementById('sell-price');
   var btnGo = document.getElementById('btn-go-sell');
-  if (!sel || !sel.value) return;
+  var details = document.getElementById('sell-details');
+  if (!sel || !sel.value) {
+    if (details) details.style.display = 'none';
+    if (btnGo) btnGo.disabled = true;
+    return;
+  }
   var opt = sel.options[sel.selectedIndex];
   var price = opt.getAttribute('data-price');
-  if (priceInput && price) priceInput.value = price;
-  updateSplitPreview();
+  var origInput = document.getElementById('sell-orig');
+  var saleInput = document.getElementById('sell-sale');
+  if (origInput && price) origInput.value = price;
+  if (saleInput && price) saleInput.value = price;
+  if (details) details.style.display = 'block';
   if (btnGo) btnGo.disabled = false;
 }
 
@@ -5588,17 +5782,67 @@ function stopLive() {
   liveMode = null;
 }
 
+function endLive() {
+  if (!confirm('Are you sure you want to end your live session?')) return;
+  stopLive();
+}
+
+function togglePause() {
+  var btn = document.getElementById('btn-pause');
+  var banner = document.getElementById('live-banner');
+  if (!btn) return;
+  var isPaused = btn.getAttribute('data-paused') === 'true';
+  if (isPaused) {
+    btn.setAttribute('data-paused', 'false');
+    btn.textContent = '⏸ Pause';
+    btn.style.background = '#fef3c7';
+    btn.style.color = '#d97706';
+    if (banner) banner.style.opacity = '1';
+    toast('▶ Live resumed');
+  } else {
+    btn.setAttribute('data-paused', 'true');
+    btn.textContent = '▶ Resume';
+    btn.style.background = '#dcfce7';
+    btn.style.color = '#16a34a';
+    if (banner) banner.style.opacity = '0.6';
+    toast('⏸ Live paused');
+  }
+}
+
 function startLiveAndSell() {
-  var title = document.getElementById('live-title');
-  var price = document.getElementById('live-price');
-  if (!title || !title.value.trim()) { toast('Please enter a session title'); return; }
+  var sel = document.getElementById('sell-product');
+  var saleInput = document.getElementById('sell-sale');
+  if (!sel || !sel.value) { toast('Please select a product'); return; }
+  var productName = sel.value;
+  var salePrice = saleInput ? saleInput.value : '';
+  var timerSel = document.getElementById('sell-timer');
+  var timerMins = timerSel ? parseInt(timerSel.value) : 0;
   closeModal('modal-sell');
   closeModal('modal-golive');
+  // Show live banner
   var banner = document.getElementById('live-banner');
   if (banner) banner.style.display = 'block';
   var liveTitle = document.getElementById('live-banner-title');
-  if (liveTitle) liveTitle.textContent = title.value;
-  toast('🔴 You are now live!');
+  if (liveTitle) liveTitle.textContent = productName + (salePrice ? ' — $' + salePrice : '');
+  toast('🔴 You are now live & selling ' + productName + '!');
+  // Start countdown timer if set
+  if (timerMins > 0) {
+    var secs = timerMins * 60;
+    var timerEl = document.getElementById('live-banner-timer');
+    var interval = setInterval(function() {
+      secs--;
+      if (timerEl) {
+        var m = Math.floor(secs/60), s = secs % 60;
+        timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      }
+      if (secs <= 0) {
+        clearInterval(interval);
+        stopLive();
+        toast('⏰ Sale timer ended — live session closed.');
+      }
+    }, 1000);
+  }
+  liveMode = null;
 }
 
 function goCheckoutStep2() {
@@ -5612,6 +5856,38 @@ function stopLive() {
   var banner = document.getElementById('live-banner');
   if (banner) banner.style.display = 'none';
   toast('Live session ended.');
+}
+
+
+function savePaymentMethod() {
+  var name = document.getElementById('pm-name');
+  var num = document.getElementById('pm-number');
+  var exp = document.getElementById('pm-expiry');
+  var cvv = document.getElementById('pm-cvv');
+  if (!name || !name.value.trim()) { toast('Please enter cardholder name'); return; }
+  if (!num || num.value.replace(/\s/g,'').length < 16) { toast('Please enter a valid card number'); return; }
+  if (!exp || !exp.value.trim()) { toast('Please enter expiry date'); return; }
+  if (!cvv || cvv.value.length < 3) { toast('Please enter CVV'); return; }
+  closeModal('modal-add-payment');
+  if (name) name.value = '';
+  if (num) num.value = '';
+  if (exp) exp.value = '';
+  if (cvv) cvv.value = '';
+  toast('✓ Payment method added successfully!');
+}
+
+function submitSupportTicket() {
+  var subject = document.getElementById('support-subject');
+  var message = document.getElementById('support-message');
+  var email = document.getElementById('support-email');
+  if (!subject || !subject.value) { toast('Please select a subject'); return; }
+  if (!message || !message.value.trim()) { toast('Please enter a message'); return; }
+  if (!email || !email.value.trim()) { toast('Please enter your email'); return; }
+  closeModal('modal-contact-support');
+  if (subject) subject.value = '';
+  if (message) message.value = '';
+  if (email) email.value = '';
+  toast('✓ Support message sent! We will reply within 24-48 hours.');
 }
 
 
@@ -5634,5 +5910,502 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+<!-- BODY-LEVEL MODALS — position:fixed works correctly here -->
+
+<div id="modal-help-mediaprofile" class="modal-overlay" onclick="closeModal('modal-help-mediaprofile')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">👤 Media Profile Guide</h2>
+      <button onclick="closeModal('modal-help-mediaprofile')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:65vh;overflow-y:auto;">
+      <p><strong>What it is:</strong> Your Media Profile is your public page at <strong style="color:var(--brown);">massed.io/yourusername</strong> — your digital business card for collaborators, customers and partners.</p>
+      <p><strong>Where to find it:</strong> Tap <em>Media Profile</em> in the left sidebar.</p>
+      <p><strong>How to set it up:</strong></p>
+      <p>1. Upload a professional photo or brand logo.</p>
+      <p>2. Enter your Display Name exactly as you want it shown publicly.</p>
+      <p>3. Add your Title or Role so visitors know what you do.</p>
+      <p>4. Write your Bio — authentic, under 200 words. Tell your story, who you serve, what makes your brand unique.</p>
+      <p>5. Select your Category to help MASSED match you to the right audience.</p>
+      <p>6. Add Contact Info — email required, phone and website optional.</p>
+      <p>7. Click <strong>Save Profile</strong>. Changes are not auto-saved.</p>
+      <p><strong>Collaboration tab:</strong> Toggle visibility on, pick your genres, browse creators, send and accept requests, message collaborators, and sign NDAs — all within MASSED.</p>
+      <p><strong>Tips:</strong> High-res photo = 3× more views. Update your bio when your focus changes. Pick multiple genres to appear in more searches.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-mediaprofile')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-help-store" class="modal-overlay" onclick="closeModal('modal-help-store')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">🛍️ My Store Guide</h2>
+      <button onclick="closeModal('modal-help-store')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:65vh;overflow-y:auto;">
+      <p><strong>What it is:</strong> My Store is your public storefront — it controls which products and services your audience can browse and buy at your MASSED link.</p>
+      <p><strong>Where to find it:</strong> Tap <em>My Store</em> in the left sidebar. Digital Products and Physical Products appear as sub-items underneath.</p>
+      <p><strong>How to set it up:</strong></p>
+      <p>1. Toggle <strong>Store Live</strong> at the top to make your store visible to the public.</p>
+      <p>2. Use the <strong>What's In Your Store</strong> toggles to show or hide each product type — Digital Products, Physical Products, Courses, Bookings, Events, Services, Links and Videos.</p>
+      <p>3. Your Store URL is shown at the top — copy and share it anywhere.</p>
+      <p><strong>Tip:</strong> Only enable the product types you actually have set up so your store looks clean and professional to visitors.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-store')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-help-sales" class="modal-overlay" onclick="closeModal('modal-help-sales')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">💰 Sales & Payouts Guide</h2>
+      <button onclick="closeModal('modal-help-sales')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:65vh;overflow-y:auto;">
+      <p><strong>What it is:</strong> Sales & Payouts is your financial command center — see all revenue, traffic data, and manage how you get paid.</p>
+      <p><strong>Where to find it:</strong> Tap <em>Sales & Payouts</em> in the left sidebar.</p>
+      <p><strong>Sales tab:</strong> Today's revenue, sessions, conversion funnel, traffic channels with interactive world map, top products, and social media analysis.</p>
+      <p><strong>Payout tab:</strong> Available balance, processing funds, earnings breakdown by source, full transaction feed. Switch to Affiliate Earnings to see referral commissions.</p>
+      <p><strong>Withdrawing:</strong> Connect your Stripe account in Settings → Stripe to enable direct bank payouts.</p>
+      <p><strong>Graduation:</strong> Pay $30/month for 12 months and your plan becomes FREE for 24 months — then just $79.99/year. Track progress in Settings → Billing.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-sales')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-contact-support" class="modal-overlay" onclick="closeModal('modal-contact-support')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">💬 Contact Support</h2>
+      <button onclick="closeModal('modal-contact-support')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-field">
+        <label>Subject</label>
+        <select id="support-subject">
+          <option value="">-- Select a topic --</option>
+          <option>General Inquiry</option>
+          <option>Billing Question</option>
+          <option>Technical Issue</option>
+          <option>Account Problem</option>
+          <option>Feature Request</option>
+          <option>Report a Bug</option>
+          <option>Create a Support Ticket</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Message</label>
+        <textarea id="support-message" placeholder="Describe your issue or question in detail..." style="min-height:120px;resize:vertical;"></textarea>
+      </div>
+      <div class="form-field">
+        <label>Your Email (for reply)</label>
+        <input type="email" id="support-email" placeholder="your@email.com">
+      </div>
+      <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+        📬 Our support team typically responds within 24–48 hours. For urgent billing issues, include your account email and a brief description.
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-contact-support')">Cancel</button>
+      <button class="btn-save" onclick="submitSupportTicket()" style="flex:1;">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-add-payment" class="modal-overlay" onclick="closeModal('modal-add-payment')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">💳 Add Payment Method</h2>
+      <button onclick="closeModal('modal-add-payment')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-field">
+        <label>Cardholder Name</label>
+        <input type="text" id="pm-name" placeholder="Name as it appears on card">
+      </div>
+      <div class="form-field">
+        <label>Card Number</label>
+        <input type="text" id="pm-number" placeholder="•••• •••• •••• ••••" maxlength="19">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-field" style="margin:0;"><label>Expiry</label><input type="text" id="pm-expiry" placeholder="MM / YY" maxlength="7"></div>
+        <div class="form-field" style="margin:0;"><label>CVV</label><input type="text" id="pm-cvv" placeholder="•••" maxlength="4"></div>
+      </div>
+      <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+        🔒 Your payment information is encrypted and processed securely through Stripe. MASSED never stores your card details.
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-add-payment')">Cancel</button>
+      <button class="btn-save" onclick="savePaymentMethod()" style="flex:1;">Add Card</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-help-system" class="modal-overlay" onclick="closeModal('modal-help-system')">
+  <div class="modal" style="max-width:580px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">🗺️ How MASSED Works</h2>
+      <button onclick="closeModal('modal-help-system')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:70vh;overflow-y:auto;">
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">👤 Media Profile</div>
+        <p>Your public identity on MASSED — visible at <strong>massed.io/yourusername</strong>. Set your photo, display name, title/role, bio (under 200 words), category, and contact info. Click Save Profile — changes are not auto-saved.</p>
+        <p style="margin-top:6px;"><strong>Collaboration tab:</strong> Toggle your visibility on, choose your genres (select multiple to appear in more searches), browse other creators by genre, send and accept connection requests, message active collaborators, and sign legally binding NDAs. Signed NDAs auto-save to the Documents tab.</p>
+        <p style="margin-top:6px;"><strong>My Hearts tab:</strong> See everyone who saved or hearted your profile, along with total heart count, hearts this week, and profile view stats.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🛍️ My Store</div>
+        <p>Your public storefront. Toggle <strong>Store Live</strong> to make it visible at your MASSED link. Use the product type toggles to control what appears — Digital Products, Physical Products, Courses, Bookings, Events, Services, Links, and Videos. The sidebar has three sub-items: <strong>Digital Products</strong>, <strong>Physical Products</strong>, and <strong>Courses</strong>.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔗 Web Links</div>
+        <p>Add any URL to your public page — websites, landing pages, booking links, portfolios, or anything you want your audience to tap. Each link appears as a button on your MASSED profile.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📱 Social Links</div>
+        <p>Connect Instagram, X/Twitter, TikTok, YouTube, Facebook, Pinterest, LinkedIn, and Amazon. Each platform has a <strong>toggle</strong> — flip it on to show that platform publicly on your profile, flip it off to hide it. Only platforms with the toggle on are visible to visitors.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🎬 Video</div>
+        <p>Upload or link your videos. They appear directly on your public MASSED profile so your audience can watch without leaving your page. Add a title, genre, and duration for each video.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🎟️ Events / Tickets</div>
+        <p>Create in-person or online events. Set ticket tiers, prices, and capacity. Manage attendees and collect payments through Stripe. Use the built-in <strong>Ticket Scanner</strong> in the sidebar to scan QR codes at the door on event day. Select <strong>Other</strong> as event type to type in a custom type.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔴 Go Live</div>
+        <p>Click the Go Live button in the top bar. Choose <strong>Go Live</strong> to connect with your audience with no product, or <strong>Go Live &amp; Sell</strong> to feature a product at a sale price with an optional countdown timer. Use <strong>⏸ Pause</strong> to pause without ending, and <strong>End Live</strong> to close the session. The live banner stays visible to your audience until you end it.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">💰 Sales &amp; Payouts</div>
+        <p><strong>Sales tab:</strong> Today's revenue, sessions, conversion funnel, traffic channels with interactive world map, top products, and social media analysis.</p>
+        <p style="margin-top:6px;"><strong>Payout tab:</strong> Your <em>Ready for Payout to Earners</em> balance, earnings breakdown, and full transaction feed. Switch to Affiliate Earnings to see Top Creators with their status (Pending/Paid) and Pay Now buttons.</p>
+        <p style="margin-top:6px;"><strong>Payout Settings</strong> is a sub-item under Sales &amp; Payouts in the sidebar — set your payout method, schedule, minimum threshold, currency, and instant payout preference.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">⚙️ Settings</div>
+        <p>Five tabs: <strong>Settings</strong> (account &amp; notifications), <strong>Billing</strong> (plan, payment method, graduation countdown), <strong>Stripe</strong> (connect your Stripe account to receive payouts), <strong>Support</strong> (quick help guides, FAQ, contact support), and <strong>API</strong> (integrations — coming soon).</p>
+        <p style="margin-top:6px;"><strong>Graduation Countdown:</strong> Pay $30/month for 12 months → unlock a FREE 24-month plan → then just $79.99/year forever. Track progress in the Billing tab.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">❓ Support Tab (inside Settings)</div>
+        <p>Four Quick Help guides that open as popups: Media Profile guide, My Store guide, Sales &amp; Payouts guide, and this full platform walkthrough. The FAQ has 9 questions each opening as their own popup. Contact Support lets you send a message or create a support ticket — the team responds within 24–48 hours.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔤 Other Fields — Custom Input</div>
+        <p>Anywhere you see <strong>Other</strong> as an option — Event Type, Genre, Media Profile Category, Video Genre — selecting it reveals a text field so you can type exactly what you need. This applies across the entire platform.</p>
+      </div>
+
+      <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:10px;padding:14px 16px;color:#fff;font-size:0.78rem;">
+        💡 This guide is updated each time a new section is completed. More features are being added — check back here for the latest walkthroughs.
+      </div>
+
+    </div>
+    <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-system')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-help-faq" class="modal-overlay" onclick="closeModal('modal-help-faq')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">❓ Frequently Asked Questions</h2>
+      <button onclick="closeModal('modal-help-faq')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow-y:auto;">
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-1')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">What is MASSED?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-2')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">How much does MASSED cost?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-3')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">How do I get paid?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-4')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">How do I make my store visible to the public?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-5')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">What is the Collaboration feature?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-6')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">How do I go live and sell a product?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-7')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">Can I control what shows on my public profile?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-8')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">How do I cancel or change my plan?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+      <button onclick="closeModal('modal-help-faq');openModal('modal-faq-9')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+        <span style="font-weight:700;font-size:0.88rem;color:var(--text);">How do I contact support?</span><span style="color:var(--text-dim);">→</span>
+      </button>
+    </div>
+    <button class="btn-cancel" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-faq')">Close</button>
+  </div>
+</div>
+
+<div id="modal-faq-1" class="modal-overlay" onclick="closeModal('modal-faq-1')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ What is MASSED?</h2>
+      <button onclick="closeModal('modal-faq-1')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">MASSED is an all-in-one creator platform that gives you a public profile, a store, event ticketing, live selling, collaboration tools, and analytics — all under your own MASSED link. It is built for creators, service providers, and small business owners who want to sell, grow, and connect in one place.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-1');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-1')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-2" class="modal-overlay" onclick="closeModal('modal-faq-2')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ How much does MASSED cost?</h2>
+      <button onclick="closeModal('modal-faq-2')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">MASSED costs $30/month on the Creator Pro plan. After 12 consecutive months of payments you graduate to a FREE 24-month plan — zero payments, keep every dollar you earn for 2 full years. After that it is just $79.99/year, forever. Track your graduation progress in Settings → Billing.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-2');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-2')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-3" class="modal-overlay" onclick="closeModal('modal-faq-3')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ How do I get paid?</h2>
+      <button onclick="closeModal('modal-faq-3')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">Connect your Stripe account in Settings → Stripe. All sales, ticket revenue, and live selling payments go through Stripe and deposit directly to your bank account. You keep your earnings — MASSED does not take a cut of your sales.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-3');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-3')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-4" class="modal-overlay" onclick="closeModal('modal-faq-4')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ How do I make my store visible?</h2>
+      <button onclick="closeModal('modal-faq-4')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">Go to My Store in the sidebar and toggle Store Live to on. Your store will immediately be visible at massed.io/yourusername. You can also choose which product types appear using the toggles inside My Store.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-4');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-4')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-5" class="modal-overlay" onclick="closeModal('modal-faq-5')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ What is the Collaboration feature?</h2>
+      <button onclick="closeModal('modal-faq-5')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">Collaboration lets you find and connect with other MASSED creators. Go to Media Profile → Collaboration tab, toggle yourself visible, choose your genres, and start browsing. You can send connection requests, message accepted collaborators, and sign a legally binding NDA — all within MASSED. Signed NDAs automatically save to your Documents tab.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-5');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-5')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-6" class="modal-overlay" onclick="closeModal('modal-faq-6')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ How do I go live and sell a product?</h2>
+      <button onclick="closeModal('modal-faq-6')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">Click the Go Live button in the top bar. Choose Go Live & Sell, select a product from your store, set a sale price, choose a timer if you want a countdown, and click Go Live & Sell. Your live banner will appear and your audience can purchase directly during the session.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-6');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-6')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-7" class="modal-overlay" onclick="closeModal('modal-faq-7')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ Can I control what shows on my public profile?</h2>
+      <button onclick="closeModal('modal-faq-7')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">Yes. In Social Links you can toggle each platform on or off — only platforms with the toggle on will appear publicly. In My Store you control which product types are visible. Your store must also have the Store Live toggle on to be publicly accessible.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-7');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-7')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-8" class="modal-overlay" onclick="closeModal('modal-faq-8')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ How do I cancel or change my plan?</h2>
+      <button onclick="closeModal('modal-faq-8')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">Go to Settings → Billing. You can manage your plan or cancel from there. To cancel, click Cancel Plan or contact support directly. We recommend reaching out first — our team may be able to help with any issues before you decide to cancel.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-8');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-8')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-faq-9" class="modal-overlay" onclick="closeModal('modal-faq-9')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;">❓ How do I contact support?</h2>
+      <button onclick="closeModal('modal-faq-9')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.88rem;color:var(--text);line-height:1.8;">Go to Settings → Support and click Send a Message or Create a Support Ticket. Fill in your subject, message, and email. Our team responds within 24–48 hours. For urgent billing issues include your account email in the message.</p>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-faq-9');openModal('modal-help-faq')">← Back to FAQ</button>
+      <button class="btn-save" onclick="closeModal('modal-faq-9')" style="flex:1;">Got it</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="modal-update-payment" class="modal-overlay" onclick="closeModal('modal-update-payment')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">💳 Update Payment Method</h2>
+      <button onclick="closeModal('modal-update-payment')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-field">
+        <label>Cardholder Name</label>
+        <input type="text" id="upm-name" placeholder="Name as it appears on card">
+      </div>
+      <div class="form-field">
+        <label>Card Number</label>
+        <input type="text" id="upm-number" placeholder="•••• •••• •••• ••••" maxlength="19">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-field" style="margin:0;"><label>Expiry</label><input type="text" id="upm-expiry" placeholder="MM / YY" maxlength="7"></div>
+        <div class="form-field" style="margin:0;"><label>CVV</label><input type="text" id="upm-cvv" placeholder="•••" maxlength="4"></div>
+      </div>
+      <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+        🔒 Your payment information is encrypted and processed securely through Stripe. MASSED never stores your card details.
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-update-payment')">Cancel</button>
+      <button class="btn-save" onclick="updatePaymentMethod()" style="flex:1;">Update Card</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-payout-settings" class="modal-overlay" onclick="closeModal('modal-payout-settings')">
+  <div class="modal" style="max-width:460px;background:#FAF7F2;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.3rem;">⚙️</span>
+        <h2 style="margin:0;font-family:'Georgia',serif;font-size:1.3rem;font-weight:900;color:var(--text);">Payout Settings</h2>
+      </div>
+      <button onclick="closeModal('modal-payout-settings')" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#aaa;line-height:1;">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Payout Method</div>
+        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
+          <option>Bank Account (via Stripe)</option>
+          <option>Debit Card (via Stripe)</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Payout Schedule</div>
+        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
+          <option>Daily (automatic)</option>
+          <option>Weekly — every Monday</option>
+          <option>Monthly — 1st of month</option>
+          <option>Manual (withdraw on demand)</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Minimum Payout Threshold</div>
+        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
+          <option>$10.00</option>
+          <option>$25.00</option>
+          <option>$50.00</option>
+          <option>$100.00</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Payout Currency</div>
+        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
+          <option>USD — US Dollar</option>
+          <option>CAD — Canadian Dollar</option>
+          <option>GBP — British Pound</option>
+          <option>EUR — Euro</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;">
+        <div>
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);">Instant Payouts</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px;">1.5% fee for same-day deposits</div>
+        </div>
+        <div class="sl-toggle" id="payout-instant-toggle" onclick="this.classList.toggle('on');toast(this.classList.contains('on')?'Instant payouts enabled':'Instant payouts disabled');" style="cursor:pointer;flex-shrink:0;"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:22px;">
+      <button onclick="closeModal('modal-payout-settings')" style="flex:1;padding:14px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.92rem;color:var(--text-dim);">Cancel</button>
+      <button onclick="closeModal('modal-payout-settings');toast('✓ Payout settings saved!')" style="flex:2;padding:14px;background:var(--brown);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:800;font-size:0.92rem;">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-withdraw-funds" class="modal-overlay" onclick="closeModal('modal-withdraw-funds')">
+  <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">💸 Withdraw Funds</h2>
+      <button onclick="closeModal('modal-withdraw-funds')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div style="background:linear-gradient(135deg,#1a1208,#2d1e0a);border-radius:12px;padding:18px;color:#F5F0E8;display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-size:0.7rem;color:rgba(245,240,232,0.5);margin-bottom:4px;">AVAILABLE TO WITHDRAW</div><div style="font-size:1.8rem;font-weight:900;font-family:'Georgia',serif;">$1,250.00</div></div>
+      </div>
+      <div class="form-field">
+        <label>Amount to Withdraw</label>
+        <input type="number" id="withdraw-amount" placeholder="0.00" step="0.01" max="1250">
+      </div>
+      <div class="form-field">
+        <label>Send To</label>
+        <select>
+          <option>Bank Account •••• 1234</option>
+          <option>Debit Card •••• 5678</option>
+        </select>
+      </div>
+      <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+        ⚡ Standard payouts arrive in 3–5 business days. Enable Instant Payouts in Payout Settings for same-day deposits (1.5% fee).
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-withdraw-funds')">Cancel</button>
+      <button class="btn-save" onclick="submitWithdrawal()" style="flex:1;background:linear-gradient(135deg,#C49A6C,#A0784A);color:#1a0e06;">Withdraw Funds</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
