@@ -125,6 +125,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   .content{flex:1;height:0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;}
   .screen{padding:16px;padding-bottom:120px;}
   .screen.active{display:block;padding:16px;padding-bottom:120px;}
+  #screen-payoutsettings.screen{background:#1a1a1a;}
   #screen-payoutsettings.active{background:#1a1a1a !important;min-height:100%;}
   .topbar{padding:0 16px;flex-shrink:0;}
   .hamburger{display:flex !important;}
@@ -3852,75 +3853,74 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
       </div>
     </div>
-    <div id="screen-payoutsettings" class="screen" style="background:#1a1a1a;min-height:100%;box-sizing:border-box;">
-
-      <!-- Breadcrumb -->
-      <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:24px;">Sales &amp; Payouts / <strong style="color:rgba(255,255,255,0.7);">Payouts</strong></div>
+    <div id="screen-payoutsettings" class="screen" style="background:#1a1a1a;">
 
       <!-- Title -->
-      <div style="font-family:'Georgia',serif;font-size:2.2rem;font-weight:900;color:#fff;margin-bottom:20px;">Payouts</div>
-      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:28px;"></div>
+      <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px;">Sales &amp; Payouts</div>
+      <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:6px;">My Payout Earnings</div>
+      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:24px;"></div>
 
-      <!-- Balance Cards -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;max-width:780px;">
-        <div style="background:linear-gradient(135deg,#1e1e1e,#2a2a2a);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:28px 24px;">
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">Available Balance</div>
-          <div style="font-family:'Georgia',serif;font-size:2.2rem;font-weight:900;color:#fff;">$1,250.00</div>
+      <!-- Balance Cards — stacked vertically -->
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+        <div style="background:linear-gradient(135deg,#1e1e1e,#2a2a2a);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:22px 20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:8px;">Available Balance</div>
+          <div style="font-family:'Georgia',serif;font-size:2rem;font-weight:900;color:#fff;">$1,250.00</div>
         </div>
-        <div style="background:linear-gradient(135deg,#1e1e1e,#2a2a2a);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:28px 24px;">
-          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">Pending Balance</div>
-          <div style="font-family:'Georgia',serif;font-size:2.2rem;font-weight:900;color:#fff;">$300.00</div>
+        <div style="background:linear-gradient(135deg,#1e1e1e,#2a2a2a);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:22px 20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:8px;">Pending Balance</div>
+          <div style="font-family:'Georgia',serif;font-size:2rem;font-weight:900;color:#fff;">$300.00</div>
         </div>
       </div>
 
       <!-- Withdraw Button -->
-      <div style="max-width:780px;margin-bottom:28px;">
-        <button onclick="toast('Withdraw coming soon — connect Stripe to enable')" style="width:100%;padding:18px;background:linear-gradient(135deg,#C49A6C,#a07840);color:#1a1a1a;border:none;border-radius:10px;cursor:pointer;font-family:'Georgia',serif;font-size:1rem;font-weight:900;letter-spacing:0.04em;">Withdraw Funds</button>
-      </div>
+      <button onclick="toast('Withdraw coming soon — connect Stripe to enable')" style="width:100%;padding:16px;background:linear-gradient(135deg,#C49A6C,#a07840);color:#1a1a1a;border:none;border-radius:10px;cursor:pointer;font-family:'Georgia',serif;font-size:0.95rem;font-weight:900;letter-spacing:0.04em;margin-bottom:28px;">Withdraw Funds</button>
 
-      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:28px;max-width:780px;"></div>
+      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:24px;"></div>
 
       <!-- Payout Settings Section -->
-      <div style="font-family:'Georgia',serif;font-size:1.3rem;font-style:italic;font-weight:700;color:#fff;margin-bottom:16px;">Payout Settings</div>
-      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:16px;max-width:780px;"></div>
+      <div style="font-family:'Georgia',serif;font-size:1.1rem;font-style:italic;font-weight:700;color:#fff;margin-bottom:16px;">Payout Settings</div>
 
-      <div style="display:flex;flex-direction:column;gap:8px;max-width:780px;">
+      <div style="display:flex;flex-direction:column;gap:8px;">
 
         <!-- Bank Account -->
-        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:16px;padding:18px 20px;">
+        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
           <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
           </div>
-          <div style="font-size:0.95rem;font-weight:700;color:#fff;flex:1;">Bank Account</div>
-          <div style="font-family:monospace;font-size:0.88rem;color:rgba(255,255,255,0.45);margin-right:12px;">•••• 1234</div>
-          <div style="width:1px;height:22px;background:rgba(255,255,255,0.12);margin-right:12px;"></div>
-          <button onclick="toast('Edit bank account coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.88rem;font-family:'DM Sans',sans-serif;padding:0;">Edit</button>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.92rem;font-weight:700;color:#fff;">Bank Account</div>
+            <div style="font-family:monospace;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:2px;">•••• 1234</div>
+          </div>
+          <button onclick="toast('Edit bank account coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Edit</button>
         </div>
 
         <!-- Debit Card -->
-        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:16px;padding:18px 20px;">
+        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
           <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           </div>
-          <div style="font-size:0.95rem;font-weight:700;color:#fff;flex:1;">Debit Card</div>
-          <div style="font-family:monospace;font-size:0.88rem;color:rgba(255,255,255,0.45);margin-right:12px;">•••• 5678</div>
-          <div style="width:1px;height:22px;background:rgba(255,255,255,0.12);margin-right:12px;"></div>
-          <button onclick="toast('Add card coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.88rem;font-family:'DM Sans',sans-serif;padding:0;">Add Card</button>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.92rem;font-weight:700;color:#fff;">Debit Card</div>
+            <div style="font-family:monospace;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:2px;">•••• 5678</div>
+          </div>
+          <button onclick="toast('Add card coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Add Card</button>
         </div>
 
         <!-- Payout Speed -->
-        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:16px;padding:18px 20px;">
+        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
           <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg viewBox="0 0 24 24" width="26" height="26" fill="rgba(255,255,255,0.7)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="rgba(255,255,255,0.7)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-          <div style="font-size:0.95rem;font-weight:700;color:#fff;flex:1;">Payout Speed</div>
-          <div style="font-size:0.88rem;color:rgba(255,255,255,0.45);margin-right:12px;">Standard (3-5 Days)</div>
-          <div style="width:1px;height:22px;background:rgba(255,255,255,0.12);margin-right:12px;"></div>
-          <button onclick="toast('Change payout speed coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.88rem;font-family:'DM Sans',sans-serif;padding:0;">Change</button>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.92rem;font-weight:700;color:#fff;">Payout Speed</div>
+            <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:2px;">Standard (3–5 Days)</div>
+          </div>
+          <button onclick="toast('Change payout speed coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Change</button>
         </div>
 
       </div>
     </div>
+
 
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
