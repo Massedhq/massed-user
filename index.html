@@ -60,7 +60,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .link-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
 .btn-logout{padding:8px 16px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;}
 .btn-logout:hover{background:var(--brown-dark);}
-.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;min-height:0;}
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;min-height:0;}
 .content::-webkit-scrollbar{width:5px;}
 .content::-webkit-scrollbar-thumb{background:var(--cream3);border-radius:3px;}
 
@@ -89,6 +89,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* SIDEBAR OVERLAY */
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(44,26,14,0.4);z-index:99;backdrop-filter:blur(2px);}
+.sidebar-overlay.open{display:block;}
 .sidebar-overlay.visible{display:block;}
 
 /* ── MOBILE ── */
@@ -116,8 +117,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;}
 
   .main{margin-left:0;width:100%;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
-  .content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
-  .screen{padding:16px;padding-bottom:80px;}
+  .content{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;}
+  .content > .screen{overflow-y:visible;}
+  .content > 
+  .screen{padding:16px;padding-bottom:100px;}
+  #screen-salespayouts{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  #screen-salespayouts .sp-inner{min-height:0;}
   .topbar{padding:0 16px;flex-shrink:0;}
   .hamburger{display:flex !important;}
   .link-badge{display:none;}
@@ -133,7 +138,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   .profile-card.full{grid-column:1;}
 
   /* Social grid */
-  .social-grid{grid-template-columns:1fr;}
+  .social-grid{grid-template-columns:1fr;gap:10px;}
+  .social-item{width:100%;box-sizing:border-box;}
+  .social-item input[type="text"]{width:100%;box-sizing:border-box;}
 
   /* Stats rows */
   .stats-row{grid-template-columns:1fr 1fr;}
@@ -154,7 +161,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
   /* Modals — scrollable on mobile */
   .modal-overlay{align-items:flex-start !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch;padding:16px 0 40px !important;}
-  .modal{padding:24px 18px;max-height:none !important;}
+  .modal{padding:24px 18px;max-height:88vh !important;overflow-y:auto;-webkit-overflow-scrolling:touch;}
   .modal-title{font-size:1.25rem;}
   #modal-view-event > div,
   #modal-your-ticket > div{width:95%;}
@@ -470,9 +477,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-group-body" id="group-finance">
       <div class="nav-item" onclick="nav(this,'analytics')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Analytics</div>
       <div class="nav-item" onclick="nav(this,'salespayouts')"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>Sales & Payouts</div>
-      <div class="nav-item" onclick="openModal('modal-payout-settings')" style="padding-left:36px;font-size:0.82rem;">
+      <div class="nav-item" onclick="nav(this,'payoutsettings')" style="padding-left:36px;font-size:0.82rem;">
         <svg viewBox="0 0 24 24" style="width:14px;height:14px;" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Payout Settings
       </div>
+
     </div>
 
     <div class="nav-section-label">Trust & Community</div>
@@ -3138,8 +3146,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Account</div>
           <div class="form-field"><label>Display Name</label><input type="text" placeholder="Your name"></div>
           <div class="form-field"><label>Email</label><input type="email" placeholder="your@email.com"></div>
-          <div class="form-field"><label>Password</label><input type="password" placeholder="Change password"></div>
-          <button class="btn-save" onclick="toast('✓ Account updated!')">Save Changes</button>
+          <div class="form-field"><label>Phone Number</label><input type="tel" id="acct-phone" placeholder="+1 (000) 000-0000"></div>
+          <div class="form-field">
+            <label>Change Password</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="password" id="acct-new-pass" placeholder="New password" style="flex:1;">
+              <button onclick="sendPasswordCode()" style="padding:10px 14px;background:var(--brown-bg);color:var(--brown);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-size:0.78rem;font-weight:700;white-space:nowrap;">Send Code</button>
+            </div>
+          </div>
+          <div class="form-field" id="pass-code-wrap" style="display:none;">
+            <label>Enter 6-Digit Verification Code</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="text" id="acct-code" placeholder="000000" maxlength="6" style="flex:1;letter-spacing:0.2em;font-size:1.1rem;text-align:center;">
+              <button onclick="verifyPasswordCode()" style="padding:10px 14px;background:var(--brown);color:#fff;border:none;border-radius:9px;cursor:pointer;font-size:0.78rem;font-weight:700;">Verify</button>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-top:6px;">A 6-digit code was sent to your phone number.</div>
+          </div>
+          <button class="btn-save" onclick="saveAccount()">Save Changes</button>
         </div>
         <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
           <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Notifications</div>
@@ -3171,7 +3194,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#C49A6C;margin-bottom:4px;">Creator Pro</div>
           <div style="font-size:0.85rem;color:rgba(245,240,232,0.6);margin-bottom:16px;">$30.00 / month · Next billing: Apr 21, 2026</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button style="padding:8px 18px;background:rgba(196,154,108,0.2);color:#C49A6C;border:1px solid rgba(196,154,108,0.4);border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;" onclick="toast('Plan management coming soon')">Manage Plan</button>
+            <button style="padding:8px 18px;background:rgba(196,154,108,0.2);color:#C49A6C;border:1px solid rgba(196,154,108,0.4);border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;" onclick="openModal('modal-manage-plan')">Manage Plan</button>
             <button style="padding:8px 18px;background:transparent;color:rgba(245,240,232,0.5);border:1px solid rgba(245,240,232,0.2);border-radius:9px;cursor:pointer;font-size:0.82rem;" onclick="toast('Contact support to cancel')">Cancel Plan</button>
           </div>
         </div>
@@ -3366,7 +3389,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:#C49A6C;margin-bottom:4px;">Creator Pro</div>
           <div style="font-size:0.85rem;color:rgba(245,240,232,0.6);margin-bottom:16px;">$30.00 / month · Next billing: Apr 21, 2026</div>
           <div style="display:flex;gap:10px;">
-            <button style="padding:8px 18px;background:rgba(196,154,108,0.2);color:#C49A6C;border:1px solid rgba(196,154,108,0.4);border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;" onclick="toast('Plan management coming soon')">Manage Plan</button>
+            <button style="padding:8px 18px;background:rgba(196,154,108,0.2);color:#C49A6C;border:1px solid rgba(196,154,108,0.4);border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;" onclick="openModal('modal-manage-plan')">Manage Plan</button>
             <button style="padding:8px 18px;background:transparent;color:rgba(245,240,232,0.5);border:1px solid rgba(245,240,232,0.2);border-radius:9px;cursor:pointer;font-size:0.82rem;" onclick="toast('Contact support to cancel')">Cancel Plan</button>
           </div>
         </div>
@@ -3705,113 +3728,66 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <!-- ── PAYOUT SUB ── -->
         <div id="sp-payout-content">
 
-          <!-- Breadcrumb -->
-          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:20px;">Sales & Payouts / <strong style="color:var(--text);">Payouts</strong></div>
+          <!-- Payout Settings Dropdown trigger moved to nav -->
 
-          <!-- Title -->
-          <div style="font-family:'Georgia',serif;font-size:2rem;font-weight:900;color:var(--text);margin-bottom:24px;">Payouts</div>
-          <div style="height:1px;background:var(--border);margin-bottom:24px;"></div>
-
-          <!-- Balance Cards -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
-            <div style="background:linear-gradient(135deg,#1a1208,#2d1e0a);border:1px solid rgba(196,154,108,0.2);border-radius:14px;padding:24px;">
-              <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,240,232,0.5);margin-bottom:10px;">Available Balance</div>
-              <div style="font-size:2rem;font-weight:900;color:#F5F0E8;font-family:'Georgia',serif;">$1,250.00</div>
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Balance Breakdown</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Available Now</div>
+              <div style="font-size:1.7rem;font-weight:900;color:#16a34a;font-family:'Georgia',serif;">$2,992</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Ready for Withdrawal</div>
             </div>
-            <div style="background:linear-gradient(135deg,#1a1208,#2d1e0a);border:1px solid rgba(196,154,108,0.2);border-radius:14px;padding:24px;">
-              <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,240,232,0.5);margin-bottom:10px;">Pending Balance</div>
-              <div style="font-size:2rem;font-weight:900;color:#F5F0E8;font-family:'Georgia',serif;">$300.00</div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Processing</div>
+              <div style="font-size:1.7rem;font-weight:900;color:#f59e0b;font-family:'Georgia',serif;">$1,120</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Clearing Payments</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Held</div>
+              <div style="font-size:1.7rem;font-weight:900;color:#ef4444;font-family:'Georgia',serif;">$30</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">— Recovery Mode</div>
             </div>
           </div>
 
-          <!-- Withdraw Button -->
-          <button onclick="openModal('modal-withdraw-funds')" style="width:100%;padding:16px;background:linear-gradient(135deg,#C49A6C,#A0784A);color:#1a0e06;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:800;letter-spacing:0.02em;margin-bottom:28px;box-shadow:0 4px 20px rgba(196,154,108,0.3);">Withdraw Funds</button>
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Earnings Overview</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">This Month</div>
+              <div style="font-size:1.8rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">$2,992</div>
+              <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                <span style="font-size:0.75rem;color:#16a34a;font-weight:700;">+19%</span>
+                <span style="font-size:0.72rem;color:var(--text-dim);">vs Last Month</span>
+              </div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;">Revenue Sources</div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Products</span><span style="font-weight:700;color:var(--brown);">$1,800</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Courses</span><span style="font-weight:700;color:var(--brown);">$700</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Bookings</span><span style="font-weight:700;color:var(--brown);">$520</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Links</span><span style="font-weight:700;color:var(--brown);">$492</span></div>
+            </div>
+          </div>
 
-          <div style="height:1px;background:var(--border);margin-bottom:24px;"></div>
 
-          <!-- Payout Settings Section -->
-          <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:16px;font-style:italic;">Payout Settings</div>
-
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Transaction Feed</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-
-            <!-- Bank Account -->
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
-              <div style="width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--brown)" stroke-width="1.8"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
-              </div>
-              <div style="flex:1;"><div style="font-weight:700;font-size:0.92rem;">Bank Account</div></div>
-              <div style="font-family:monospace;font-size:0.88rem;color:var(--text-dim);">•••• 1234</div>
-              <div style="width:1px;height:24px;background:var(--border);"></div>
-              <button onclick="openModal('modal-payout-settings')" style="background:none;border:none;cursor:pointer;color:var(--brown);font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0 4px;">Edit</button>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">🔒 Products</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Today at 11:03 AM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$1,800</span>
             </div>
-
-            <!-- Debit Card -->
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
-              <div style="width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--brown)" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-              </div>
-              <div style="flex:1;"><div style="font-weight:700;font-size:0.92rem;">Debit Card</div></div>
-              <div style="font-family:monospace;font-size:0.88rem;color:var(--text-dim);">•••• 5678</div>
-              <div style="width:1px;height:24px;background:var(--border);"></div>
-              <button onclick="openModal('modal-add-payment')" style="background:none;border:none;cursor:pointer;color:var(--brown);font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0 4px;">Add Card</button>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">📅 Booking</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Yesterday 5:34 PM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">—</span>
             </div>
-
-            <!-- Payout Speed -->
-            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;gap:14px;padding:16px 18px;">
-              <div style="width:38px;height:38px;background:var(--cream);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="var(--brown)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              </div>
-              <div style="flex:1;"><div style="font-weight:700;font-size:0.92rem;">Payout Speed</div></div>
-              <div style="font-size:0.85rem;color:var(--text-dim);">Standard (3-5 Days)</div>
-              <div style="width:1px;height:24px;background:var(--border);"></div>
-              <button onclick="openModal('modal-payout-settings')" style="background:none;border:none;cursor:pointer;color:var(--brown);font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0 4px;">Change</button>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">🎓 Course Sale</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#16a34a;font-size:0.72rem;">✓ Completed</span><span style="color:var(--text-dim);font-size:0.72rem;">Apr 20 at 1:15 PM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$720</span>
             </div>
-
-          </div>
-
-          <!-- Earnings Overview -->
-          <div style="margin-top:28px;">
-            <div style="height:1px;background:var(--border);margin-bottom:24px;"></div>
-            <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Earnings Overview</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px;">
-              <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-                <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:6px;">This Month</div>
-                <div style="font-size:1.8rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">$2,992</div>
-                <div style="display:flex;justify-content:space-between;margin-top:8px;">
-                  <span style="font-size:0.75rem;color:#16a34a;font-weight:700;">+19%</span>
-                  <span style="font-size:0.72rem;color:var(--text-dim);">vs Last Month</span>
-                </div>
-              </div>
-              <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">
-                <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:8px;">Revenue Sources</div>
-                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Products</span><span style="font-weight:700;color:var(--brown);">$1,800</span></div>
-                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Courses</span><span style="font-weight:700;color:var(--brown);">$720</span></div>
-                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Bookings</span><span style="font-weight:700;color:var(--brown);">$252</span></div>
-                <div style="display:flex;justify-content:space-between;padding:4px 0;font-size:0.8rem;"><span>Links</span><span style="font-weight:700;color:var(--brown);">$220</span></div>
-              </div>
-            </div>
-
-            <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Transaction Feed</div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-                <div><div style="font-weight:700;font-size:0.88rem;">🔒 Products</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 20</div></div>
-                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$1,800</span>
-              </div>
-              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-                <div><div style="font-weight:700;font-size:0.88rem;">🎓 Course Sale</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 18</div></div>
-                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$720</span>
-              </div>
-              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-                <div><div style="font-weight:700;font-size:0.88rem;">📅 Booking</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 15</div></div>
-                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$252</span>
-              </div>
-              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
-                <div><div style="font-weight:700;font-size:0.88rem;">🔗 Affiliate Commission</div><div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Stripe payout · Mar 12</div></div>
-                <span style="font-weight:800;font-size:1rem;color:var(--brown);">$220</span>
-              </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-weight:700;font-size:0.88rem;">🔗 Affiliate Commission</div><div style="display:flex;gap:8px;margin-top:4px;"><span style="color:#f59e0b;font-size:0.72rem;">⏳ Processing</span><span style="color:var(--text-dim);font-size:0.72rem;">Apr 19 at 10:12 AM</span></div></div>
+              <span style="font-weight:800;font-size:1rem;color:var(--brown);">$492</span>
             </div>
           </div>
-
         </div>
 
         <!-- ── AFFILIATE SUB ── -->
@@ -3835,7 +3811,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </div>
           </div>
 
-          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Top Creators</div>
+          <div style="font-weight:700;font-size:0.92rem;color:var(--text);margin-bottom:12px;">Top Earners</div>
           <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:22px;">
             <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--cream2);">
               <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brown);font-size:0.82rem;flex-shrink:0;">CR</div>
@@ -3853,6 +3829,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                 <span style="font-size:0.65rem;font-weight:700;background:#dcfce7;color:#16a34a;padding:3px 8px;border-radius:10px;">Paid</span>
                 <div style="font-weight:800;font-size:1rem;color:var(--brown);">$80</div>
                 <button onclick="toast('@lashartist already paid')" style="padding:5px 10px;background:var(--cream2);color:var(--text-dim);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;" disabled>Paid</button>
+                <button onclick="viewPaymentReceipt('@lashartist')" style="padding:5px 10px;background:var(--brown-bg);color:var(--brown);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;">View Receipt</button>
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;">
@@ -3897,6 +3874,76 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
       </div>
     </div>
+    <div id="screen-payoutsettings" class="screen" style="background:#1a1a1a;min-height:100%;padding:32px 28px;">
+
+      <!-- Breadcrumb -->
+      <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-bottom:24px;">Sales &amp; Payouts / <strong style="color:rgba(255,255,255,0.7);">Payouts</strong></div>
+
+      <!-- Title -->
+      <div style="font-family:'Georgia',serif;font-size:2.2rem;font-weight:900;color:#fff;margin-bottom:20px;">Payouts</div>
+      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:28px;"></div>
+
+      <!-- Balance Cards -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;max-width:780px;">
+        <div style="background:linear-gradient(135deg,#1e1e1e,#2a2a2a);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:28px 24px;">
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">Available Balance</div>
+          <div style="font-family:'Georgia',serif;font-size:2.2rem;font-weight:900;color:#fff;">$1,250.00</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#1e1e1e,#2a2a2a);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:28px 24px;">
+          <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:12px;">Pending Balance</div>
+          <div style="font-family:'Georgia',serif;font-size:2.2rem;font-weight:900;color:#fff;">$300.00</div>
+        </div>
+      </div>
+
+      <!-- Withdraw Button -->
+      <div style="max-width:780px;margin-bottom:28px;">
+        <button onclick="toast('Withdraw coming soon — connect Stripe to enable')" style="width:100%;padding:18px;background:linear-gradient(135deg,#C49A6C,#a07840);color:#1a1a1a;border:none;border-radius:10px;cursor:pointer;font-family:'Georgia',serif;font-size:1rem;font-weight:900;letter-spacing:0.04em;">Withdraw Funds</button>
+      </div>
+
+      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:28px;max-width:780px;"></div>
+
+      <!-- Payout Settings Section -->
+      <div style="font-family:'Georgia',serif;font-size:1.3rem;font-style:italic;font-weight:700;color:#fff;margin-bottom:16px;">Payout Settings</div>
+      <div style="height:1px;background:rgba(255,255,255,0.1);margin-bottom:16px;max-width:780px;"></div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;max-width:780px;">
+
+        <!-- Bank Account -->
+        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:16px;padding:18px 20px;">
+          <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+          </div>
+          <div style="font-size:0.95rem;font-weight:700;color:#fff;flex:1;">Bank Account</div>
+          <div style="font-family:monospace;font-size:0.88rem;color:rgba(255,255,255,0.45);margin-right:12px;">•••• 1234</div>
+          <div style="width:1px;height:22px;background:rgba(255,255,255,0.12);margin-right:12px;"></div>
+          <button onclick="toast('Edit bank account coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.88rem;font-family:'DM Sans',sans-serif;padding:0;">Edit</button>
+        </div>
+
+        <!-- Debit Card -->
+        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:16px;padding:18px 20px;">
+          <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </div>
+          <div style="font-size:0.95rem;font-weight:700;color:#fff;flex:1;">Debit Card</div>
+          <div style="font-family:monospace;font-size:0.88rem;color:rgba(255,255,255,0.45);margin-right:12px;">•••• 5678</div>
+          <div style="width:1px;height:22px;background:rgba(255,255,255,0.12);margin-right:12px;"></div>
+          <button onclick="toast('Add card coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.88rem;font-family:'DM Sans',sans-serif;padding:0;">Add Card</button>
+        </div>
+
+        <!-- Payout Speed -->
+        <div style="background:linear-gradient(135deg,#1e1e1e,#252525);border:1px solid rgba(255,255,255,0.07);border-radius:10px;display:flex;align-items:center;gap:16px;padding:18px 20px;">
+          <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="rgba(255,255,255,0.7)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div style="font-size:0.95rem;font-weight:700;color:#fff;flex:1;">Payout Speed</div>
+          <div style="font-size:0.88rem;color:rgba(255,255,255,0.45);margin-right:12px;">Standard (3-5 Days)</div>
+          <div style="width:1px;height:22px;background:rgba(255,255,255,0.12);margin-right:12px;"></div>
+          <button onclick="toast('Change payout speed coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.88rem;font-family:'DM Sans',sans-serif;padding:0;">Change</button>
+        </div>
+
+      </div>
+    </div>
+
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
         <div class="coming-box">
@@ -4153,7 +4200,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" onclick="shareEvent()" style="cursor:pointer;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         </div>
         <!-- Scrollable ticket cards -->
-        <div id="multi-ticket-container" style="padding:16px;max-height:70vh;overflow-y:auto;"></div>
+        <div id="multi-ticket-container" style="padding:16px;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;"></div>
         <!-- Download -->
         <div style="padding:0 16px 20px;">
           <button onclick="downloadTicket()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -5030,16 +5077,41 @@ function submitWithdrawal() {
   toast('✓ Withdrawal of $' + parseFloat(document.getElementById('withdraw-amount') ? 0 : 0).toFixed(2) + ' initiated! Arrives in 3-5 business days.');
 }
 
+var paymentReceipts = {
+  '@lashartist': {
+    id: 'RCP-001823',
+    handle: '@lashartist',
+    amount: '$80',
+    sentTo: '@lashartist (Stripe — bank on file)',
+    date: 'April 20, 2026',
+    time: '5:34 PM',
+    status: 'Completed'
+  }
+};
+
 function payCreator(btn, handle, amount) {
   btn.textContent = 'Paying...';
   btn.disabled = true;
   btn.style.background = 'var(--cream2)';
   btn.style.color = 'var(--text-dim)';
   setTimeout(function() {
+    var now = new Date();
+    var receiptId = 'RCP-' + Date.now().toString().slice(-6);
+    var sentTo = handle + ' (Stripe — bank on file)';
+    paymentReceipts[handle] = {
+      id: receiptId,
+      handle: handle,
+      amount: amount,
+      sentTo: sentTo,
+      date: now.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}),
+      time: now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}),
+      status: 'Completed'
+    };
+    // Update Pay Now → Paid
     btn.textContent = 'Paid';
     btn.style.border = '1px solid var(--border)';
-    // Update the status badge
-    var row = btn.closest('div[style*="display:flex;align-items:center;gap:8px"]');
+    // Update badge
+    var row = btn.closest('div[style*="gap:8px"]');
     if (row) {
       var badge = row.querySelector('span');
       if (badge) {
@@ -5047,9 +5119,27 @@ function payCreator(btn, handle, amount) {
         badge.style.background = '#dcfce7';
         badge.style.color = '#16a34a';
       }
+      // Add View Receipt button
+      var receiptBtn = document.createElement('button');
+      receiptBtn.textContent = 'View Receipt';
+      receiptBtn.style.cssText = 'padding:5px 10px;background:var(--brown-bg);color:var(--brown);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;';
+      receiptBtn.onclick = function() { viewPaymentReceipt(handle); };
+      row.appendChild(receiptBtn);
     }
     toast('✓ ' + amount + ' paid to ' + handle + '!');
   }, 1200);
+}
+
+function viewPaymentReceipt(handle) {
+  var r = paymentReceipts[handle];
+  if (!r) { toast('No receipt found'); return; }
+  document.getElementById('receipt-id').textContent = r.id;
+  document.getElementById('receipt-handle').textContent = r.handle;
+  document.getElementById('receipt-amount').textContent = r.amount;
+  document.getElementById('receipt-sent-to').textContent = r.sentTo;
+  document.getElementById('receipt-date').textContent = r.date + ' at ' + r.time;
+  document.getElementById('receipt-status').textContent = r.status;
+  openModal('modal-payment-receipt');
 }
 
 function updatePaymentMethod() {
@@ -5067,6 +5157,28 @@ function updatePaymentMethod() {
   if (exp) exp.value = '';
   if (cvv) cvv.value = '';
   toast('✓ Payment method updated!');
+}
+
+function sendPasswordCode() {
+  var phone = document.getElementById('acct-phone');
+  var pass = document.getElementById('acct-new-pass');
+  if (!phone || !phone.value.trim()) { toast('Please enter your phone number first'); return; }
+  if (!pass || !pass.value.trim()) { toast('Please enter a new password'); return; }
+  document.getElementById('pass-code-wrap').style.display = 'block';
+  toast('✓ 6-digit code sent to ' + phone.value.replace(/\d(?=\d{4})/g,'*'));
+}
+
+function verifyPasswordCode() {
+  var code = document.getElementById('acct-code');
+  if (!code || code.value.length < 6) { toast('Please enter the 6-digit code'); return; }
+  document.getElementById('pass-code-wrap').style.display = 'none';
+  if (document.getElementById('acct-new-pass')) document.getElementById('acct-new-pass').value = '';
+  if (document.getElementById('acct-code')) document.getElementById('acct-code').value = '';
+  toast('✓ Password updated successfully!');
+}
+
+function saveAccount() {
+  toast('✓ Account updated!');
 }
 
 function savePaymentMethod() {
@@ -5512,7 +5624,67 @@ function signNDA() {
 }
 
 function generateNDAText(name, date) {
-  return 'NON-DISCLOSURE AGREEMENT\n\nThis Non-Disclosure Agreement is entered into as of ' + date.toLocaleDateString() + ' between You (MASSED User) and ' + name + '.\n\nBoth parties agree to keep all shared information confidential and not disclose to any third party. This agreement covers business strategies, creative works, personal brand assets, and all proprietary information shared during the collaboration.\n\nThis document has been digitally signed by both parties and serves as a legally binding agreement.';
+  var dateStr = date.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+  var timeStr = date.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  return 'NON-DISCLOSURE AGREEMENT\n\n' +
+    'Document ID: NDA-' + date.getTime().toString().slice(-8) + '\n' +
+    'Effective Date: ' + dateStr + '\n' +
+    'Platform: MASSED (massed.io)\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '1. PARTIES\n\n' +
+    'This Non-Disclosure Agreement ("Agreement") is entered into as of ' + dateStr + ', by and between:\n\n' +
+    '   Party A: MASSED User (You) — the Creator initiating this collaboration\n' +
+    '   Party B: ' + name + ' — the Collaborating Creator\n\n' +
+    'Both parties are collectively referred to herein as the "Parties."\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '2. PURPOSE\n\n' +
+    'The Parties wish to explore a potential business collaboration through the MASSED platform. In connection with this collaboration, each Party may disclose to the other certain confidential and proprietary information. This Agreement sets forth the terms under which such information will be protected.\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '3. CONFIDENTIAL INFORMATION\n\n' +
+    '"Confidential Information" means any and all information or data that has or could have commercial value or other utility in the business in which the disclosing Party is engaged. This includes, but is not limited to:\n\n' +
+    '   • Business strategies, plans, and financial information\n' +
+    '   • Creative works, content, brand assets, and intellectual property\n' +
+    '   • Personal brand information, audience data, and analytics\n' +
+    '   • Product ideas, service offerings, and pricing structures\n' +
+    '   • Contact lists, partnership agreements, and affiliate relationships\n' +
+    '   • Any other information designated as confidential by either Party\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '4. OBLIGATIONS\n\n' +
+    'Each Party agrees to:\n\n' +
+    '   a) Hold all Confidential Information in strict confidence\n' +
+    '   b) Not disclose Confidential Information to any third party without prior written consent\n' +
+    '   c) Use Confidential Information solely for the purpose of evaluating the collaboration\n' +
+    '   d) Protect the Confidential Information with at least the same degree of care used to protect its own confidential information\n' +
+    '   e) Promptly notify the other Party of any unauthorized disclosure or use\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '5. TERM\n\n' +
+    'This Agreement shall remain in effect for a period of two (2) years from the Effective Date unless terminated earlier by mutual written consent of both Parties.\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '6. GOVERNING LAW\n\n' +
+    'This Agreement shall be governed by and construed in accordance with applicable law. Any disputes arising from this Agreement shall be resolved through binding arbitration.\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '7. DIGITAL SIGNATURES\n\n' +
+    'Both Parties have reviewed and agreed to this Agreement. The digital signatures below, recorded through the MASSED platform, are legally binding and equivalent to physical signatures.\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    'SIGNATURE — PARTY A\n\n' +
+    '   Name:        MASSED User (You)\n' +
+    '   Signed:      ✓ Digitally Signed via MASSED Platform\n' +
+    '   Date:        ' + dateStr + '\n' +
+    '   Time:        ' + timeStr + ' (local)\n' +
+    '   IP Platform: massed.io\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    'SIGNATURE — PARTY B\n\n' +
+    '   Name:        ' + name + '\n' +
+    '   Signed:      ✓ Digitally Signed via MASSED Platform\n' +
+    '   Date:        ' + dateStr + '\n' +
+    '   Time:        ' + timeStr + ' (local)\n' +
+    '   IP Platform: massed.io\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    'CERTIFICATE OF COMPLETION\n\n' +
+    'This document certifies that the Non-Disclosure Agreement between the above named parties was fully executed on ' + dateStr + ' at ' + timeStr + ' through the MASSED collaboration platform. Both digital signatures have been verified and recorded. This document is legally binding.\n\n' +
+    'Document ID: NDA-' + date.getTime().toString().slice(-8) + '\n' +
+    'Issued by: MASSED Platform — massed.io\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
 }
 
 function populateDocFilter() {
@@ -5575,9 +5747,13 @@ function filterDocs() {
 function viewDoc(id) {
   var doc = signedDocuments.find(function(d){ return d.id === id; });
   if (!doc) return;
-  var w = window.open('','_blank','width=700,height=600');
-  w.document.write('<html><head><title>' + doc.type + ' — ' + doc.collaborator + '</title><style>body{font-family:Georgia,serif;padding:40px;max-width:640px;margin:0 auto;line-height:1.8;color:#222;}h1{font-size:1.4rem;text-align:center;}pre{white-space:pre-wrap;font-family:Georgia,serif;}</style></head><body><h1>' + doc.type + '</h1><pre>' + doc.content + '</pre></body></html>');
-  w.document.close();
+  var el = document.getElementById('nda-view-content');
+  if (el) el.textContent = doc.content;
+  var title = document.getElementById('nda-view-title');
+  if (title) title.textContent = doc.type + ' — ' + doc.collaborator;
+  var dlBtn = document.getElementById('nda-view-download');
+  if (dlBtn) dlBtn.onclick = function() { downloadDoc(id); };
+  openModal('modal-nda-view');
 }
 
 function downloadDoc(id) {
@@ -5610,7 +5786,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',payoutsettings:'My Payout Earnings',coming:'Coming Soon'};
 
 function nav(el,screen) {
   if(!screen) return;
@@ -6048,12 +6224,12 @@ document.addEventListener('DOMContentLoaded', function() {
       <h2 class="modal-title" style="margin:0;">🗺️ How MASSED Works</h2>
       <button onclick="closeModal('modal-help-system')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:14px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:70vh;overflow-y:auto;">
+    <div style="display:flex;flex-direction:column;gap:14px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">👤 Media Profile</div>
         <p>Your public identity on MASSED — visible at <strong>massed.io/yourusername</strong>. Set your photo, display name, title/role, bio (under 200 words), category, and contact info. Click Save Profile — changes are not auto-saved.</p>
-        <p style="margin-top:6px;"><strong>Collaboration tab:</strong> Toggle your visibility on, choose your genres (select multiple to appear in more searches), browse other creators by genre, send and accept connection requests, message active collaborators, and sign legally binding NDAs. Signed NDAs auto-save to the Documents tab.</p>
+        <p style="margin-top:6px;"><strong>Collaboration tab:</strong> Toggle your visibility on, choose your genres, browse other creators by genre, send and accept connection requests, message active collaborators, and sign legally binding NDAs. Signed NDAs auto-save to the Documents tab — click View to open the full signed document with both digital signatures and timestamps, or Download to save a copy.</p>
         <p style="margin-top:6px;"><strong>My Hearts tab:</strong> See everyone who saved or hearted your profile, along with total heart count, hearts this week, and profile view stats.</p>
       </div>
 
@@ -6090,24 +6266,26 @@ document.addEventListener('DOMContentLoaded', function() {
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">💰 Sales &amp; Payouts</div>
         <p><strong>Sales tab:</strong> Today's revenue, sessions, conversion funnel, traffic channels with interactive world map, top products, and social media analysis.</p>
-        <p style="margin-top:6px;"><strong>Payout tab:</strong> Your <em>Ready for Payout to Earners</em> balance, earnings breakdown, and full transaction feed. Switch to Affiliate Earnings to see Top Creators with their status (Pending/Paid) and Pay Now buttons.</p>
-        <p style="margin-top:6px;"><strong>Payout Settings</strong> is a sub-item under Sales &amp; Payouts in the sidebar — set your payout method, schedule, minimum threshold, currency, and instant payout preference.</p>
+        <p style="margin-top:6px;"><strong>Payout tab:</strong> Balance Breakdown (Available Now, Processing, Held), Earnings Overview, and Transaction Feed. Switch to <strong>Affiliate Earnings</strong> to see Top Earners with Pending/Paid status and Pay Now buttons. Once paid, tap <strong>View Receipt</strong> to see the receipt — amount, who it was sent to, date and time.</p>
+        <p style="margin-top:6px;"><strong>Payout Settings</strong> — a sub-item in the sidebar under Sales &amp; Payouts. Configure your payout preferences here.</p>
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">⚙️ Settings</div>
-        <p>Five tabs: <strong>Settings</strong> (account &amp; notifications), <strong>Billing</strong> (plan, payment method, graduation countdown), <strong>Stripe</strong> (connect your Stripe account to receive payouts), <strong>Support</strong> (quick help guides, FAQ, contact support), and <strong>API</strong> (integrations — coming soon).</p>
-        <p style="margin-top:6px;"><strong>Graduation Countdown:</strong> Pay $30/month for 12 months → unlock a FREE 24-month plan → then just $79.99/year forever. Track progress in the Billing tab.</p>
+        <p>Five tabs: <strong>Settings</strong> (account, phone number, password change with 6-digit SMS verification), <strong>Billing</strong> (plan, payment method, Manage Plan to pause or pay remaining balance, Graduation Countdown), <strong>Stripe</strong> (connect your Stripe account), <strong>Support</strong> (quick help guides, FAQ, contact support), and <strong>API</strong> (integrations — coming soon).</p>
+        <p style="margin-top:6px;"><strong>Password Change:</strong> Enter your phone number and new password, tap Send Code — a 6-digit verification code is sent to your phone. Enter the code and tap Verify to confirm.</p>
+        <p style="margin-top:6px;"><strong>Manage Plan:</strong> Opens a popup where you can pause payments for 30 days or pay the remaining balance upfront to graduate early.</p>
+        <p style="margin-top:6px;"><strong>Graduation Countdown:</strong> Pay $30/month for 12 months → FREE 24-month plan → then $79.99/year forever. Month 3 of 12, 25% complete.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">❓ Support Tab (inside Settings)</div>
-        <p>Four Quick Help guides that open as popups: Media Profile guide, My Store guide, Sales &amp; Payouts guide, and this full platform walkthrough. The FAQ has 9 questions each opening as their own popup. Contact Support lets you send a message or create a support ticket — the team responds within 24–48 hours.</p>
+        <p>Five Quick Help guides that open as popups: Media Profile, My Store, Sales &amp; Payouts, this full platform walkthrough, and FAQ. The FAQ has 9 questions each opening as their own popup with a ← Back to FAQ button. Contact Support lets you send a message or create a ticket — team responds within 24–48 hours.</p>
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔤 Other Fields — Custom Input</div>
-        <p>Anywhere you see <strong>Other</strong> as an option — Event Type, Genre, Media Profile Category, Video Genre — selecting it reveals a text field so you can type exactly what you need. This applies across the entire platform.</p>
+        <p>Anywhere you see <strong>Other</strong> as an option — Event Type, Genre, Media Profile Category, Video Genre — selecting it reveals a text field so you can type exactly what you need.</p>
       </div>
 
       <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:10px;padding:14px 16px;color:#fff;font-size:0.78rem;">
@@ -6125,7 +6303,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <h2 class="modal-title" style="margin:0;">❓ Frequently Asked Questions</h2>
       <button onclick="closeModal('modal-help-faq')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow-y:auto;">
+    <div style="display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
       <button onclick="closeModal('modal-help-faq');openModal('modal-faq-1')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
         <span style="font-weight:700;font-size:0.88rem;color:var(--text);">What is MASSED?</span><span style="color:var(--text-dim);">→</span>
       </button>
@@ -6316,64 +6494,6 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
-<div id="modal-payout-settings" class="modal-overlay" onclick="closeModal('modal-payout-settings')">
-  <div class="modal" style="max-width:460px;background:#FAF7F2;" onclick="event.stopPropagation()">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span style="font-size:1.3rem;">⚙️</span>
-        <h2 style="margin:0;font-family:'Georgia',serif;font-size:1.3rem;font-weight:900;color:var(--text);">Payout Settings</h2>
-      </div>
-      <button onclick="closeModal('modal-payout-settings')" style="background:none;border:none;cursor:pointer;font-size:1.2rem;color:#aaa;line-height:1;">✕</button>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:16px;">
-      <div>
-        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Payout Method</div>
-        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
-          <option>Bank Account (via Stripe)</option>
-          <option>Debit Card (via Stripe)</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Payout Schedule</div>
-        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
-          <option>Daily (automatic)</option>
-          <option>Weekly — every Monday</option>
-          <option>Monthly — 1st of month</option>
-          <option>Manual (withdraw on demand)</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Minimum Payout Threshold</div>
-        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
-          <option>$10.00</option>
-          <option>$25.00</option>
-          <option>$50.00</option>
-          <option>$100.00</option>
-        </select>
-      </div>
-      <div>
-        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Payout Currency</div>
-        <select style="width:100%;padding:13px 16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.92rem;color:var(--text);appearance:auto;">
-          <option>USD — US Dollar</option>
-          <option>CAD — Canadian Dollar</option>
-          <option>GBP — British Pound</option>
-          <option>EUR — Euro</option>
-        </select>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;">
-        <div>
-          <div style="font-weight:700;font-size:0.92rem;color:var(--text);">Instant Payouts</div>
-          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px;">1.5% fee for same-day deposits</div>
-        </div>
-        <div class="sl-toggle" id="payout-instant-toggle" onclick="this.classList.toggle('on');toast(this.classList.contains('on')?'Instant payouts enabled':'Instant payouts disabled');" style="cursor:pointer;flex-shrink:0;"></div>
-      </div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:22px;">
-      <button onclick="closeModal('modal-payout-settings')" style="flex:1;padding:14px;background:#fff;border:1px solid #E5DDD4;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.92rem;color:var(--text-dim);">Cancel</button>
-      <button onclick="closeModal('modal-payout-settings');toast('✓ Payout settings saved!')" style="flex:2;padding:14px;background:var(--brown);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:800;font-size:0.92rem;">Save Settings</button>
-    </div>
-  </div>
-</div>
 
 <div id="modal-withdraw-funds" class="modal-overlay" onclick="closeModal('modal-withdraw-funds')">
   <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
@@ -6403,6 +6523,111 @@ document.addEventListener('DOMContentLoaded', function() {
     <div style="display:flex;gap:10px;margin-top:18px;">
       <button class="btn-cancel" onclick="closeModal('modal-withdraw-funds')">Cancel</button>
       <button class="btn-save" onclick="submitWithdrawal()" style="flex:1;background:linear-gradient(135deg,#C49A6C,#A0784A);color:#1a0e06;">Withdraw Funds</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-manage-plan" class="modal-overlay" onclick="closeModal('modal-manage-plan')">
+  <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 class="modal-title" style="margin:0;">⚙️ Manage Plan</h2>
+      <button onclick="closeModal('modal-manage-plan')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+
+    <!-- Current Plan Summary -->
+    <div style="background:linear-gradient(135deg,#2d1a0e,#1a0e06);border-radius:14px;padding:18px;color:#F5F0E8;margin-bottom:20px;">
+      <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#C49A6C;margin-bottom:6px;">Current Plan</div>
+      <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:900;color:#C49A6C;">Creator Pro</div>
+      <div style="font-size:0.82rem;color:rgba(245,240,232,0.6);margin-top:4px;">$30.00/month · Next billing: Apr 21, 2026</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- Pause Payments -->
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:18px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:40px;height:40px;background:#fef3c7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">⏸️</div>
+          <div style="flex:1;">
+            <div style="font-weight:800;font-size:0.92rem;color:var(--text);margin-bottom:4px;">Pause Payments</div>
+            <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.6;margin-bottom:12px;">Temporarily pause your monthly billing. Your account stays active for 30 days. <strong style="color:var(--brown);">Note: Pausing will delay your Graduation Countdown.</strong></div>
+            <button onclick="closeModal('modal-manage-plan');toast('⏸ Plan paused for 30 days. Billing resumes automatically.')" style="padding:9px 18px;background:#fef3c7;color:#d97706;border:1px solid #fde68a;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;">Pause for 30 Days</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pay Remaining Balance -->
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:18px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="width:40px;height:40px;background:#dcfce7;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">💳</div>
+          <div style="flex:1;">
+            <div style="font-weight:800;font-size:0.92rem;color:var(--text);margin-bottom:4px;">Pay Remaining Balance</div>
+            <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.6;margin-bottom:4px;">You are on Month 3 of 12. Pay off the remaining 9 months upfront and graduate sooner.</div>
+            <div style="font-size:0.88rem;font-weight:800;color:var(--brown);margin-bottom:12px;">Remaining: $270.00 (9 × $30)</div>
+            <button onclick="closeModal('modal-manage-plan');toast('✓ Payment of $270.00 processed! Graduation unlocked early 🎓')" style="padding:9px 18px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;">Pay $270.00 Now →</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="btn-cancel" style="width:100%;margin-top:16px;" onclick="closeModal('modal-manage-plan')">Close</button>
+  </div>
+</div>
+
+<div id="modal-payment-receipt" class="modal-overlay" onclick="closeModal('modal-payment-receipt')">
+  <div class="modal" style="max-width:440px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <h2 class="modal-title" style="margin:0;">🧾 Payment Receipt</h2>
+      <button onclick="closeModal('modal-payment-receipt')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+
+    <!-- Receipt card -->
+    <div style="background:var(--cream);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px;">
+      <div style="text-align:center;padding-bottom:14px;border-bottom:1px solid var(--border);">
+        <div style="font-size:2rem;margin-bottom:8px;">✅</div>
+        <div style="font-family:'Georgia',serif;font-size:1.4rem;font-weight:900;color:var(--brown);" id="receipt-amount"></div>
+        <div style="font-size:0.78rem;color:var(--text-dim);margin-top:4px;">Payment Sent</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+          <span style="color:var(--text-dim);font-weight:600;">Receipt ID</span>
+          <span style="font-weight:700;color:var(--text);font-family:monospace;" id="receipt-id"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+          <span style="color:var(--text-dim);font-weight:600;">Paid To</span>
+          <span style="font-weight:700;color:var(--text);" id="receipt-handle"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+          <span style="color:var(--text-dim);font-weight:600;">Sent Via</span>
+          <span style="font-weight:700;color:var(--text);" id="receipt-sent-to"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;">
+          <span style="color:var(--text-dim);font-weight:600;">Date & Time</span>
+          <span style="font-weight:700;color:var(--text);" id="receipt-date"></span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.85rem;padding-top:10px;border-top:1px solid var(--border);">
+          <span style="color:var(--text-dim);font-weight:600;">Status</span>
+          <span style="font-size:0.75rem;font-weight:700;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:10px;" id="receipt-status"></span>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-payment-receipt')">Done</button>
+  </div>
+</div>
+
+<div id="modal-nda-view" class="modal-overlay" onclick="closeModal('modal-nda-view')">
+  <div class="modal" style="max-width:620px;max-height:90vh;display:flex;flex-direction:column;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;" id="nda-view-title">Non-Disclosure Agreement</h2>
+      <button onclick="closeModal('modal-nda-view')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="background:var(--cream);border-radius:12px;padding:20px;overflow-y:auto;flex:1;min-height:0;">
+      <pre id="nda-view-content" style="white-space:pre-wrap;font-family:'Georgia',serif;font-size:0.8rem;line-height:1.9;color:#222;margin:0;"></pre>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;flex-shrink:0;">
+      <button class="btn-cancel" onclick="closeModal('modal-nda-view')">Close</button>
+      <button class="btn-save" id="nda-view-download" style="flex:1;">⬇ Download NDA</button>
     </div>
   </div>
 </div>
