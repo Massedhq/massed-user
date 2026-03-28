@@ -122,11 +122,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   /* Main layout — topbar fixed, content scrolls */
   .main{margin-left:0;width:100%;height:100dvh;display:flex;flex-direction:column;overflow:hidden;}
   .topbar{height:var(--topbar-h);flex-shrink:0;}
-  .content{flex:1;height:0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;}
+  .content{flex:1;height:0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
   .screen{padding:16px;padding-bottom:120px;}
   .screen.active{display:block;padding:16px;padding-bottom:120px;}
   #screen-payoutsettings.screen{background:#1a1a1a;}
-  #screen-payoutsettings.active{background:#1a1a1a !important;min-height:100%;}
+  #screen-payoutsettings.active{background:#1a1a1a !important;}
   .topbar{padding:0 16px;flex-shrink:0;}
   .hamburger{display:flex !important;}
   .link-badge{display:none;}
@@ -244,6 +244,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .btn-add-link{width:100%;padding:13px;background:var(--cream);border:1.5px dashed var(--border);border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--text-mid);font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;}
 .btn-add-link:hover{border-color:var(--brown);color:var(--brown);}
 .btn-add-link svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;}
+.wl-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow 0.2s;}
+.wl-card-outer{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.2s;break-inside:avoid;}
+.wl-card-outer:hover{box-shadow:0 6px 24px rgba(192,122,80,0.14);transform:translateY(-2px);}
+.wl-card:hover{box-shadow:0 4px 20px rgba(192,122,80,0.12);}
+.wl-card-body{display:flex;align-items:stretch;gap:0;}
+.wl-drag{width:36px;display:flex;align-items:center;justify-content:center;cursor:grab;color:var(--text-dim);flex-shrink:0;background:var(--cream);border-right:1px solid var(--border);}
+.wl-drag svg{width:14px;height:14px;}
+.wl-thumb{width:88px;height:88px;flex-shrink:0;overflow:hidden;background:var(--cream2);display:flex;align-items:center;justify-content:center;}
+.wl-thumb img{width:100%;height:100%;object-fit:cover;}
+.wl-thumb-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.wl-info{flex:1;padding:14px 16px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;}
+.wl-title{font-weight:800;font-size:0.92rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wl-subtitle{font-size:0.78rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wl-url{font-size:0.75rem;color:var(--brown);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wl-title-input{border:none;background:transparent;font-family:'DM Sans',sans-serif;font-weight:800;font-size:0.92rem;color:var(--text);outline:none;padding:0;width:100%;}
+.wl-title-input:focus{color:var(--brown);}
+.wl-sub-input{border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.78rem;color:var(--text-dim);outline:none;padding:0;width:100%;margin-top:1px;}
+.wl-actions{display:flex;align-items:center;gap:0;border-top:1px solid var(--border);padding:10px 16px;background:var(--cream);}
+.wl-action-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius:8px;color:var(--text-dim);transition:all 0.15s;}
+.wl-action-btn:hover{background:var(--cream2);color:var(--brown);}
+.wl-action-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.wl-vis-btn{margin-left:auto;display:flex;align-items:center;gap:6px;padding:6px 12px;border:none;background:none;cursor:pointer;border-radius:8px;font-size:0.75rem;font-weight:700;color:var(--text-dim);transition:all 0.15s;}
+.wl-vis-btn.visible{color:var(--brown);}
+.wl-vis-btn:hover{background:var(--cream2);}
+.wl-vis-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.wl-divider{width:1px;height:22px;background:var(--border);margin:0 6px;}
 
 /* SHOWCASE */
 .showcase-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
@@ -529,7 +555,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 <div class="main">
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:10px;">
-      <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()">
+      <button class="hamburger" id="hamburger-btn" type="button">
         <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <span class="topbar-title" id="page-title">Dashboard</span>
@@ -575,10 +601,67 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
     <!-- WEB LINKS -->
     <div id="screen-weblinks" class="screen">
-      <div class="section-header"><h2 class="section-title">Web Links</h2><p class="section-sub">Add and manage links on your page</p></div>
-      <button class="btn-add-link" onclick="toast('Link builder coming soon!')"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add New Link</button>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
+        <div>
+          <h2 class="section-title">Web Links</h2>
+          <p class="section-sub">Links that appear on your public MASSED page</p>
+        </div>
+        <button onclick="openModal('modal-add-weblink')" style="display:flex;align-items:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;box-shadow:0 4px 14px rgba(192,122,80,0.3);flex-shrink:0;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Link
+        </button>
+      </div>
+
+      <!-- Cards Grid -->
+      <div id="wl-links-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;max-width:900px;"></div>
+
+      <!-- Empty state -->
+      <div id="wl-empty" style="max-width:900px;">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:52px 32px;text-align:center;">
+          <div style="width:60px;height:60px;background:var(--brown-bg);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="var(--brown)" stroke-width="1.5"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          </div>
+          <div style="font-family:'Georgia',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:8px;">No links yet</div>
+          <div style="font-size:0.85rem;color:var(--text-dim);line-height:1.7;margin-bottom:20px;">Click <strong>Add Link</strong> to add your first link.<br>Your audience will see each one on your MASSED profile.</div>
+          <button onclick="openModal('modal-add-weblink')" style="padding:11px 24px;background:var(--brown);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;">+ Add Your First Link</button>
+        </div>
+      </div>
     </div>
 
+    <!-- ADD WEB LINK MODAL -->
+    <div id="modal-add-weblink" class="modal-overlay" onclick="closeModal('modal-add-weblink')">
+      <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">Add Web Link</h2>
+          <button onclick="closeModal('modal-add-weblink')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-field">
+            <label>URL</label>
+            <input type="text" id="wl-url-input" placeholder="https://yourwebsite.com">
+          </div>
+          <div class="form-field">
+            <label>Title</label>
+            <input type="text" id="wl-title-input" placeholder="e.g. My Store, Book a Session">
+          </div>
+          <div class="form-field" style="margin-bottom:0;">
+            <label>Cover Image (optional)</label>
+            <div onclick="document.getElementById('wl-img-input').click()" id="wl-img-dropzone" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:var(--cream);transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">
+              <input type="file" id="wl-img-input" accept="image/*" style="display:none;" onchange="previewWLImage(event)">
+              <div id="wl-img-preview" style="display:none;margin-bottom:8px;"><img id="wl-img-thumb" style="width:100%;height:120px;object-fit:cover;border-radius:8px;" src=""></div>
+              <div id="wl-img-placeholder"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="var(--brown-light)" stroke-width="1.5" style="margin-bottom:6px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><div style="font-size:0.8rem;color:var(--text-dim);">Click to upload a cover image</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          <button class="btn-cancel" onclick="closeModal('modal-add-weblink')">Cancel</button>
+          <button class="btn-save" style="flex:1;" onclick="saveWebLink()">Add Link</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEDIA PROFILE -->
+    <!-- MEDIA PROFILE -->
     <!-- MEDIA PROFILE -->
     <div id="screen-mediaprofile" class="screen">
       <div class="section-header"><h2 class="section-title">Media Profile</h2><p class="section-sub">Set up how you appear on your public page</p></div>
@@ -3116,7 +3199,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <button id="stab-stripe" onclick="settingsTab('stripe')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">⚡ Stripe</button>
         <button id="stab-support" onclick="settingsTab('support')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">❓ Support</button>
         <button id="stab-api" onclick="settingsTab('api')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">🔌 API</button>
-       
+
       </div>
 
       <!-- ── SETTINGS TAB ── -->
@@ -3162,6 +3245,74 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Danger Zone</div>
           <button style="padding:10px 20px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.85rem;" onclick="toast('Contact support to delete your account')">Delete Account</button>
         </div>
+
+        <!-- ── PRIVACY POLICY ── -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">🔒 Privacy Policy</div>
+          <div style="display:flex;flex-direction:column;gap:12px;font-size:0.83rem;color:var(--text-mid);line-height:1.8;">
+            <div><strong style="color:var(--text);">What We Collect</strong><br>Name, email, phone, profile content, and payment details you provide. Usage data (pages visited, features used, device type) to improve the platform.</div>
+            <div style="height:1px;background:var(--border);"></div>
+            <div><strong style="color:var(--text);">How We Use It</strong><br>To operate your account, process payouts, send opted-in notifications, and improve MASSED. We never sell your personal data to third parties.</div>
+            <div style="height:1px;background:var(--border);"></div>
+            <div><strong style="color:var(--text);">Your Rights</strong><br>Access, update, or delete your data at any time. Request a data export or deletion by contacting support — we respond within 30 days.</div>
+            <div style="height:1px;background:var(--border);"></div>
+            <div><strong style="color:var(--text);">Cookies</strong><br>Essential cookies only to keep you logged in. No third-party advertising cookies.</div>
+            <div style="height:1px;background:var(--border);"></div>
+            <div style="font-size:0.78rem;color:var(--text-dim);">Questions? <strong style="color:var(--brown);">privacy@massed.io</strong> · Last updated March 2026</div>
+          </div>
+        </div>
+
+        <!-- ── SECURITY ── -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">🛡️ Account Security</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:14px;">
+            <div>
+              <div style="font-weight:700;font-size:0.88rem;">Two-Factor Authentication</div>
+              <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Require a code from your phone when logging in</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;flex-shrink:0;">
+              <input type="checkbox" id="2fa-toggle" onchange="toggle2FA(this)" style="opacity:0;width:0;height:0;">
+              <span id="2fa-track" style="position:absolute;inset:0;background:#e5e7eb;border-radius:24px;transition:0.2s;"></span>
+              <span id="2fa-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span>
+            </label>
+          </div>
+          <div style="font-weight:700;font-size:0.85rem;margin-bottom:10px;">Recent Login Activity</div>
+          <div style="display:flex;flex-direction:column;gap:0;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.82rem;">Chrome — iPhone</div><div style="font-size:0.7rem;color:var(--text-dim);">Today at 9:14 AM · Atlanta, GA</div></div><span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:8px;font-weight:700;">Current</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.82rem;">Safari — MacBook</div><div style="font-size:0.7rem;color:var(--text-dim);">Yesterday at 6:30 PM · Atlanta, GA</div></div><span style="font-size:0.7rem;color:var(--text-dim);">✓</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;"><div><div style="font-weight:600;font-size:0.82rem;">Chrome — Android</div><div style="font-size:0.7rem;color:var(--text-dim);">Apr 24 at 2:15 PM · Atlanta, GA</div></div><span style="font-size:0.7rem;color:var(--text-dim);">✓</span></div>
+          </div>
+          <button onclick="toast('All other sessions signed out')" style="width:100%;padding:11px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.82rem;font-family:'DM Sans',sans-serif;">Sign Out of All Other Sessions</button>
+        </div>
+
+        <!-- ── LANGUAGE ── -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">🌐 Display Language</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="lang-option" onclick="selectLanguage(this,'en')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--brown-bg);border:2px solid var(--brown);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇺🇸</span><span style="font-weight:700;font-size:0.88rem;">English</span></div><span style="color:var(--brown);font-weight:700;font-size:0.78rem;">✓ Selected</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'es')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇪🇸</span><span style="font-weight:700;font-size:0.88rem;">Español</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Spanish</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'fr')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇫🇷</span><span style="font-weight:700;font-size:0.88rem;">Français</span></div><span style="font-size:0.78rem;color:var(--text-dim);">French</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'pt')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇧🇷</span><span style="font-weight:700;font-size:0.88rem;">Português</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Portuguese</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'de')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇩🇪</span><span style="font-weight:700;font-size:0.88rem;">Deutsch</span></div><span style="font-size:0.78rem;color:var(--text-dim);">German</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'ar')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇸🇦</span><span style="font-weight:700;font-size:0.88rem;">العربية</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Arabic</span></div>
+          </div>
+          <div style="margin-top:12px;font-size:0.75rem;color:var(--text-dim);">💡 More languages coming soon. Changes your dashboard language only.</div>
+        </div>
+
+        <!-- ── LANGUAGE ── -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">🌐 Display Language</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="lang-option" onclick="selectLanguage(this,'en')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--brown-bg);border:2px solid var(--brown);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇺🇸</span><span style="font-weight:700;font-size:0.88rem;">English</span></div><span style="color:var(--brown);font-weight:700;font-size:0.78rem;">✓ Selected</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'es')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇪🇸</span><span style="font-weight:700;font-size:0.88rem;">Español</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Spanish</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'fr')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇫🇷</span><span style="font-weight:700;font-size:0.88rem;">Français</span></div><span style="font-size:0.78rem;color:var(--text-dim);">French</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'pt')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇧🇷</span><span style="font-weight:700;font-size:0.88rem;">Português</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Portuguese</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'de')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇩🇪</span><span style="font-weight:700;font-size:0.88rem;">Deutsch</span></div><span style="font-size:0.78rem;color:var(--text-dim);">German</span></div>
+            <div class="lang-option" onclick="selectLanguage(this,'ar')" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:1.1rem;">🇸🇦</span><span style="font-weight:700;font-size:0.88rem;">العربية</span></div><span style="font-size:0.78rem;color:var(--text-dim);">Arabic</span></div>
+          </div>
+          <div style="margin-top:12px;font-size:0.75rem;color:var(--text-dim);">💡 More languages coming soon.</div>
+        </div>
+
       </div>
 
       <!-- ── BILLING TAB ── -->
@@ -3317,6 +3468,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🌐 Browser Icon — What it is & How to use it</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Upload your favicon, customize your browser tab</div></div>
               <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
             </button>
+            <button onclick="openModal('modal-help-privacy')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🔒 Privacy Policy</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">What we collect, how we use it, and your rights</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
+            </button>
+            <button onclick="openModal('modal-help-security')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🛡️ Account Security</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Two-factor auth, login activity, and security tips</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
+            </button>
+            <button onclick="openModal('modal-help-language')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🌐 Language Settings</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Change your dashboard display language</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
+            </button>
           </div>
         </div>
 
@@ -3355,6 +3518,50 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <span style="padding:6px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;font-size:0.75rem;color:rgba(241,245,249,0.6);">🔌 Custom API</span>
           </div>
         </div>
+
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px;">
+          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">What We Collect</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">We collect information you provide — name, email, phone, profile content, and payment details. We also collect usage data (pages visited, features used, device type) to improve the platform.</div></div>
+          <div style="height:1px;background:var(--border);"></div>
+          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">How We Use It</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">To operate your account, process payouts, send notifications you opt into, and improve MASSED. We never sell your personal data to third parties.</div></div>
+          <div style="height:1px;background:var(--border);"></div>
+          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">Data Sharing</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">Only with trusted service providers like Stripe (payments) bound by confidentiality agreements. Never shared for advertising purposes.</div></div>
+          <div style="height:1px;background:var(--border);"></div>
+          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">Your Rights</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">Access, update, or delete your data anytime. Request a data export or deletion through support — we respond within 30 days.</div></div>
+          <div style="height:1px;background:var(--border);"></div>
+          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">Cookies</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">Essential cookies only — to keep you logged in and remember preferences. No third-party advertising cookies.</div></div>
+          <div style="height:1px;background:var(--border);"></div>
+          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">Contact</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">For privacy questions: <strong style="color:var(--brown);">privacy@massed.io</strong></div></div>
+        </div>
+        <div style="background:var(--cream);border-radius:12px;padding:14px 16px;font-size:0.78rem;color:var(--text-dim);text-align:center;">By using MASSED you agree to this Privacy Policy. Updates will be sent via email and in-app notification.</div>
+      </div>
+
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div><div style="font-weight:800;font-size:0.92rem;">Two-Factor Authentication</div><div style="font-size:0.78rem;color:var(--text-dim);margin-top:2px;">Require a code from your phone when logging in</div></div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer;flex-shrink:0;"><input type="checkbox" id="2fa-toggle" onchange="toggle2FA(this)" style="opacity:0;width:0;height:0;"><span id="2fa-track" style="position:absolute;inset:0;background:#e5e7eb;border-radius:24px;transition:0.2s;"></span><span id="2fa-thumb" style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></span></label>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-weight:800;font-size:0.92rem;margin-bottom:14px;">Recent Login Activity</div>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.85rem;">Chrome — iPhone</div><div style="font-size:0.72rem;color:var(--text-dim);">Today at 9:14 AM · Atlanta, GA</div></div><span style="font-size:0.7rem;background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:10px;font-weight:700;">Current</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--cream2);"><div><div style="font-weight:600;font-size:0.85rem;">Safari — MacBook</div><div style="font-size:0.72rem;color:var(--text-dim);">Yesterday at 6:30 PM · Atlanta, GA</div></div><span style="font-size:0.7rem;color:var(--text-dim);">✓</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;"><div><div style="font-weight:600;font-size:0.85rem;">Chrome — Android</div><div style="font-size:0.72rem;color:var(--text-dim);">Apr 24 at 2:15 PM · Atlanta, GA</div></div><span style="font-size:0.7rem;color:var(--text-dim);">✓</span></div>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="font-weight:800;font-size:0.92rem;margin-bottom:14px;">Security Tips</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:flex-start;gap:12px;"><div style="width:32px;height:32px;background:#dcfce7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🔐</div><div><div style="font-weight:700;font-size:0.85rem;">Use a strong password</div><div style="font-size:0.78rem;color:var(--text-dim);">At least 12 characters with numbers and symbols</div></div></div>
+            <div style="display:flex;align-items:flex-start;gap:12px;"><div style="width:32px;height:32px;background:#dbeafe;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">📱</div><div><div style="font-weight:700;font-size:0.85rem;">Enable 2FA above</div><div style="font-size:0.78rem;color:var(--text-dim);">Adds an extra layer of protection to your account</div></div></div>
+            <div style="display:flex;align-items:flex-start;gap:12px;"><div style="width:32px;height:32px;background:#fef3c7;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">⚠️</div><div><div style="font-weight:700;font-size:0.85rem;">Never share your login</div><div style="font-size:0.78rem;color:var(--text-dim);">MASSED staff will never ask for your password</div></div></div>
+          </div>
+        </div>
+        <button onclick="toast('All other sessions signed out')" style="width:100%;padding:13px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:10px;cursor:pointer;font-weight:700;font-size:0.88rem;font-family:'DM Sans',sans-serif;">Sign Out of All Other Sessions</button>
+      </div>
+
+        <div style="background:var(--cream);border-radius:12px;padding:14px 16px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">💡 More languages coming soon. This changes your dashboard display language. Your public profile language is set in Media Profile.</div>
+      </div>
       </div>
 
       </div>
@@ -3927,80 +4134,72 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 
     <div id="screen-browsericon" class="screen">
+
       <div class="section-header">
         <h2 class="section-title">Browser Icon</h2>
-        <p class="section-sub">Upload a favicon that appears in the browser tab when your MASSED page is opened</p>
+        <p class="section-sub">Upload a favicon — shown in the browser tab when visitors open your MASSED page</p>
       </div>
 
-      <div style="max-width:580px;display:flex;flex-direction:column;gap:20px;">
-
-        <!-- What it does -->
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">What is a Browser Icon?</div>
-          <p style="font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:12px;">A <strong>favicon</strong> is the small icon that appears in your visitor's browser tab when they open your MASSED page. It makes your page feel like a real website — professional, trusted, and yours.</p>
-          <!-- Browser tab simulation -->
-          <div style="background:#e8e8e8;border-radius:10px 10px 0 0;padding:8px 14px 0;margin-top:16px;">
-            <div style="background:#fff;border-radius:6px 6px 0 0;padding:8px 14px;display:inline-flex;align-items:center;gap:8px;max-width:200px;box-shadow:0 -1px 3px rgba(0,0,0,0.08);">
-              <div id="tab-favicon-preview" style="width:16px;height:16px;border-radius:3px;background:var(--brown);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
-                <img id="tab-favicon-img" src="" style="width:100%;height:100%;object-fit:cover;display:none;">
-                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#fff" stroke-width="2" id="tab-favicon-default"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
-              </div>
-              <span id="tab-page-title" style="font-size:0.75rem;color:#333;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">massed.io/username</span>
-              <span style="color:#999;font-size:0.7rem;margin-left:2px;cursor:pointer;">✕</span>
+      <!-- Live tab preview -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Live Tab Preview</div>
+        <div style="background:#d0d0d0;border-radius:6px 6px 0 0;padding:7px 10px 0;">
+          <div style="background:#fff;border-radius:5px 5px 0 0;padding:6px 10px;display:inline-flex;align-items:center;gap:6px;width:auto;max-width:100%;box-sizing:border-box;">
+            <div id="tab-favicon-preview" style="width:14px;height:14px;border-radius:2px;background:var(--brown);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+              <img id="tab-favicon-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;">
+              <svg id="tab-favicon-default" viewBox="0 0 24 24" width="9" height="9" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
             </div>
-          </div>
-          <div style="background:#e8e8e8;border-radius:0 0 6px 6px;height:4px;"></div>
-          <div style="margin-top:8px;font-size:0.72rem;color:var(--text-dim);text-align:center;">↑ Live preview of how your browser tab will look</div>
-        </div>
-
-        <!-- Upload Section -->
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">Upload Your Icon</div>
-
-          <!-- Drop zone -->
-          <div id="favicon-dropzone" onclick="document.getElementById('favicon-file-input').click()" style="border:2px dashed var(--border);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;background:var(--cream);transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">
-            <input type="file" id="favicon-file-input" accept=".png,.jpg,.jpeg,.svg" style="display:none;" onchange="handleFaviconUpload(event)">
-            <div id="favicon-preview-wrap" style="display:none;margin-bottom:16px;">
-              <img id="favicon-preview-large" style="width:64px;height:64px;border-radius:10px;object-fit:cover;border:2px solid var(--border);" src="">
-            </div>
-            <div id="favicon-upload-icon" style="margin-bottom:10px;">
-              <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            </div>
-            <div style="font-weight:700;font-size:0.88rem;color:var(--text);margin-bottom:4px;" id="favicon-upload-text">Click to upload your icon</div>
-            <div style="font-size:0.75rem;color:var(--text-dim);">PNG, JPG or SVG · Recommended: 512×512px</div>
-          </div>
-
-          <!-- Accepted formats note -->
-          <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;">
-            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">PNG</span>
-            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">JPG</span>
-            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">SVG</span>
-            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">Auto-resized to 16×16 &amp; 32×32</span>
+            <span id="tab-page-title" style="font-size:0.7rem;color:#222;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px;">massed.io/username</span>
+            <span style="color:#aaa;font-size:0.65rem;flex-shrink:0;margin-left:2px;">✕</span>
           </div>
         </div>
-
-        <!-- Page Title for Tab -->
-        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:6px;">Browser Tab Title</div>
-          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:12px;">This is the text that appears in the browser tab next to your icon</div>
-          <input type="text" id="favicon-tab-title" placeholder="e.g. Ava Stone | Creator" oninput="document.getElementById('tab-page-title').textContent=this.value||'massed.io/username'" style="width:100%;padding:11px 14px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--text);outline:none;box-sizing:border-box;">
-        </div>
-
-        <!-- Why it matters -->
-        <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:16px;padding:22px;color:#fff;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:10px;">Why this matters</div>
-          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.85rem;line-height:1.7;">
-            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Makes your page feel like a real website — not just a link</span></div>
-            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Builds trust with your audience when they visit your page</span></div>
-            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Gives your brand the "this is mine" feeling of ownership</span></div>
-            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Separates MASSED from "just another link tool"</span></div>
-          </div>
-        </div>
-
-        <!-- Save button -->
-        <button class="btn-save" onclick="saveFavicon()" style="width:100%;padding:14px;font-size:0.92rem;">Apply Browser Icon to My Page →</button>
-
+        <div style="background:#d0d0d0;height:3px;border-radius:0 0 4px 4px;"></div>
+        <div style="font-size:0.7rem;color:var(--text-dim);text-align:center;margin-top:8px;">Updates live as you upload and type below</div>
       </div>
+
+      <!-- Upload -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Upload Your Icon</div>
+        <div onclick="document.getElementById('favicon-file-input').click()" style="border:2px dashed var(--border);border-radius:10px;padding:24px 16px;text-align:center;cursor:pointer;background:var(--cream);">
+          <input type="file" id="favicon-file-input" accept=".png,.jpg,.jpeg,.svg" style="display:none;" onchange="handleFaviconUpload(event)">
+          <div id="favicon-preview-wrap" style="display:none;margin-bottom:12px;">
+            <img id="favicon-preview-large" src="" alt="" style="width:60px;height:60px;border-radius:8px;object-fit:cover;border:2px solid var(--border);display:block;margin:0 auto;">
+          </div>
+          <div id="favicon-upload-icon" style="margin-bottom:8px;">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="var(--brown-light)" stroke-width="1.5" style="display:block;margin:0 auto;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div id="favicon-upload-text" style="font-weight:700;font-size:0.85rem;color:var(--text);margin-bottom:4px;">Tap to upload your icon</div>
+          <div style="font-size:0.73rem;color:var(--text-dim);">PNG, JPG or SVG · Best: 512×512px</div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
+          <span style="padding:3px 9px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.68rem;color:var(--text-dim);font-weight:600;">PNG</span>
+          <span style="padding:3px 9px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.68rem;color:var(--text-dim);font-weight:600;">JPG</span>
+          <span style="padding:3px 9px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.68rem;color:var(--text-dim);font-weight:600;">SVG</span>
+          <span style="padding:3px 9px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.68rem;color:var(--text-dim);font-weight:600;">Auto-resized 16×16 &amp; 32×32</span>
+        </div>
+      </div>
+
+      <!-- Tab title -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:4px;">Browser Tab Title</div>
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:10px;">Text shown in the tab next to your icon</div>
+        <input type="text" id="favicon-tab-title" placeholder="e.g. Ava Stone | Creator" oninput="document.getElementById('tab-page-title').textContent=this.value||'massed.io/username'" style="width:100%;padding:10px 13px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--text);outline:none;box-sizing:border-box;">
+      </div>
+
+      <!-- Why it matters -->
+      <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:14px;padding:18px;color:#fff;margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:10px;">Why this matters</div>
+        <div style="display:flex;flex-direction:column;gap:7px;font-size:0.83rem;line-height:1.6;">
+          <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Makes your page feel like a real website — not just a link</span></div>
+          <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Builds instant trust with visitors</span></div>
+          <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Gives you the "this is mine" feeling of ownership</span></div>
+          <div style="display:flex;gap:8px;"><span style="flex-shrink:0;">✓</span><span>Separates MASSED from every other link tool</span></div>
+        </div>
+      </div>
+
+      <!-- Apply -->
+      <button class="btn-save" onclick="saveFavicon()" style="width:100%;padding:14px;font-size:0.9rem;box-sizing:border-box;">Apply Browser Icon to My Page →</button>
+
     </div>
 
     <div id="screen-coming" class="screen">
@@ -5236,6 +5435,38 @@ function verifyPasswordCode() {
   toast('✓ Password updated successfully!');
 }
 
+function toggle2FA(cb) {
+  var track = document.getElementById('2fa-track');
+  var thumb = document.getElementById('2fa-thumb');
+  if (cb.checked) {
+    track.style.background = 'var(--brown)';
+    thumb.style.left = '23px';
+    toast('✓ Two-factor authentication enabled');
+  } else {
+    track.style.background = '#e5e7eb';
+    thumb.style.left = '3px';
+    toast('Two-factor authentication disabled');
+  }
+}
+
+function selectLanguage(el, code) {
+  document.querySelectorAll('.lang-option').forEach(function(opt) {
+    opt.style.background = 'var(--cream)';
+    opt.style.border = '1px solid var(--border)';
+    var label = opt.querySelector('span:last-child');
+    if (label && !label.querySelector) {
+      label.style.color = 'var(--text-dim)';
+      label.style.fontWeight = '400';
+      if (label.textContent === '✓ Selected') label.textContent = opt.getAttribute('data-lang-name') || '';
+    }
+  });
+  el.style.background = 'var(--brown-bg)';
+  el.style.border = '2px solid var(--brown)';
+  var selLabel = el.querySelector('span:last-child');
+  if (selLabel) { selLabel.textContent = '✓ Selected'; selLabel.style.color = 'var(--brown)'; selLabel.style.fontWeight = '700'; }
+  toast('✓ Language updated');
+}
+
 function selectPayoutSpeed(el, type) {
   ['standard','instant'].forEach(function(t) {
     var row = document.getElementById('speed-dot-'+t).closest('div[style*="padding:16px"]');
@@ -5367,18 +5598,18 @@ window.addEventListener('popstate', function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Fix Android hamburger — use pointerup which works on both touch and mouse
   var hbtn = document.getElementById('hamburger-btn');
   if (hbtn) {
-    hbtn.addEventListener('pointerup', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+    var _touched = false;
+    hbtn.addEventListener('touchend', function(e) {
+      _touched = true;
+      toggleSidebar();
+      setTimeout(function(){ _touched = false; }, 500);
+    }, { passive: true });
+    hbtn.addEventListener('click', function(e) {
+      if (_touched) return;
       toggleSidebar();
     });
-    // Prevent double-fire from onclick
-    hbtn.onclick = null;
-    hbtn.setAttribute('onclick', '');
-    hbtn.removeAttribute('onclick');
   }
 });
 document.addEventListener('DOMContentLoaded', function() {
@@ -6249,6 +6480,146 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+
+// ── WEB LINKS ──────────────────────────────────────────────────────────────────
+var webLinks = [];
+var wlIdCounter = 1;
+
+function addWebLink() {
+  openModal('modal-add-weblink');
+}
+
+function previewWLImage(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById('wl-img-thumb').src = ev.target.result;
+    document.getElementById('wl-img-preview').style.display = 'block';
+    document.getElementById('wl-img-placeholder').style.display = 'none';
+    window._wlPendingCover = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveWebLink() {
+  var urlInput = document.getElementById('wl-url-input');
+  var titleInput = document.getElementById('wl-title-input');
+  var url = urlInput ? urlInput.value.trim() : '';
+  if (!url) { toast('Please enter a URL'); return; }
+  if (!url.startsWith('http')) url = 'https://' + url;
+  var domain = '';
+  try { domain = new URL(url).hostname.replace('www.',''); } catch(e) { domain = url; }
+  var title = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : domain;
+  var link = { id: wlIdCounter++, url: url, title: title, visible: true, cover: window._wlPendingCover || null };
+  webLinks.push(link);
+  if (urlInput) urlInput.value = '';
+  if (titleInput) titleInput.value = '';
+  window._wlPendingCover = null;
+  // reset image preview
+  var prev = document.getElementById('wl-img-preview');
+  var placeholder = document.getElementById('wl-img-placeholder');
+  if (prev) prev.style.display = 'none';
+  if (placeholder) placeholder.style.display = 'block';
+  closeModal('modal-add-weblink');
+  renderWebLinks();
+  toast('✓ Link added!');
+}
+
+function deleteWebLink(id) {
+  webLinks = webLinks.filter(function(l){ return l.id !== id; });
+  renderWebLinks();
+  toast('Link removed');
+}
+
+function toggleWebLinkVisibility(id) {
+  var link = webLinks.find(function(l){ return l.id === id; });
+  if (link) {
+    link.visible = !link.visible;
+    renderWebLinks();
+    toast(link.visible ? '✓ Link visible on your page' : 'Link hidden from your page');
+  }
+}
+
+function editWebLinkTitle(id, val) {
+  var link = webLinks.find(function(l){ return l.id === id; });
+  if (link) link.title = val;
+}
+
+function editWebLinkSubtitle(id, val) {
+  var link = webLinks.find(function(l){ return l.id === id; });
+  if (link) link.subtitle = val;
+}
+
+function renderWebLinks() {
+  var list = document.getElementById('wl-links-list');
+  var empty = document.getElementById('wl-empty');
+  if (!list) return;
+  if (webLinks.length === 0) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  var html = '';
+  for (var i = 0; i < webLinks.length; i++) {
+    var link = webLinks[i];
+    var id = link.id;
+    var coverBg = link.cover
+      ? 'background:url(' + link.cover + ') center/cover no-repeat;'
+      : 'background:linear-gradient(135deg,#1a0a00,#2d1500);';
+    var initials = (link.title || 'LK').substring(0,2).toUpperCase();
+    var coverContent = link.cover ? '' : '<div style="display:flex;align-items:center;justify-content:center;height:100%;"><span style="font-family:Georgia,serif;font-size:2rem;color:rgba(196,154,108,0.6);">' + initials + '</span></div>';
+    var domain = '';
+    try { domain = new URL(link.url).hostname.replace('www.',''); } catch(e) { domain = link.url; }
+    var visIcon = link.visible
+      ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+      : '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><line x1="1" y1="1" x2="23" y2="23"/>';
+
+    html += '<div class="wl-card-outer">';
+
+    // Cover image area
+    html += '<div style="height:160px;border-radius:12px 12px 0 0;overflow:hidden;position:relative;' + coverBg + '">';
+    html += coverContent;
+    // Visibility badge top right
+    html += '<div style="position:absolute;top:10px;right:10px;">';
+    html += '<button data-wl-vis="' + id + '" style="display:flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);border:none;border-radius:20px;cursor:pointer;color:#fff;font-size:0.7rem;font-weight:700;">';
+    html += '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">' + visIcon + '</svg>';
+    html += (link.visible ? 'Visible' : 'Hidden');
+    html += '</button></div>';
+    html += '</div>';
+
+    // Card body
+    html += '<div style="padding:16px 16px 12px;">';
+    // Title
+    html += '<div style="font-family:Georgia,serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4;">' + (link.title || domain) + '</div>';
+    // Domain
+    html += '<div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + domain + '</div>';
+    // Open link CTA
+    html += '<a href="' + link.url + '" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;font-weight:700;color:var(--brown);text-decoration:none;padding:7px 14px;background:var(--brown-bg);border-radius:7px;border:1px solid var(--border);">Open Link <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></a>';
+    html += '</div>';
+
+    // Action strip
+    html += '<div style="display:flex;align-items:center;padding:8px 12px;border-top:1px solid var(--border);background:var(--cream);gap:4px;">';
+    html += '<button class="wl-action-btn" title="Copy link" data-wl-copy="' + link.url.replace(/"/g,'&quot;') + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>';
+    html += '<button class="wl-action-btn" title="Analytics" data-wl-toast="Analytics coming soon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></button>';
+    html += '<button class="wl-action-btn" title="Schedule" data-wl-toast="Schedule coming soon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>';
+    html += '<div style="flex:1;"></div>';
+    html += '<button class="wl-action-btn" title="Delete" data-wl-delete="' + id + '" style="color:#ef4444;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>';
+    html += '</div>';
+
+    html += '</div>'; // end wl-card-outer
+  }
+  list.innerHTML = html;
+  list.onclick = function(e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.dataset.wlToast) toast(btn.dataset.wlToast);
+    if (btn.dataset.wlCopy) navigator.clipboard.writeText(btn.dataset.wlCopy).then(function(){ toast('Link copied!'); });
+    if (btn.dataset.wlDelete) deleteWebLink(parseInt(btn.dataset.wlDelete));
+    if (btn.dataset.wlVis) toggleWebLinkVisibility(parseInt(btn.dataset.wlVis));
+  };
+}
 </script>
 <!-- BODY-LEVEL MODALS — position:fixed works correctly here -->
 
@@ -6893,6 +7264,60 @@ document.addEventListener('DOMContentLoaded', function() {
       <p><strong>Tips:</strong> Use your logo or a clean version of your brand mark. Avoid text-heavy images — they won't be readable at 16×16px. A simple symbol or initial works best.</p>
     </div>
     <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-browsericon')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-help-privacy" class="modal-overlay" onclick="closeModal('modal-help-privacy')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">🔒 Privacy Policy</h2>
+      <button onclick="closeModal('modal-help-privacy')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:0.85rem;color:var(--text);line-height:1.75;max-height:65vh;overflow-y:auto;">
+      <p><strong>What we collect:</strong> Name, email, phone number, profile content, and payment details you provide. We also collect usage data (pages visited, features used, device type) to improve your experience.</p>
+      <p><strong>How we use it:</strong> To operate your account, process payouts, send opted-in notifications, and improve MASSED. We never sell your personal data to third parties.</p>
+      <p><strong>Data sharing:</strong> Only with trusted service providers like Stripe (payments) who are bound by confidentiality agreements. Never shared for advertising.</p>
+      <p><strong>Your rights:</strong> Access, update, or delete your data at any time. Request a data export or deletion by contacting support. We respond within 30 days.</p>
+      <p><strong>Cookies:</strong> Essential cookies only — to keep you logged in and remember preferences. No third-party advertising cookies.</p>
+      <p><strong>Questions?</strong> Email <strong style="color:var(--brown);">privacy@massed.io</strong></p>
+      <p style="font-size:0.75rem;color:var(--text-dim);">Last updated: March 2026. For the full policy go to Settings → Privacy tab.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-privacy')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-help-security" class="modal-overlay" onclick="closeModal('modal-help-security')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">🛡️ Account Security</h2>
+      <button onclick="closeModal('modal-help-security')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:0.85rem;color:var(--text);line-height:1.75;max-height:65vh;overflow-y:auto;">
+      <p><strong>Two-Factor Authentication (2FA):</strong> Go to Settings → Security and toggle on 2FA. This adds a second layer of protection — you'll need a code from your phone every time you log in.</p>
+      <p><strong>Password change:</strong> Go to Settings → ⚙️ Settings tab. Enter your phone number and new password, tap Send Code to receive a 6-digit SMS code, enter it, and tap Verify.</p>
+      <p><strong>Login activity:</strong> Settings → Security shows your recent login sessions — device type, browser, location, and time. If you see a session you don't recognize, sign out all other sessions immediately.</p>
+      <p><strong>Security tips:</strong></p>
+      <p>🔐 Use a strong password — at least 12 characters with numbers and symbols<br>📱 Enable 2FA for maximum protection<br>⚠️ MASSED staff will never ask for your password<br>🔒 Never share your login credentials</p>
+      <p style="font-size:0.75rem;color:var(--text-dim);">For full security settings go to Settings → Security tab.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-security')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-help-language" class="modal-overlay" onclick="closeModal('modal-help-language')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">🌐 Language Settings</h2>
+      <button onclick="closeModal('modal-help-language')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:0.85rem;color:var(--text);line-height:1.75;max-height:65vh;overflow-y:auto;">
+      <p><strong>Where to find it:</strong> Go to Settings → 🌐 Language tab.</p>
+      <p><strong>How to change:</strong> Tap any language from the list to select it. The dashboard display language will update immediately.</p>
+      <p><strong>Available languages:</strong> English 🇺🇸, Español 🇪🇸, Français 🇫🇷, Português 🇧🇷, Deutsch 🇩🇪, العربية 🇸🇦. More languages are being added regularly.</p>
+      <p><strong>Note:</strong> The Language setting changes your <em>dashboard</em> language only. Your public MASSED profile language is set separately in your Media Profile settings.</p>
+      <p style="font-size:0.75rem;color:var(--text-dim);">For language settings go to Settings → Language tab.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-language')">Got it</button>
   </div>
 </div>
 
