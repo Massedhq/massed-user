@@ -462,7 +462,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div class="nav-item" onclick="nav(this,'sociallinks')"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>Social Links</div>
       <div class="nav-item" onclick="nav(this,'video')"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Video</div>
       <div class="nav-item" onclick="nav(this,'promo')"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Promo / Referrals / Affiliates</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>Favicon & Branding</div>
+      <div class="nav-item" onclick="nav(this,'browsericon')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>Browser Icon</div>
     </div>
 
     <div class="nav-group-header" onclick="toggleGroup(this)">
@@ -3313,6 +3313,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">❓ Frequently Asked Questions</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Common questions about MASSED answered</div></div>
               <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
             </button>
+            <button onclick="openModal('modal-help-browsericon')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;">
+              <div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">🌐 Browser Icon — What it is & How to use it</div><div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Upload your favicon, customize your browser tab</div></div>
+              <span style="color:var(--text-dim);font-size:1.1rem;flex-shrink:0;margin-left:12px;">→</span>
+            </button>
           </div>
         </div>
 
@@ -3891,7 +3895,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div style="font-size:0.92rem;font-weight:700;color:#fff;">Bank Account</div>
             <div style="font-family:monospace;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:2px;">•••• 1234</div>
           </div>
-          <button onclick="toast('Edit bank account coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Edit</button>
+          <button onclick="openModal('modal-edit-bank')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Edit</button>
         </div>
 
         <!-- Debit Card -->
@@ -3903,7 +3907,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div style="font-size:0.92rem;font-weight:700;color:#fff;">Debit Card</div>
             <div style="font-family:monospace;font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:2px;">•••• 5678</div>
           </div>
-          <button onclick="toast('Add card coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Add Card</button>
+          <button onclick="openModal('modal-add-payment')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Add Card</button>
         </div>
 
         <!-- Payout Speed -->
@@ -3915,12 +3919,89 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div style="font-size:0.92rem;font-weight:700;color:#fff;">Payout Speed</div>
             <div style="font-size:0.8rem;color:rgba(255,255,255,0.4);margin-top:2px;">Standard (3–5 Days)</div>
           </div>
-          <button onclick="toast('Change payout speed coming soon')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Change</button>
+          <button onclick="openModal('modal-payout-speed')" style="background:none;border:none;cursor:pointer;color:#C49A6C;font-weight:700;font-size:0.85rem;font-family:'DM Sans',sans-serif;padding:0;flex-shrink:0;">Change</button>
         </div>
 
       </div>
     </div>
 
+
+    <div id="screen-browsericon" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Browser Icon</h2>
+        <p class="section-sub">Upload a favicon that appears in the browser tab when your MASSED page is opened</p>
+      </div>
+
+      <div style="max-width:580px;display:flex;flex-direction:column;gap:20px;">
+
+        <!-- What it does -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">What is a Browser Icon?</div>
+          <p style="font-size:0.85rem;color:var(--text);line-height:1.8;margin-bottom:12px;">A <strong>favicon</strong> is the small icon that appears in your visitor's browser tab when they open your MASSED page. It makes your page feel like a real website — professional, trusted, and yours.</p>
+          <!-- Browser tab simulation -->
+          <div style="background:#e8e8e8;border-radius:10px 10px 0 0;padding:8px 14px 0;margin-top:16px;">
+            <div style="background:#fff;border-radius:6px 6px 0 0;padding:8px 14px;display:inline-flex;align-items:center;gap:8px;max-width:200px;box-shadow:0 -1px 3px rgba(0,0,0,0.08);">
+              <div id="tab-favicon-preview" style="width:16px;height:16px;border-radius:3px;background:var(--brown);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+                <img id="tab-favicon-img" src="" style="width:100%;height:100%;object-fit:cover;display:none;">
+                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="#fff" stroke-width="2" id="tab-favicon-default"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+              </div>
+              <span id="tab-page-title" style="font-size:0.75rem;color:#333;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">massed.io/username</span>
+              <span style="color:#999;font-size:0.7rem;margin-left:2px;cursor:pointer;">✕</span>
+            </div>
+          </div>
+          <div style="background:#e8e8e8;border-radius:0 0 6px 6px;height:4px;"></div>
+          <div style="margin-top:8px;font-size:0.72rem;color:var(--text-dim);text-align:center;">↑ Live preview of how your browser tab will look</div>
+        </div>
+
+        <!-- Upload Section -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">Upload Your Icon</div>
+
+          <!-- Drop zone -->
+          <div id="favicon-dropzone" onclick="document.getElementById('favicon-file-input').click()" style="border:2px dashed var(--border);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;background:var(--cream);transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">
+            <input type="file" id="favicon-file-input" accept=".png,.jpg,.jpeg,.svg" style="display:none;" onchange="handleFaviconUpload(event)">
+            <div id="favicon-preview-wrap" style="display:none;margin-bottom:16px;">
+              <img id="favicon-preview-large" style="width:64px;height:64px;border-radius:10px;object-fit:cover;border:2px solid var(--border);" src="">
+            </div>
+            <div id="favicon-upload-icon" style="margin-bottom:10px;">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--text);margin-bottom:4px;" id="favicon-upload-text">Click to upload your icon</div>
+            <div style="font-size:0.75rem;color:var(--text-dim);">PNG, JPG or SVG · Recommended: 512×512px</div>
+          </div>
+
+          <!-- Accepted formats note -->
+          <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;">
+            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">PNG</span>
+            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">JPG</span>
+            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">SVG</span>
+            <span style="padding:4px 10px;background:var(--cream);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--text-dim);font-weight:600;">Auto-resized to 16×16 &amp; 32×32</span>
+          </div>
+        </div>
+
+        <!-- Page Title for Tab -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:6px;">Browser Tab Title</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:12px;">This is the text that appears in the browser tab next to your icon</div>
+          <input type="text" id="favicon-tab-title" placeholder="e.g. Ava Stone | Creator" oninput="document.getElementById('tab-page-title').textContent=this.value||'massed.io/username'" style="width:100%;padding:11px 14px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:var(--text);outline:none;box-sizing:border-box;">
+        </div>
+
+        <!-- Why it matters -->
+        <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:16px;padding:22px;color:#fff;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:10px;">Why this matters</div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:0.85rem;line-height:1.7;">
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Makes your page feel like a real website — not just a link</span></div>
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Builds trust with your audience when they visit your page</span></div>
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Gives your brand the "this is mine" feeling of ownership</span></div>
+            <div style="display:flex;align-items:flex-start;gap:10px;"><span style="flex-shrink:0;">✓</span><span>Separates MASSED from "just another link tool"</span></div>
+          </div>
+        </div>
+
+        <!-- Save button -->
+        <button class="btn-save" onclick="saveFavicon()" style="width:100%;padding:14px;font-size:0.92rem;">Apply Browser Icon to My Page →</button>
+
+      </div>
+    </div>
 
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
@@ -5155,6 +5236,57 @@ function verifyPasswordCode() {
   toast('✓ Password updated successfully!');
 }
 
+function selectPayoutSpeed(el, type) {
+  ['standard','instant'].forEach(function(t) {
+    var row = document.getElementById('speed-dot-'+t).closest('div[style*="padding:16px"]');
+    var dot = document.getElementById('speed-dot-'+t);
+    if (t === type) {
+      row.style.border = '2px solid var(--brown)';
+      row.style.background = 'var(--brown-bg)';
+      dot.style.background = 'var(--brown)';
+      dot.style.border = '2px solid var(--brown)';
+      dot.innerHTML = '<div style="width:8px;height:8px;border-radius:50%;background:#fff;"></div>';
+    } else {
+      row.style.border = '1px solid var(--border)';
+      row.style.background = 'var(--cream)';
+      dot.style.background = '#fff';
+      dot.style.border = '2px solid var(--border)';
+      dot.innerHTML = '';
+    }
+  });
+}
+
+function handleFaviconUpload(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var src = ev.target.result;
+    // Update large preview
+    var prev = document.getElementById('favicon-preview-large');
+    var wrap = document.getElementById('favicon-preview-wrap');
+    var icon = document.getElementById('favicon-upload-icon');
+    var txt = document.getElementById('favicon-upload-text');
+    if (prev) { prev.src = src; }
+    if (wrap) wrap.style.display = 'block';
+    if (icon) icon.style.display = 'none';
+    if (txt) txt.textContent = file.name;
+    // Update tab preview
+    var tabImg = document.getElementById('tab-favicon-img');
+    var tabDefault = document.getElementById('tab-favicon-default');
+    if (tabImg) { tabImg.src = src; tabImg.style.display = 'block'; }
+    if (tabDefault) tabDefault.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveFavicon() {
+  var file = document.getElementById('favicon-file-input').files[0];
+  var title = document.getElementById('favicon-tab-title').value.trim();
+  if (!file) { toast('Please upload an icon first'); return; }
+  toast('✓ Browser icon applied to your MASSED page!');
+}
+
 function saveAccount() {
   toast('✓ Account updated!');
 }
@@ -5235,13 +5367,18 @@ window.addEventListener('popstate', function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Fix Android hamburger touch
+  // Fix Android hamburger — use pointerup which works on both touch and mouse
   var hbtn = document.getElementById('hamburger-btn');
   if (hbtn) {
-    hbtn.addEventListener('touchend', function(e) {
+    hbtn.addEventListener('pointerup', function(e) {
       e.preventDefault();
+      e.stopPropagation();
       toggleSidebar();
-    }, { passive: false });
+    });
+    // Prevent double-fire from onclick
+    hbtn.onclick = null;
+    hbtn.setAttribute('onclick', '');
+    hbtn.removeAttribute('onclick');
   }
 });
 document.addEventListener('DOMContentLoaded', function() {
@@ -5782,11 +5919,13 @@ function toggleSidebar() {
   if (isOpen) {
     sb.classList.remove('open');
     sb.style.transform = 'translateX(-100%)';
+    sb.style.webkitTransform = 'translateX(-100%)';
     if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
     document.body.style.overflow = 'hidden';
   } else {
     sb.classList.add('open');
     sb.style.transform = 'translateX(0)';
+    sb.style.webkitTransform = 'translateX(0)';
     if (ov) { ov.classList.add('open'); ov.style.display = 'block'; }
     document.body.style.overflow = 'hidden';
   }
@@ -5807,7 +5946,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',payoutsettings:'My Payout Earnings',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',browsericon:'Browser Icon',payoutsettings:'My Payout Earnings',coming:'Coming Soon'};
 
 function nav(el,screen) {
   if(!screen) return;
@@ -6309,7 +6448,12 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
-        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔤 Other Fields — Custom Input</div>
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🌐 Browser Icon</div>
+        <p>Found in the sidebar under <strong>Browser Icon</strong>. Upload a PNG, JPG, or SVG — it auto-resizes to 16×16 and 32×32 (standard favicon sizes). A <strong>live browser tab preview</strong> shows exactly how your tab will look before you apply it. You can also set a custom Browser Tab Title that appears next to the icon. Click <strong>Apply Browser Icon to My Page</strong> to publish it to your MASSED link page.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🔤 Other Fields — Custom Input</div>
         <p>Anywhere you see <strong>Other</strong> as an option — Event Type, Genre, Media Profile Category, Video Genre — selecting it reveals a text field so you can type exactly what you need.</p>
       </div>
 
@@ -6654,6 +6798,101 @@ document.addEventListener('DOMContentLoaded', function() {
       <button class="btn-cancel" onclick="closeModal('modal-nda-view')">Close</button>
       <button class="btn-save" id="nda-view-download" style="flex:1;">⬇ Download NDA</button>
     </div>
+  </div>
+</div>
+
+<div id="modal-edit-bank" class="modal-overlay" onclick="closeModal('modal-edit-bank')">
+  <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">🏦 Edit Bank Account</h2>
+      <button onclick="closeModal('modal-edit-bank')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-field">
+        <label>Account Holder Name</label>
+        <input type="text" id="bank-name" placeholder="Full legal name">
+      </div>
+      <div class="form-field">
+        <label>Routing Number</label>
+        <input type="text" id="bank-routing" placeholder="9-digit routing number" maxlength="9">
+      </div>
+      <div class="form-field">
+        <label>Account Number</label>
+        <input type="text" id="bank-account" placeholder="Account number">
+      </div>
+      <div class="form-field">
+        <label>Account Type</label>
+        <select id="bank-type">
+          <option>Checking</option>
+          <option>Savings</option>
+        </select>
+      </div>
+      <div style="background:var(--cream);border-radius:10px;padding:12px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+        🔒 Your bank details are encrypted and processed securely through Stripe. MASSED never stores your full account number.
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-edit-bank')">Cancel</button>
+      <button class="btn-save" style="flex:1;" onclick="closeModal('modal-edit-bank');toast('✓ Bank account updated!')">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-payout-speed" class="modal-overlay" onclick="closeModal('modal-payout-speed')">
+  <div class="modal" style="max-width:440px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">⚡ Payout Speed</h2>
+      <button onclick="closeModal('modal-payout-speed')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="padding:16px;border:2px solid var(--brown);border-radius:12px;cursor:pointer;background:var(--brown-bg);" onclick="selectPayoutSpeed(this,'standard')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-weight:800;font-size:0.92rem;">Standard</div>
+            <div style="font-size:0.78rem;color:var(--text-dim);margin-top:2px;">3–5 business days · No fee</div>
+          </div>
+          <div style="width:18px;height:18px;border-radius:50%;background:var(--brown);border:2px solid var(--brown);display:flex;align-items:center;justify-content:center;" id="speed-dot-standard">
+            <div style="width:8px;height:8px;border-radius:50%;background:#fff;"></div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:16px;border:1px solid var(--border);border-radius:12px;cursor:pointer;background:var(--cream);" onclick="selectPayoutSpeed(this,'instant')">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-weight:800;font-size:0.92rem;">Instant</div>
+            <div style="font-size:0.78rem;color:var(--text-dim);margin-top:2px;">Same-day deposit · 1.5% fee</div>
+          </div>
+          <div style="width:18px;height:18px;border-radius:50%;background:#fff;border:2px solid var(--border);" id="speed-dot-instant"></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button class="btn-cancel" onclick="closeModal('modal-payout-speed')">Cancel</button>
+      <button class="btn-save" style="flex:1;" onclick="closeModal('modal-payout-speed');toast('✓ Payout speed updated!')">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="modal-help-browsericon" class="modal-overlay" onclick="closeModal('modal-help-browsericon')">
+  <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;">🌐 Browser Icon Guide</h2>
+      <button onclick="closeModal('modal-help-browsericon')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:65vh;overflow-y:auto;">
+      <p><strong>What it is:</strong> A favicon (Browser Icon) is the small icon that appears in your visitor's browser tab when they open your MASSED page. It makes your page feel like a real website — professional, trusted, and yours.</p>
+      <p><strong>Where to find it:</strong> Tap <em>Browser Icon</em> in the left sidebar under the Publish group.</p>
+      <p><strong>How to set it up:</strong></p>
+      <p>1. Click the upload zone and select a PNG, JPG, or SVG file. A square image works best — recommended size is 512×512px.</p>
+      <p>2. Your icon will be automatically resized to 16×16 and 32×32 — the standard favicon sizes for all browsers.</p>
+      <p>3. Watch the <strong>live browser tab preview</strong> update instantly so you can see exactly how it will look before applying.</p>
+      <p>4. Optionally set a <strong>Browser Tab Title</strong> — this is the text that appears next to your icon in the tab (e.g. "Ava Stone | Creator").</p>
+      <p>5. Click <strong>Apply Browser Icon to My Page</strong> to save and publish it to your MASSED link page.</p>
+      <p><strong>Why it matters:</strong></p>
+      <p>✓ Makes your page feel like a real website — not just a link<br>✓ Builds trust when visitors open your page<br>✓ Gives you the "this is mine" feeling of ownership<br>✓ Separates MASSED from "just another link tool"</p>
+      <p><strong>Tips:</strong> Use your logo or a clean version of your brand mark. Avoid text-heavy images — they won't be readable at 16×16px. A simple symbol or initial works best.</p>
+    </div>
+    <button class="btn-save" style="margin-top:16px;" onclick="closeModal('modal-help-browsericon')">Got it</button>
   </div>
 </div>
 
