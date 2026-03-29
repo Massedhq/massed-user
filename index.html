@@ -16,40 +16,32 @@ aside{display:block;}
   --sidebar-w:260px;--topbar-h:60px;
   --border:rgba(192,122,80,0.18);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);height:100vh;height:100dvh;display:flex;flex-direction:row;overflow:hidden;position:fixed;width:100%;top:0;left:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);height:100vh;display:flex;flex-direction:row;overflow:hidden;}
 
 /* ── SIDEBAR ── */
-/* Base sidebar styles shared across all breakpoints */
+/* DESKTOP (≥1025px): sidebar is a normal flex child in the body row */
 .sidebar{
   background:#fff;
   border-right:1px solid var(--border);
   display:flex;
   flex-direction:column;
   overflow:hidden;
-  position:fixed;
-  left:0;top:0;bottom:0;
   width:var(--sidebar-w);
-  z-index:200;
+  flex-shrink:0;
+  height:100vh;
 }
 
-/* DESKTOP (≥1025px): always visible, no toggle needed */
-@media(min-width:1025px){
-  .sidebar{
-    display:flex !important;
-    transform:none !important;
-    visibility:visible !important;
-    z-index:100;
-  }
-}
-
-/* TABLET + MOBILE (≤1024px): hidden by default, slides in when .open */
+/* TABLET + MOBILE (≤1024px): sidebar becomes a fixed overlay, hidden by default */
 @media(max-width:1024px){
   .sidebar{
-    display:flex;
+    position:fixed;
+    left:0;top:0;bottom:0;
+    height:100%;
+    width:var(--sidebar-w);
+    z-index:200;
     transform:translateX(-100%);
     transition:transform 0.28s ease;
     visibility:hidden;
-    height:100%;
   }
   .sidebar.open{
     transform:translateX(0);
@@ -88,9 +80,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .btn-more svg{width:16px;height:16px;stroke:var(--text-mid);fill:none;stroke-width:2;}
 
 /* MAIN */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-@media(min-width:1025px){.main{margin-left:var(--sidebar-w);}}
-@media(max-width:1024px){.main{margin-left:0;width:100%;}}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
 .topbar{height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;}
 .topbar-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);}
 .topbar-right{display:flex;align-items:center;gap:10px;}
