@@ -16,7 +16,7 @@ aside{display:block;}
   --sidebar-w:260px;--topbar-h:60px;
   --border:rgba(192,122,80,0.18);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);height:100vh;display:flex;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);height:100vh;height:100dvh;display:flex;flex-direction:row;overflow:hidden;position:fixed;width:100%;top:0;left:0;}
 
 /* SIDEBAR */
 .sidebar{background:#fff;border-right:1px solid var(--border);flex-direction:column;overflow:hidden;}
@@ -24,7 +24,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   .sidebar{width:var(--sidebar-w);position:fixed;left:0;top:0;bottom:0;z-index:100;display:flex;}
 }
 @media(max-width:1024px){
-  .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);z-index:200;height:100dvh;box-sizing:border-box;transform:translateX(-100%);transition:transform 0.3s ease;}
+  .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);z-index:200;height:100vh;height:100dvh;box-sizing:border-box;transform:translateX(-100%);transition:transform 0.3s ease;}
   .sidebar.open{display:flex !important;transform:translateX(0) !important;}
 }
 .sidebar-logo{padding:18px 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
@@ -60,8 +60,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-@media(min-width:1025px){.main{margin-left:var(--sidebar-w);height:100vh;}}
-@media(max-width:1024px){.main{margin-left:0;width:100%;height:100dvh;}}
+@media(min-width:1025px){.main{margin-left:var(--sidebar-w);height:100vh;height:100dvh;}}
+@media(max-width:1024px){.main{margin-left:0;width:100%;height:100vh;height:100dvh;}}
 @media(min-width:1025px){.main{margin-left:var(--sidebar-w);}}
 .topbar{height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;}
 .topbar-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);}
@@ -117,6 +117,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     left:0;
     bottom:0;
     width:var(--sidebar-w);
+    height:100vh;
     height:100dvh;
     z-index:200;
     flex-direction:column;
@@ -373,20 +374,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 #toast.show{opacity:1;transform:translateY(0);}
 </style>
 <script>
-// Force sidebar hidden before first paint on Android
+// Ensure sidebar is visually hidden before first paint without inline transform
+// (inline transform would override .open class on Android)
 (function(){
-  var ready = function() {
-    var sb = document.getElementById('main-sidebar') || document.querySelector('.sidebar');
-    if (sb) {
-      sb.style.transform = 'translateX(-100%)';
-      sb.style.webkitTransform = 'translateX(-100%)';
-    }
-  };
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ready);
-  } else {
-    ready();
-  }
+  var style = document.createElement('style');
+  style.textContent = '.sidebar:not(.open){display:none!important;}';
+  document.head.appendChild(style);
 })();
 </script>
 </head>
@@ -6552,10 +6545,12 @@ function toggleSidebar() {
     sb.classList.remove('open');
     sb.style.transform = '';
     sb.style.webkitTransform = '';
+    sb.style.display = '';
     if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
   } else {
     sb.style.transform = '';
     sb.style.webkitTransform = '';
+    sb.style.display = 'flex';
     sb.classList.add('open');
     if (ov) { ov.classList.add('open'); ov.style.display = 'block'; }
   }
@@ -6563,7 +6558,7 @@ function toggleSidebar() {
 function closeSidebar() {
   var sb = document.querySelector('.sidebar');
   var ov = document.getElementById('sidebar-overlay');
-  if (sb) { sb.classList.remove('open'); sb.style.transform = ''; sb.style.webkitTransform = ''; }
+  if (sb) { sb.classList.remove('open'); sb.style.transform = ''; sb.style.webkitTransform = ''; sb.style.display = ''; }
   if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
 }
 
@@ -6593,7 +6588,7 @@ function nav(el,screen) {
     if(pt) pt.textContent=pageTitles[screen]||'';
     var sb=document.querySelector('.sidebar');
     var ov=document.getElementById('sidebar-overlay');
-    if(sb&&sb.classList.contains('open')){sb.classList.remove('open');sb.style.transform='';sb.style.webkitTransform='';if(ov){ov.classList.remove('open');ov.style.display='none';}}
+    if(sb&&sb.classList.contains('open')){sb.classList.remove('open');sb.style.transform='';sb.style.webkitTransform='';sb.style.display='';if(ov){ov.classList.remove('open');ov.style.display='none';}}
   } catch(e){console.warn('nav error:',e);}
 }
 
