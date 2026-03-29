@@ -20,12 +20,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* SIDEBAR */
 .sidebar{background:#fff;border-right:1px solid var(--border);flex-direction:column;overflow:hidden;}
-@media(min-width:769px){
+@media(min-width:1025px){
   .sidebar{width:var(--sidebar-w);position:fixed;left:0;top:0;bottom:0;z-index:100;display:flex;}
 }
-@media(max-width:768px){
-  .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);z-index:200;height:100dvh;box-sizing:border-box;}
-  .sidebar.open{display:flex !important;}
+@media(max-width:1024px){
+  .sidebar{display:none;position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);z-index:200;height:100dvh;box-sizing:border-box;transform:translateX(-100%);transition:transform 0.3s ease;}
+  .sidebar.open{display:flex !important;transform:translateX(0) !important;}
 }
 .sidebar-logo{padding:18px 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .logo-mark{width:36px;height:36px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:1rem;}
@@ -60,9 +60,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-@media(min-width:769px){.main{margin-left:var(--sidebar-w);height:100vh;}}
-@media(max-width:768px){.main{margin-left:0;width:100%;height:100dvh;}}
-@media(min-width:769px){.main{margin-left:var(--sidebar-w);}}
+@media(min-width:1025px){.main{margin-left:var(--sidebar-w);height:100vh;}}
+@media(max-width:1024px){.main{margin-left:0;width:100%;height:100dvh;}}
+@media(min-width:1025px){.main{margin-left:var(--sidebar-w);}}
 .topbar{height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;}
 .topbar-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);}
 .topbar-right{display:flex;align-items:center;gap:10px;}
@@ -94,21 +94,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .collab-card-genres{display:flex;flex-wrap:wrap;gap:5px;}
 .collab-card-genre{padding:2px 8px;border-radius:10px;font-size:0.65rem;font-weight:700;background:var(--brown-bg);color:var(--brown);}
 .collab-connect-btn{width:100%;padding:9px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;margin-top:auto;}
-/* HAMBURGER — hidden on desktop, flex on mobile */
+/* HAMBURGER — hidden on large desktop, flex on tablet + mobile */
 .hamburger{width:40px;height:40px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;padding:0;}
 .hamburger svg{width:22px;height:22px;stroke:var(--text);fill:none;stroke-width:2;}
+@media(max-width:1024px){.hamburger{display:flex !important;}}
 
 /* SIDEBAR OVERLAY */
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(44,26,14,0.4);z-index:99;backdrop-filter:blur(2px);}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(44,26,14,0.4);z-index:99;}
 .sidebar-overlay.open{display:block;}
 .sidebar-overlay.visible{display:block;}
 
-/* ── MOBILE ── */
-@media(max-width:768px){
+/* ── TABLET + MOBILE ── */
+@media(max-width:1024px){
   body{overflow:hidden;}
   :root{--sidebar-w:280px;}
 
-  /* Sidebar — hidden by default on mobile, shown when open */
+  /* Sidebar — hidden by default on mobile/tablet, shown when open */
   .sidebar, aside.sidebar{
     display:none;
     position:fixed;
@@ -121,16 +122,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     flex-direction:column;
     overflow:hidden;
     box-sizing:border-box;
+    transform:translateX(-100%);
+    transition:transform 0.3s ease;
   }
   .sidebar.open, aside.sidebar.open{
     display:flex !important;
+    transform:translateX(0) !important;
   }
   .sidebar .sidebar-nav{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;}
   .sidebar-logo{position:sticky;top:0;z-index:5;background:#fff;flex-shrink:0;}
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;flex-shrink:0;}
 
   /* Main layout — topbar fixed, content scrolls */
-  /* .main handled in base CSS */
   .topbar{height:var(--topbar-h);flex-shrink:0;}
   .content{flex:1;height:0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
   .screen{padding:16px;padding-bottom:120px;}
@@ -150,9 +153,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   /* Profile grid */
   .profile-grid{grid-template-columns:1fr;}
   .profile-card.full{grid-column:1;}
-
-  /* Social grid */
-
 
   /* Stats rows */
   .stats-row{grid-template-columns:1fr 1fr;}
@@ -3543,7 +3543,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="height:1px;background:var(--border);"></div>
           <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">Cookies</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">Essential cookies only — to keep you logged in and remember preferences. No third-party advertising cookies.</div></div>
           <div style="height:1px;background:var(--border);"></div>
-          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">Contact</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">For privacy questions: <strong style="color:var(--brown);">privacy@massed.io</strong></div></div>
+          <div><div style="font-weight:800;font-size:0.92rem;margin-bottom:6px;">Contact</div><div style="font-size:0.83rem;color:var(--text-mid);line-height:1.8;">For privacy questions: <strong style="color:var(--brown);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="18686a716e797b615875796b6b7d7c367177">[email&#160;protected]</a></strong></div></div>
         </div>
         <div style="background:var(--cream);border-radius:12px;padding:14px 16px;font-size:0.78rem;color:var(--text-dim);text-align:center;">By using MASSED you agree to this Privacy Policy. Updates will be sent via email and in-app notification.</div>
       </div>
@@ -5148,7 +5148,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 
 <div id="toast"></div>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 
 // ── ONLINE EVENT FIELD TOGGLE ─────────────────────────
 function toggleOtherField(showCondition, wrapId) {
@@ -5986,7 +5986,7 @@ window.addEventListener('popstate', function(e) {
     // Close sidebar if open
     var sb = document.querySelector('.sidebar');
     var ov = document.getElementById('sidebar-overlay');
-    if(sb) sb.classList.remove('open');
+    if(sb) { sb.classList.remove('open'); sb.style.transform=''; sb.style.webkitTransform=''; }
     if(ov) ov.classList.remove('open');
   } else {
     // No state means we're back at the start — go to dashboard
@@ -6550,24 +6550,21 @@ function toggleSidebar() {
   var isOpen = sb.classList.contains('open');
   if (isOpen) {
     sb.classList.remove('open');
-    sb.style.transform = 'translateX(-100%)';
-    sb.style.webkitTransform = 'translateX(-100%)';
+    sb.style.transform = '';
+    sb.style.webkitTransform = '';
     if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
-    document.body.style.overflow = 'hidden';
   } else {
+    sb.style.transform = '';
+    sb.style.webkitTransform = '';
     sb.classList.add('open');
-    sb.style.transform = 'translateX(0)';
-    sb.style.webkitTransform = 'translateX(0)';
     if (ov) { ov.classList.add('open'); ov.style.display = 'block'; }
-    document.body.style.overflow = 'hidden';
   }
 }
 function closeSidebar() {
   var sb = document.querySelector('.sidebar');
   var ov = document.getElementById('sidebar-overlay');
-  if (sb) { sb.classList.remove('open'); sb.style.transform = 'translateX(-100%)'; }
+  if (sb) { sb.classList.remove('open'); sb.style.transform = ''; sb.style.webkitTransform = ''; }
   if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
-  document.body.style.overflow = 'hidden';
 }
 
 function openModal(id) { var el=document.getElementById(id); if(el) el.classList.add('open'); }
@@ -6596,7 +6593,7 @@ function nav(el,screen) {
     if(pt) pt.textContent=pageTitles[screen]||'';
     var sb=document.querySelector('.sidebar');
     var ov=document.getElementById('sidebar-overlay');
-    if(sb&&sb.classList.contains('open')){sb.classList.remove('open');if(ov)ov.classList.remove('open');}
+    if(sb&&sb.classList.contains('open')){sb.classList.remove('open');sb.style.transform='';sb.style.webkitTransform='';if(ov){ov.classList.remove('open');ov.style.display='none';}}
   } catch(e){console.warn('nav error:',e);}
 }
 
@@ -8547,7 +8544,7 @@ function toggleReviewBuilder() {
       <p><strong>Data sharing:</strong> Only with trusted service providers like Stripe (payments) who are bound by confidentiality agreements. Never shared for advertising.</p>
       <p><strong>Your rights:</strong> Access, update, or delete your data at any time. Request a data export or deletion by contacting support. We respond within 30 days.</p>
       <p><strong>Cookies:</strong> Essential cookies only — to keep you logged in and remember preferences. No third-party advertising cookies.</p>
-      <p><strong>Questions?</strong> Email <strong style="color:var(--brown);">privacy@massed.io</strong></p>
+      <p><strong>Questions?</strong> Email <strong style="color:var(--brown);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d4a4a6bda2b5b7ad94b9b5a7a7b1b0fabdbb">[email&#160;protected]</a></strong></p>
       <p style="font-size:0.75rem;color:var(--text-dim);">Last updated: March 2026. For the full policy go to Settings → Privacy tab.</p>
     </div>
     <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-privacy')">Got it</button>
@@ -8934,12 +8931,4 @@ function toggleReviewBuilder() {
       ⚠️ This client will no longer be able to book any of your services. This action can be undone from their booking record.
     </div>
     <div class="form-field"><label>Reason (optional)</label><input type="text" id="bk-ban-reason" placeholder="e.g. No-show, Repeated cancellations"></div>
-    <div style="display:flex;gap:10px;margin-top:16px;">
-      <button class="btn-cancel" onclick="closeModal('modal-bk-ban')">Cancel</button>
-      <button id="bk-ban-confirm" style="flex:1;padding:11px;background:#dc2626;color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;">Ban Client</button>
-    </div>
-  </div>
-</div>
-
-</body>
-</html>
+    <div sty
