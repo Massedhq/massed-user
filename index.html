@@ -34,16 +34,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 /* TABLET + MOBILE (≤1024px): sidebar becomes a fixed overlay, hidden by default */
 @media(max-width:1024px){
   .sidebar{
+    display:none;
     position:fixed;
     left:0;top:0;bottom:0;
     height:100%;
     width:var(--sidebar-w);
     z-index:200;
-    transform:translateX(-100%);
-    transition:transform 0.28s ease;
-    visibility:hidden;
   }
   .sidebar.open{
+    display:flex;
     transform:translateX(0);
     visibility:visible;
   }
@@ -81,6 +80,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* MAIN */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+@media(max-width:1024px){.main{width:100%;}}
 .topbar{height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;}
 .topbar-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);}
 .topbar-right{display:flex;align-items:center;gap:10px;}
@@ -6532,8 +6532,10 @@ function toggleSidebar() {
   var isOpen = sb.classList.contains('open');
   if (isOpen) {
     sb.classList.remove('open');
+    sb.style.display = '';
     if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
   } else {
+    sb.style.display = 'flex';
     sb.classList.add('open');
     if (ov) { ov.classList.add('open'); ov.style.display = 'block'; }
   }
@@ -6541,7 +6543,7 @@ function toggleSidebar() {
 function closeSidebar() {
   var sb = document.getElementById('main-sidebar');
   var ov = document.getElementById('sidebar-overlay');
-  if (sb) sb.classList.remove('open');
+  if (sb) { sb.classList.remove('open'); sb.style.display = ''; }
   if (ov) { ov.classList.remove('open'); ov.style.display = 'none'; }
 }
 
@@ -6571,7 +6573,7 @@ function nav(el,screen) {
     if(pt) pt.textContent=pageTitles[screen]||'';
     var sb=document.getElementById('main-sidebar');
     var ov=document.getElementById('sidebar-overlay');
-    if(sb&&sb.classList.contains('open')){sb.classList.remove('open');if(ov){ov.classList.remove('open');ov.style.display='none';}}
+    if(sb&&sb.classList.contains('open')){sb.classList.remove('open');sb.style.display='';if(ov){ov.classList.remove('open');ov.style.display='none';}}
   } catch(e){console.warn('nav error:',e);}
 }
 
