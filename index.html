@@ -257,6 +257,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .bk-svc-card:hover{box-shadow:0 6px 24px rgba(192,122,80,0.12);transform:translateY(-2px);}
 .bk-time-btn{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-family:sans-serif;font-size:0.8rem;font-weight:600;}
 .bk-time-btn.bk-time-sel{background:var(--brown);border-color:var(--brown);color:#fff;}
+.subs-row{border-bottom:1px solid var(--border);}
+.subs-row:hover{background:var(--cream);}
 .wl-card:hover{box-shadow:0 4px 20px rgba(192,122,80,0.12);}
 .wl-card-body{display:flex;align-items:stretch;gap:0;}
 .wl-drag{width:36px;display:flex;align-items:center;justify-content:center;cursor:grab;color:var(--text-dim);flex-shrink:0;background:var(--cream);border-right:1px solid var(--border);}
@@ -501,7 +503,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div class="nav-item" onclick="nav(this,'weblinks')"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>Web Links</div>
       <div class="nav-item" onclick="nav(this,'booking')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Booking</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>Services</div>
-      <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Subscriptions / Memberships / Subs</div>
+      <div class="nav-item" onclick="nav(this,'subs')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Subscriptions / Memberships / Subs</div>
       <div class="nav-item" onclick="nav(this,'tickets')"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010-6h20a3 3 0 010 6"/><path d="M2 9v11a2 2 0 002 2h16a2 2 0 002-2V9"/><path d="M12 9v13"/></svg>Events / Tickets</div>
       <div class="nav-item" onclick="nav(this,'coming')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Listings</div>
     </div>
@@ -4186,16 +4188,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div id="screen-booking" class="screen">
 
       <!-- Header -->
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
         <div>
           <h2 class="section-title">Booking</h2>
-          <p class="section-sub">Let clients book your time — directly from your MASSED page</p>
+          <p class="section-sub">Manage your services and incoming appointments</p>
         </div>
         <button onclick="openModal('modal-add-service')" style="display:flex;align-items:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;box-shadow:0 4px 14px rgba(192,122,80,0.3);flex-shrink:0;">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add Service
         </button>
       </div>
+
+      <!-- Booking Tabs -->
+      <div style="display:flex;gap:4px;background:var(--cream2);border-radius:12px;padding:4px;margin-bottom:20px;width:fit-content;">
+        <button id="bk-tab-services" onclick="bookingTab('services')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:var(--brown);color:#fff;transition:all 0.2s;">Services</button>
+        <button id="bk-tab-incoming" onclick="bookingTab('incoming')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">Incoming Bookings <span id="bk-incoming-badge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:0.7rem;margin-left:4px;">3</span></button>
+      </div>
+
+      <!-- SERVICES TAB -->
+      <div id="bk-services-content" style="display:block;">
 
       <!-- Booking Toggle -->
       <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
@@ -4229,6 +4240,49 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div style="font-family:'Georgia',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">No services yet</div>
         <div style="font-size:0.85rem;color:var(--text-dim);margin-bottom:18px;">Add your first bookable service to start accepting appointments.</div>
         <button onclick="openModal('modal-add-service')" style="padding:11px 24px;background:var(--brown);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;">+ Add Service</button>
+      </div>
+
+      </div><!-- end bk-services-content -->
+
+      <!-- INCOMING BOOKINGS TAB -->
+      <div id="bk-incoming-content" style="display:none;">
+        <!-- Review questionnaire button -->
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px;">
+          <button onclick="toggleReviewBuilder()" style="display:flex;align-items:center;gap:6px;padding:8px 16px;background:var(--cream);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;color:var(--text-mid);">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Review Questionnaire
+          </button>
+        </div>
+        <div id="bk-incoming-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+        <div id="bk-incoming-empty" style="display:none;background:#fff;border:1px solid var(--border);border-radius:14px;padding:40px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:10px;">📭</div>
+          <div style="font-weight:700;margin-bottom:6px;">No incoming bookings</div>
+          <div style="font-size:0.82rem;color:var(--text-dim);">New bookings will appear here when clients book through your MASSED page.</div>
+        </div>
+        <!-- Deleted bookings restore section -->
+        <div id="bk-deleted-section" style="margin-top:20px;display:none;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Recently Deleted (tap to restore)</div>
+          <div id="bk-deleted-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+
+      <!-- Review Questionnaire Builder -->
+      <div id="bk-review-builder" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-weight:800;font-size:0.95rem;">Review Questionnaire</div>
+          <button onclick="bookingTab('services')" style="background:none;border:none;cursor:pointer;font-size:0.82rem;color:var(--text-dim);">← Back</button>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Star Rating</div>
+          <div style="display:flex;gap:6px;font-size:1.8rem;margin-bottom:6px;">⭐⭐⭐⭐⭐</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);">Customers rate 1–5 stars. Always included.</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Custom Questions</div>
+          <div id="review-questions-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;"></div>
+          <button onclick="addReviewQuestion()" style="width:100%;padding:10px;background:var(--cream);border:2px dashed var(--border);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;color:var(--text-mid);">+ Add Question</button>
+        </div>
+        <button onclick="saveReviewQuestionnaire()" style="width:100%;padding:13px;background:var(--brown);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;">Save Questionnaire</button>
       </div>
 
     </div>
@@ -4374,6 +4428,171 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
 
         <button id="book-confirm-btn" onclick="confirmBooking()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:800;font-size:0.95rem;box-shadow:0 4px 16px rgba(192,122,80,0.4);" disabled>Select a date &amp; time</button>
+      </div>
+    </div>
+
+
+    <!-- SUBSCRIPTIONS / MEMBERSHIPS SCREEN -->
+    <div id="screen-subs" class="screen">
+
+      <div class="section-header">
+        <h2 class="section-title">Subscriptions / Subscribers / Memberships</h2>
+        <p class="section-sub">Manage your subscribers, subscriptions, and membership programs in one place</p>
+      </div>
+
+      <!-- 3 Summary Cards -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:28px;">
+
+        <!-- Subscribers -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;background:#f0f9ff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0ea5e9" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#0ea5e9;">Subscribers</div>
+            </div>
+            <div style="font-family:'Georgia',serif;font-size:1.6rem;font-weight:900;color:var(--text);">24</div>
+          </div>
+          <div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:12px;">Only visible to you — click any profile for a quick glimpse.</div>
+          <!-- Subscriber avatar strip -->
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <div onclick="openSubscriberPreview('Ava Thompson','Atlanta, GA','Fashion & Lifestyle','at')" style="cursor:pointer;text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.82rem;color:#fff;margin-bottom:3px;">AT</div>
+              <div style="font-size:0.58rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44px;">Ava T.</div>
+            </div>
+            <div onclick="openSubscriberPreview('Marcus Lee','Houston, TX','Music & Culture','ML')" style="cursor:pointer;text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#38bdf8);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.82rem;color:#fff;margin-bottom:3px;">ML</div>
+              <div style="font-size:0.58rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44px;">Marcus L.</div>
+            </div>
+            <div onclick="openSubscriberPreview('Jasmine Rivera','Miami, FL','Beauty & Wellness','JR')" style="cursor:pointer;text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#f472b6);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.82rem;color:#fff;margin-bottom:3px;">JR</div>
+              <div style="font-size:0.58rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44px;">Jasmine R.</div>
+            </div>
+            <div onclick="openSubscriberPreview('Derek Washington','Chicago, IL','Fitness','DW')" style="cursor:pointer;text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#4ade80);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.82rem;color:#fff;margin-bottom:3px;">DW</div>
+              <div style="font-size:0.58rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44px;">Derek W.</div>
+            </div>
+            <div onclick="openSubscriberPreview('Priya Patel','Dallas, TX','Tech & Business','PP')" style="cursor:pointer;text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#fbbf24);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.82rem;color:#fff;margin-bottom:3px;">PP</div>
+              <div style="font-size:0.58rem;color:var(--text-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44px;">Priya P.</div>
+            </div>
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--cream2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text-dim);">+19</div>
+          </div>
+        </div>
+
+        <!-- Subscriptions -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div style="width:36px;height:36px;background:#f0fdf4;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#16a34a" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#16a34a;">Subscriptions</div>
+          </div>
+          <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:var(--text);margin-bottom:4px;" id="subs-count-subscriptions">18</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.5;">Paid transactions — recurring payments that grant access to products, services, or content.</div>
+        </div>
+
+        <!-- Memberships -->
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div style="width:36px;height:36px;background:var(--brown-bg);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--brown)" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);">Memberships</div>
+          </div>
+          <div style="font-family:'Georgia',serif;font-size:1.8rem;font-weight:900;color:var(--text);margin-bottom:4px;" id="subs-count-memberships">9</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.5;">Paid exclusivity — premium programs with elevated access, perks, or community experiences.</div>
+        </div>
+
+      </div>
+
+      <!-- Toolbar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="subs-filter active" onclick="filterSubsTable(this,'all')" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--brown);background:var(--brown);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;">All</button>
+          <button class="subs-filter" onclick="filterSubsTable(this,'subscriber')" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;">Subscribers</button>
+          <button class="subs-filter" onclick="filterSubsTable(this,'subscription')" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;">Subscriptions</button>
+          <button class="subs-filter" onclick="filterSubsTable(this,'membership')" style="padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--text-dim);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;">Memberships</button>
+          <button class="subs-filter" onclick="filterSubsTable(this,'late')" style="padding:7px 16px;border-radius:20px;border:1.5px solid #fecaca;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;">Late / Overdue</button>
+        </div>
+        <button onclick="openModal('modal-add-subscriber')" style="display:flex;align-items:center;gap:7px;padding:9px 18px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;white-space:nowrap;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Member
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;min-width:900px;">
+          <thead>
+            <tr style="background:var(--cream);border-bottom:1px solid var(--border);">
+              <th style="padding:12px 14px;text-align:left;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Member</th>
+              <th style="padding:12px 14px;text-align:left;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Engagement</th>
+              <th style="padding:12px 14px;text-align:left;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Subscription</th>
+              <th style="padding:12px 14px;text-align:left;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Membership</th>
+              <th style="padding:12px 14px;text-align:right;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Billing</th>
+              <th style="padding:12px 14px;text-align:left;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Next Payment</th>
+              <th style="padding:12px 14px;text-align:right;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Balance Due</th>
+              <th style="padding:12px 14px;text-align:center;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="subs-table-body"></tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- MANAGE MEMBER MODAL -->
+    <div id="modal-manage-member" class="modal-overlay" onclick="closeModal('modal-manage-member')">
+      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <h2 class="modal-title" style="margin:0;" id="manage-member-name">Manage Member</h2>
+          <button onclick="closeModal('modal-manage-member')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div id="manage-member-meta" style="font-size:0.8rem;color:var(--text-dim);margin-bottom:16px;"></div>
+
+        <!-- Dynamic actions rendered by JS based on account type -->
+        <div id="manage-member-actions"></div>
+      </div>
+    </div>
+
+    <!-- ADD SUBSCRIBER MODAL -->
+    <div id="modal-add-subscriber" class="modal-overlay" onclick="closeModal('modal-add-subscriber')">
+      <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">Add Member</h2>
+          <button onclick="closeModal('modal-add-subscriber')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="form-field" style="margin:0;"><label>First Name</label><input type="text" id="add-sub-fname" placeholder="First"></div>
+            <div class="form-field" style="margin:0;"><label>Last Name</label><input type="text" id="add-sub-lname" placeholder="Last"></div>
+          </div>
+          <div class="form-field" style="margin:0;"><label>Email</label><input type="email" id="add-sub-email" placeholder="email@example.com"></div>
+          <div class="form-field" style="margin:0;">
+            <label>Subscription Plan</label>
+            <select id="add-sub-plan">
+              <option value="">None</option>
+              <option>Basic — $9.99/mo</option>
+              <option>Standard — $19.99/mo</option>
+              <option>Premium — $39.99/mo</option>
+            </select>
+          </div>
+          <div class="form-field" style="margin:0;">
+            <label>Membership Tier</label>
+            <select id="add-sub-tier">
+              <option value="">None</option>
+              <option>Silver</option>
+              <option>Gold</option>
+              <option>Platinum</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          <button class="btn-cancel" onclick="closeModal('modal-add-subscriber')">Cancel</button>
+          <button class="btn-save" style="flex:1;" onclick="addSubsMember()">Add Member</button>
+        </div>
       </div>
     </div>
 
@@ -6356,7 +6575,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Booking',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Booking',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',coming:'Coming Soon'};
 
 function nav(el,screen) {
   if(!screen) return;
@@ -7084,6 +7303,570 @@ function confirmBooking() {
 document.addEventListener('DOMContentLoaded', function() {
   renderBookingServices();
 });
+
+// ── SUBSCRIPTIONS / MEMBERSHIPS ────────────────────────────────────────────────
+var subsMembers = [
+  { id:1, fname:'Ava', lname:'Thompson', email:'ava@email.com', engagement:'Active', subscription:'Premium — $39.99/mo', membership:'Platinum', billing:39.99, nextPayment:'Apr 15, 2026', balanceDue:0, fees:0, status:'active' },
+  { id:2, fname:'Marcus', lname:'Lee', email:'marcus@email.com', engagement:'Active', subscription:'Standard — $19.99/mo', membership:'Gold', billing:19.99, nextPayment:'Apr 18, 2026', balanceDue:0, fees:0, status:'active' },
+  { id:3, fname:'Jasmine', lname:'Rivera', email:'jasmine@email.com', engagement:'Inactive', subscription:'Basic — $9.99/mo', membership:'', billing:9.99, nextPayment:'Apr 10, 2026', balanceDue:9.99, fees:5, status:'late' },
+  { id:4, fname:'Derek', lname:'Washington', email:'derek@email.com', engagement:'Active', subscription:'', membership:'Silver', billing:0, nextPayment:'—', balanceDue:0, fees:0, status:'subscriber' },
+  { id:5, fname:'Priya', lname:'Patel', email:'priya@email.com', engagement:'Active', subscription:'Premium — $39.99/mo', membership:'Platinum', billing:39.99, nextPayment:'Apr 22, 2026', balanceDue:0, fees:0, status:'active' },
+  { id:6, fname:'Tyrone', lname:'Brooks', email:'tyrone@email.com', engagement:'Paused', subscription:'Standard — $19.99/mo', membership:'Gold', billing:19.99, nextPayment:'May 1, 2026', balanceDue:39.98, fees:10, status:'late' },
+  { id:7, fname:'Sofia', lname:'Martinez', email:'sofia@email.com', engagement:'Active', subscription:'Basic — $9.99/mo', membership:'', billing:9.99, nextPayment:'Apr 28, 2026', balanceDue:0, fees:0, status:'subscription' },
+  { id:8, fname:'Jordan', lname:'Kim', email:'jordan@email.com', engagement:'Active', subscription:'', membership:'', billing:0, nextPayment:'—', balanceDue:0, fees:0, status:'subscriber' },
+];
+var subsMemberIdCounter = 20;
+var subsActiveFilter = 'all';
+var currentSubsMember = null;
+
+function filterSubsTable(btn, filter) {
+  document.querySelectorAll('.subs-filter').forEach(function(b) {
+    b.style.background = b.classList.contains('subs-filter') && b.dataset.late ? '#fee2e2' : '#fff';
+    b.style.color = 'var(--text-dim)';
+    b.style.borderColor = 'var(--border)';
+  });
+  btn.style.background = filter === 'late' ? '#dc2626' : 'var(--brown)';
+  btn.style.color = '#fff';
+  btn.style.borderColor = filter === 'late' ? '#dc2626' : 'var(--brown)';
+  subsActiveFilter = filter;
+  renderSubsTable();
+}
+
+function renderSubsTable() {
+  var tbody = document.getElementById('subs-table-body');
+  if (!tbody) return;
+  var filtered = subsMembers.filter(function(m) {
+    if (subsActiveFilter === 'all') return true;
+    if (subsActiveFilter === 'late') return m.status === 'late';
+    if (subsActiveFilter === 'subscriber') return !m.subscription && !m.membership;
+    if (subsActiveFilter === 'subscription') return !!m.subscription;
+    if (subsActiveFilter === 'membership') return !!m.membership;
+    return true;
+  });
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="padding:32px;text-align:center;color:var(--text-dim);font-size:0.85rem;">No members found</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.map(function(m) {
+    var engColor = m.engagement === 'Active' ? '#16a34a' : m.engagement === 'Paused' ? '#d97706' : '#6b7280';
+    var engBg = m.engagement === 'Active' ? '#dcfce7' : m.engagement === 'Paused' ? '#fef3c7' : '#f3f4f6';
+    var subBadge = m.subscription
+      ? '<span style="font-size:0.72rem;font-weight:700;color:#16a34a;">'+m.subscription+'</span>'
+      : '<span style="font-size:0.72rem;color:var(--text-dim);">—</span>';
+    var memBadge = m.membership
+      ? '<span style="padding:2px 8px;background:var(--brown-bg);color:var(--brown);border-radius:8px;font-size:0.7rem;font-weight:700;">'+m.membership+'</span>'
+      : '<span style="font-size:0.72rem;color:var(--text-dim);">—</span>';
+    var balanceColor = m.balanceDue > 0 ? '#dc2626' : 'var(--text-dim)';
+    var lateBadge = m.fees > 0 ? ' <span style="font-size:0.65rem;background:#fee2e2;color:#dc2626;padding:1px 6px;border-radius:6px;font-weight:700;">+$'+m.fees+' fee</span>' : '';
+    return '<tr class="subs-row">'
+      + '<td style="padding:14px;"><div style="font-weight:700;font-size:0.88rem;">'+m.fname+' '+m.lname+'</div><div style="font-size:0.72rem;color:var(--text-dim);">'+m.email+'</div></td>'
+      + '<td style="padding:14px;"><span style="padding:3px 10px;background:'+engBg+';color:'+engColor+';border-radius:10px;font-size:0.72rem;font-weight:700;">'+m.engagement+'</span></td>'
+      + '<td style="padding:14px;">'+subBadge+'</td>'
+      + '<td style="padding:14px;">'+memBadge+'</td>'
+      + '<td style="padding:14px;text-align:right;font-weight:700;font-size:0.88rem;">'+(m.billing > 0 ? '$'+m.billing.toFixed(2) : '—')+'</td>'
+      + '<td style="padding:14px;font-size:0.82rem;color:var(--text-mid);">'+m.nextPayment+'</td>'
+      + '<td style="padding:14px;text-align:right;font-weight:700;font-size:0.88rem;color:'+balanceColor+';">'+(m.balanceDue > 0 ? '$'+m.balanceDue.toFixed(2) : '$0.00')+lateBadge+'</td>'
+      + '<td style="padding:14px;text-align:center;"><button onclick="openManageMember('+m.id+')" style="padding:6px 14px;background:var(--cream);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:sans-serif;font-weight:700;font-size:0.75rem;color:var(--text);">Manage</button></td>'
+      + '</tr>';
+  }).join('');
+}
+
+function openManageMember(id) {
+  var m = subsMembers.find(function(x){ return x.id === id; });
+  if (!m) return;
+  currentSubsMember = m;
+  document.getElementById('manage-member-name').textContent = m.fname + ' ' + m.lname;
+  var metaParts = [m.email];
+  if (m.subscription) metaParts.push(m.subscription);
+  if (m.membership) metaParts.push(m.membership + ' Membership');
+  document.getElementById('manage-member-meta').textContent = metaParts.join(' · ');
+
+  var actionsEl = document.getElementById('manage-member-actions');
+  var isMember = !!m.membership;
+  var isSub = !!m.subscription && !m.membership;
+
+  var btn = function(action, bg, color, border, icon, label) {
+    return '<button class="mgmt-btn" data-action="'+action+'" style="padding:11px;background:'+bg+';color:'+color+';border:'+(border||'none')+';border-radius:10px;cursor:pointer;font-weight:700;font-size:0.8rem;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;">'+icon+label+'</button>';
+  };
+  var ic = function(path) { return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">'+path+'</svg>'; };
+
+  if (isMember) {
+    actionsEl.innerHTML =
+      '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:10px;">Membership Management</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">'
+      + btn('addtoplan','linear-gradient(135deg,var(--brown-light),var(--brown-dark))','#fff','none',ic('<path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>'), 'Add to Plan')
+      + btn('changeplan','var(--cream)','var(--text)','1px solid var(--border)',ic('<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/>'), 'Change Plan')
+      + btn('charge','var(--cream)','var(--text)','1px solid var(--border)',ic('<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>'), 'Charge Now')
+      + btn('invoice','var(--cream)','var(--text)','1px solid var(--border)',ic('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>'), 'Send Invoice')
+      + btn('viewinvoices','var(--cream)','var(--text)','1px solid var(--border)',ic('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>'), 'View Invoices')
+      + btn('editinfo','var(--cream)','var(--text)','1px solid var(--border)',ic('<path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>'), 'Edit Info')
+      + btn('pause','var(--cream)','var(--text)','1px solid var(--border)',ic('<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>'), m.engagement==='Paused' ? 'Resume Service' : 'Pause Service')
+      + btn('applyfee','#fef3c7','#92400e','1px solid #fde68a',ic('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>'), 'Apply Fee')
+      + btn('waivefee','#f0fdf4','#16a34a','1px solid #bbf7d0',ic('<polyline points="20 6 9 17 4 12"/>'), 'Waive Fee')
+      + '</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--border);padding-top:8px;">'
+      + btn('cancel','#fee2e2','#dc2626','1px solid #fecaca',ic('<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'), 'Cancel')
+      + btn('delete','#fff','#dc2626','1.5px solid #fecaca',ic('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>'), 'Delete')
+      + '</div>';
+
+  } else if (isSub) {
+    actionsEl.innerHTML =
+      '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Subscription Management</div>'
+      + '<div style="display:flex;flex-direction:column;gap:8px;">'
+      + btn('charge','var(--cream)','var(--text)','1px solid var(--border)',ic('<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>'), 'Charge Now')
+      + btn('changesubtype','var(--cream)','var(--text)','1px solid var(--border)',ic('<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/>'), 'Change Subscription Amount / Type')
+      + btn('invoice','var(--cream)','var(--text)','1px solid var(--border)',ic('<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>'), 'Send Invoice')
+      + btn('viewinvoices','var(--cream)','var(--text)','1px solid var(--border)',ic('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>'), 'View Invoices')
+      + btn('refund','#f0fdf4','#16a34a','1px solid #bbf7d0',ic('<polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/>'), 'Refund Subscription')
+      + btn('cancel','#fee2e2','#dc2626','1px solid #fecaca',ic('<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>'), 'Cancel Subscription')
+      + btn('delete','#fff','#dc2626','1.5px solid #fecaca',ic('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>'), 'Delete')
+      + '</div>';
+
+  } else {
+    // Subscriber only
+    actionsEl.innerHTML =
+      '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Subscriber Actions</div>'
+      + '<div style="display:flex;flex-direction:column;gap:8px;">'
+      + btn('delete','#fff','#dc2626','1.5px solid #fecaca',ic('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>'), 'Remove Subscriber')
+      + '</div>';
+  }
+
+  actionsEl.querySelectorAll('.mgmt-btn').forEach(function(btn) {
+    btn.onclick = function() { handleMemberAction(btn.dataset.action, m); };
+  });
+  openModal('modal-manage-member');
+}
+
+function handleMemberAction(action, m) {
+  closeModal('modal-manage-member');
+  if (action === 'charge')        { openChargeModal(m); }
+  else if (action === 'refund')   { openRefundModal(m); }
+  else if (action === 'invoice')  { openInvoiceModal(m); }
+  else if (action === 'viewinvoices') { openViewInvoices(m); }
+  else if (action === 'changeplan')   { openChangePlanModal(m); }
+  else if (action === 'changesubtype'){ openChangeSubTypeModal(m); }
+  else if (action === 'addtoplan')    { openAddToPlan(m); }
+  else if (action === 'editinfo')     { toast('Edit info for ' + m.fname + ' — opening form'); }
+  else if (action === 'applyfee') { openApplyFeeModal(m); }
+  else if (action === 'waivefee') { openWaiveFeeModal(m); }
+  else if (action === 'pause') {
+    m.engagement = m.engagement === 'Paused' ? 'Active' : 'Paused';
+    renderSubsTable();
+    toast(m.engagement === 'Paused' ? m.fname + "'s service paused" : m.fname + "'s service resumed");
+  }
+  else if (action === 'cancel') {
+    m.subscription = ''; m.membership = '';
+    m.engagement = 'Inactive'; m.status = 'subscriber';
+    renderSubsTable();
+    toast('Service cancelled for ' + m.fname);
+  }
+  else if (action === 'delete') {
+    subsMembers = subsMembers.filter(function(x){ return x.id !== m.id; });
+    renderSubsTable();
+    toast(m.fname + ' removed');
+  }
+}
+
+function openChargeModal(m) {
+  document.getElementById('charge-modal-name').textContent = m.fname + ' ' + m.lname;
+  document.getElementById('charge-modal-email').textContent = m.email;
+  document.getElementById('charge-amount-input').value = m.billing ? m.billing.toFixed(2) : '';
+  document.getElementById('charge-modal-confirm').onclick = function() {
+    var amt = parseFloat(document.getElementById('charge-amount-input').value);
+    if (!amt || amt <= 0) { toast('Enter a valid amount'); return; }
+    closeModal('modal-charge-now');
+    toast('✓ $' + amt.toFixed(2) + ' charged to ' + m.fname + "'s account");
+  };
+  openModal('modal-charge-now');
+}
+
+function openRefundModal(m) {
+  document.getElementById('refund-modal-name').textContent = m.fname + ' ' + m.lname;
+  document.getElementById('refund-amount-input').value = m.billing ? m.billing.toFixed(2) : '';
+  document.getElementById('refund-modal-confirm').onclick = function() {
+    var amt = parseFloat(document.getElementById('refund-amount-input').value);
+    if (!amt || amt <= 0) { toast('Enter a valid amount'); return; }
+    closeModal('modal-refund');
+    toast('✓ $' + amt.toFixed(2) + ' refund issued to ' + m.fname + ' — 3-5 business days');
+  };
+  openModal('modal-refund');
+}
+
+function openInvoiceModal(m) {
+  document.getElementById('invoice-modal-name').textContent = m.fname + ' ' + m.lname;
+  document.getElementById('invoice-modal-email').textContent = m.email;
+  document.getElementById('invoice-amount-input').value = m.billing ? m.billing.toFixed(2) : '';
+  document.getElementById('invoice-desc-input').value = m.subscription || m.membership || '';
+  document.getElementById('invoice-modal-send').onclick = function() {
+    var amt = parseFloat(document.getElementById('invoice-amount-input').value);
+    if (!amt) { toast('Enter invoice amount'); return; }
+    closeModal('modal-send-invoice');
+    toast('✓ Invoice for $' + amt.toFixed(2) + ' sent to ' + m.email);
+  };
+  openModal('modal-send-invoice');
+}
+
+function openViewInvoices(m) {
+  var list = document.getElementById('invoices-list');
+  var invoices = [
+    { date:'Mar 15, 2026', desc: m.subscription || m.membership || 'Service', amt: m.billing, status:'Paid' },
+    { date:'Feb 15, 2026', desc: m.subscription || m.membership || 'Service', amt: m.billing, status:'Paid' },
+    { date:'Jan 15, 2026', desc: m.subscription || m.membership || 'Service', amt: m.billing, status:'Paid' },
+  ];
+  document.getElementById('invoices-modal-name').textContent = m.fname + ' ' + m.lname + "'s Invoices";
+  list.innerHTML = invoices.map(function(inv) {
+    var color = inv.status === 'Paid' ? '#16a34a' : '#dc2626';
+    var bg = inv.status === 'Paid' ? '#dcfce7' : '#fee2e2';
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);">'
+      + '<div><div style="font-weight:700;font-size:0.88rem;">' + inv.desc + '</div><div style="font-size:0.75rem;color:var(--text-dim);">' + inv.date + '</div></div>'
+      + '<div style="display:flex;align-items:center;gap:10px;">'
+      + '<span style="font-weight:800;">$' + (inv.amt||0).toFixed(2) + '</span>'
+      + '<span style="padding:2px 8px;background:'+bg+';color:'+color+';border-radius:8px;font-size:0.7rem;font-weight:700;">' + inv.status + '</span>'
+      + '</div></div>';
+  }).join('');
+  openModal('modal-view-invoices');
+}
+
+function openApplyFeeModal(m) {
+  document.getElementById('applyfee-modal-name').textContent = m.fname + ' ' + m.lname;
+  document.getElementById('applyfee-amount-input').value = '';
+  document.getElementById('applyfee-modal-confirm').onclick = function() {
+    var amt = parseFloat(document.getElementById('applyfee-amount-input').value);
+    if (!amt || amt <= 0) { toast('Enter a fee amount'); return; }
+    m.fees += amt; m.balanceDue += amt;
+    renderSubsTable();
+    closeModal('modal-apply-fee');
+    toast('$' + amt.toFixed(2) + ' fee applied to ' + m.fname);
+  };
+  openModal('modal-apply-fee');
+}
+
+function openChangePlanModal(m) {
+  document.getElementById('changeplan-modal-name').textContent = m.fname + ' ' + m.lname;
+  document.getElementById('changeplan-current').textContent = m.membership || m.subscription || 'None';
+  document.getElementById('changeplan-modal-confirm').onclick = function() {
+    var plan = document.getElementById('changeplan-select').value;
+    var newamt = parseFloat(document.getElementById('changeplan-newamt').value) || 0;
+    m.membership = plan;
+    if (newamt) m.billing = newamt;
+    renderSubsTable();
+    closeModal('modal-change-plan');
+    toast('✓ ' + m.fname + " plan changed to " + plan + (newamt ? ' — $' + newamt.toFixed(2) + '/mo' : ''));
+  };
+  openModal('modal-change-plan');
+}
+
+function openChangeSubTypeModal(m) {
+  document.getElementById('changesub-modal-name').textContent = m.fname + ' ' + m.lname;
+  document.getElementById('changesub-current').textContent = m.subscription || 'None';
+  document.getElementById('changesub-modal-confirm').onclick = function() {
+    var newtype = document.getElementById('changesub-type').value;
+    var newamt = parseFloat(document.getElementById('changesub-newamt').value) || 0;
+    if (newtype) m.subscription = newtype;
+    if (newamt) m.billing = newamt;
+    renderSubsTable();
+    closeModal('modal-change-sub-type');
+    toast('✓ ' + m.fname + " subscription updated");
+  };
+  openModal('modal-change-sub-type');
+}
+
+function openSubscriberPreview(name, location, category, initials) {
+  document.getElementById('sub-preview-initials').textContent = initials;
+  document.getElementById('sub-preview-name').textContent = name;
+  document.getElementById('sub-preview-location').textContent = location;
+  document.getElementById('sub-preview-category').textContent = category;
+  openModal('modal-subscriber-preview');
+}
+
+function addSubsMember() {
+  var fname = document.getElementById('add-sub-fname').value.trim();
+  var lname = document.getElementById('add-sub-lname').value.trim();
+  var email = document.getElementById('add-sub-email').value.trim();
+  var plan = document.getElementById('add-sub-plan').value;
+  var tier = document.getElementById('add-sub-tier').value;
+  if (!fname || !email) { toast('Please enter a name and email'); return; }
+  var billing = plan ? parseFloat(plan.match(/\$([\d.]+)/)?.[1] || 0) : 0;
+  subsMembers.push({
+    id: subsMemberIdCounter++,
+    fname: fname, lname: lname, email: email,
+    engagement: 'Active',
+    subscription: plan || '',
+    membership: tier || '',
+    billing: billing,
+    nextPayment: plan ? 'Apr 30, 2026' : '—',
+    balanceDue: 0, fees: 0,
+    status: plan ? 'subscription' : (tier ? 'membership' : 'subscriber')
+  });
+  ['add-sub-fname','add-sub-lname','add-sub-email'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('add-sub-plan').value = '';
+  document.getElementById('add-sub-tier').value = '';
+  closeModal('modal-add-subscriber');
+  renderSubsTable();
+  toast('✓ ' + fname + ' added!');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  renderSubsTable();
+});
+
+function openAddToPlan(m) {
+  var ctx = document.getElementById('add-to-plan-context');
+  if (ctx) ctx.textContent = 'Adding member to ' + m.fname + ' ' + m.lname + "'s " + m.membership + ' Membership';
+  var note = document.getElementById('atp-holder-name-note');
+  if (note) note.textContent = m.fname + ' ' + m.lname;
+  ['atp-member-name','atp-notes','atp-addon-amt'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  openModal('modal-add-to-plan');
+}
+
+function saveAddToPlan() {
+  var name = document.getElementById('atp-member-name').value.trim();
+  var rel = document.getElementById('atp-relationship').value;
+  var svc = document.getElementById('atp-service').value;
+  var addon = parseFloat(document.getElementById('atp-addon-amt').value) || 0;
+  var cycle = document.getElementById('atp-billing-cycle').value;
+  if (!name) { toast('Please enter the member name'); return; }
+  var m = currentSubsMember;
+  if (addon > 0) {
+    m.billing = (m.billing || 0) + addon;
+    renderSubsTable();
+  }
+  closeModal('modal-add-to-plan');
+  var msg = '✓ ' + name + ' (' + rel + ') added to ' + (m ? m.fname + "'s" : '') + ' plan';
+  if (addon > 0) msg += ' · $' + addon.toFixed(2) + '/' + cycle.toLowerCase() + ' added · Updated billing notice sent';
+  toast(msg);
+}
+
+function openWaiveFeeModal(m) {
+  document.getElementById('waivefee-modal-name').textContent = m.fname + ' ' + m.lname;
+  document.getElementById('waivefee-current').textContent = 'Current fees on account: $' + (m.fees || 0).toFixed(2);
+  document.getElementById('waivefee-amount-input').value = m.fees > 0 ? m.fees.toFixed(2) : '';
+  document.getElementById('waivefee-reason').value = '';
+  document.getElementById('waivefee-confirm-btn').onclick = function() {
+    var amt = parseFloat(document.getElementById('waivefee-amount-input').value);
+    if (!amt || amt <= 0) { toast('Enter an amount to waive'); return; }
+    var waived = Math.min(amt, m.fees);
+    m.fees = Math.max(0, m.fees - waived);
+    m.balanceDue = Math.max(0, m.balanceDue - waived);
+    renderSubsTable();
+    closeModal('modal-waive-fee');
+    toast('$' + waived.toFixed(2) + ' in fees waived for ' + m.fname);
+  };
+  openModal('modal-waive-fee');
+}
+
+// ── BOOKING MANAGEMENT ────────────────────────────────────────────────────────
+var incomingBookings = [
+  { id:101, client:'Ava Thompson', email:'ava@email.com', service:'Full Set Lashes', date:'Apr 18, 2026', time:'11:00 AM', deposit:true, depositAmt:30, depositPaid:true, status:'confirmed', banned:false },
+  { id:102, client:'Marcus Lee', email:'marcus@email.com', service:'Classic Haircut', date:'Apr 19, 2026', time:'2:00 PM', deposit:false, depositAmt:0, depositPaid:false, status:'pending', banned:false },
+  { id:103, client:'Jasmine Rivera', email:'jasmine@email.com', service:'Deep Tissue Massage', date:'Apr 20, 2026', time:'10:00 AM', deposit:true, depositAmt:20, depositPaid:false, status:'pending', banned:false },
+];
+var deletedBookings = [];
+var reviewQuestions = [
+  { q:'How would you describe your overall experience?', type:'choice', choices:['Excellent','Good','Average','Poor'] },
+  { q:'Would you recommend this service to a friend?', type:'choice', choices:['Definitely','Maybe','No'] },
+];
+
+function bookingTab(tab) {
+  var tabs = ['services','incoming'];
+  tabs.forEach(function(t) {
+    var btn = document.getElementById('bk-tab-'+t);
+    var content = document.getElementById('bk-'+t+'-content');
+    if (btn) { btn.style.background = t===tab ? 'var(--brown)' : 'transparent'; btn.style.color = t===tab ? '#fff' : 'var(--text-dim)'; }
+    if (content) content.style.display = t===tab ? 'block' : 'none';
+  });
+  if (tab === 'incoming') renderIncomingBookings();
+}
+
+function renderIncomingBookings() {
+  var list = document.getElementById('bk-incoming-list');
+  var emptyEl = document.getElementById('bk-incoming-empty');
+  if (!list) return;
+  var active = incomingBookings.filter(function(b){ return b.status !== 'deleted'; });
+  if (active.length === 0) {
+    list.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'block';
+  } else {
+    if (emptyEl) emptyEl.style.display = 'none';
+    list.innerHTML = active.map(function(b) {
+      var statusColor = b.status==='confirmed' ? '#16a34a' : b.status==='cancelled' ? '#dc2626' : '#d97706';
+      var statusBg = b.status==='confirmed' ? '#dcfce7' : b.status==='cancelled' ? '#fee2e2' : '#fef3c7';
+      var depositBadge = b.deposit ? (b.depositPaid ? '<span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 7px;border-radius:7px;font-weight:700;">Deposit Paid</span>' : '<span style="font-size:0.65rem;background:#fef3c7;color:#d97706;padding:2px 7px;border-radius:7px;font-weight:700;">Deposit Pending</span>') : '';
+      var bannedBadge = b.banned ? '<span style="font-size:0.65rem;background:#fee2e2;color:#dc2626;padding:2px 7px;border-radius:7px;font-weight:700;">⛔ Banned</span>' : '';
+      return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;">'
+        + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;">'
+        + '<div>'
+        + '<div style="font-weight:800;font-size:0.92rem;">' + b.client + '</div>'
+        + '<div style="font-size:0.75rem;color:var(--text-dim);">' + b.email + '</div>'
+        + '<div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-top:4px;">' + b.service + '</div>'
+        + '<div style="font-size:0.78rem;color:var(--text-dim);">📅 ' + b.date + ' · ' + b.time + '</div>'
+        + '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;">'
+        + '<span style="padding:2px 8px;background:'+statusBg+';color:'+statusColor+';border-radius:8px;font-size:0.7rem;font-weight:700;">' + b.status.charAt(0).toUpperCase()+b.status.slice(1) + '</span>'
+        + depositBadge + bannedBadge
+        + '</div></div>'
+        + '<button onclick="openManageBooking('+b.id+')" style="padding:7px 16px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.78rem;white-space:nowrap;flex-shrink:0;">Manage</button>'
+        + '</div></div>';
+    }).join('');
+  }
+  // Deleted bookings
+  var delSection = document.getElementById('bk-deleted-section');
+  var delList = document.getElementById('bk-deleted-list');
+  if (deletedBookings.length > 0 && delSection && delList) {
+    delSection.style.display = 'block';
+    delList.innerHTML = deletedBookings.map(function(b) {
+      return '<div style="background:var(--cream);border:1px dashed var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">'
+        + '<div><div style="font-weight:700;font-size:0.85rem;">' + b.client + ' — ' + b.service + '</div><div style="font-size:0.72rem;color:var(--text-dim);">' + b.date + ' · ' + b.time + '</div></div>'
+        + '<button onclick="restoreBooking('+b.id+')" style="padding:6px 12px;background:var(--brown);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:0.75rem;font-weight:700;">Restore</button>'
+        + '</div>';
+    }).join('');
+  } else if (delSection) { delSection.style.display = 'none'; }
+}
+
+function openManageBooking(id) {
+  var b = incomingBookings.find(function(x){ return x.id===id; });
+  if (!b) return;
+  document.getElementById('mbk-title').textContent = b.client + ' — ' + b.service;
+  document.getElementById('mbk-meta').textContent = b.date + ' · ' + b.time + ' · ' + b.email;
+  var el = document.getElementById('mbk-actions');
+  var s = function(bg,col,brd){ return 'padding:11px;background:'+bg+';color:'+col+';border:'+(brd||'none')+';border-radius:10px;cursor:pointer;font-weight:700;font-size:0.82rem;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;'; };
+  var ic = function(p){ return '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">'+p+'</svg>'; };
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'
+    + '<button data-bka="reschedule" style="'+s('var(--cream)','var(--text)','1px solid var(--border)')+'">'+ic('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>')+'Reschedule & Send Client Link</button>'
+    + '<button data-bka="deposit" style="'+s('var(--cream)','var(--text)','1px solid var(--border)')+'">'+ic('<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>')+'Send Deposit Request</button>'
+    + '<button data-bka="charge" style="'+s('var(--cream)','var(--text)','1px solid var(--border)')+'">'+ic('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>')+'Charge Fee (Late / No-Show / Cancel)</button>'
+    + '<button data-bka="review" style="'+s('var(--cream)','var(--text)','1px solid var(--border)')+'">'+ic('<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>')+'Send Review Questionnaire</button>'
+    + '<button data-bka="cancel" style="'+s('#fee2e2','#dc2626','1px solid #fecaca')+'">'+ic('<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>') +'Cancel Booking</button>'
+    + '<button data-bka="delete" style="'+s('#fff','#dc2626','1.5px solid #fecaca')+'">'+ic('<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>')+'Delete Booking</button>'
+    + '<button data-bka="ban" style="'+s('#1a0a00','#ef4444','1.5px solid #7f1d1d')+'">'+ic('<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>') + (b.banned ? 'Unban Client' : '⛔ Ban from Booking') + '</button>'
+    + '</div>';
+  el.querySelectorAll('button[data-bka]').forEach(function(btn) {
+    btn.onclick = function() { handleBookingAction(btn.dataset.bka, b); };
+  });
+  openModal('modal-manage-booking');
+}
+
+function handleBookingAction(action, b) {
+  closeModal('modal-manage-booking');
+  if (action === 'reschedule') {
+    document.getElementById('bk-reschedule-client').textContent = b.client + ' · ' + b.email;
+    document.getElementById('bk-reschedule-date').value = '';
+    document.getElementById('bk-reschedule-time').value = '';
+    document.getElementById('bk-reschedule-msg').value = '';
+    document.getElementById('bk-reschedule-confirm').onclick = function() {
+      var d = document.getElementById('bk-reschedule-date').value;
+      var t = document.getElementById('bk-reschedule-time').value;
+      if (!d || !t) { toast('Enter new date and time'); return; }
+      b.date = d; b.time = t;
+      closeModal('modal-bk-reschedule');
+      renderIncomingBookings();
+      toast('✓ Reschedule link sent to ' + b.client + ' for ' + d + ' at ' + t);
+    };
+    openModal('modal-bk-reschedule');
+  } else if (action === 'deposit') {
+    document.getElementById('bk-deposit-client').textContent = b.client + ' · ' + b.email;
+    document.getElementById('bk-deposit-amount').value = '';
+    document.getElementById('bk-deposit-due').value = '';
+    document.getElementById('bk-deposit-msg').value = '';
+    document.getElementById('bk-deposit-confirm').onclick = function() {
+      var amt = parseFloat(document.getElementById('bk-deposit-amount').value);
+      if (!amt) { toast('Enter deposit amount'); return; }
+      b.deposit = true; b.depositAmt = amt;
+      closeModal('modal-bk-deposit');
+      renderIncomingBookings();
+      toast('✓ Deposit request of $' + amt.toFixed(2) + ' sent to ' + b.client);
+    };
+    openModal('modal-bk-deposit');
+  } else if (action === 'charge') {
+    document.getElementById('bk-charge-title').textContent = 'Charge Fee';
+    document.getElementById('bk-charge-client').textContent = b.client + ' · ' + b.email;
+    document.getElementById('bk-charge-amount').value = '';
+    document.getElementById('bk-charge-note').value = '';
+    document.getElementById('bk-charge-confirm').onclick = function() {
+      var amt = parseFloat(document.getElementById('bk-charge-amount').value);
+      var type = document.getElementById('bk-charge-type').value;
+      if (!amt) { toast('Enter fee amount'); return; }
+      closeModal('modal-bk-charge');
+      toast('✓ ' + type + ' of $' + amt.toFixed(2) + ' charged to ' + b.client);
+    };
+    openModal('modal-bk-charge');
+  } else if (action === 'review') {
+    document.getElementById('bk-review-client').textContent = b.client + ' · ' + b.email;
+    var preview = document.getElementById('bk-review-preview-questions');
+    if (preview) preview.innerHTML = reviewQuestions.map(function(q,i) {
+      return '<div style="margin-bottom:6px;"><strong>' + (i+1) + '. ' + q.q + '</strong><br>' + q.choices.join(' · ') + '</div>';
+    }).join('');
+    document.getElementById('bk-review-note').value = '';
+    document.getElementById('bk-review-confirm').onclick = function() {
+      closeModal('modal-bk-review');
+      toast('✓ Review questionnaire sent to ' + b.client);
+    };
+    openModal('modal-bk-review');
+  } else if (action === 'cancel') {
+    b.status = 'cancelled';
+    renderIncomingBookings();
+    toast('Booking cancelled for ' + b.client);
+  } else if (action === 'delete') {
+    incomingBookings = incomingBookings.filter(function(x){ return x.id !== b.id; });
+    deletedBookings.unshift(b);
+    if (deletedBookings.length > 5) deletedBookings.pop();
+    renderIncomingBookings();
+    toast('Booking deleted · Tap Restore to undo');
+  } else if (action === 'ban') {
+    b.banned = !b.banned;
+    renderIncomingBookings();
+    toast(b.banned ? '⛔ ' + b.client + ' banned from booking' : '✓ ' + b.client + ' ban removed');
+  }
+}
+
+function restoreBooking(id) {
+  var b = deletedBookings.find(function(x){ return x.id===id; });
+  if (!b) return;
+  deletedBookings = deletedBookings.filter(function(x){ return x.id!==id; });
+  incomingBookings.push(b);
+  renderIncomingBookings();
+  toast('✓ Booking restored for ' + b.client);
+}
+
+var reviewQCounter = 10;
+function addReviewQuestion() {
+  var q = { id: reviewQCounter++, q:'', type:'choice', choices:[''] };
+  reviewQuestions.push(q);
+  renderReviewQuestions();
+}
+
+function renderReviewQuestions() {
+  var el = document.getElementById('review-questions-list');
+  if (!el) return;
+  el.innerHTML = reviewQuestions.map(function(q,i) {
+    return '<div style="background:var(--cream);border-radius:10px;padding:12px;">'
+      + '<div style="display:flex;gap:8px;margin-bottom:8px;">'
+      + '<input type="text" value="'+q.q.replace(/"/g,'&quot;')+'" placeholder="Question '+( i+1)+'..." oninput="reviewQuestions['+i+'].q=this.value" style="flex:1;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-family:sans-serif;font-size:0.82rem;">'
+      + '<button onclick="reviewQuestions.splice('+i+',1);renderReviewQuestions()" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:7px;cursor:pointer;font-size:0.8rem;font-weight:700;">✕</button>'
+      + '</div>'
+      + '<input type="text" value="'+q.choices.join(', ')+'" placeholder="Answer choices separated by commas" oninput="reviewQuestions['+i+'].choices=this.value.split(\',\').map(function(c){return c.trim()})" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;font-size:0.78rem;font-family:sans-serif;box-sizing:border-box;">'
+      + '</div>';
+  }).join('');
+}
+
+function saveReviewQuestionnaire() {
+  toast('✓ Review questionnaire saved — ' + reviewQuestions.length + ' questions');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  renderReviewQuestions();
+  var badge = document.getElementById('bk-incoming-badge');
+  if (badge) badge.textContent = incomingBookings.length;
+});
+
+function toggleReviewBuilder() {
+  var builder = document.getElementById('bk-review-builder');
+  var list = document.getElementById('bk-incoming-list');
+  var btn = document.getElementById('bk-deleted-section');
+  if (!builder) return;
+  var isShowing = builder.style.display !== 'none';
+  builder.style.display = isShowing ? 'none' : 'block';
+  if (list) list.style.display = isShowing ? 'flex' : 'none';
+}
 </script>
 <!-- BODY-LEVEL MODALS — position:fixed works correctly here -->
 
@@ -7244,10 +8027,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📅 Booking</div>
-        <p>Found in the sidebar under <strong>Booking</strong>. Add bookable services — each with a name, price, duration, category, description, and optional cover photo. Toggle <strong>Booking Page Live</strong> to make your booking page visible on your MASSED profile.</p>
-        <p style="margin-top:6px;"><strong>Deposit system:</strong> When adding a service, toggle <strong>Require Deposit</strong> on and set a fixed dollar amount or percentage. When a client books, they pay the deposit upfront to secure their date and time. The remaining balance is collected at the time of service.</p>
-        <p style="margin-top:6px;"><strong>How clients book:</strong> They tap <strong>Book Now</strong> on your service card, pick a date from the calendar, select a time slot, and confirm. If a deposit is required the button shows the deposit amount — tapping it completes payment and locks in the booking.</p>
-      </div>
+        <p>Found in the sidebar under <strong>Booking</strong>. Two tabs: <strong>Services</strong> (add/manage your bookable services) and <strong>Incoming Bookings</strong> (manage all client appointments).</p>
+        <p style="margin-top:6px;"><strong>Deposit system:</strong> Toggle Require Deposit when adding a service. Client pays the deposit upfront; remaining balance collected at time of service.</p>
+        <p style="margin-top:6px;"><strong>Incoming Bookings — Manage menu:</strong> Reschedule &amp; send client link · Send Deposit Request (custom amount) · Charge Fee (late / no-show / cancellation / rebooking — enter amount) · Send Review Questionnaire · Cancel Booking · Delete Booking (restoreable) · Ban from Booking (reversible).</p>
+        <p style="margin-top:6px;"><strong>Review Questionnaire:</strong> Build custom questions with multiple-choice answer options. 5-star rating always included. Send to any client directly from their booking Manage menu.</p>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📱 Social Links</div>
@@ -7292,6 +8075,15 @@ document.addEventListener('DOMContentLoaded', function() {
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🌐 Browser Icon</div>
         <p>Found in the sidebar under <strong>Browser Icon</strong>. Upload a PNG, JPG, or SVG — it auto-resizes to 16×16 and 32×32 (standard favicon sizes). A <strong>live browser tab preview</strong> shows exactly how your tab will look before you apply it. You can also set a custom Browser Tab Title that appears next to the icon. Click <strong>Apply Browser Icon to My Page</strong> to publish it to your MASSED link page.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">💳 Subscriptions / Subscribers / Memberships</div>
+        <p>Found in the sidebar under <strong>Subscriptions / Memberships / Subs</strong>.</p>
+        <p style="margin-top:6px;"><strong>Subscribers card:</strong> Shows your total subscriber count with profile avatars. Click any avatar for a read-only glimpse of that subscriber's name, location, and category — visible to you only, no actions available to them.</p>
+        <p style="margin-top:6px;"><strong>Subscriptions:</strong> Paid recurring accounts. Tap Manage to access: Charge Now (enter custom amount), Change Subscription Amount/Type, Send Invoice (with amount, description, due date), View Invoices (history), Refund Subscription, Cancel Subscription, Delete.</p>
+        <p style="margin-top:6px;"><strong>Memberships:</strong> Premium accounts with full management. Tap Manage to access: Add to Plan (manually add a family member — daughter, son, spouse — to an existing membership with an add-on amount that updates the primary holder's bill and sends them a billing notice), Change Plan (upgrade/downgrade tier and set new monthly amount), Charge Now, Send Invoice, View Invoices, Edit Info, Pause/Resume Service, Apply Fee (enter custom fee amount and type), Waive Fee, Cancel, Delete.</p>
+        <p style="margin-top:6px;"><strong>Filters:</strong> All · Subscribers · Subscriptions · Memberships · Late/Overdue (shows anyone with a balance due).</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
@@ -7812,6 +8604,335 @@ document.addEventListener('DOMContentLoaded', function() {
       <p><strong>Booking Page Live toggle:</strong> At the top of the Booking screen — flip this on to make your entire booking page visible on your MASSED profile. Flip it off to hide all booking from visitors.</p>
     </div>
     <button class="btn-save" style="margin-top:16px;width:100%;" onclick="closeModal('modal-help-booking')">Got it</button>
+  </div>
+</div>
+
+<div id="modal-add-to-plan" class="modal-overlay" onclick="closeModal('modal-add-to-plan')">
+  <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Add to Membership Plan</h2>
+      <button onclick="closeModal('modal-add-to-plan')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="add-to-plan-context" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:18px;padding:10px 14px;background:var(--cream);border-radius:9px;"></div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="form-field">
+        <label>Member Being Added</label>
+        <input type="text" id="atp-member-name" placeholder="e.g. Daughter's name">
+      </div>
+      <div class="form-field">
+        <label>Relationship to Account Holder</label>
+        <select id="atp-relationship">
+          <option>Daughter</option>
+          <option>Son</option>
+          <option>Spouse / Partner</option>
+          <option>Family Member</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Service / Plan for this Member</label>
+        <select id="atp-service">
+          <option>Same as primary — Basic</option>
+          <option>Same as primary — Standard</option>
+          <option>Same as primary — Premium</option>
+          <option>Add-on: Weekly visits</option>
+          <option>Add-on: Bi-weekly visits</option>
+          <option>Custom</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="form-field" style="margin:0;"><label>Add-on Amount ($)</label><input type="number" id="atp-addon-amt" placeholder="e.g. 25.00" min="0" step="0.01"></div>
+        <div class="form-field" style="margin:0;"><label>Billing Cycle</label><select id="atp-billing-cycle"><option>Monthly</option><option>Weekly</option><option>Bi-weekly</option></select></div>
+      </div>
+      <div class="form-field">
+        <label>Notes (optional)</label>
+        <textarea id="atp-notes" placeholder="e.g. Gets her hair done every two weeks — Thursdays preferred" style="min-height:55px;"></textarea>
+      </div>
+      <div style="background:var(--brown-bg);border-radius:10px;padding:12px 14px;font-size:0.78rem;color:var(--brown);line-height:1.6;">
+        💡 The add-on amount will be added to <span id="atp-holder-name-note">the primary account holder</span>'s monthly bill. They will receive an updated billing notice.
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-add-to-plan')">Cancel</button>
+      <button class="btn-save" style="flex:1;" onclick="saveAddToPlan()">Add to Plan & Send Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHARGE NOW MODAL -->
+<div id="modal-charge-now" class="modal-overlay" onclick="closeModal('modal-charge-now')">
+  <div class="modal" style="max-width:400px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Charge Now</h2>
+      <button onclick="closeModal('modal-charge-now')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="charge-modal-name" style="font-weight:700;font-size:0.9rem;"></div>
+    <div id="charge-modal-email" style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;"></div>
+    <div class="form-field"><label>Amount to Charge ($)</label><input type="number" id="charge-amount-input" placeholder="0.00" min="0" step="0.01"></div>
+    <div class="form-field"><label>Reason (optional)</label><input type="text" id="charge-reason-input" placeholder="e.g. Monthly membership, Late fee"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-charge-now')">Cancel</button>
+      <button class="btn-save" id="charge-modal-confirm" style="flex:1;">Charge</button>
+    </div>
+  </div>
+</div>
+
+<!-- REFUND MODAL -->
+<div id="modal-refund" class="modal-overlay" onclick="closeModal('modal-refund')">
+  <div class="modal" style="max-width:400px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Issue Refund</h2>
+      <button onclick="closeModal('modal-refund')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="refund-modal-name" style="font-weight:700;font-size:0.9rem;margin-bottom:14px;"></div>
+    <div class="form-field"><label>Refund Amount ($)</label><input type="number" id="refund-amount-input" placeholder="0.00" min="0" step="0.01"></div>
+    <div class="form-field"><label>Reason</label><input type="text" id="refund-reason-input" placeholder="e.g. Cancelled service, Billing error"></div>
+    <div style="background:var(--cream);border-radius:9px;padding:10px 12px;font-size:0.75rem;color:var(--text-dim);margin-bottom:14px;">Refunds process in 3-5 business days back to the original payment method.</div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-cancel" onclick="closeModal('modal-refund')">Cancel</button>
+      <button id="refund-modal-confirm" style="flex:1;padding:11px;background:#16a34a;color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;">Issue Refund</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEND INVOICE MODAL -->
+<div id="modal-send-invoice" class="modal-overlay" onclick="closeModal('modal-send-invoice')">
+  <div class="modal" style="max-width:420px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Send Invoice</h2>
+      <button onclick="closeModal('modal-send-invoice')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="invoice-modal-name" style="font-weight:700;font-size:0.9rem;"></div>
+    <div id="invoice-modal-email" style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;"></div>
+    <div class="form-field"><label>Invoice Amount ($)</label><input type="number" id="invoice-amount-input" placeholder="0.00" min="0" step="0.01"></div>
+    <div class="form-field"><label>Description</label><input type="text" id="invoice-desc-input" placeholder="e.g. Monthly membership — April 2026"></div>
+    <div class="form-field"><label>Due Date</label><input type="text" id="invoice-due-input" placeholder="e.g. Apr 30, 2026"></div>
+    <div style="display:flex;gap:10px;margin-top:6px;">
+      <button class="btn-cancel" onclick="closeModal('modal-send-invoice')">Cancel</button>
+      <button class="btn-save" id="invoice-modal-send" style="flex:1;">Send Invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW INVOICES MODAL -->
+<div id="modal-view-invoices" class="modal-overlay" onclick="closeModal('modal-view-invoices')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;" id="invoices-modal-name">Invoices</h2>
+      <button onclick="closeModal('modal-view-invoices')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="invoices-list" style="max-height:60vh;overflow-y:auto;"></div>
+    <button class="btn-cancel" style="width:100%;margin-top:16px;" onclick="closeModal('modal-view-invoices')">Close</button>
+  </div>
+</div>
+
+<!-- APPLY FEE MODAL -->
+<div id="modal-apply-fee" class="modal-overlay" onclick="closeModal('modal-apply-fee')">
+  <div class="modal" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Apply Fee</h2>
+      <button onclick="closeModal('modal-apply-fee')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="applyfee-modal-name" style="font-weight:700;margin-bottom:14px;"></div>
+    <div class="form-field"><label>Fee Amount ($)</label><input type="number" id="applyfee-amount-input" placeholder="e.g. 10.00" min="0" step="0.01"></div>
+    <div class="form-field"><label>Fee Type</label><select id="applyfee-type"><option>Late fee</option><option>Convenience fee</option><option>Returned payment fee</option><option>Other</option></select></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-apply-fee')">Cancel</button>
+      <button id="applyfee-modal-confirm" style="flex:1;padding:11px;background:#d97706;color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;">Apply Fee</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PLAN MODAL (membership) -->
+<div id="modal-change-plan" class="modal-overlay" onclick="closeModal('modal-change-plan')">
+  <div class="modal" style="max-width:420px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Change Plan</h2>
+      <button onclick="closeModal('modal-change-plan')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="changeplan-modal-name" style="font-weight:700;margin-bottom:4px;"></div>
+    <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:14px;">Current plan: <strong id="changeplan-current"></strong></div>
+    <div class="form-field"><label>New Plan / Tier</label><select id="changeplan-select"><option>Silver</option><option>Gold</option><option>Platinum</option><option>Custom</option></select></div>
+    <div class="form-field"><label>New Monthly Amount ($)</label><input type="number" id="changeplan-newamt" placeholder="Leave blank to keep current" min="0" step="0.01"></div>
+    <div class="form-field"><label>Note to Member (optional)</label><textarea id="changeplan-note" placeholder="e.g. Your plan has been upgraded to Gold. Your new monthly rate is $49.99." style="min-height:60px;"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-change-plan')">Cancel</button>
+      <button class="btn-save" id="changeplan-modal-confirm" style="flex:1;">Update Plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE SUBSCRIPTION TYPE MODAL -->
+<div id="modal-change-sub-type" class="modal-overlay" onclick="closeModal('modal-change-sub-type')">
+  <div class="modal" style="max-width:420px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Change Subscription</h2>
+      <button onclick="closeModal('modal-change-sub-type')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="changesub-modal-name" style="font-weight:700;margin-bottom:4px;"></div>
+    <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:14px;">Current: <strong id="changesub-current"></strong></div>
+    <div class="form-field"><label>New Subscription Type</label><input type="text" id="changesub-type" placeholder="e.g. Premium — Monthly, Annual Plan"></div>
+    <div class="form-field"><label>New Amount ($)</label><input type="number" id="changesub-newamt" placeholder="New recurring amount" min="0" step="0.01"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-change-sub-type')">Cancel</button>
+      <button class="btn-save" id="changesub-modal-confirm" style="flex:1;">Update Subscription</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUBSCRIBER PREVIEW MODAL -->
+<div id="modal-subscriber-preview" class="modal-overlay" onclick="closeModal('modal-subscriber-preview')">
+  <div class="modal" style="max-width:320px;text-align:center;" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px;">
+      <button onclick="closeModal('modal-subscriber-preview')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="sub-preview-avatar" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-weight:900;font-size:1.3rem;color:#fff;" id="sub-preview-initials"></div>
+    <div style="font-family:'Georgia',serif;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:4px;" id="sub-preview-name"></div>
+    <div style="font-size:0.8rem;color:var(--text-dim);margin-bottom:4px;">📍 <span id="sub-preview-location"></span></div>
+    <div style="font-size:0.78rem;color:var(--brown);font-weight:600;margin-bottom:16px;" id="sub-preview-category"></div>
+    <div style="background:var(--cream);border-radius:10px;padding:10px 14px;font-size:0.75rem;color:var(--text-dim);margin-bottom:16px;">
+      👁 Profile preview only — visible to you as the creator. No actions available.
+    </div>
+    <button class="btn-cancel" style="width:100%;" onclick="closeModal('modal-subscriber-preview')">Close</button>
+  </div>
+</div>
+
+<div id="modal-waive-fee" class="modal-overlay" onclick="closeModal('modal-waive-fee')">
+  <div class="modal" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Waive Fee</h2>
+      <button onclick="closeModal('modal-waive-fee')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="waivefee-modal-name" style="font-weight:700;margin-bottom:4px;"></div>
+    <div id="waivefee-current" style="font-size:0.78rem;color:var(--text-dim);margin-bottom:14px;"></div>
+    <div class="form-field">
+      <label>Amount to Waive ($)</label>
+      <input type="number" id="waivefee-amount-input" placeholder="Enter amount to waive" min="0" step="0.01">
+    </div>
+    <div class="form-field">
+      <label>Reason (optional)</label>
+      <input type="text" id="waivefee-reason" placeholder="e.g. First-time courtesy waiver">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-waive-fee')">Cancel</button>
+      <button id="waivefee-confirm-btn" style="flex:1;padding:11px;background:#16a34a;color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;">Waive Fee</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE BOOKING MODAL -->
+<div id="modal-manage-booking" class="modal-overlay" onclick="closeModal('modal-manage-booking')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <h2 class="modal-title" style="margin:0;font-size:1rem;" id="mbk-title">Manage Booking</h2>
+      <button onclick="closeModal('modal-manage-booking')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="mbk-meta" style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;"></div>
+    <div id="mbk-actions" style="display:flex;flex-direction:column;gap:8px;"></div>
+  </div>
+</div>
+
+<!-- BOOKING CHARGE MODAL -->
+<div id="modal-bk-charge" class="modal-overlay" onclick="closeModal('modal-bk-charge')">
+  <div class="modal" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;" id="bk-charge-title">Charge Fee</h2>
+      <button onclick="closeModal('modal-bk-charge')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="bk-charge-client" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:14px;"></div>
+    <div class="form-field"><label>Fee Type</label>
+      <select id="bk-charge-type">
+        <option>Late fee</option>
+        <option>No-show / Missed appointment fee</option>
+        <option>Cancellation fee</option>
+        <option>Rebooking fee</option>
+        <option>Deposit</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-field"><label>Amount ($)</label><input type="number" id="bk-charge-amount" placeholder="0.00" min="0" step="0.01"></div>
+    <div class="form-field"><label>Note to Client (optional)</label><input type="text" id="bk-charge-note" placeholder="e.g. Per our cancellation policy"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-bk-charge')">Cancel</button>
+      <button id="bk-charge-confirm" class="btn-save" style="flex:1;">Charge</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESCHEDULE MODAL -->
+<div id="modal-bk-reschedule" class="modal-overlay" onclick="closeModal('modal-bk-reschedule')">
+  <div class="modal" style="max-width:400px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Reschedule Booking</h2>
+      <button onclick="closeModal('modal-bk-reschedule')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="bk-reschedule-client" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:14px;"></div>
+    <div class="form-field"><label>New Date</label><input type="text" id="bk-reschedule-date" placeholder="e.g. Apr 20, 2026"></div>
+    <div class="form-field"><label>New Time</label><input type="text" id="bk-reschedule-time" placeholder="e.g. 2:00 PM"></div>
+    <div class="form-field"><label>Message to Client (optional)</label><textarea id="bk-reschedule-msg" placeholder="e.g. I need to reschedule your appointment. Your new time is..." style="min-height:60px;"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-bk-reschedule')">Cancel</button>
+      <button id="bk-reschedule-confirm" class="btn-save" style="flex:1;">Send Reschedule Link</button>
+    </div>
+  </div>
+</div>
+
+<!-- SEND DEPOSIT MODAL -->
+<div id="modal-bk-deposit" class="modal-overlay" onclick="closeModal('modal-bk-deposit')">
+  <div class="modal" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Request Deposit</h2>
+      <button onclick="closeModal('modal-bk-deposit')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="bk-deposit-client" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:14px;"></div>
+    <div class="form-field"><label>Deposit Amount ($)</label><input type="number" id="bk-deposit-amount" placeholder="e.g. 25.00" min="0" step="0.01"></div>
+    <div class="form-field"><label>Due By</label><input type="text" id="bk-deposit-due" placeholder="e.g. Apr 18, 2026"></div>
+    <div class="form-field"><label>Message (optional)</label><textarea id="bk-deposit-msg" placeholder="e.g. A deposit is required to secure your booking." style="min-height:55px;"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-bk-deposit')">Cancel</button>
+      <button id="bk-deposit-confirm" class="btn-save" style="flex:1;">Send Deposit Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- REVIEW QUESTIONNAIRE SEND MODAL -->
+<div id="modal-bk-review" class="modal-overlay" onclick="closeModal('modal-bk-review')">
+  <div class="modal" style="max-width:420px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Send Review Request</h2>
+      <button onclick="closeModal('modal-bk-review')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="bk-review-client" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:14px;"></div>
+    <div style="background:var(--cream);border-radius:10px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:8px;">Preview — What client will see</div>
+      <div style="font-weight:700;font-size:0.88rem;margin-bottom:6px;">How was your experience? ⭐⭐⭐⭐⭐</div>
+      <div id="bk-review-preview-questions" style="font-size:0.8rem;color:var(--text-dim);"></div>
+    </div>
+    <div class="form-field"><label>Personal Note (optional)</label><textarea id="bk-review-note" placeholder="e.g. It was great working with you! I'd love your feedback." style="min-height:55px;"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-bk-review')">Cancel</button>
+      <button id="bk-review-confirm" class="btn-save" style="flex:1;">Send Review Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- BAN CONFIRMATION MODAL -->
+<div id="modal-bk-ban" class="modal-overlay" onclick="closeModal('modal-bk-ban')">
+  <div class="modal" style="max-width:380px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">Ban from Booking</h2>
+      <button onclick="closeModal('modal-bk-ban')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <div id="bk-ban-client" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:12px;"></div>
+    <div style="background:#fee2e2;border-radius:10px;padding:12px 14px;font-size:0.82rem;color:#dc2626;margin-bottom:14px;line-height:1.6;">
+      ⚠️ This client will no longer be able to book any of your services. This action can be undone from their booking record.
+    </div>
+    <div class="form-field"><label>Reason (optional)</label><input type="text" id="bk-ban-reason" placeholder="e.g. No-show, Repeated cancellations"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn-cancel" onclick="closeModal('modal-bk-ban')">Cancel</button>
+      <button id="bk-ban-confirm" style="flex:1;padding:11px;background:#dc2626;color:#fff;border:none;border-radius:9px;cursor:pointer;font-weight:700;">Ban Client</button>
+    </div>
   </div>
 </div>
 
