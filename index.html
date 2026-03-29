@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+aside{display:block;}
 :root{
   --cream:#F5F0EA;--cream2:#EDE8E1;--cream3:#E4DDD4;
   --brown:#C07A50;--brown-dark:#A0623C;--brown-light:#D4956E;
@@ -19,6 +20,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* SIDEBAR */
 .sidebar{width:var(--sidebar-w);background:#fff;border-right:1px solid var(--border);position:fixed;left:0;top:0;bottom:0;z-index:100;display:flex;flex-direction:column;overflow:hidden;}
+aside.sidebar{width:var(--sidebar-w);}
 .sidebar-logo{padding:18px 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);flex-shrink:0;}
 .logo-mark{width:36px;height:36px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;color:#fff;font-size:1rem;}
 .logo-name{font-family:'DM Serif Display',serif;font-size:1.25rem;color:var(--text);}
@@ -98,9 +100,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   :root{--sidebar-w:280px;}
 
   /* Sidebar slides in from left */
-  .sidebar{
+  .sidebar, aside.sidebar{
     transform:translateX(-100%);
+    -webkit-transform:translateX(-100%);
     transition:transform 0.28s ease;
+    -webkit-transition:-webkit-transform 0.28s ease;
     z-index:200;
     display:flex !important;
     flex-direction:column;
@@ -115,7 +119,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     will-change:transform;
   }
   .sidebar .sidebar-nav{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;}
-  .sidebar.open{transform:translateX(0) !important;}
+  .sidebar.open, aside.sidebar.open{transform:translateX(0) !important;-webkit-transform:translateX(0) !important;}
   .sidebar-logo{position:sticky;top:0;z-index:5;background:#fff;flex-shrink:0;}
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;flex-shrink:0;}
 
