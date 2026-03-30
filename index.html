@@ -651,13 +651,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div class="form-field">
-            <label>URL</label>
-            <input type="text" id="wl-url-input" placeholder="https://yourwebsite.com">
+            <label>URL <span style="color:#dc2626;">*</span></label>
+            <input type="url" id="wl-url-input" placeholder="https://yourwebsite.com" oninput="wlValidateUrl(this)" style="border-color:var(--border);">
+            <div id="wl-url-error" style="font-size:0.72rem;color:#dc2626;margin-top:4px;display:none;">Please enter a valid URL starting with https:// or http://</div>
           </div>
           <div class="form-field">
-            <label>Title</label>
-            <input type="text" id="wl-title-input" placeholder="e.g. My Store, Book a Session">
+            <label>Title <span style="color:#dc2626;">*</span></label>
+            <input type="text" id="wl-title-input" placeholder="e.g. My Store, Book a Session, My Portfolio">
           </div>
+          <div class="form-field" style="margin-bottom:0;">
+            <label>Description (optional)</label>
+            <input type="text" id="wl-subtitle-input" placeholder="A short description shown under the title on your page"></div>
           <div class="form-field" style="margin-bottom:0;">
             <label>Cover Image (optional)</label>
             <div onclick="document.getElementById('wl-img-input').click()" id="wl-img-dropzone" style="border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:var(--cream);transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">
@@ -670,6 +674,41 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div style="display:flex;gap:10px;margin-top:18px;">
           <button class="btn-cancel" onclick="closeModal('modal-add-weblink')">Cancel</button>
           <button class="btn-save" style="flex:1;" onclick="saveWebLink()">Add Link</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT WEB LINK MODAL -->
+    <div id="modal-edit-weblink" class="modal-overlay" onclick="closeModal('modal-edit-weblink')">
+      <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">✏️ Edit Web Link</h2>
+          <button onclick="closeModal('modal-edit-weblink')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <input type="hidden" id="wl-edit-id">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-field">
+            <label>URL <span style="color:#dc2626;">*</span></label>
+            <input type="url" id="wl-edit-url" placeholder="https://yourwebsite.com" oninput="wlValidateUrl(this)">
+            <div id="wl-edit-url-error" style="font-size:0.72rem;color:#dc2626;margin-top:4px;display:none;">Please enter a valid URL starting with https:// or http://</div>
+          </div>
+          <div class="form-field">
+            <label>Title <span style="color:#dc2626;">*</span></label>
+            <input type="text" id="wl-edit-title" placeholder="e.g. My Store, Book a Session">
+          </div>
+          <div class="form-field"><label>Description (optional)</label><input type="text" id="wl-edit-subtitle" placeholder="Short description shown under the title"></div>
+          <div class="form-field" style="margin-bottom:0;">
+            <label>Replace Cover Image (optional)</label>
+            <div onclick="document.getElementById('wl-edit-img-input').click()" style="border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:var(--cream);transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">
+              <input type="file" id="wl-edit-img-input" accept="image/*" style="display:none;" onchange="previewWLEditImage(event)">
+              <div id="wl-edit-img-preview" style="display:none;margin-bottom:8px;"><img id="wl-edit-img-thumb" style="width:100%;height:100px;object-fit:cover;border-radius:8px;" src=""></div>
+              <div id="wl-edit-img-placeholder" style="font-size:0.78rem;color:var(--text-dim);">Click to upload a new cover image</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;">
+          <button class="btn-cancel" onclick="closeModal('modal-edit-weblink')">Cancel</button>
+          <button class="btn-save" style="flex:1;" onclick="saveEditWebLink()">Save Changes</button>
         </div>
       </div>
     </div>
@@ -3576,12 +3615,87 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
      CREATOR PRODUCT DETAIL MODAL (dashboard only)
 ═══════════════════════════════════════════════════════ -->
 <div id="modal-creator-product-detail" class="modal-overlay" onclick="closeModal('modal-creator-product-detail')">
-  <div class="modal" style="max-width:460px;max-height:88vh;overflow-y:auto;" onclick="event.stopPropagation()">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-      <h2 class="modal-title" style="margin:0;">📦 Product Details</h2>
-      <button onclick="closeModal('modal-creator-product-detail')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+  <div onclick="event.stopPropagation()" style="background:#f5f5f5;border-radius:24px;width:92%;max-width:420px;max-height:94vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.28);">
+
+    <!-- Phone-style top bar: back ‹ · PREVIEW label · cart icon -->
+    <div style="background:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eee;border-radius:24px 24px 0 0;">
+      <button onclick="closeModal('modal-creator-product-detail')" style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;border:none;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;color:#333;font-weight:700;">‹</button>
+      <span style="font-size:0.72rem;color:#999;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;">Preview</span>
+      <div style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#333" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.95 1.61h9.72a2 2 0 001.95-1.61L23 6H6"/></svg>
+      </div>
     </div>
-    <div id="cpd-content"></div>
+
+    <!-- Gallery: main photo left, thumbnail rail right -->
+    <div style="display:flex;background:#e8e8e8;position:relative;" id="cpd-gallery">
+      <div id="cpd-main-img" style="flex:1;min-height:300px;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:5rem;"></div>
+      <div id="cpd-thumbs" style="width:72px;display:flex;flex-direction:column;gap:6px;padding:10px 8px 10px 0;overflow-y:auto;background:#e8e8e8;"></div>
+    </div>
+
+    <!-- Info panel -->
+    <div style="background:#fff;padding:16px 18px 4px;">
+
+      <!-- Name + Price -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+        <div id="cpd-name" style="font-weight:800;font-size:1.05rem;color:#1a1a1a;flex:1;line-height:1.3;"></div>
+        <div style="margin-left:14px;text-align:right;flex-shrink:0;">
+          <div id="cpd-price" style="font-weight:800;font-size:1.1rem;color:#1a1a1a;"></div>
+          <div id="cpd-sale-price" style="font-size:0.78rem;color:#C07A50;font-weight:700;display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Stock badge -->
+      <div id="cpd-stock" style="margin-bottom:10px;"></div>
+
+      <!-- Sizes — hidden when no sizes -->
+      <div id="cpd-sizes-wrap" style="display:none;margin-bottom:14px;">
+        <div style="font-size:0.65rem;font-weight:700;color:#999;letter-spacing:0.1em;margin-bottom:7px;">SELECT SIZE</div>
+        <div id="cpd-sizes" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+      </div>
+
+      <!-- Bottom grid: colors | qty+composition | add -->
+      <div id="cpd-bottom-grid" style="display:grid;grid-template-columns:1fr 1fr 80px;gap:10px;margin-bottom:14px;align-items:stretch;">
+
+        <!-- Colors — hidden when no colors set -->
+        <div id="cpd-colors-wrap" style="display:none;background:#f5f5f5;border-radius:14px;padding:10px 12px;">
+          <div style="font-size:0.58rem;font-weight:700;color:#999;letter-spacing:0.1em;margin-bottom:6px;">SELECT COLOR</div>
+          <div id="cpd-colors" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+        </div>
+
+        <!-- Qty + Composition stacked -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#f5f5f5;border-radius:14px;padding:10px 14px;height:48px;">
+            <button onclick="cpdQty(-1)" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#555;line-height:1;">−</button>
+            <span id="cpd-qty" style="font-weight:800;font-size:0.95rem;">01</span>
+            <button onclick="cpdQty(1)" style="background:none;border:none;font-size:1.3rem;cursor:pointer;color:#C07A50;line-height:1;">+</button>
+          </div>
+          <!-- Composition — hidden when not set -->
+          <div id="cpd-composition-box" style="display:none;background:#f5f5f5;border-radius:14px;padding:10px 12px;flex:1;">
+            <div style="font-size:0.58rem;font-weight:700;color:#999;letter-spacing:0.1em;">COMPOSITION</div>
+            <div id="cpd-composition" style="font-size:0.82rem;font-weight:700;color:#1a1a1a;margin-top:3px;"></div>
+          </div>
+        </div>
+
+        <!-- Add button -->
+        <button onclick="toast('🛒 Add to cart — available on your public store page')" style="background:#1a1a1a;border:none;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px;cursor:pointer;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span style="color:#fff;font-weight:800;font-size:0.78rem;">Add</span>
+        </button>
+      </div>
+
+      <!-- Description -->
+      <div id="cpd-desc" style="font-size:0.82rem;color:#888;line-height:1.65;margin-bottom:10px;"></div>
+      <!-- Delivery -->
+      <div id="cpd-delivery" style="font-size:0.78rem;color:#555;font-weight:600;margin-bottom:8px;"></div>
+      <!-- Affiliate banner -->
+      <div id="cpd-affiliate" style="display:none;background:linear-gradient(135deg,#C07A50,#8B5030);border-radius:10px;padding:10px 14px;color:#fff;font-size:0.78rem;font-weight:700;margin-bottom:8px;"></div>
+    </div>
+
+    <!-- Creator action bar -->
+    <div style="background:#fff;border-top:1px solid #eee;padding:12px 16px;display:flex;gap:10px;border-radius:0 0 24px 24px;">
+      <button id="cpd-edit-btn" style="flex:1;padding:11px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;">✏️ Edit Product</button>
+      <button onclick="closeModal('modal-creator-product-detail')" style="padding:11px 18px;background:#f0f0f0;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.85rem;color:#555;">Close</button>
+    </div>
   </div>
 </div>
 
@@ -4962,19 +5076,97 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <div style="margin-top:8px;font-size:0.75rem;color:var(--text-dim);">Remaining balance is collected at time of service.</div>
             </div>
           </div>
-          <!-- Cover image -->
+          <!-- Service Photos — up to 6 -->
           <div class="form-field" style="margin:0;">
-            <label>Service Photo (optional)</label>
-            <div onclick="document.getElementById('svc-img-input').click()" id="svc-img-zone" style="border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:#fff;">
-              <input type="file" id="svc-img-input" accept="image/*" style="display:none;" onchange="previewSvcImage(event)">
-              <div id="svc-img-preview" style="display:none;"><img id="svc-img-thumb" style="width:100%;height:100px;object-fit:cover;border-radius:8px;" src=""></div>
-              <div id="svc-img-placeholder" style="font-size:0.8rem;color:var(--text-dim);">📷 Tap to upload a photo</div>
+            <label>Service Photos (up to 6)</label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+              <div onclick="svcTriggerPhoto(0)" id="svc-slot-0" style="aspect-ratio:1;background:var(--cream);border:2px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:0.65rem;color:var(--text-dim);gap:3px;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Main
+              </div>
+              <div onclick="svcTriggerPhoto(1)" id="svc-slot-1" style="aspect-ratio:1;background:var(--cream);border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);font-size:1.3rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">+</div>
+              <div onclick="svcTriggerPhoto(2)" id="svc-slot-2" style="aspect-ratio:1;background:var(--cream);border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);font-size:1.3rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">+</div>
+              <div onclick="svcTriggerPhoto(3)" id="svc-slot-3" style="aspect-ratio:1;background:var(--cream);border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);font-size:1.3rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">+</div>
+              <div onclick="svcTriggerPhoto(4)" id="svc-slot-4" style="aspect-ratio:1;background:var(--cream);border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);font-size:1.3rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">+</div>
+              <div onclick="svcTriggerPhoto(5)" id="svc-slot-5" style="aspect-ratio:1;background:var(--cream);border:2px dashed var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);font-size:1.3rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">+</div>
             </div>
+            <input type="file" id="svc-photo-0" accept="image/*" style="display:none;" onchange="svcPhotoUploaded(0,this)">
+            <input type="file" id="svc-photo-1" accept="image/*" style="display:none;" onchange="svcPhotoUploaded(1,this)">
+            <input type="file" id="svc-photo-2" accept="image/*" style="display:none;" onchange="svcPhotoUploaded(2,this)">
+            <input type="file" id="svc-photo-3" accept="image/*" style="display:none;" onchange="svcPhotoUploaded(3,this)">
+            <input type="file" id="svc-photo-4" accept="image/*" style="display:none;" onchange="svcPhotoUploaded(4,this)">
+            <input type="file" id="svc-photo-5" accept="image/*" style="display:none;" onchange="svcPhotoUploaded(5,this)">
           </div>
         </div>
         <div style="display:flex;gap:10px;margin-top:20px;">
           <button class="btn-cancel" onclick="closeModal('modal-add-service')">Cancel</button>
           <button class="btn-save" style="flex:1;" onclick="saveService()">Add Service</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT SERVICE MODAL -->
+    <div id="modal-edit-service" class="modal-overlay" onclick="closeModal('modal-edit-service')">
+      <div class="modal" style="max-width:500px;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;">✏️ Edit Service</h2>
+          <button onclick="closeModal('modal-edit-service')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <input type="hidden" id="svc-edit-id">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="form-field"><label>Service Name</label><input type="text" id="svc-edit-name" placeholder="e.g. Full Set Lashes"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-field" style="margin:0;"><label>Price ($)</label><input type="number" id="svc-edit-price" placeholder="0.00" min="0" step="0.01"></div>
+            <div class="form-field" style="margin:0;"><label>Duration</label>
+              <select id="svc-edit-duration">
+                <option>30 min</option><option>45 min</option><option selected>1 hour</option>
+                <option>1.5 hours</option><option>2 hours</option><option>2.5 hours</option><option>3 hours</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field"><label>Category</label>
+            <select id="svc-edit-category">
+              <option>Hair</option><option>Beauty</option><option>Wellness</option><option>Consulting</option><option>Classes</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-field"><label>Description</label><textarea id="svc-edit-desc" style="min-height:70px;" placeholder="Describe what's included…"></textarea></div>
+          <div class="form-field" style="margin:0;">
+            <label>Update Main Photo (optional)</label>
+            <div id="svc-edit-photo-preview"></div>
+            <div onclick="document.getElementById('svc-edit-img-input').click()" style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;background:var(--cream);font-size:0.78rem;color:var(--text-dim);" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">
+              📷 Click to replace photo
+              <input type="file" id="svc-edit-img-input" accept="image/*" style="display:none;" onchange="previewSvcEditImage(event)">
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button class="btn-cancel" onclick="closeModal('modal-edit-service')">Cancel</button>
+          <button class="btn-save" style="flex:1;" onclick="saveEditService()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICE PREVIEW MODAL (creator view) -->
+    <div id="modal-preview-service" class="modal-overlay" onclick="closeModal('modal-preview-service')">
+      <div onclick="event.stopPropagation()" style="background:#fff;border-radius:20px;width:92%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,0.22);">
+        <div style="position:relative;background:var(--cream2);height:220px;border-radius:20px 20px 0 0;overflow:hidden;">
+          <div id="spv-img-main" style="width:100%;height:100%;"></div>
+          <button onclick="closeModal('modal-preview-service')" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.9);border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+        <div id="spv-thumbs" style="display:flex;gap:8px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none;"></div>
+        <div style="padding:18px 20px 24px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
+            <div id="spv-name" style="font-family:'DM Serif Display',serif;font-size:1.2rem;font-weight:700;color:var(--text);flex:1;"></div>
+            <div id="spv-price" style="font-weight:800;font-size:1.1rem;color:var(--brown);margin-left:12px;flex-shrink:0;"></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-bottom:12px;">
+            <span style="font-size:0.75rem;color:var(--text-dim);background:var(--cream);padding:3px 10px;border-radius:10px;" id="spv-duration"></span>
+            <span style="font-size:0.75rem;color:var(--text-dim);background:var(--cream);padding:3px 10px;border-radius:10px;" id="spv-category"></span>
+          </div>
+          <div id="spv-desc" style="font-size:0.85rem;color:var(--text-mid);line-height:1.7;margin-bottom:20px;"></div>
+          <div style="display:flex;gap:10px;">
+            <button id="spv-edit-btn" style="flex:1;padding:11px;background:var(--brown);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;">✏️ Edit Service</button>
+            <button onclick="closeModal('modal-preview-service')" style="padding:11px 18px;background:var(--cream2);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:0.85rem;color:var(--text-mid);">Close</button>
+          </div>
         </div>
       </div>
     </div>
@@ -7901,6 +8093,10 @@ function openStorePreview() {
 
 // ── PUBLISH PRODUCT ──────────────────────────────────────
 function storePublishProduct(type) {
+  // If we're in edit mode, route to save instead
+  if (window._editingProductId && window._editingProductType === (type === 'course' ? 'courses' : type)) {
+    storeEditSave(); return;
+  }
   var nameMap = { physical: 'ph-name', digital: 'dg-name', course: 'co-cname' };
   var priceMap = { physical: 'ph-price', digital: 'dg-price', course: 'co-price' };
   var descMap  = { physical: 'ph-desc', digital: 'dg-desc', course: 'co-desc' };
@@ -7997,45 +8193,159 @@ function storePublishProduct(type) {
   nameEl.value = ''; if (priceEl) priceEl.value = '';
 }
 
+var cpdCurrentQty = 1;
+function cpdQty(delta) {
+  cpdCurrentQty = Math.max(1, cpdCurrentQty + delta);
+  var el = document.getElementById('cpd-qty');
+  if (el) el.textContent = cpdCurrentQty < 10 ? '0' + cpdCurrentQty : '' + cpdCurrentQty;
+}
+
 function storePrevProduct(id, type) {
   var prod = storeProducts[type] ? storeProducts[type].find(function(p){ return p.id === id; }) : null;
   if (!prod) { toast('Product not found'); return; }
 
-  var el = document.getElementById('modal-creator-product-detail');
-  if (!el) return;
+  cpdCurrentQty = 1;
+  var qtyEl = document.getElementById('cpd-qty');
+  if (qtyEl) qtyEl.textContent = '01';
 
-  var emoji = type === 'digital' ? '💾' : type === 'courses' ? '🎓' : '📦';
-  var imgHTML = prod.photo
-    ? '<img src="'+prod.photo+'" style="width:100%;height:200px;object-fit:cover;border-radius:12px;margin-bottom:16px;">'
-    : '<div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:var(--cream2);border-radius:12px;margin-bottom:16px;">'+emoji+'</div>';
+  // Gallery — main image + right thumbnail rail
+  var photos = [];
+  if (prod.photos && prod.photos.length) photos = prod.photos.filter(Boolean);
+  else if (prod.photo) photos = [prod.photo];
 
-  var stockLabel = '';
-  if (type === 'physical') {
-    if (prod.inventory < 0) stockLabel = '<span style="color:#16a34a;font-weight:700;font-size:0.82rem;">● In Stock</span>';
-    else if (prod.inventory === 0) stockLabel = prod.preorder ? '<span style="color:#7c3aed;font-weight:700;font-size:0.82rem;">● Pre-Order</span>' : '<span style="color:#dc2626;font-weight:700;font-size:0.82rem;">● Out of Stock</span>';
-    else if (prod.inventory <= prod.lowStock) stockLabel = '<span style="color:#d97706;font-weight:700;font-size:0.82rem;">● Low Stock ('+prod.inventory+')</span>';
-    else stockLabel = '<span style="color:#16a34a;font-weight:700;font-size:0.82rem;">● In Stock ('+prod.inventory+')</span>';
+  var mainEl = document.getElementById('cpd-main-img');
+  var thumbsEl = document.getElementById('cpd-thumbs');
+  if (mainEl) {
+    if (photos.length) {
+      mainEl.style.fontSize = '0';
+      mainEl.innerHTML = '<img src="' + photos[0] + '" style="width:100%;height:300px;object-fit:cover;display:block;">';
+    } else {
+      var emoji = type === 'digital' ? '💾' : type === 'courses' ? '🎓' : '📦';
+      mainEl.style.fontSize = '5rem';
+      mainEl.innerHTML = emoji;
+    }
+  }
+  if (thumbsEl) {
+    thumbsEl.innerHTML = '';
+    if (photos.length > 1) {
+      photos.forEach(function(src, i) {
+        var t = document.createElement('div');
+        t.style.cssText = 'width:54px;height:54px;border-radius:10px;overflow:hidden;border:2px solid ' + (i===0?'#C07A50':'#ddd') + ';cursor:pointer;flex-shrink:0;';
+        t.innerHTML = '<img src="' + src + '" style="width:100%;height:100%;object-fit:cover;">';
+        t.onclick = function() {
+          if (mainEl) mainEl.innerHTML = '<img src="' + src + '" style="width:100%;height:300px;object-fit:cover;display:block;">';
+          thumbsEl.querySelectorAll('div').forEach(function(th){ th.style.borderColor='#ddd'; });
+          t.style.borderColor = '#C07A50';
+        };
+        thumbsEl.appendChild(t);
+      });
+    }
   }
 
-  var sizesHTML = prod.sizes && prod.sizes.length ? '<div style="margin-top:10px;"><div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;">Sizes</div><div style="display:flex;flex-wrap:wrap;gap:6px;">' + prod.sizes.map(function(s){ return '<span style="padding:4px 12px;background:var(--cream);border:1px solid var(--border);border-radius:16px;font-size:0.78rem;font-weight:600;">'+s+'</span>'; }).join('') + '</div></div>' : '';
+  // Name + price
+  var nameEl = document.getElementById('cpd-name');
+  if (nameEl) nameEl.textContent = prod.name;
+  var priceEl = document.getElementById('cpd-price');
+  if (priceEl) priceEl.textContent = '$' + prod.price;
 
-  var colorsHTML = prod.colors && prod.colors.length ? '<div style="margin-top:10px;"><div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;">Colors</div><div style="display:flex;gap:8px;">' + prod.colors.map(function(c){ return '<span title="'+c.name+'" style="width:22px;height:22px;border-radius:50%;background:'+c.hex+';border:2px solid rgba(0,0,0,0.12);"></span>'; }).join('') + '</div></div>' : '';
+  // Stock badge
+  var stockEl = document.getElementById('cpd-stock');
+  if (stockEl && type === 'physical') {
+    var inv = prod.inventory;
+    if (inv < 0) stockEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:700;color:#16a34a;"><span style="width:8px;height:8px;border-radius:50%;background:#16a34a;"></span>In Stock</span>';
+    else if (inv === 0) stockEl.innerHTML = prod.preorder ? '<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:700;color:#7c3aed;"><span style="width:8px;height:8px;border-radius:50%;background:#7c3aed;"></span>Pre-Order Now</span>' : '<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:700;color:#dc2626;"><span style="width:8px;height:8px;border-radius:50%;background:#dc2626;"></span>Out of Stock</span>';
+    else if (inv <= (prod.lowStock||5)) stockEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:700;color:#d97706;"><span style="width:8px;height:8px;border-radius:50%;background:#d97706;"></span>Low Stock — Only ' + inv + ' left</span>';
+    else stockEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:5px;font-size:0.78rem;font-weight:700;color:#16a34a;"><span style="width:8px;height:8px;border-radius:50%;background:#16a34a;"></span>In Stock</span>';
+  } else if (stockEl) { stockEl.innerHTML = ''; }
 
-  var variantsHTML = prod.variants && prod.variants.length ? '<div style="margin-top:10px;"><div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;">Variants</div>' + prod.variants.map(function(v){ return '<div style="font-size:0.82rem;color:var(--text-mid);">• '+v.name+(v.price?' — $'+v.price:'')+'</div>'; }).join('') + '</div>' : '';
+  // Sizes
+  var sizesWrap = document.getElementById('cpd-sizes-wrap');
+  var sizesEl = document.getElementById('cpd-sizes');
+  if (sizesWrap && sizesEl) {
+    if (prod.sizes && prod.sizes.length) {
+      sizesWrap.style.display = 'block';
+      sizesEl.innerHTML = '';
+      prod.sizes.forEach(function(s, i) {
+        var chip = document.createElement('div');
+        chip.textContent = s;
+        chip.style.cssText = 'padding:7px 16px;border-radius:10px;border:2px solid ' + (i===0?'#1a1a1a':'#ddd') + ';background:' + (i===0?'#1a1a1a':'#fff') + ';color:' + (i===0?'#fff':'#1a1a1a') + ';font-weight:700;font-size:0.82rem;cursor:pointer;';
+        chip.onclick = function() {
+          sizesEl.querySelectorAll('div').forEach(function(c){ c.style.background='#fff';c.style.color='#1a1a1a';c.style.borderColor='#ddd'; });
+          chip.style.background='#1a1a1a'; chip.style.color='#fff'; chip.style.borderColor='#1a1a1a';
+        };
+        sizesEl.appendChild(chip);
+      });
+    } else { sizesWrap.style.display = 'none'; }
+  }
 
-  el.querySelector('#cpd-content').innerHTML =
-    imgHTML +
-    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;">' +
-      '<div style="font-family:\'DM Serif Display\',serif;font-size:1.25rem;font-weight:700;color:var(--text);flex:1;">' + prod.name + '</div>' +
-      '<div style="font-weight:800;color:var(--brown);font-size:1.1rem;margin-left:12px;">$' + prod.price + '</div>' +
-    '</div>' +
-    (stockLabel ? '<div style="margin-bottom:8px;">' + stockLabel + '</div>' : '') +
-    (prod.desc ? '<div style="font-size:0.85rem;color:var(--text-mid);line-height:1.6;margin-bottom:10px;">' + prod.desc + '</div>' : '') +
-    sizesHTML + colorsHTML + variantsHTML +
-    '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;gap:10px;">' +
-      '<button onclick="closeModal(\'modal-creator-product-detail\');storeEditProduct('+id+',\''+type+'\')" style="flex:1;padding:10px;background:var(--brown);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.85rem;">✏️ Edit Product</button>' +
-      '<button onclick="closeModal(\'modal-creator-product-detail\')" style="padding:10px 16px;background:var(--cream2);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-weight:600;font-size:0.85rem;color:var(--text-mid);">Close</button>' +
-    '</div>';
+  // Colors — show only if colors exist
+  var colorsEl = document.getElementById('cpd-colors');
+  var colorsWrap = document.getElementById('cpd-colors-wrap');
+  if (colorsEl && colorsWrap) {
+    colorsEl.innerHTML = '';
+    if (prod.colors && prod.colors.length) {
+      colorsWrap.style.display = 'block';
+      prod.colors.forEach(function(c, i) {
+        var dot = document.createElement('div');
+        dot.title = c.name;
+        dot.style.cssText = 'width:24px;height:24px;border-radius:50%;background:' + c.hex + ';border:' + (i===0?'3px solid #1a1a1a':'2px solid rgba(0,0,0,0.15)') + ';cursor:pointer;';
+        dot.onclick = function() {
+          colorsEl.querySelectorAll('div').forEach(function(d){ d.style.border='2px solid rgba(0,0,0,0.15)'; });
+          dot.style.border = '3px solid #1a1a1a';
+        };
+        colorsEl.appendChild(dot);
+      });
+    } else {
+      colorsWrap.style.display = 'none';
+    }
+  }
+
+  // Composition — show only if composition is set
+  var compEl = document.getElementById('cpd-composition');
+  var compBox = document.getElementById('cpd-composition-box');
+  if (compEl && compBox) {
+    if (prod.composition && prod.composition.trim()) {
+      compEl.textContent = prod.composition.trim();
+      compBox.style.display = 'block';
+    } else {
+      compBox.style.display = 'none';
+    }
+  }
+
+  // Adjust grid columns based on whether colors exist
+  var gridEl = document.getElementById('cpd-bottom-grid');
+  if (gridEl) {
+    var hasColors = prod.colors && prod.colors.length;
+    gridEl.style.gridTemplateColumns = hasColors ? '1fr 1fr 80px' : '1fr 80px';
+  }
+
+  // Description
+  var descEl = document.getElementById('cpd-desc');
+  if (descEl) descEl.textContent = prod.desc || '';
+
+  // Delivery
+  var delivMap = { shipped:'📦 Shipped', meetup:'🤝 Meet Up', pickup:'🏪 Local Pickup', delivered:'🚗 Delivered' };
+  var delivEl = document.getElementById('cpd-delivery');
+  if (delivEl) {
+    var delivTxt = prod.delivery ? (delivMap[prod.delivery] || '') : '';
+    if (prod.delivery === 'delivered' && prod.deliveryFee) delivTxt += ' — $' + parseFloat(prod.deliveryFee).toFixed(2) + ' delivery fee';
+    else if (prod.delivery === 'shipped' && prod.deliveryFee) delivTxt += ' — $' + parseFloat(prod.deliveryFee).toFixed(2) + ' shipping';
+    delivEl.textContent = delivTxt;
+  }
+
+  // Affiliate banner
+  var affEl = document.getElementById('cpd-affiliate');
+  if (affEl) {
+    if (prod.affiliate && prod.affAmount) {
+      var earnStr = prod.affType === 'dollar' ? '$' + parseFloat(prod.affAmount).toFixed(2) : prod.affAmount + '%';
+      affEl.textContent = '💰 Affiliates earn ' + earnStr + ' per sale on this product';
+      affEl.style.display = 'block';
+    } else { affEl.style.display = 'none'; }
+  }
+
+  // Edit button wires up
+  var editBtn = document.getElementById('cpd-edit-btn');
+  if (editBtn) editBtn.onclick = function() { closeModal('modal-creator-product-detail'); storeEditProduct(id, type); };
 
   openModal('modal-creator-product-detail');
 }
@@ -8043,26 +8353,84 @@ function storePrevProduct(id, type) {
 function storeEditProduct(id, type) {
   var prod = storeProducts[type] ? storeProducts[type].find(function(p){ return p.id === id; }) : null;
   if (!prod) { toast('Product not found'); return; }
-  // Populate edit modal
-  document.getElementById('edit-prod-id').value = id;
-  document.getElementById('edit-prod-type').value = type;
-  document.getElementById('edit-prod-name').value = prod.name || '';
-  document.getElementById('edit-prod-price').value = prod.price || '';
-  document.getElementById('edit-prod-desc').value = prod.desc || '';
-  document.getElementById('edit-prod-inventory').value = prod.inventory >= 0 ? prod.inventory : '';
-  openModal('modal-edit-product');
+
+  var modalMap = { physical: 'modal-add-physical', digital: 'modal-add-digital', courses: 'modal-add-course' };
+  var modal = modalMap[type];
+  if (!modal) return;
+
+  // Store the id so we know we're editing, not creating new
+  window._editingProductId = id;
+  window._editingProductType = type;
+
+  if (type === 'physical') {
+    var n = document.getElementById('ph-name'); if(n) n.value = prod.name || '';
+    var p = document.getElementById('ph-price'); if(p) p.value = prod.price || '';
+    var d = document.getElementById('ph-desc'); if(d) d.value = prod.desc || '';
+    var inv = document.getElementById('ph-inventory'); if(inv) inv.value = prod.inventory >= 0 ? prod.inventory : '';
+    var ls = document.getElementById('ph-low-stock'); if(ls) ls.value = prod.lowStock || '';
+    // Restore photos
+    phPhotos = prod.photos ? prod.photos.slice() : [prod.photo||null,null,null,null,null,null];
+    phSizes = prod.sizes ? prod.sizes.slice() : [];
+    phColors = prod.colors ? prod.colors.slice() : [];
+    phVariants = prod.variants ? prod.variants.slice() : [];
+    // Update photo slots
+    for (var i = 0; i < 6; i++) {
+      var slot = document.getElementById('ph-slot-' + i);
+      if (slot && phPhotos[i]) {
+        slot.innerHTML = '<img src="'+phPhotos[i]+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+        slot.style.border = '2px solid var(--brown)';
+        slot.style.padding = '0';
+      }
+    }
+  } else if (type === 'digital') {
+    var dn = document.getElementById('dg-name'); if(dn) dn.value = prod.name || '';
+    var dp = document.getElementById('dg-price'); if(dp) dp.value = prod.price || '';
+    var dd = document.getElementById('dg-desc'); if(dd) dd.value = prod.desc || '';
+  } else if (type === 'courses') {
+    var cn = document.getElementById('co-cname'); if(cn) cn.value = prod.name || '';
+    var cp = document.getElementById('co-price'); if(cp) cp.value = prod.price || '';
+    var cd = document.getElementById('co-desc'); if(cd) cd.value = prod.desc || '';
+  }
+
+  // Change the publish button to say "Save Changes"
+  var publishBtn = document.querySelector('#' + modal + ' .btn-save');
+  if (publishBtn) {
+    publishBtn.textContent = '💾 Save Changes';
+    publishBtn.onclick = function() { storeEditSave(); };
+  }
+
+  openModal(modal);
 }
 
 function storeEditSave() {
-  var id = parseInt(document.getElementById('edit-prod-id').value);
-  var type = document.getElementById('edit-prod-type').value;
+  var id = window._editingProductId;
+  var type = window._editingProductType;
+  if (!id || !type) { storePublishProduct(type || 'physical'); return; }
+
   var prod = storeProducts[type] ? storeProducts[type].find(function(p){ return p.id === id; }) : null;
   if (!prod) return;
-  prod.name = document.getElementById('edit-prod-name').value.trim() || prod.name;
-  prod.price = parseFloat(document.getElementById('edit-prod-price').value).toFixed(2) || prod.price;
-  prod.desc = document.getElementById('edit-prod-desc').value;
-  prod.inventory = parseInt(document.getElementById('edit-prod-inventory').value) || prod.inventory;
-  // Update card
+
+  var nameMap = { physical:'ph-name', digital:'dg-name', courses:'co-cname' };
+  var priceMap = { physical:'ph-price', digital:'dg-price', courses:'co-price' };
+  var descMap  = { physical:'ph-desc', digital:'dg-desc', courses:'co-desc' };
+
+  var newName = (document.getElementById(nameMap[type])||{}).value;
+  var newPrice = (document.getElementById(priceMap[type])||{}).value;
+  var newDesc = (document.getElementById(descMap[type])||{}).value;
+
+  if (newName) prod.name = newName.trim();
+  if (newPrice) prod.price = parseFloat(newPrice).toFixed(2);
+  if (newDesc !== undefined) prod.desc = newDesc;
+  if (type === 'physical') {
+    var inv = document.getElementById('ph-inventory');
+    if (inv && inv.value) prod.inventory = parseInt(inv.value);
+    if (phPhotos[0]) { prod.photo = phPhotos[0]; prod.photos = phPhotos.filter(Boolean); }
+    if (phSizes.length) prod.sizes = phSizes.slice();
+    if (phColors.length) prod.colors = phColors.slice();
+    if (phVariants.length) prod.variants = phVariants.slice();
+  }
+
+  // Update card name and price
   var card = document.getElementById('store-product-' + id);
   if (card) {
     var nameEl = card.querySelector('[data-prod-name]');
@@ -8070,8 +8438,20 @@ function storeEditSave() {
     if (nameEl) nameEl.textContent = prod.name;
     if (priceEl) priceEl.textContent = '$' + prod.price;
   }
+
+  // Reset edit state and restore publish button
+  window._editingProductId = null;
+  window._editingProductType = null;
+  var modalMap = { physical:'modal-add-physical', digital:'modal-add-digital', courses:'modal-add-course' };
+  var publishBtn = document.querySelector('#' + modalMap[type] + ' .btn-save');
+  if (publishBtn) {
+    publishBtn.textContent = type === 'courses' ? '🚀 Publish Course' : '🚀 Publish Product';
+    publishBtn.onclick = function() { storePublishProduct(type); };
+  }
+
+  var modalId = modalMap[type];
+  closeModal(modalId);
   toast('✓ Product updated!');
-  closeModal('modal-edit-product');
 }
 
 // ── DIGITAL FILE UPLOAD ──────────────────────────────────
@@ -8116,6 +8496,14 @@ function removeVariant(prefix, vid, row) {
   if (prefix === 'ph') phVariants = arr.filter(function(v){ return v.id !== vid; });
   else dgVariants = arr.filter(function(v){ return v.id !== vid; });
   if (row) row.remove();
+}
+
+function toggleItemHeart(btn) {
+  if (!btn) return;
+  var isHearted = btn.textContent.trim() === "❤️";
+  btn.textContent = isHearted ? "🤍" : "❤️";
+  btn.title = isHearted ? "Save to favourites" : "Saved!";
+  toast(isHearted ? "Removed from saved" : "❤️ Saved to favourites!");
 }
 
 function storeHideProduct(id, type) {
@@ -8772,6 +9160,16 @@ function addWebLink() {
   openModal('modal-add-weblink');
 }
 
+function wlValidateUrl(input) {
+  var val = input.value.trim();
+  var errorId = input.id === 'wl-url-input' ? 'wl-url-error' : 'wl-edit-url-error';
+  var errEl = document.getElementById(errorId);
+  var isValid = val === '' || /^https?:\/\/.+\..+/.test(val);
+  if (input.style) input.style.borderColor = val && !isValid ? '#dc2626' : 'var(--border)';
+  if (errEl) errEl.style.display = val && !isValid ? 'block' : 'none';
+  return isValid && val !== '';
+}
+
 function previewWLImage(e) {
   var file = e.target.files[0];
   if (!file) return;
@@ -8785,28 +9183,118 @@ function previewWLImage(e) {
   reader.readAsDataURL(file);
 }
 
+function previewWLEditImage(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById('wl-edit-img-thumb').src = ev.target.result;
+    document.getElementById('wl-edit-img-preview').style.display = 'block';
+    document.getElementById('wl-edit-img-placeholder').style.display = 'none';
+    window._wlEditPendingCover = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function saveWebLink() {
   var urlInput = document.getElementById('wl-url-input');
   var titleInput = document.getElementById('wl-title-input');
   var url = urlInput ? urlInput.value.trim() : '';
-  if (!url) { toast('Please enter a URL'); return; }
-  if (!url.startsWith('http')) url = 'https://' + url;
+
+  // Strict URL validation
+  if (!url) { toast('Please enter a URL'); urlInput && urlInput.focus(); return; }
+  if (!/^https?:\/\//i.test(url)) {
+    // Auto-prepend https:// and validate
+    url = 'https://' + url;
+    if (urlInput) urlInput.value = url;
+  }
+  if (!/^https?:\/\/.+\..+/i.test(url)) {
+    var errEl = document.getElementById('wl-url-error');
+    if (errEl) errEl.style.display = 'block';
+    if (urlInput) urlInput.style.borderColor = '#dc2626';
+    toast('Please enter a valid URL (e.g. https://yourwebsite.com)');
+    return;
+  }
+
+  var title = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : '';
+  if (!title) { toast('Please enter a title for this link'); titleInput && titleInput.focus(); return; }
+
+  var subtitleInput = document.getElementById('wl-subtitle-input');
+  var subtitle = subtitleInput ? subtitleInput.value.trim() : '';
+
   var domain = '';
   try { domain = new URL(url).hostname.replace('www.',''); } catch(e) { domain = url; }
-  var title = (titleInput && titleInput.value.trim()) ? titleInput.value.trim() : domain;
-  var link = { id: wlIdCounter++, url: url, title: title, visible: true, cover: window._wlPendingCover || null };
+
+  var link = { id: wlIdCounter++, url: url, title: title, subtitle: subtitle, visible: true, cover: window._wlPendingCover || null };
   webLinks.push(link);
-  if (urlInput) urlInput.value = '';
+
+  if (urlInput) { urlInput.value = ''; urlInput.style.borderColor = 'var(--border)'; }
   if (titleInput) titleInput.value = '';
+  var subtitleClear = document.getElementById('wl-subtitle-input');
+  if (subtitleClear) subtitleClear.value = '';
   window._wlPendingCover = null;
-  // reset image preview
   var prev = document.getElementById('wl-img-preview');
   var placeholder = document.getElementById('wl-img-placeholder');
   if (prev) prev.style.display = 'none';
   if (placeholder) placeholder.style.display = 'block';
+  var errEl = document.getElementById('wl-url-error');
+  if (errEl) errEl.style.display = 'none';
+
   closeModal('modal-add-weblink');
   renderWebLinks();
   toast('✓ Link added!');
+}
+
+function openEditWebLink(id) {
+  var link = webLinks.find(function(l){ return l.id === id; });
+  if (!link) return;
+  document.getElementById('wl-edit-id').value = id;
+  document.getElementById('wl-edit-url').value = link.url || '';
+  document.getElementById('wl-edit-title').value = link.title || '';
+  var editSubEl = document.getElementById('wl-edit-subtitle');
+  if (editSubEl) editSubEl.value = link.subtitle || '';
+  // Reset image preview
+  var prev = document.getElementById('wl-edit-img-preview');
+  var placeholder = document.getElementById('wl-edit-img-placeholder');
+  if (link.cover) {
+    document.getElementById('wl-edit-img-thumb').src = link.cover;
+    if (prev) prev.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+  } else {
+    if (prev) prev.style.display = 'none';
+    if (placeholder) placeholder.style.display = 'block';
+  }
+  window._wlEditPendingCover = null;
+  openModal('modal-edit-weblink');
+}
+
+function saveEditWebLink() {
+  var id = parseInt(document.getElementById('wl-edit-id').value);
+  var link = webLinks.find(function(l){ return l.id === id; });
+  if (!link) return;
+
+  var url = (document.getElementById('wl-edit-url').value || '').trim();
+  var title = (document.getElementById('wl-edit-title').value || '').trim();
+
+  if (!url) { toast('Please enter a URL'); return; }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  if (!/^https?:\/\/.+\..+/i.test(url)) {
+    document.getElementById('wl-edit-url-error').style.display = 'block';
+    toast('Please enter a valid URL');
+    return;
+  }
+  if (!title) { toast('Please enter a title'); return; }
+
+  link.url = url;
+  link.title = title;
+  var editSub = document.getElementById('wl-edit-subtitle');
+  if (editSub) link.subtitle = editSub.value.trim();
+  if (window._wlEditPendingCover) link.cover = window._wlEditPendingCover;
+  window._wlEditPendingCover = null;
+
+  closeModal('modal-edit-weblink');
+  renderWebLinks();
+  toast('✓ Link updated!');
 }
 
 function deleteWebLink(id) {
@@ -8848,59 +9336,61 @@ function renderWebLinks() {
   for (var i = 0; i < webLinks.length; i++) {
     var link = webLinks[i];
     var id = link.id;
-    var coverBg = link.cover
-      ? 'background:url(' + link.cover + ') center/cover no-repeat;'
-      : 'background:linear-gradient(135deg,#1a0a00,#2d1500);';
-    var initials = (link.title || 'LK').substring(0,2).toUpperCase();
-    var coverContent = link.cover ? '' : '<div style="display:flex;align-items:center;justify-content:center;height:100%;"><span style="font-family:Georgia,serif;font-size:2rem;color:rgba(196,154,108,0.6);">' + initials + '</span></div>';
     var domain = '';
     try { domain = new URL(link.url).hostname.replace('www.',''); } catch(e) { domain = link.url; }
-    var visIcon = link.visible
-      ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
-      : '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    var opacity = link.visible ? '1' : '0.55';
 
-    html += '<div class="wl-card-outer">';
+    // Photo — inset with padding + rounded corners, matching screenshot
+    var photoHTML = link.cover
+      ? '<div style="padding:10px 10px 0;"><div style="border-radius:16px;overflow:hidden;height:178px;"><img src="' + link.cover + '" style="width:100%;height:100%;object-fit:cover;display:block;"></div></div>'
+      : '<div style="padding:10px 10px 0;"><div style="border-radius:16px;overflow:hidden;height:178px;background:linear-gradient(150deg,#c6cad5,#a4acba);display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div></div>';
 
-    // Cover image area
-    html += '<div style="height:160px;border-radius:12px 12px 0 0;overflow:hidden;position:relative;' + coverBg + '">';
-    html += coverContent;
-    // Visibility badge top right
-    html += '<div style="position:absolute;top:10px;right:10px;">';
-    html += '<button data-wl-vis="' + id + '" style="display:flex;align-items:center;gap:4px;padding:4px 10px;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);border:none;border-radius:20px;cursor:pointer;color:#fff;font-size:0.7rem;font-weight:700;">';
-    html += '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">' + visIcon + '</svg>';
-    html += (link.visible ? 'Visible' : 'Hidden');
-    html += '</button></div>';
-    html += '</div>';
+    html += '<div style="background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 2px 14px rgba(44,26,14,0.08);opacity:' + opacity + ';transition:box-shadow 0.2s,transform 0.2s;" onmouseover="this.style.boxShadow=\'0 8px 30px rgba(44,26,14,0.13)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'0 2px 14px rgba(44,26,14,0.08)\';this.style.transform=\'none\'">';
+    html += photoHTML;
 
-    // Card body
-    html += '<div style="padding:16px 16px 12px;">';
-    // Title
-    html += '<div style="font-family:Georgia,serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4;">' + (link.title || domain) + '</div>';
-    // Domain
-    html += '<div style="font-size:0.72rem;color:var(--text-dim);margin-bottom:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + domain + '</div>';
-    // Open link CTA
-    html += '<a href="' + link.url + '" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:0.8rem;font-weight:700;color:var(--brown);text-decoration:none;padding:7px 14px;background:var(--brown-bg);border-radius:7px;border:1px solid var(--border);">Open Link <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></a>';
+    // Body
+    html += '<div style="padding:14px 16px 10px;">';
+    html += '<div style="font-family:\'DM Serif Display\',Georgia,serif;font-size:1.04rem;font-weight:700;color:#1a1a1a;line-height:1.35;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + (link.title || domain) + '</div>';
+    html += '<div style="font-size:0.78rem;color:#888;line-height:1.55;margin-bottom:11px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + (link.subtitle || domain) + '</div>';
+    html += '<span style="display:inline-flex;align-items:center;gap:4px;font-size:0.82rem;font-weight:700;color:#1a1a1a;cursor:pointer;" data-wl-preview="' + link.url.replace(/"/g,'&quot;') + '">Learn More <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></span>';
     html += '</div>';
 
     // Action strip
-    html += '<div style="display:flex;align-items:center;padding:8px 12px;border-top:1px solid var(--border);background:var(--cream);gap:4px;">';
-    html += '<button class="wl-action-btn" title="Copy link" data-wl-copy="' + link.url.replace(/"/g,'&quot;') + '"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></button>';
-    html += '<button class="wl-action-btn" title="Analytics" data-wl-toast="Analytics coming soon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></button>';
-    html += '<button class="wl-action-btn" title="Schedule" data-wl-toast="Schedule coming soon"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>';
+    html += '<div style="display:flex;align-items:center;padding:7px 12px;border-top:1px solid #f0ece8;background:#faf8f6;border-radius:0 0 22px 22px;gap:1px;">';
+    // Visibility
+    html += '<button class="wl-action-btn" title="' + (link.visible ? 'Hide from page' : 'Show on page') + '" data-wl-vis="' + id + '" style="color:' + (link.visible ? 'var(--brown)' : '#ccc') + ';">';
+    html += link.visible
+      ? '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'
+      : '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+    html += '</button>';
+    // Share (network/share icon)
+    html += '<button class="wl-action-btn" title="Share — copy link" data-wl-share="' + link.url.replace(/"/g,'&quot;') + '"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>';
+    // Preview (eye + external link)
+    html += '<button class="wl-action-btn" title="Preview — open link" data-wl-preview="' + link.url.replace(/"/g,'&quot;') + '"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></button>';
+    // Edit
+    html += '<button class="wl-action-btn" title="Edit" data-wl-edit="' + id + '"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>';
     html += '<div style="flex:1;"></div>';
-    html += '<button class="wl-action-btn" title="Delete" data-wl-delete="' + id + '" style="color:#ef4444;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>';
+    // Delete
+    html += '<button class="wl-action-btn" title="Delete" data-wl-delete="' + id + '" style="color:#ef4444;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>';
     html += '</div>';
 
-    html += '</div>'; // end wl-card-outer
+    html += '</div>'; // end card
   }
   list.innerHTML = html;
+
+  // Delegate ALL clicks including Learn More span + all buttons
   list.onclick = function(e) {
+    // Check span/element with data-wl-preview (Learn More)
+    var el = e.target.closest('[data-wl-preview]');
+    if (el && el.dataset.wlPreview) { window.open(el.dataset.wlPreview, '_blank', 'noopener'); return; }
+
     var btn = e.target.closest('button');
     if (!btn) return;
-    if (btn.dataset.wlToast) toast(btn.dataset.wlToast);
-    if (btn.dataset.wlCopy) navigator.clipboard.writeText(btn.dataset.wlCopy).then(function(){ toast('Link copied!'); });
-    if (btn.dataset.wlDelete) deleteWebLink(parseInt(btn.dataset.wlDelete));
-    if (btn.dataset.wlVis) toggleWebLinkVisibility(parseInt(btn.dataset.wlVis));
+    if (btn.dataset.wlShare)   { navigator.clipboard.writeText(btn.dataset.wlShare).then(function(){ toast('✓ Link copied to clipboard!'); }); }
+    if (btn.dataset.wlPreview) { window.open(btn.dataset.wlPreview, '_blank', 'noopener'); }
+    if (btn.dataset.wlDelete)  { deleteWebLink(parseInt(btn.dataset.wlDelete)); }
+    if (btn.dataset.wlVis)     { toggleWebLinkVisibility(parseInt(btn.dataset.wlVis)); }
+    if (btn.dataset.wlEdit)    { openEditWebLink(parseInt(btn.dataset.wlEdit)); }
   };
 }
 
@@ -8953,15 +9443,95 @@ function toggleDepositField(cb) {
   thumb.style.left = cb.checked ? '23px' : '3px';
 }
 
-function previewSvcImage(e) {
+var svcPhotos = [null,null,null,null,null,null];
+
+function svcTriggerPhoto(idx) {
+  document.getElementById('svc-photo-' + idx).click();
+}
+function svcPhotoUploaded(idx, input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    svcPhotos[idx] = e.target.result;
+    var slot = document.getElementById('svc-slot-' + idx);
+    if (slot) {
+      slot.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+      slot.style.border = '2px solid var(--brown)';
+      slot.style.padding = '0';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewService(id) {
+  var svc = bookingServices.find(function(s){ return s.id === id; });
+  if (!svc) return;
+  var el = document.getElementById('modal-preview-service');
+  if (!el) return;
+  var photos = (svc.photos || [svc.cover]).filter(Boolean);
+  var mainImg = photos.length
+    ? '<img src="'+photos[0]+'" id="spv-main" style="width:100%;height:100%;object-fit:cover;">'
+    : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;">📅</div>';
+  var thumbs = photos.length > 1
+    ? photos.map(function(src, i){ return '<div onclick="document.getElementById(\'spv-main\').src=\''+src+'\'" style="width:52px;height:52px;border-radius:8px;overflow:hidden;border:2px solid '+(i===0?'var(--brown)':'var(--border)')+';cursor:pointer;flex-shrink:0;"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;"></div>'; }).join('')
+    : '';
+  el.querySelector('#spv-img-main').innerHTML = mainImg;
+  el.querySelector('#spv-thumbs').innerHTML = thumbs;
+  el.querySelector('#spv-name').textContent = svc.name;
+  el.querySelector('#spv-price').textContent = '$' + svc.price.toFixed(2);
+  el.querySelector('#spv-duration').textContent = svc.duration;
+  el.querySelector('#spv-category').textContent = svc.category;
+  el.querySelector('#spv-desc').textContent = svc.desc || '';
+  el.querySelector('#spv-edit-btn').onclick = function(){ closeModal('modal-preview-service'); editService(id); };
+  openModal('modal-preview-service');
+}
+
+function editService(id) {
+  var svc = bookingServices.find(function(s){ return s.id === id; });
+  if (!svc) return;
+  document.getElementById('svc-edit-id').value = id;
+  document.getElementById('svc-edit-name').value = svc.name || '';
+  document.getElementById('svc-edit-price').value = svc.price || '';
+  document.getElementById('svc-edit-duration').value = svc.duration || '1 hour';
+  document.getElementById('svc-edit-category').value = svc.category || 'Hair';
+  document.getElementById('svc-edit-desc').value = svc.desc || '';
+  // show existing main photo
+  var photoWrap = document.getElementById('svc-edit-photo-preview');
+  var cover = svc.photos ? svc.photos[0] : svc.cover;
+  if (photoWrap) photoWrap.innerHTML = cover ? '<img src="'+cover+'" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:6px;">' : '';
+  window._svcEditPendingCover = null;
+  openModal('modal-edit-service');
+}
+
+function saveEditService() {
+  var id = parseInt(document.getElementById('svc-edit-id').value);
+  var svc = bookingServices.find(function(s){ return s.id === id; });
+  if (!svc) return;
+  svc.name = document.getElementById('svc-edit-name').value.trim() || svc.name;
+  svc.price = parseFloat(document.getElementById('svc-edit-price').value) || svc.price;
+  svc.duration = document.getElementById('svc-edit-duration').value || svc.duration;
+  svc.category = document.getElementById('svc-edit-category').value || svc.category;
+  svc.desc = document.getElementById('svc-edit-desc').value;
+  if (window._svcEditPendingCover) {
+    svc.cover = window._svcEditPendingCover;
+    if (!svc.photos) svc.photos = [];
+    svc.photos[0] = window._svcEditPendingCover;
+  }
+  window._svcEditPendingCover = null;
+  closeModal('modal-edit-service');
+  renderBookingServices();
+  toast('✓ Service updated!');
+}
+
+function previewSvcEditImage(e) {
   var file = e.target.files[0];
   if (!file) return;
   var reader = new FileReader();
   reader.onload = function(ev) {
-    document.getElementById('svc-img-thumb').src = ev.target.result;
-    document.getElementById('svc-img-preview').style.display = 'block';
-    document.getElementById('svc-img-placeholder').style.display = 'none';
-    window._svcPendingCover = ev.target.result;
+    window._svcEditPendingCover = ev.target.result;
+    var wrap = document.getElementById('svc-edit-photo-preview');
+    if (wrap) wrap.innerHTML = '<img src="'+ev.target.result+'" style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-bottom:6px;">';
   };
   reader.readAsDataURL(file);
 }
@@ -8981,7 +9551,9 @@ function saveService() {
     name: name, price: price, duration: duration,
     category: category, desc: desc,
     deposit: depositOn, depositAmt: depositAmt, depositType: depositType,
-    cover: window._svcPendingCover || null, visible: true
+    cover: svcPhotos[0] || null,
+    photos: svcPhotos.filter(Boolean),
+    visible: true
   };
   bookingServices.push(svc);
   // reset form
@@ -8990,9 +9562,16 @@ function saveService() {
   document.getElementById('svc-deposit-field').style.display = 'none';
   document.getElementById('svc-deposit-track').style.background = '#e5e7eb';
   document.getElementById('svc-deposit-thumb').style.left = '3px';
-  document.getElementById('svc-img-preview').style.display = 'none';
-  document.getElementById('svc-img-placeholder').style.display = 'block';
-  window._svcPendingCover = null;
+  // reset photo grid
+  svcPhotos = [null,null,null,null,null,null];
+  for (var pi = 0; pi < 6; pi++) {
+    var slot = document.getElementById('svc-slot-' + pi);
+    if (slot) {
+      slot.innerHTML = pi === 0 ? '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--brown-light)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Main' : '+';
+      slot.style.border = '2px dashed var(--border)';
+      slot.style.padding = '';
+    }
+  }
   closeModal('modal-add-service');
   renderBookingServices();
   toast('✓ Service added!');
@@ -9099,6 +9678,8 @@ function renderBookingServices() {
       + (depositBadge ? '<div style="margin-bottom:10px;">' + depositBadge + '</div>' : '')
       + '<button onclick="openBookService(' + svc.id + ')" style="width:100%;padding:10px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:10px;">Book Now</button>'
       + '<div style="display:flex;align-items:center;gap:6px;border-top:1px solid var(--border);padding-top:10px;">'
+      + '<button onclick="previewService(' + svc.id + ')" style="padding:6px 10px;background:var(--brown);color:#fff;border:none;border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;">👁 Preview</button>'
+      + '<button onclick="editService(' + svc.id + ')" style="padding:6px 10px;background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;">✏️ Edit</button>'
       + '<button onclick="toggleServiceVisibility(' + svc.id + ')" style="flex:1;padding:6px;background:none;border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;color:' + visColor + ';">' + visLabel + '</button>'
       + '<button onclick="deleteService(' + svc.id + ')" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:none;border-radius:7px;cursor:pointer;font-size:0.72rem;font-weight:700;">Delete</button>'
       + '</div>'
@@ -9937,7 +10518,7 @@ function toggleReviewBuilder() {
 </div>
 
 <div id="modal-help-system" class="modal-overlay" onclick="closeModal('modal-help-system')">
-  <div class="modal" style="max-width:580px;" onclick="event.stopPropagation()">
+  <div class="modal" style="max-width:600px;" onclick="event.stopPropagation()">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
       <h2 class="modal-title" style="margin:0;">🗺️ How MASSED Works</h2>
       <button onclick="closeModal('modal-help-system')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
@@ -9953,97 +10534,99 @@ function toggleReviewBuilder() {
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🛍️ My Store</div>
-        <p>Your public storefront. Toggle <strong>Store Live</strong> to make it visible at your MASSED link. The store has four tabs: <strong>Physical</strong>, <strong>Digital</strong>, <strong>Courses</strong>, and <strong>Visibility</strong>.</p>
-        <p style="margin-top:6px;"><strong>Physical Products:</strong> Click <em>+ Add Physical Product</em> to open the popup. Fill in product name, price, description, cover image, inventory, and per-state shipping price. Optional fields: size, gender (Men / Women / Unisex), product category, discount %, promo code, type of discount (e.g. Christmas, New Years), sale price. Toggle <strong>Affiliate Earner</strong> to let affiliates earn a percentage or fixed dollar amount per sale — the store will display "Earn money as an affiliate on this product" when live. Add a subscription option, set a membership requirement, or enable <strong>Subscribe for Product Updates</strong> so customers get notified on stock changes, restocks, or sale endings. Toggle <strong>Hide from Store</strong> to save without publishing. Tap <strong>Publish Product</strong> to go live. Each product card has Preview, Hide, and Delete buttons.</p>
-        <p style="margin-top:6px;"><strong>Digital Products:</strong> Same full flow as physical — name, price, description, cover image, category, discounts, promo code, affiliate settings, subscription, membership requirement, and product update subscriptions. No shipping or size fields. Tap <strong>Publish Product</strong> to go live.</p>
-        <p style="margin-top:6px;"><strong>Courses:</strong> Same full flow plus one unique field — <strong>Course Type</strong> dropdown: choose <em>Complete Course</em> (one purchase unlocks the full program) or <em>Course Upsell</em> (students can buy individual lessons one at a time). Tap <strong>Publish Course</strong> to go live.</p>
-        <p style="margin-top:6px;"><strong>Visibility tab:</strong> Toggle each product type (Digital Products, Physical Products, Courses, Bookings, Events, Services, Links, Videos) on or off to control what appears on your live store page.</p>
+        <p>Your public storefront. Toggle <strong>Store Live</strong> to make it visible at your MASSED link. Click <strong>Preview Live Store</strong> to see exactly how your store looks to your audience. The store has four tabs: <strong>Physical</strong>, <strong>Digital</strong>, <strong>Courses</strong>, and <strong>Visibility</strong>. You can also navigate directly to each tab from the sidebar sub-items.</p>
+        <p style="margin-top:6px;"><strong>Physical Products:</strong> Up to 6 photos (first is main image, others become thumbnails), product name, price, sale price, tax rate, description, composition/material, inventory count, low stock alert (notifies you when stock hits the number you set), allow pre-order toggle, fulfillment method (Shipped / Meet Up / Local Pickup / Delivered — if Delivered, set a delivery fee), available sizes (type and Add — appear as selectable chips), available colors (pick color + name — appear as color dots), gender, category (type your own if you select Other — added to all forms system-wide), discount %, promo code, discount type (e.g. Christmas, New Years), product variants (same product in different flavors, styles, or editions — each with its own name and price), affiliate earner settings (% or $ per sale), subscription option, membership requirement, subscribe for product updates (customers notified on restocks/sales/drops), hide from store.</p>
+        <p style="margin-top:6px;"><strong>Product cards:</strong> Show stock status (● In Stock / ● Low Stock / ● Out of Stock / ● Pre-Order), sizes, color dots, variant count. Buttons: 👁 Preview (creator-side detail view), ✏️ Edit, 🤍 Heart (public can save), 👁/🚫 Hide/Unhide, 🗑 Delete.</p>
+        <p style="margin-top:6px;"><strong>Digital Products:</strong> Product name, price, sale price, tax rate, description, cover image, upload your digital file (PDF, ZIP, MP3, MP4, EPUB — customers receive instant download link after purchase), download support message (shown after purchase), product category (Ebook category included), variants, affiliate settings, subscription, membership requirement, product update subscriptions, hide from store.</p>
+        <p style="margin-top:6px;"><strong>Courses:</strong> Same full form plus <strong>Course Type</strong> (Complete Course = one purchase, full access; Course Upsell = individual lessons sold separately), course cover image, preview video upload (MP4/MOV plays inline). Buttons: 👁 Preview, ✏️ Edit, 🤍 Heart, Hide/Unhide, Delete.</p>
+        <p style="margin-top:6px;"><strong>Visibility tab:</strong> Toggle each product type (Digital, Physical, Courses, Bookings, Events, Services, Links, Videos) on/off for your live store page.</p>
+        <p style="margin-top:6px;"><strong>Custom categories:</strong> Select "Other" in any category dropdown and type your own — it's instantly added to Physical, Digital, and Course category dropdowns across the entire system.</p>
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔗 Web Links</div>
-        <p>Add any URL to your public page — websites, landing pages, booking links, portfolios, or anything you want your audience to tap. Each link appears as a card on your MASSED profile with a cover image, title, and Open Link button.</p>
+        <p>Add any URL to your public page — websites, landing pages, booking links, portfolios, or anything you want your audience to tap. Each link appears as a card on your MASSED profile with a cover image, title, and Open Link button. URL and Title are both required — the URL is validated before saving. Each card has: Copy · Analytics · ✏️ Edit · Delete. Edit opens a pre-filled modal to update URL, title, or swap the cover image.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📋 Listings</div>
-        <p>Found in the sidebar under <strong>Build → Listings</strong>. Listings is a browsing-based catalog for opportunities, spaces, rentals, and high-consideration items — <em>inquiry first, no immediate checkout</em>. It's built for creators who need to showcase something before a sale happens.</p>
+        <p>Found in the sidebar under <strong>Build → Listings</strong>. Listings is a browsing-based catalog for high-consideration items — <em>inquiry first, no immediate checkout</em>.</p>
         <p style="margin-top:6px;"><strong>Who it's for:</strong> Real estate agents, independent car sellers, event venues (weddings, parties), Airbnb / short-term rentals, salon suite rentals, photography studios, office spaces, job postings, freelance gig listings, casting calls, brand ambassador roles, travel agents, travel packages, spa packages, party packages, and guided experiences.</p>
-        <p style="margin-top:6px;"><strong>Category tabs:</strong> All · 🏠 Real Estate · 🚗 Cars · 🏢 Spaces · 💼 Jobs · ✨ Experiences · ↩ Refunds. Each tab filters your listings by type.</p>
-        <p style="margin-top:6px;"><strong>Adding a listing:</strong> Tap <em>+ Add Listing</em>. Fill in title, category, primary CTA (Contact / Apply Now / Request Info / Reserve Interest / Book a Viewing / Inquire Now), price or toggle "Contact for price," location, description, and up to 4 photos. Category-specific extra fields appear automatically — beds/baths/sqft for Real Estate, year/make/mileage for Cars, compensation and work type for Jobs.</p>
-        <p style="margin-top:6px;"><strong>Payment & Deposit:</strong> Toggle <em>Send Payment Link</em> to enter an amount and recipient email or phone — sends an instant payment link. Toggle <em>Send Deposit Link</em> to collect a hold deposit immediately to secure the customer's interest before full payment.</p>
-        <p style="margin-top:6px;"><strong>Listing cards:</strong> Each published listing shows the main photo, category badge, title, location, price, and a preview of the description. Four action buttons appear on every card: the primary CTA button (opens an inquiry form the visitor fills out), 👁 Preview (opens a full-detail view with photo gallery, all details, and the CTA), ✏️ Edit (opens the edit modal pre-filled with all current data — update title, price, location, description, CTA, or swap the main photo), and 🗑 Delete.</p>
-        <p style="margin-top:6px;"><strong>Preview modal:</strong> Shows the full listing — large photo with thumbnail rail (click any thumbnail to swap the main image), category badge, title, location, price, detail chips (beds/baths/sqft, year/make/mileage, or pay/work type depending on category), and the full description. The Contact / Apply / Request Info CTA button opens the inquiry form directly from the preview.</p>
-        <p style="margin-top:6px;"><strong>Inquiry form:</strong> When a visitor taps the CTA, a form collects their name, email, phone (optional), and a message. Submitted inquiries notify the creator so they can follow up directly.</p>
-        <p style="margin-top:6px;"><strong>Refunds tab:</strong> A dedicated tab to process refunds outside of the main listing flow. Enter the client name or email, refund amount, reason, and optional order reference ID, then tap Process Refund. A running refund history log is maintained showing client, reason, date, and amount for every refund issued.</p>
+        <p style="margin-top:6px;"><strong>Category tabs:</strong> All · 🏠 Real Estate · 🚗 Cars · 🏢 Spaces · 💼 Jobs · ✨ Experiences · ↩ Refunds.</p>
+        <p style="margin-top:6px;"><strong>Adding a listing:</strong> Title, category, primary CTA (Contact / Apply Now / Request Info / Reserve Interest / Book a Viewing / Inquire Now), price (auto-adds $ as you type) or toggle "Contact for price," location, description, up to 4 photos. Category-specific extra fields appear automatically — beds/baths/sqft for Real Estate, year/make/mileage for Cars, compensation and work type for Jobs.</p>
+        <p style="margin-top:6px;"><strong>Payment & Deposit:</strong> Toggle <em>Send Payment Link</em> to enter amount + recipient email/phone. Toggle <em>Send Deposit Link</em> to collect a hold deposit immediately to secure the customer's interest.</p>
+        <p style="margin-top:6px;"><strong>Listing cards:</strong> CTA button · 👁 Preview · 🤍 Heart (public can save) · 👁 Visible / 🚫 Hidden toggle · ✏️ Edit · 🗑 Delete. Hidden listings are dimmed. Preview opens a full-detail view with photo gallery, thumbnail rail, detail chips, full description, and CTA. Edit modal is pre-filled with all current data including photo swap.</p>
+        <p style="margin-top:6px;"><strong>Refunds tab:</strong> Process refunds with client name/email, amount, reason, and optional reference ID. Full refund history log maintained.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">📅 Booking / Your Services</div>
+        <p>Found in the sidebar under <strong>Booking / Your Services</strong>. Two tabs: <strong>Services</strong> and <strong>Incoming Bookings</strong>.</p>
+        <p style="margin-top:6px;"><strong>Services tab:</strong> Add bookable services with name, price, duration, category (Hair / Beauty / Wellness / Consulting / Classes / + custom), description, optional cover photo. <strong>Classes</strong> — when selected, choose between <em>Single Class</em> (one-on-one) or <em>Group Class</em> (multiple students, set max capacity and location/platform). Toggle <strong>Booking Page Live</strong> to make booking visible. Each service card has Visible/Hidden, 🤍 Heart, and Delete. Category chips filter by type — add new categories with the + New Category button.</p>
+        <p style="margin-top:6px;"><strong>Deposit system:</strong> Toggle Require Deposit when adding a service. Set fixed dollar amount or %. Client pays upfront to secure their date; remaining balance collected at time of service.</p>
+        <p style="margin-top:6px;"><strong>Incoming Bookings tab:</strong> All booked appointments. Each shows client name, email, service, date, time, status, and deposit status. Tap Manage to: Reschedule, Send Deposit Request, Charge Fee (late/no-show/cancellation), Send Review Questionnaire, Cancel, Delete, or Ban from Booking.</p>
+        <p style="margin-top:6px;"><strong>Review Questionnaire:</strong> Build custom review questions with multiple-choice answers. 5-star rating always included. Send to any client from their Manage menu.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📅 Booking / Your Services</div>
-        <p>Found in the sidebar under <strong>Booking / Your Services</strong>. The screen is titled <strong>Your Booking Services</strong> and has two tabs.</p>
-        <p style="margin-top:6px;"><strong>Services tab:</strong> Your bookable services — name, price, duration, category, description, optional cover photo. Toggle <strong>Booking Page Live</strong> to make booking visible on your profile. Each service card has a Visible/Hidden toggle and Delete button. Use category chips to filter by type.</p>
-        <p style="margin-top:6px;"><strong>Deposit system:</strong> Toggle Require Deposit when adding a service. Set a fixed dollar amount or percentage. Client pays upfront to secure their date and time; remaining balance collected at time of service.</p>
-        <p style="margin-top:6px;"><strong>Incoming Bookings tab:</strong> All appointments already booked by clients. Each shows client name, email, service, date, time, status (Confirmed / Pending / Cancelled), and deposit status. Tap <strong>Manage</strong> on any booking to:</p>
-        <p style="margin-top:4px;">✦ <strong>Reschedule</strong> — set new date &amp; time, send client a reschedule link with custom message<br>✦ <strong>Send Deposit Request</strong> — custom amount and due date<br>✦ <strong>Charge Fee</strong> — late fee, no-show fee, cancellation fee, or rebooking fee with custom dollar amount<br>✦ <strong>Send Review Questionnaire</strong> — sends your custom review form to the client<br>✦ <strong>Cancel Booking</strong> — marks the appointment cancelled<br>✦ <strong>Delete Booking</strong> — removes it; restoreable from the Recently Deleted section at the bottom of the tab<br>✦ <strong>Ban from Booking</strong> — blocks this client from booking again; reversible by tapping Manage and selecting Unban</p>
-        <p style="margin-top:6px;"><strong>Review Questionnaire:</strong> Tap the Review Questionnaire button at the top of the Incoming Bookings tab. Add custom questions with multiple-choice answer options. 5-star rating always included. Send to any client from their Manage menu.</p>
-
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📱 Social Links</div>
-        <p>Connect Instagram, X/Twitter, TikTok, YouTube, Facebook, Pinterest, LinkedIn, and Amazon. Each platform has a <strong>toggle</strong> — flip it on to show that platform publicly on your profile, flip it off to hide it. Only platforms with the toggle on are visible to visitors.</p>
+        <p>Connect Instagram, X/Twitter, TikTok, YouTube, Facebook, Pinterest, LinkedIn, and Amazon. Each platform has a toggle — on shows publicly, off hides it. Only toggled-on platforms are visible to visitors.</p>
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🎬 Video</div>
-        <p>Upload or link your videos. They appear directly on your public MASSED profile so your audience can watch without leaving your page. Add a title, genre, and duration for each video.</p>
+        <p>Upload or link videos. They appear directly on your public MASSED profile — audience watches without leaving your page. Add a title, genre, and duration for each video.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🎟️ Events / Tickets</div>
-        <p>Create in-person or online events. Set ticket tiers, prices, and capacity. Manage attendees and collect payments through Stripe. Use the built-in <strong>Ticket Scanner</strong> in the sidebar to scan QR codes at the door on event day. Select <strong>Other</strong> as event type to type in a custom type.</p>
+        <p>Create in-person or online events. Set ticket tiers, prices, and capacity. Manage attendees and collect payments through Stripe. Use the built-in <strong>Ticket Scanner</strong> in the sidebar to scan QR codes at the door. Select <strong>Other</strong> as event type to type a custom type.</p>
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔴 Go Live</div>
-        <p>Click the Go Live button in the top bar. Choose <strong>Go Live</strong> to connect with your audience with no product, or <strong>Go Live &amp; Sell</strong> to feature a product at a sale price with an optional countdown timer. Use <strong>⏸ Pause</strong> to pause without ending, and <strong>End Live</strong> to close the session. The live banner stays visible to your audience until you end it.</p>
+        <p>Click the Go Live button in the top bar. Choose <strong>Go Live</strong> to connect with your audience, or <strong>Go Live &amp; Sell</strong> to feature a product at a sale price with an optional countdown timer. Use ⏸ Pause to pause without ending, and End Live to close the session.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">💰 Sales &amp; Payouts</div>
         <p><strong>Sales tab:</strong> Today's revenue, sessions, conversion funnel, traffic channels with interactive world map, top products, and social media analysis.</p>
-        <p style="margin-top:6px;"><strong>Payout tab:</strong> Balance Breakdown (Available Now, Processing, Held), Earnings Overview, and Transaction Feed. Switch to <strong>Affiliate Earnings</strong> to see Top Earners with Pending/Paid status and Pay Now buttons. Once paid, tap <strong>View Receipt</strong> to see the receipt — amount, who it was sent to, date and time.</p>
-        <p style="margin-top:6px;"><strong>Payout Settings</strong> — a sub-item in the sidebar under Sales &amp; Payouts. Configure your payout preferences here.</p>
+        <p style="margin-top:6px;"><strong>Payout tab:</strong> Balance Breakdown (Available Now, Processing, Held), Earnings Overview, and Transaction Feed. Switch to <strong>Affiliate Earnings</strong> to see Top Earners with Pending/Paid status and Pay Now buttons. Once paid, tap View Receipt to see amount, recipient, date and time.</p>
+        <p style="margin-top:6px;"><strong>Payout Settings</strong> — sidebar sub-item under Sales &amp; Payouts. Configure your payout preferences here.</p>
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">⚙️ Settings</div>
-        <p>Five tabs: <strong>Settings</strong> (account, phone number, password change with 6-digit SMS verification), <strong>Billing</strong> (plan, payment method, Manage Plan to pause or pay remaining balance, Graduation Countdown), <strong>Stripe</strong> (connect your Stripe account), <strong>Support</strong> (quick help guides, FAQ, contact support), and <strong>API</strong> (integrations — coming soon).</p>
-        <p style="margin-top:6px;"><strong>Password Change:</strong> Enter your phone number and new password, tap Send Code — a 6-digit verification code is sent to your phone. Enter the code and tap Verify to confirm.</p>
-        <p style="margin-top:6px;"><strong>Manage Plan:</strong> Opens a popup where you can pause payments for 30 days or pay the remaining balance upfront to graduate early.</p>
-        <p style="margin-top:6px;"><strong>Graduation Countdown:</strong> Pay $30/month for 12 months → FREE 24-month plan → then $79.99/year forever. Month 3 of 12, 25% complete.</p>
+        <p>Five tabs: <strong>Settings</strong> (account, phone number, password change with 6-digit SMS code), <strong>Billing</strong> (plan, payment method, Manage Plan, Graduation Countdown), <strong>Stripe</strong> (connect Stripe account), <strong>Support</strong> (quick help guides, FAQ, contact support), and <strong>API</strong> (integrations — coming soon).</p>
+        <p style="margin-top:6px;"><strong>Graduation Countdown:</strong> Pay $30/month for 12 months → FREE 24-month plan → then $79.99/year forever.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">❓ Support Tab (inside Settings)</div>
-        <p>Five Quick Help guides that open as popups: Media Profile, My Store, Sales &amp; Payouts, this full platform walkthrough, and FAQ. The FAQ has 9 questions each opening as their own popup with a ← Back to FAQ button. Contact Support lets you send a message or create a ticket — team responds within 24–48 hours.</p>
+        <p>Quick Help guides that open as popups: Media Profile, My Store, Sales &amp; Payouts, this full platform walkthrough, and FAQ. The FAQ has 9 questions each with a ← Back button. Contact Support lets you send a message or create a ticket — team responds within 24–48 hours.</p>
       </div>
 
       <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🌐 Browser Icon</div>
-        <p>Found in the sidebar under <strong>Browser Icon</strong>. Upload a PNG, JPG, or SVG — it auto-resizes to 16×16 and 32×32 (standard favicon sizes). A <strong>live browser tab preview</strong> shows exactly how your tab will look before you apply it. You can also set a custom Browser Tab Title that appears next to the icon. Click <strong>Apply Browser Icon to My Page</strong> to publish it to your MASSED link page.</p>
-      </div>
-
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
-        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">💳 Subscriptions / Subscribers / Memberships</div>
-        <p>Found in the sidebar under <strong>Subscriptions / Memberships / Subs</strong>.</p>
-        <p style="margin-top:6px;"><strong>Subscribers card:</strong> Shows your total subscriber count with profile avatars. Click any avatar for a read-only glimpse of that subscriber's name, location, and category — visible to you only, no actions available to them.</p>
-        <p style="margin-top:6px;"><strong>Subscriptions:</strong> Paid recurring accounts. Tap Manage to access: Charge Now (enter custom amount), Change Subscription Amount/Type, Send Invoice (with amount, description, due date), View Invoices (history), Refund Subscription, Cancel Subscription, Delete.</p>
-        <p style="margin-top:6px;"><strong>Memberships:</strong> Premium accounts with full management. Tap Manage to access: Add to Plan (manually add a family member — daughter, son, spouse — to an existing membership with an add-on amount that updates the primary holder's bill and sends them a billing notice), Change Plan (upgrade/downgrade tier and set new monthly amount), Charge Now, Send Invoice, View Invoices, Edit Info, Pause/Resume Service, Apply Fee (enter custom fee amount and type), Waive Fee, Cancel, Delete.</p>
-        <p style="margin-top:6px;"><strong>Filters:</strong> All · Subscribers · Subscriptions · Memberships · Late/Overdue (shows anyone with a balance due).</p>
+        <p>Upload a PNG, JPG, or SVG favicon — auto-resizes to 16×16 and 32×32. Live browser tab preview shows exactly how it looks before applying. Set a custom Browser Tab Title. Click <strong>Apply Browser Icon to My Page</strong> to publish.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
-        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🔤 Other Fields — Custom Input</div>
-        <p>Anywhere you see <strong>Other</strong> as an option — Event Type, Genre, Media Profile Category, Video Genre — selecting it reveals a text field so you can type exactly what you need.</p>
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">💳 Subscriptions / Subscribers / Memberships</div>
+        <p><strong>Subscribers:</strong> Total count with avatars. Click any avatar for a read-only view of that subscriber's profile.</p>
+        <p style="margin-top:6px;"><strong>Subscriptions:</strong> Paid recurring accounts. Tap Manage: Charge Now, Change Amount/Type, Send Invoice, View Invoices, Refund, Cancel, Delete.</p>
+        <p style="margin-top:6px;"><strong>Memberships:</strong> Premium accounts. Tap Manage: Add to Plan (add family member with add-on billing), Change Plan, Charge Now, Send Invoice, View Invoices, Edit Info, Pause/Resume, Apply Fee, Waive Fee, Cancel, Delete.</p>
+        <p style="margin-top:6px;"><strong>Filters:</strong> All · Subscribers · Subscriptions · Memberships · Late/Overdue.</p>
+      </div>
+
+      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">❤️ Hearts — Save Feature (Public)</div>
+        <p>Every Physical Product, Digital Product, Service, and Listing card has a 🤍 heart button. When the public taps it on your live page, it saves that item to their favourites. The heart fills (❤️) to confirm. Saved items appear in their account for easy reference later.</p>
+      </div>
+
+      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🔤 Other / Custom Fields</div>
+        <p>Anywhere you see <strong>Other</strong> — Event Type, Genre, Media Profile Category, Video Genre, Product Category, Booking Category — selecting it reveals a text field. For product categories, your custom entry is added to all three product form dropdowns (Physical, Digital, Course) system-wide instantly.</p>
       </div>
 
       <div style="background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:10px;padding:14px 16px;color:#fff;font-size:0.78rem;">
