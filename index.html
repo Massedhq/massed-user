@@ -142,18 +142,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   body{overflow:hidden;}
   :root{--sidebar-w:280px;}
 
+  /* Sidebar scrolls internally */
   .sidebar .sidebar-nav{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;}
   .sidebar-logo{position:sticky;top:0;z-index:5;background:#fff;flex-shrink:0;}
   .sidebar-bottom{position:static;border-top:1px solid var(--border);padding:14px 16px;background:#fff;flex-shrink:0;}
 
-  /* Main layout — topbar fixed, content scrolls */
-  .topbar{height:var(--topbar-h);flex-shrink:0;}
+  /* Topbar + content */
+  .topbar{height:var(--topbar-h);flex-shrink:0;padding:0 16px;}
   .content{flex:1;height:0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
-  .screen{padding:16px;padding-bottom:120px;}
-  .screen.active{display:block;padding:16px;padding-bottom:120px;}
-  #screen-payoutsettings.screen{background:#1a1a1a;}
-  #screen-payoutsettings.active{background:#1a1a1a !important;}
-  .topbar{padding:0 16px;flex-shrink:0;}
+  .screen{padding:16px;padding-bottom:100px;}
+  .screen.active{display:block;padding:16px;padding-bottom:100px;}
+  #screen-payoutsettings.screen,#screen-payoutsettings.active{background:#1a1a1a !important;}
   .hamburger{display:flex;}
   .link-badge{display:none;}
   .btn-logout{padding:7px 12px;font-size:0.78rem;}
@@ -161,58 +160,82 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
   /* Welcome */
   .welcome-wrap{min-height:auto;padding:40px 20px;}
-  .welcome-title{font-size:1.6rem;}
+  .welcome-title{font-size:1.5rem;}
 
-  /* Profile grid */
-  .profile-grid{grid-template-columns:1fr;}
-  .profile-card.full{grid-column:1;}
+  /* Profile grid — stack on mobile */
+  .profile-grid{grid-template-columns:1fr !important;}
+  .profile-card.full{grid-column:1 !important;}
 
-  /* Stats rows */
-  .stats-row{grid-template-columns:1fr 1fr;}
-  #screen-analytics .stats-row{grid-template-columns:1fr 1fr;}
-  #screen-reviews > div:first-of-type{grid-template-columns:1fr;}
-  #screen-tickets > div:first-of-type{grid-template-columns:1fr 1fr;}
+  /* Stats — 2 col on mobile */
+  .stats-row{grid-template-columns:1fr 1fr !important;}
 
-  /* Live preview */
-  #screen-livepreview.active{flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .lp-left{padding:20px;flex:none;width:100%;}
-  .lp-right{width:100%;padding:20px 20px 120px;border-left:none;border-top:1px solid #333;height:auto;overflow-y:visible;}
-  .phone-frame{width:240px;height:480px;}
+  /* Dashboard grids */
+  #screen-dashboard .stats-row{grid-template-columns:1fr 1fr !important;}
+  #screen-analytics .stats-row{grid-template-columns:1fr 1fr !important;}
+  #screen-reviews > div:first-of-type{grid-template-columns:1fr !important;}
+  #screen-tickets > div:first-of-type{grid-template-columns:1fr !important;}
+
+  /* Store — single column */
+  #screen-mystore .stats-row,
+  #screen-myphysical .stats-row,
+  #screen-mydigital .stats-row,
+  #screen-mycourses .stats-row{grid-template-columns:1fr 1fr !important;}
+
+  /* Web links grid — single col on small screens */
+  #wl-links-list{grid-template-columns:1fr !important;}
+
+  /* Listings grid */
+  #listings-grid{grid-template-columns:1fr !important;}
+
+  /* Scanner — stack */
+  #screen-scanner > div:nth-child(2){grid-template-columns:1fr !important;}
+
+  /* Live preview — stack vertically */
+  #screen-livepreview.active{flex-direction:column !important;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .lp-left{padding:20px 16px;flex:none;width:100%;display:flex;justify-content:center;}
+  .lp-right{width:100% !important;padding:20px 16px 100px;border-left:none !important;border-top:1px solid #333;height:auto;overflow-y:visible;}
 
   /* Live banner */
-  .live-banner{left:0;}
-  .live-banner-inner{flex-wrap:wrap;gap:10px;}
+  .live-banner{left:0 !important;}
+  .live-banner-inner{flex-wrap:wrap;gap:8px;}
   .live-banner-actions{width:100%;justify-content:flex-end;}
 
-  /* Modals — scrollable on mobile */
-  .modal-overlay{align-items:flex-start !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch;padding:16px 0 40px !important;}
-  .modal{padding:24px 18px;max-height:88vh !important;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .modal-title{font-size:1.25rem;}
-  #modal-view-event > div,
-  #modal-your-ticket > div{width:95%;}
-  #modal-create-event .modal > div[style*="grid-template-columns:1fr 1fr"]{display:flex;flex-direction:column;}
+  /* Modals — full screen style on mobile */
+  .modal-overlay{align-items:flex-start !important;padding:12px 0 60px !important;overflow-y:auto !important;-webkit-overflow-scrolling:touch;}
+  .modal{padding:20px 16px;width:96% !important;margin:0 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;max-height:none !important;}
+  .modal-title{font-size:1.15rem;}
 
-  /* Ticket / checkout modals */
-  #modal-create-event > div,
-  #modal-checkout > div,
-  #modal-online-access > div,
-  #modal-golive > div,
-  #modal-sell > div,
-  #modal-review > div{width:95%;margin:auto;}
+  /* Modal inner widths */
+  #modal-create-event > div,#modal-checkout > div,#modal-online-access > div,
+  #modal-golive > div,#modal-sell > div,#modal-review > div,
+  #modal-view-event > div,#modal-your-ticket > div{width:96% !important;margin:0 auto;}
 
-  /* Ticket stats */
-  .tk-footer{flex-wrap:wrap;gap:10px;}
-  .tk-footer > div:last-child{width:100%;justify-content:flex-end;}
+  /* Grids inside modals — stack */
+  #modal-create-event .modal > div[style*="grid-template-columns:1fr 1fr"]{display:flex !important;flex-direction:column;}
 
   /* Section headers */
-  .section-header{margin-bottom:16px;}
+  .section-header{margin-bottom:14px;}
+  .section-title{font-size:1.35rem;}
 
-  /* Video form grid */
-  #video-form > div[style*="grid-template-columns"]{display:flex;flex-direction:column;}
+  /* Video form */
+  #video-form > div[style*="grid-template-columns"]{display:flex !important;flex-direction:column;}
 
-  /* Scanner grid */
-  #screen-scanner > div:first-of-type + div{grid-template-columns:1fr !important;}
-  #screen-scanner > div:last-of-type{grid-template-columns:1fr 1fr !important;}
+  /* Ticket stats */
+  .tk-footer{flex-wrap:wrap;gap:8px;}
+  .tk-footer > div:last-child{width:100%;justify-content:flex-end;}
+
+  /* Booking grid */
+  #screen-booking > div[style*="grid-template-columns"]{display:flex !important;flex-direction:column;}
+
+  /* Showcase — stack */
+  #screen-showcase > div > div[style*="display:flex;gap:28px"]{flex-direction:column !important;}
+
+  /* Form grids inside cards — stack on mobile */
+  .profile-card > div[style*="grid-template-columns:1fr 1fr 1fr"],
+  .profile-card > div[style*="grid-template-columns:1fr 1fr"]{display:flex !important;flex-direction:column !important;gap:10px !important;}
+
+  /* Toast position */
+  #toast{bottom:80px;right:16px;left:16px;text-align:center;}
 }
 
 /* WELCOME */
@@ -367,14 +390,25 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 /* LIVE PREVIEW */
 #screen-livepreview{background:#111;min-height:calc(100vh - 60px);}
 @media(max-width:768px){
-  #screen-livepreview{
-    min-height:auto;
-    height:auto;
-    padding-bottom:60px;
-  }
-  #screen-livepreview.active{
-    height:auto;
-  }
+  #screen-livepreview,#screen-livepreview.active{min-height:auto;height:auto;}
+  .lp-left{padding:16px 12px;}
+  /* All 2-col grids become 1-col on phones */
+  .stats-row{grid-template-columns:1fr !important;}
+  #screen-analytics .stats-row{grid-template-columns:1fr 1fr !important;}
+  /* Store product cards - 1 col */
+  #physical-grid,#digital-grid,#courses-grid{grid-template-columns:1fr !important;}
+}
+
+@media(max-width:480px){
+  .section-title{font-size:1.2rem;}
+  .topbar-title{font-size:1rem;}
+  .modal{padding:16px 14px;}
+  /* Scanner stacks fully */
+  #screen-scanner > div:nth-child(2){flex-direction:column !important;}
+  /* Listing tabs wrap */
+  #screen-listings > div:first-of-type > div:first-of-type{flex-wrap:wrap;}
+  /* Store tabs wrap */
+  #store-tabs{flex-wrap:wrap;}
 }
 .lp-left{flex:1;display:flex;align-items:center;justify-content:center;padding:30px;}
 .lp-right{width:320px;background:#1a1a1a;border-left:1px solid #333;display:flex;flex-direction:column;overflow-y:auto;padding:24px;}
@@ -10306,7 +10340,8 @@ function submitSupportTicket() {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-  nav(null, 'dashboard');
+  // Only nav to dashboard after auth resolves (handled by loadAllData/showLoginScreen)
+  // Still set up nav wrapper and map tooltips
   var _orig=nav;
   nav=function(el,screen){
     try{if(typeof cameraStream!=='undefined'&&cameraStream&&screen!=='scanner')stopCamera();}catch(e){}
@@ -11587,6 +11622,75 @@ document.addEventListener('DOMContentLoaded', function() {
   if (badge) badge.textContent = incomingBookings.length;
 });
 
+// ── MOBILE RESPONSIVE FIX ────────────────────────────────────────────────────
+// Inline style= attributes can't be overridden by media queries — fix with JS
+function applyMobileLayouts() {
+  if (window.innerWidth > 1024) return;
+  var isMobile = window.innerWidth <= 1024;
+  var isSmall  = window.innerWidth <= 480;
+
+  // Fix all inline grid containers that resist CSS media queries
+  var fixes = [
+    // [selector, mobile style, small style]
+    ['#screen-dashboard .stats-row',         'grid-template-columns:1fr 1fr', null],
+    ['#screen-salespayouts .stats-row',      'grid-template-columns:1fr 1fr', 'grid-template-columns:1fr'],
+    ['#screen-analytics .stats-row',         'grid-template-columns:1fr 1fr', null],
+    ['#screen-booking > div[style]',         null, null],
+    ['#screen-scanner > div:nth-child(2)',   'grid-template-columns:1fr',     null],
+    ['#physical-grid',                        'grid-template-columns:1fr',     null],
+    ['#digital-grid',                         'grid-template-columns:1fr',     null],
+    ['#courses-grid',                         'grid-template-columns:1fr',     null],
+    ['#wl-links-list',                        'grid-template-columns:1fr',     null],
+    ['#listings-grid',                        'grid-template-columns:1fr',     null],
+    ['.profile-grid',                         'grid-template-columns:1fr',     null],
+  ];
+
+  fixes.forEach(function(fix) {
+    var els = document.querySelectorAll(fix[0]);
+    els.forEach(function(el) {
+      if (fix[2] && isSmall) { el.style.gridTemplateColumns = fix[2].replace('grid-template-columns:',''); }
+      else if (fix[1] && isMobile) { el.style.gridTemplateColumns = fix[1].replace('grid-template-columns:',''); }
+    });
+  });
+
+  // Stack any 2-col inline flex/grid rows in modals
+  if (isMobile) {
+    document.querySelectorAll('.modal > div[style*="grid-template-columns:1fr 1fr"]').forEach(function(el) {
+      el.style.display = 'flex';
+      el.style.flexDirection = 'column';
+      el.style.gap = '10px';
+    });
+    // Stack profile card inner grids
+    document.querySelectorAll('.profile-card > div[style*="grid-template-columns"]').forEach(function(el) {
+      el.style.display = 'flex';
+      el.style.flexDirection = 'column';
+      el.style.gap = '10px';
+    });
+  }
+}
+
+// Run on load and on every screen navigation
+document.addEventListener('DOMContentLoaded', applyMobileLayouts);
+window.addEventListener('resize', applyMobileLayouts);
+
+// Patch nav() to also apply mobile layouts after each navigation
+(function() {
+  var _origNav = typeof nav === 'function' ? nav : null;
+  if (_origNav) {
+    var _patchedNav = function(el, screen) {
+      _origNav(el, screen);
+      setTimeout(applyMobileLayouts, 50);
+    };
+    // Will be overridden after full script parse — apply at runtime
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof nav === 'function') {
+        var orig = nav;
+        nav = function(el, screen) { orig(el, screen); setTimeout(applyMobileLayouts, 50); };
+      }
+    });
+  }
+})();
+
 function toggleReviewBuilder() {
   var builder = document.getElementById('bk-review-builder');
   var list = document.getElementById('bk-incoming-list');
@@ -11606,6 +11710,365 @@ function openFullPagePreview() {
   if (t) content.innerHTML = t.render();
   modal.classList.add('open');
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MASSED API LAYER — connects every feature to the real backend
+// ═══════════════════════════════════════════════════════════════════════════
+
+var API_BASE = '/api';
+var _currentUser = null;
+
+// ── Core fetch wrapper ────────────────────────────────────────────────────
+async function api(method, path, body) {
+  var opts = {
+    method: method,
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include'
+  };
+  if (body && method !== 'GET') opts.body = JSON.stringify(body);
+  try {
+    var res = await fetch(API_BASE + path, opts);
+    var data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || 'Request failed');
+    return data;
+  } catch (err) {
+    console.error('API error:', path, err.message);
+    throw err;
+  }
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+async function apiRegister(email, password, displayName) {
+  var data = await api('POST', '/auth/register', { email, password, display_name: displayName });
+  _currentUser = data.user;
+  return data;
+}
+
+async function apiLogin(email, password) {
+  var data = await api('POST', '/auth/login', { email, password });
+  _currentUser = data.user;
+  return data;
+}
+
+async function apiLogout() {
+  await api('DELETE', '/auth/me');
+  _currentUser = null;
+  showLoginScreen();
+}
+
+async function apiGetMe() {
+  try {
+    var user = await api('GET', '/auth/me');
+    _currentUser = user;
+    return user;
+  } catch(e) { return null; }
+}
+
+// ── PROFILE ───────────────────────────────────────────────────────────────
+async function apiSaveProfile(data) {
+  return await api('PUT', '/profile', data);
+}
+
+// ── PRODUCTS ──────────────────────────────────────────────────────────────
+async function apiGetProducts(type) {
+  return await api('GET', '/products' + (type ? '?type=' + type : ''));
+}
+async function apiCreateProduct(data) {
+  return await api('POST', '/products', data);
+}
+async function apiUpdateProduct(id, data) {
+  return await api('PUT', '/products/' + id, data);
+}
+async function apiDeleteProduct(id) {
+  return await api('DELETE', '/products/' + id);
+}
+async function apiToggleProductVisibility(id, visible) {
+  return await api('PATCH', '/products/' + id, { visible });
+}
+
+// ── WEB LINKS ─────────────────────────────────────────────────────────────
+async function apiGetWebLinks() {
+  return await api('GET', '/weblinks');
+}
+async function apiCreateWebLink(data) {
+  return await api('POST', '/weblinks', data);
+}
+async function apiUpdateWebLink(id, data) {
+  return await api('PUT', '/weblinks/' + id, data);
+}
+async function apiDeleteWebLink(id) {
+  return await api('DELETE', '/weblinks/' + id);
+}
+
+// ── LISTINGS ──────────────────────────────────────────────────────────────
+async function apiGetListings(category) {
+  return await api('GET', '/listings' + (category && category !== 'all' ? '?category=' + category : ''));
+}
+async function apiCreateListing(data) {
+  return await api('POST', '/listings', data);
+}
+async function apiUpdateListing(id, data) {
+  return await api('PUT', '/listings/' + id, data);
+}
+async function apiDeleteListing(id) {
+  return await api('DELETE', '/listings/' + id);
+}
+
+// ── BOOKINGS ──────────────────────────────────────────────────────────────
+async function apiGetBookings() {
+  return await api('GET', '/bookings');
+}
+async function apiCreateService(data) {
+  return await api('POST', '/bookings', data);
+}
+async function apiUpdateBooking(id, data) {
+  return await api('PATCH', '/bookings/' + id, data);
+}
+async function apiDeleteBooking(id) {
+  return await api('DELETE', '/bookings/' + id);
+}
+
+// ── LOGIN / REGISTER SCREEN ───────────────────────────────────────────────
+function showLoginScreen() {
+  // Build login UI over the app
+  var existing = document.getElementById('auth-screen');
+  if (existing) { existing.style.display = 'flex'; return; }
+
+  var el = document.createElement('div');
+  el.id = 'auth-screen';
+  el.style.cssText = 'position:fixed;inset:0;z-index:99999;background:var(--cream);display:flex;align-items:center;justify-content:center;padding:20px;';
+  el.innerHTML = `
+    <div style="background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(44,26,14,0.15);">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:6px;">MASSED</div>
+        <div style="font-size:0.85rem;color:var(--text-dim);">Sign in to your creator dashboard</div>
+      </div>
+      <div id="auth-error" style="display:none;background:#fee2e2;color:#dc2626;border-radius:9px;padding:10px 14px;font-size:0.82rem;margin-bottom:14px;"></div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Email</label>
+        <input id="auth-email" type="email" placeholder="your@email.com" style="width:100%;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Password</label>
+        <input id="auth-password" type="password" placeholder="••••••••" style="width:100%;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+      </div>
+      <button id="auth-submit" onclick="handleAuthSubmit()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:12px;">Sign In</button>
+      <div style="text-align:center;font-size:0.82rem;color:var(--text-dim);">
+        Don't have an account? <span onclick="toggleAuthMode()" style="color:var(--brown);font-weight:700;cursor:pointer;">Create one</span>
+      </div>
+      <div id="auth-name-wrap" style="display:none;margin-top:14px;">
+        <label style="display:block;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Display Name</label>
+        <input id="auth-name" type="text" placeholder="Your name" style="width:100%;padding:12px 14px;background:var(--cream);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">
+      </div>
+    </div>
+  `;
+  document.body.appendChild(el);
+}
+
+var _authMode = 'login';
+function toggleAuthMode() {
+  _authMode = _authMode === 'login' ? 'register' : 'login';
+  var btn = document.getElementById('auth-submit');
+  var nameWrap = document.getElementById('auth-name-wrap');
+  var toggle = btn && btn.nextElementSibling;
+  if (btn) btn.textContent = _authMode === 'login' ? 'Sign In' : 'Create Account';
+  if (nameWrap) nameWrap.style.display = _authMode === 'register' ? 'block' : 'none';
+}
+
+async function handleAuthSubmit() {
+  var email = (document.getElementById('auth-email') || {}).value || '';
+  var password = (document.getElementById('auth-password') || {}).value || '';
+  var name = (document.getElementById('auth-name') || {}).value || '';
+  var errEl = document.getElementById('auth-error');
+  var btn = document.getElementById('auth-submit');
+
+  if (!email || !password) { if (errEl) { errEl.textContent = 'Please enter email and password'; errEl.style.display = 'block'; } return; }
+
+  if (btn) { btn.textContent = 'Please wait...'; btn.disabled = true; }
+  try {
+    if (_authMode === 'register') {
+      await apiRegister(email, password, name || email.split('@')[0]);
+    } else {
+      await apiLogin(email, password);
+    }
+    // Hide auth screen and load data
+    var authScreen = document.getElementById('auth-screen');
+    if (authScreen) authScreen.style.display = 'none';
+    await loadAllData();
+  } catch(e) {
+    if (errEl) { errEl.textContent = e.message; errEl.style.display = 'block'; }
+    if (btn) { btn.textContent = _authMode === 'login' ? 'Sign In' : 'Create Account'; btn.disabled = false; }
+  }
+}
+
+// ── LOAD ALL DATA ON LOGIN ────────────────────────────────────────────────
+async function loadAllData() {
+  if (!_currentUser) return;
+
+  // Pre-fill profile fields from saved data
+  if (_currentUser.display_name) {
+    var nameEl = document.querySelector('#mptab-profile-content input[placeholder="Your name"]');
+    if (nameEl) nameEl.value = _currentUser.display_name;
+    var titleEl = document.querySelector('#mptab-profile-content input[placeholder="e.g. UGC Creator, Beauty Consultant"]');
+    if (titleEl && _currentUser.title) titleEl.value = _currentUser.title;
+    var bioEl = document.querySelector('#mptab-profile-content textarea');
+    if (bioEl && _currentUser.bio) bioEl.value = _currentUser.bio;
+
+    // Auto-activate dashboard if profile exists
+    var dbAvatar = document.getElementById('db-avatar');
+    var dbName = document.getElementById('db-name');
+    var dbLink = document.getElementById('db-link');
+    var handle = _currentUser.username || _currentUser.display_name.toLowerCase().replace(/\s+/g,'');
+    if (dbAvatar) dbAvatar.textContent = _currentUser.display_name.charAt(0).toUpperCase();
+    if (dbName) dbName.textContent = _currentUser.display_name;
+    if (dbLink) dbLink.textContent = 'massed.io/' + handle;
+    var welcome = document.getElementById('dashboard-welcome');
+    var main = document.getElementById('dashboard-main');
+    if (welcome) welcome.style.display = 'none';
+    if (main) main.style.display = 'block';
+  }
+
+  // Load web links
+  try {
+    var links = await apiGetWebLinks();
+    webLinks = links.map(function(l) {
+      return { id: l.id, title: l.title, url: l.url, subtitle: l.subtitle, cover: l.cover_url, visible: l.visible };
+    });
+    renderWebLinks();
+  } catch(e) {}
+
+  // Load listings
+  try {
+    var listings = await apiGetListings();
+    listingsData = listings.map(function(l) {
+      return { id: l.id, title: l.title, category: l.category, cta: l.cta_label, price: l.price, contactForPrice: l.contact_for_price, location: l.location, desc: l.description, photos: l.photos || [], extra: l.extra_fields, visible: l.visible };
+    });
+    renderListings('all');
+  } catch(e) {}
+
+  // Load products
+  try {
+    var products = await apiGetProducts();
+    storeProducts = { physical: [], digital: [], courses: [] };
+    products.forEach(function(p) {
+      var storeType = p.type === 'course' ? 'courses' : p.type;
+      storeProducts[storeType].push({
+        id: p.id, name: p.name, price: p.price, desc: p.description,
+        type: p.type, photo: p.cover_url, sizes: p.sizes || [], colors: p.colors || [],
+        variants: p.variants || [], inventory: p.inventory, lowStock: p.low_stock_alert,
+        preorder: p.allow_preorder, hidden: !p.visible
+      });
+    });
+    // Re-render store grids if visible
+    ['physical','digital','courses'].forEach(function(t) {
+      var grid = document.getElementById('store-' + t + '-grid');
+      if (grid) renderStoreGrid(t);
+    });
+  } catch(e) {}
+
+  // Load bookings
+  try {
+    var bkData = await apiGetBookings();
+    if (bkData.services) bookingServices = bkData.services.map(function(s) {
+      return { id: s.id, name: s.name, price: s.price, duration: s.duration, category: s.category, desc: s.description, cover: s.cover_url, deposit: s.deposit_required, depositAmt: s.deposit_amount, depositType: s.deposit_type, visible: s.visible };
+    });
+    if (bkData.bookings) incomingBookings = bkData.bookings.map(function(b) {
+      return { id: b.id, client: b.client_name, email: b.client_email, service: b.service_name, date: b.booking_date, time: b.booking_time, status: b.status, depositPaid: b.deposit_paid, banned: b.banned };
+    });
+    renderBookingServices();
+  } catch(e) {}
+
+  toast('✓ Welcome back, ' + (_currentUser.display_name || 'creator') + '!');
+  // Navigate to dashboard now that data is loaded
+  setTimeout(function() { nav(document.querySelector('.nav-item'), 'dashboard'); }, 100);
+}
+
+// ── OVERRIDE SAVE FUNCTIONS TO ALSO PERSIST TO DB ────────────────────────
+
+// Wrap saveProfile to also call API
+var _origSaveProfile = saveProfile;
+saveProfile = async function() {
+  _origSaveProfile();
+  if (!_currentUser) return;
+  try {
+    var nameEl = document.querySelector('#mptab-profile-content input[placeholder="Your name"]');
+    var titleEl = document.querySelector('#mptab-profile-content input[placeholder="e.g. UGC Creator, Beauty Consultant"]');
+    var bioEl = document.querySelector('#mptab-profile-content textarea');
+    var categoryEl = document.getElementById('mp-category');
+    var emailEl = document.querySelector('#mptab-profile-content input[type="email"]');
+    var phoneEl = document.querySelector('#mptab-profile-content input[type="tel"]');
+    var websiteEl = document.querySelector('#mptab-profile-content input[type="url"]');
+    await apiSaveProfile({
+      display_name: nameEl ? nameEl.value.trim() : undefined,
+      title: titleEl ? titleEl.value.trim() : undefined,
+      bio: bioEl ? bioEl.value.trim() : undefined,
+      category: categoryEl ? categoryEl.value : undefined,
+      phone: phoneEl ? phoneEl.value.trim() : undefined,
+      website: websiteEl ? websiteEl.value.trim() : undefined,
+      email: emailEl ? emailEl.value.trim() : undefined,
+    });
+  } catch(e) { console.error('Profile save failed:', e); }
+};
+
+// Wrap storePublishProduct to also persist
+var _origPublish = storePublishProduct;
+storePublishProduct = async function(type) {
+  _origPublish(type);
+  if (!_currentUser) return;
+  try {
+    var nameMap = { physical: 'ph-name', digital: 'dg-name', course: 'co-cname' };
+    var priceMap = { physical: 'ph-price', digital: 'dg-price', course: 'co-price' };
+    var descMap = { physical: 'ph-desc', digital: 'dg-desc', course: 'co-desc' };
+    var name = (document.getElementById(nameMap[type]) || {}).value || '';
+    var price = parseFloat((document.getElementById(priceMap[type]) || {}).value || 0);
+    var desc = (document.getElementById(descMap[type]) || {}).value || '';
+    if (!name) return;
+    await apiCreateProduct({ type, name, price, description: desc, visible: true });
+  } catch(e) { console.error('Product save failed:', e); }
+};
+
+// Wrap addWebLink to persist
+var _origAddWebLink = typeof addWebLink === 'function' ? addWebLink : null;
+if (_origAddWebLink) {
+  addWebLink = async function() {
+    _origAddWebLink();
+    if (!_currentUser || !webLinks.length) return;
+    try {
+      var newest = webLinks[webLinks.length - 1];
+      await apiCreateWebLink({ title: newest.title, url: newest.url, subtitle: newest.subtitle, cover_url: newest.cover });
+    } catch(e) { console.error('Web link save failed:', e); }
+  };
+}
+
+// Wrap deleteWebLink to also delete from DB
+var _origDeleteWebLink = deleteWebLink;
+deleteWebLink = async function(id) {
+  _origDeleteWebLink(id);
+  if (!_currentUser) return;
+  try { await apiDeleteWebLink(id); } catch(e) {}
+};
+
+// Wrap toggleWebLinkVisibility
+var _origToggleVis = toggleWebLinkVisibility;
+toggleWebLinkVisibility = async function(id) {
+  _origToggleVis(id);
+  if (!_currentUser) return;
+  try {
+    var link = webLinks.find(function(l){ return l.id === id; });
+    if (link) await apiUpdateWebLink(id, { visible: link.visible });
+  } catch(e) {}
+};
+
+// ── BOOT: Check session on page load ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async function() {
+  var user = await apiGetMe();
+  if (!user) {
+    showLoginScreen();
+  } else {
+    _currentUser = user;
+    loadAllData();
+  }
+});
 </script>
 
 <!-- FULL PAGE PROFILE PREVIEW MODAL -->
