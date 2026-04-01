@@ -67,7 +67,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .nav-group-header:hover{color:var(--brown-dark);}
 .nav-group-header .arrow{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;transition:transform 0.25s;}
 .nav-group-header.closed .arrow{transform:rotate(-90deg);}
-.nav-group-body{overflow:hidden;transition:max-height 0.3s ease;}
+.nav-group-body{overflow:hidden;transition:max-height 0.3s ease;max-height:600px;}
+.nav-group-header.closed + .nav-group-body{max-height:0;}
 
 /* SIDEBAR BOTTOM */
 .user-card{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--cream);margin-bottom:10px;}
@@ -352,6 +353,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* LIVE BANNER */
 .live-banner{display:none;position:fixed;bottom:0;left:var(--sidebar-w);right:0;z-index:200;background:#fff;border-top:2px solid #fecaca;padding:14px 28px;box-shadow:0 -4px 20px rgba(44,26,14,0.1);}
+@media(max-width:1024px){.live-banner{left:0 !important;}}
 .live-banner.visible{display:block;}
 .live-banner-inner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 .live-dot{width:10px;height:10px;background:#ef4444;border-radius:50%;animation:pulse 1.5s infinite;flex-shrink:0;}
@@ -1825,14 +1827,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       player.play();
     }
 
-    function closeVideoPlayer() {
-      const modal = document.getElementById('video-player-modal');
-      const player = document.getElementById('video-player-el');
-      player.pause();
-      player.src = '';
-      modal.classList.remove('open');
-    }
-
     function toggleVideoShowcase(index) {
       if (!videos[index]) return;
       videos[index].showcase = !videos[index].showcase;
@@ -1920,8 +1914,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <!-- REVIEW MODAL -->
-    <div class="modal-overlay" id="modal-review">
-      <div class="modal" style="max-width:520px;">
+    <div class="modal-overlay" id="modal-review" onclick="closeModal('modal-review')">
+      <div class="modal" style="max-width:520px;" onclick="event.stopPropagation()">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
           <h2 class="modal-title" style="margin:0;">Leave a Review</h2>
           <button onclick="closeModal('modal-review')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
@@ -6479,8 +6473,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 </div>
 
 <!-- MODAL: GO LIVE STEP 1 -->
-<div class="modal-overlay" id="modal-golive">
-  <div class="modal" style="max-width:480px;">
+<div class="modal-overlay" id="modal-golive" onclick="closeModal('modal-golive')">
+  <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
     <h2 class="modal-title">Go Live 🎙️</h2>
     <p class="modal-sub">Choose how you want to go live.</p>
     <div class="live-options">
@@ -6503,8 +6497,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 </div>
 
 <!-- MODAL: GO LIVE & SELL STEP 2 -->
-<div class="modal-overlay" id="modal-sell">
-  <div class="modal" style="max-width:500px;">
+<div class="modal-overlay" id="modal-sell" onclick="closeModal('modal-sell')">
+  <div class="modal" style="max-width:500px;" onclick="event.stopPropagation()">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
       <h2 class="modal-title" style="margin:0;">Go Live & Sell 🛒</h2>
       <button onclick="closeModal('modal-sell');document.getElementById('modal-golive').classList.add('open')" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:0.85rem;font-weight:600;">← Back</button>
@@ -6947,23 +6941,15 @@ function loadJsQR(callback) {
 }
 
 function startCamera() {
-  // Check for HTTPS (getUserMedia requires secure context except localhost)
-  if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-    const statusEl = document.getElementById('scan-status');
-    if (statusEl) statusEl.textContent = '⚠️ Camera requires HTTPS. Please open this page over a secure connection.';
-    toast('⚠️ Camera requires HTTPS');
-    return;
-  }
-
   // Check API support
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    const statusEl = document.getElementById('scan-status');
-    if (statusEl) statusEl.textContent = '⚠️ Camera not supported on this browser.';
-    toast('⚠️ Camera API not supported on this browser');
+    var statusEl = document.getElementById('scan-status');
+    if (statusEl) statusEl.textContent = '⚠️ Camera not supported on this browser. Try Chrome or Safari.';
+    toast('⚠️ Camera not supported on this browser');
     return;
   }
 
-  const statusEl = document.getElementById('scan-status');
+  var statusEl = document.getElementById('scan-status');
   if (statusEl) statusEl.textContent = '⏳ Requesting camera access…';
 
   loadJsQR(() => {
@@ -7208,13 +7194,6 @@ function goCheckoutStep2() {
   if (step2) step2.style.display = 'block';
 }
 
-function stopLive() {
-  var banner = document.getElementById('live-banner');
-  if (banner) banner.style.display = 'none';
-  toast('Live session ended.');
-}
-
-
 function submitWithdrawal() {
   var amt = document.getElementById('withdraw-amount');
   if (!amt || !amt.value || parseFloat(amt.value) <= 0) { toast('Please enter an amount to withdraw'); return; }
@@ -7411,38 +7390,6 @@ function saveAccount() {
   toast('✓ Account updated!');
 }
 
-function savePaymentMethod() {
-  var name = document.getElementById('pm-name');
-  var num = document.getElementById('pm-number');
-  var exp = document.getElementById('pm-expiry');
-  var cvv = document.getElementById('pm-cvv');
-  if (!name || !name.value.trim()) { toast('Please enter cardholder name'); return; }
-  if (!num || num.value.replace(/\s/g,'').length < 16) { toast('Please enter a valid card number'); return; }
-  if (!exp || !exp.value.trim()) { toast('Please enter expiry date'); return; }
-  if (!cvv || cvv.value.length < 3) { toast('Please enter CVV'); return; }
-  closeModal('modal-add-payment');
-  if (name) name.value = '';
-  if (num) num.value = '';
-  if (exp) exp.value = '';
-  if (cvv) cvv.value = '';
-  toast('✓ Payment method added successfully!');
-}
-
-function submitSupportTicket() {
-  var subject = document.getElementById('support-subject');
-  var message = document.getElementById('support-message');
-  var email = document.getElementById('support-email');
-  if (!subject || !subject.value) { toast('Please select a subject'); return; }
-  if (!message || !message.value.trim()) { toast('Please enter a message'); return; }
-  if (!email || !email.value.trim()) { toast('Please enter your email'); return; }
-  closeModal('modal-contact-support');
-  if (subject) subject.value = '';
-  if (message) message.value = '';
-  if (email) email.value = '';
-  toast('✓ Support message sent! We will reply within 24-48 hours.');
-}
-
-
 function toggleFaq(btn) {
   var body = btn.nextElementSibling;
   var arrow = btn.querySelector('.faq-arrow');
@@ -7600,21 +7547,6 @@ const collabProfiles = [
 
 let activeCollabFilter = 'all';
 
-function mpTab(tab) {
-  document.getElementById('mptab-profile-content').style.display = tab === 'profile' ? 'block' : 'none';
-  document.getElementById('mptab-collab-content').style.display = tab === 'collab' ? 'block' : 'none';
-  var hc = document.getElementById('mptab-hearts-content');
-  if (hc) hc.style.display = tab === 'hearts' ? 'block' : 'none';
-  var pb = document.getElementById('mptab-profile');
-  var cb = document.getElementById('mptab-collab');
-  var hb = document.getElementById('mptab-hearts');
-  pb.style.background = tab === 'profile' ? 'var(--brown)' : 'transparent';
-  pb.style.color = tab === 'profile' ? '#fff' : 'var(--text-dim)';
-  cb.style.background = tab === 'collab' ? 'var(--brown)' : 'transparent';
-  cb.style.color = tab === 'collab' ? '#fff' : 'var(--text-dim)';
-  if (tab === 'collab') renderCollabGrid('all');
-}
-
 function toggleGenre(el) {
   el.classList.toggle('selected');
 }
@@ -7727,18 +7659,6 @@ let currentActiveCollab = null;
 let ndaSigned = false;
 let signedDocuments = [];
 let collabMessages = {};
-
-function collabSubTab(tab) {
-  ['browse','incoming','active','docs'].forEach(function(t) {
-    document.getElementById('csub-' + t + '-content').style.display = t === tab ? 'block' : 'none';
-    var btn = document.getElementById('csub-' + t);
-    btn.style.background = t === tab ? 'var(--brown)' : 'transparent';
-    btn.style.color = t === tab ? '#fff' : 'var(--text-dim)';
-  });
-  if (tab === 'incoming') renderIncoming();
-  if (tab === 'active') renderActive();
-  if (tab === 'docs') renderDocs();
-}
 
 function renderIncoming() {
   var list = document.getElementById('incoming-list');
@@ -8005,84 +7925,6 @@ function generateNDAText(name, date) {
     'Document ID: NDA-' + date.getTime().toString().slice(-8) + '\n' +
     'Issued by: MASSED Platform — massed.io\n' +
     '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
-}
-
-function populateDocFilter() {
-  var sel = document.getElementById('doc-filter-name');
-  if (!sel) return;
-  var existing = Array.from(sel.options).map(function(o){ return o.value; });
-  signedDocuments.forEach(function(d) {
-    if (!existing.includes(d.collaborator)) {
-      var opt = document.createElement('option');
-      opt.value = d.collaborator;
-      opt.textContent = d.collaborator;
-      sel.appendChild(opt);
-    }
-  });
-}
-
-function renderDocs() {
-  populateDocFilter();
-  filterDocs();
-}
-
-function filterDocs() {
-  var search = (document.getElementById('doc-search') ? document.getElementById('doc-search').value.toLowerCase() : '');
-  var nameFilter = (document.getElementById('doc-filter-name') ? document.getElementById('doc-filter-name').value : '');
-  var typeFilter = (document.getElementById('doc-filter-type') ? document.getElementById('doc-filter-type').value : '');
-  var filtered = signedDocuments.filter(function(d) {
-    var matchSearch = !search || d.collaborator.toLowerCase().includes(search) || d.dateSigned.toLocaleDateString().includes(search);
-    var matchName = !nameFilter || d.collaborator === nameFilter;
-    var matchType = !typeFilter || d.type === typeFilter;
-    return matchSearch && matchName && matchType;
-  });
-  var list = document.getElementById('docs-list');
-  if (!list) return;
-  if (filtered.length === 0) {
-    list.innerHTML = signedDocuments.length === 0
-      ? '<div style="text-align:center;padding:48px 20px;color:var(--text-dim);"><div style="font-size:2.5rem;margin-bottom:12px;">📁</div><div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;">No documents yet</div><div style="font-size:0.78rem;">When both parties sign an NDA it will automatically appear here.</div></div>'
-      : '<div style="text-align:center;padding:32px;color:var(--text-dim);font-size:0.85rem;">No documents match your search.</div>';
-    return;
-  }
-  list.innerHTML = filtered.map(function(d) {
-    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;">' +
-      '<div style="display:flex;align-items:center;gap:12px;">' +
-        '<div style="width:44px;height:44px;border-radius:10px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">📄</div>' +
-        '<div style="flex:1;min-width:0;">' +
-          '<div style="font-weight:800;font-size:0.9rem;">' + d.type + ' — ' + d.collaborator + '</div>' +
-          '<div style="display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap;">' +
-            '<span style="font-size:0.72rem;color:var(--text-dim);">Signed ' + d.dateSigned.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}) + '</span>' +
-            '<span style="font-size:0.65rem;background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-weight:700;">✓ ' + d.status + '</span>' +
-          '</div>' +
-        '</div>' +
-        '<div style="display:flex;gap:8px;flex-shrink:0;">' +
-          '<button onclick="viewDoc(' + d.id + ')" style="padding:7px 12px;background:var(--brown-bg);color:var(--brown);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">View</button>' +
-          '<button onclick="downloadDoc(' + d.id + ')" style="padding:7px 12px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">⬇ Save</button>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-function viewDoc(id) {
-  var doc = signedDocuments.find(function(d){ return d.id === id; });
-  if (!doc) return;
-  var el = document.getElementById('nda-view-content');
-  if (el) el.textContent = doc.content;
-  var title = document.getElementById('nda-view-title');
-  if (title) title.textContent = doc.type + ' — ' + doc.collaborator;
-  var dlBtn = document.getElementById('nda-view-download');
-  if (dlBtn) dlBtn.onclick = function() { downloadDoc(id); };
-  openModal('modal-nda-view');
-}
-
-function downloadDoc(id) {
-  var doc = signedDocuments.find(function(d){ return d.id === id; });
-  if (!doc) return;
-  var blob = new Blob([doc.content], {type:'text/plain'});
-  var a = document.createElement('a');
-  a
-  toast('✓ Document downloaded!');
 }
 
 // ── CORE NAV & UI ─────────────────────────────────────────────────────────────
@@ -8761,7 +8603,164 @@ function nav(el,screen) {
   } catch(e){console.warn('nav error:',e);}
 }
 
+// ── SIDEBAR NAV GROUP TOGGLE ─────────────────────────────────────────────────
+function toggleGroup(header) {
+  var body = header.nextElementSibling;
+  if (!body) return;
+  var isOpen = !header.classList.contains('closed');
+  if (isOpen) {
+    header.classList.add('closed');
+    body.style.maxHeight = '0';
+  } else {
+    header.classList.remove('closed');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+
+// ── STORE LIVE TOGGLE ─────────────────────────────────────────────────────────
+function toggleStoreLive(cb) {
+  var track = document.getElementById('store-live-track');
+  var thumb = document.getElementById('store-live-thumb');
+  var label = document.getElementById('store-live-label');
+  if (cb.checked) {
+    if (track) track.style.background = 'var(--brown)';
+    if (thumb) thumb.style.left = '27px';
+    if (label) label.textContent = 'Store is Live';
+    toast('✓ Your store is now live!');
+  } else {
+    if (track) track.style.background = '#e5e7eb';
+    if (thumb) thumb.style.left = '3px';
+    if (label) label.textContent = 'Store is Off';
+    toast('Store is now hidden from your page');
+  }
+}
+
+// ── CARD INPUT FORMATTERS ─────────────────────────────────────────────────────
+function formatCard(input) {
+  var v = input.value.replace(/\D/g, '').slice(0, 16);
+  input.value = v.replace(/(.{4})/g, '$1  ').trim();
+}
+function formatExpiry(input) {
+  var v = input.value.replace(/\D/g, '').slice(0, 4);
+  if (v.length >= 3) v = v.slice(0,2) + ' / ' + v.slice(2);
+  input.value = v;
+}
+
+// ── LIVE BANNER PRODUCT CONTROLS ─────────────────────────────────────────────
+function closeProduct() {
+  var info = document.getElementById('banner-product');
+  var btnClose = document.getElementById('btn-close-prod');
+  var btnBring = document.getElementById('btn-bring-back');
+  if (info) info.style.display = 'none';
+  if (btnClose) btnClose.style.display = 'none';
+  if (btnBring) btnBring.style.display = 'inline-flex';
+  toast('Product hidden from live view');
+}
+
+function bringBackProduct() {
+  var info = document.getElementById('banner-product');
+  var btnClose = document.getElementById('btn-close-prod');
+  var btnBring = document.getElementById('btn-bring-back');
+  if (info) info.style.display = 'flex';
+  if (btnClose) btnClose.style.display = 'inline-flex';
+  if (btnBring) btnBring.style.display = 'none';
+  toast('Product brought back to live view');
+}
+
+// ── ACCOUNT RECOVERY MODAL ────────────────────────────────────────────────────
+var _recoveryChoice = null;
+function selectRecoveryOption(opt) {
+  _recoveryChoice = opt;
+  var payEl = document.getElementById('recovery-option-pay');
+  var autoEl = document.getElementById('recovery-option-auto');
+  var btn = document.getElementById('recovery-confirm-btn');
+  if (payEl) payEl.style.border = opt === 'pay' ? '2px solid rgba(196,154,108,0.9)' : '2px solid rgba(196,154,108,0.4)';
+  if (autoEl) autoEl.style.border = opt === 'auto' ? '2px solid rgba(99,102,241,0.8)' : '2px solid rgba(99,102,241,0.25)';
+  if (btn) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    btn.textContent = opt === 'pay' ? 'Pay $30.00 & Restore Account →' : 'Start Auto-Recovery →';
+  }
+}
+
+function confirmRecovery() {
+  if (!_recoveryChoice) return;
+  var msg = _recoveryChoice === 'pay'
+    ? '✓ Payment processed! Your account has been fully restored.'
+    : '✓ Auto-Recovery activated! 20% of each sale will clear your balance automatically.';
+  toast(msg);
+  // Close any overlay parent
+  var overlay = document.querySelector('.recovery-overlay');
+  if (overlay) overlay.style.display = 'none';
+  _recoveryChoice = null;
+}
+
 function openGoLive() { openModal('modal-golive'); }
+
+// ── LIVE PREVIEW SCREEN CONTROLS ─────────────────────────────────────────────
+var lpTimerInterval = null;
+var lpTimerSecs = 0;
+
+function lpUpdateProduct() {
+  var sel = document.getElementById('lp-product');
+  var nameEl = document.getElementById('phone-pname');
+  var saleEl = document.getElementById('phone-sale');
+  var origEl = document.getElementById('phone-orig');
+  var discEl = document.getElementById('phone-disc');
+  var card = document.getElementById('phone-product-card');
+  if (!sel || !sel.value) {
+    if (card) card.style.display = 'none';
+    return;
+  }
+  var parts = sel.value.split('|');
+  var name = parts[0] || '';
+  var price = parseFloat(parts[1]) || 0;
+  if (nameEl) nameEl.textContent = name;
+  if (saleEl) saleEl.textContent = '$' + price.toFixed(2);
+  if (origEl) origEl.textContent = '$' + (price * 1.3).toFixed(2);
+  var pct = Math.round(((price * 1.3 - price) / (price * 1.3)) * 100);
+  if (discEl) discEl.textContent = pct + '% OFF';
+  if (card) card.style.display = 'block';
+}
+
+function lpUpdatePrice() {
+  var input = document.getElementById('lp-sale-input');
+  var saleEl = document.getElementById('phone-sale');
+  if (input && saleEl && input.value) saleEl.textContent = '$' + parseFloat(input.value).toFixed(2);
+}
+
+function lpStartTimer() {
+  var sel = document.getElementById('lp-timer-sel');
+  var timerEl = document.getElementById('phone-timer');
+  if (!sel) return;
+  var mins = parseInt(sel.value) || 0;
+  if (lpTimerInterval) { clearInterval(lpTimerInterval); lpTimerInterval = null; }
+  if (mins === 0) { if (timerEl) timerEl.textContent = ''; return; }
+  lpTimerSecs = mins * 60;
+  var updateTimer = function() {
+    if (!timerEl) return;
+    var m = Math.floor(lpTimerSecs / 60), s = lpTimerSecs % 60;
+    timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    if (lpTimerSecs <= 0) { clearInterval(lpTimerInterval); lpTimerInterval = null; timerEl.textContent = 'ENDED'; }
+    lpTimerSecs--;
+  };
+  updateTimer();
+  lpTimerInterval = setInterval(updateTimer, 1000);
+}
+
+function lpCloseProduct() {
+  var card = document.getElementById('phone-product-card');
+  if (card) card.style.display = 'none';
+  if (lpTimerInterval) { clearInterval(lpTimerInterval); lpTimerInterval = null; }
+  toast('Product closed from live view');
+}
+
+function lpBringBack() {
+  var card = document.getElementById('phone-product-card');
+  if (card) card.style.display = 'block';
+  lpUpdateProduct();
+  toast('Product brought back');
+}
 
 function spTab(tab) {
   var isS=tab==='sales';
@@ -10091,20 +10090,6 @@ function startLiveAndSell() {
   }
   liveMode = null;
 }
-
-function goCheckoutStep2() {
-  var step1 = document.getElementById('checkout-step-1');
-  var step2 = document.getElementById('checkout-step-2');
-  if (step1) step1.style.display = 'none';
-  if (step2) step2.style.display = 'block';
-}
-
-function stopLive() {
-  var banner = document.getElementById('live-banner');
-  if (banner) banner.style.display = 'none';
-  toast('Live session ended.');
-}
-
 
 function savePaymentMethod() {
   var name = document.getElementById('pm-name');
