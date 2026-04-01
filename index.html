@@ -1498,78 +1498,131 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <!-- LIVE PREVIEW -->
     <div id="screen-livepreview" class="screen">
       <div class="lp-left">
-        <div class="phone-frame">
-          <div class="phone-status"><span>9:41</span><span>●●●</span></div>
-          <div class="phone-content">
-            <div style="padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span style="background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;padding:3px 8px;border-radius:4px;">LIVE</span>
-                <span style="color:rgba(255,255,255,0.6);font-size:0.65rem;">massed.io/username</span>
-              </div>
-              <span style="color:rgba(255,255,255,0.6);font-size:0.65rem;">👁 142</span>
+
+        <!-- ── PHONE MOCKUP — matches uploaded screenshot exactly ── -->
+        <div class="phone-frame" style="background:#1a0d08;border-radius:44px;width:280px;min-height:560px;position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6),0 0 0 2px #333;display:flex;flex-direction:column;">
+
+          <!-- Status bar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 18px 4px;flex-shrink:0;">
+            <span style="color:#fff;font-size:0.65rem;font-weight:700;">9:41</span>
+            <div style="width:50px;height:4px;background:#2a2a2a;border-radius:4px;"></div>
+            <span style="color:#fff;font-size:0.65rem;">•••</span>
+          </div>
+
+          <!-- Top bar: LIVE badge + url + viewer count -->
+          <div style="padding:4px 12px 8px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="background:#ef4444;color:#fff;font-size:0.55rem;font-weight:900;padding:3px 7px;border-radius:4px;letter-spacing:0.05em;">LIVE</span>
+              <span id="lp-url-display" style="color:rgba(255,255,255,0.55);font-size:0.6rem;">massed.io/username</span>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
-              <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#D4956E,#A0623C);display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid rgba(255,255,255,0.3);">👤</div>
-              <div style="text-align:center;"><div style="color:#fff;font-weight:700;font-size:0.9rem;">Luk like</div><div style="color:rgba(255,255,255,0.5);font-size:0.7rem;">massed.io/username</div></div>
-            </div>
-            <div style="padding:8px 12px;display:flex;flex-direction:column;gap:5px;">
-              <div><span style="color:#D4956E;font-size:0.65rem;font-weight:700;">@maya_j </span><span style="color:rgba(255,255,255,0.8);font-size:0.65rem;">omg this is amazing 🔥</span></div>
-              <div><span style="color:#D4956E;font-size:0.65rem;font-weight:700;">@sarah_k </span><span style="color:rgba(255,255,255,0.8);font-size:0.65rem;">where can I buy??</span></div>
-              <div><span style="color:#D4956E;font-size:0.65rem;font-weight:700;">@jones_r </span><span style="color:rgba(255,255,255,0.8);font-size:0.65rem;">just grabbed it! 🛒</span></div>
-            </div>
-            <div id="phone-product-card" style="margin:0 10px 10px;background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);border-radius:14px;padding:12px;border:1px solid rgba(255,255,255,0.15);">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-                <span style="color:rgba(255,255,255,0.6);font-size:0.6rem;font-weight:700;text-transform:uppercase;">🛒 Live Deal</span>
-                <span id="phone-timer" style="color:#ef4444;font-size:0.7rem;font-weight:800;background:rgba(239,68,68,0.15);padding:2px 8px;border-radius:20px;">15:00</span>
-              </div>
-              <div id="phone-pname" style="color:#fff;font-weight:700;font-size:0.85rem;margin-bottom:4px;">Beauty Guide eBook</div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span id="phone-sale" style="color:#D4956E;font-weight:800;font-size:1rem;">$19.99</span>
-                <span id="phone-orig" style="color:rgba(255,255,255,0.4);font-size:0.75rem;text-decoration:line-through;">$29.99</span>
-                <span id="phone-disc" style="background:rgba(192,122,80,0.3);color:#D4956E;font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:20px;">33% OFF</span>
-              </div>
-              <button style="width:100%;margin-top:10px;padding:9px;background:linear-gradient(135deg,#D4956E,#A0623C);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;">Buy Now →</button>
-            </div>
-            <div style="padding:8px 12px 12px;display:flex;gap:8px;align-items:center;">
-              <div style="flex:1;background:rgba(255,255,255,0.1);border-radius:20px;padding:8px 12px;"><span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">Add a comment...</span></div>
-              <span style="font-size:1.2rem;">❤️</span><span style="font-size:1.2rem;">🎁</span>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span id="lp-viewer-count" style="color:rgba(255,255,255,0.55);font-size:0.6rem;">142</span>
             </div>
           </div>
+
+          <!-- Profile area: avatar + name -->
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:10px 0;">
+            <div id="lp-avatar" style="width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#D4956E,#8B5E3C);display:flex;align-items:center;justify-content:center;border:3px solid rgba(255,255,255,0.25);font-size:1.8rem;overflow:hidden;flex-shrink:0;">👤</div>
+            <div style="text-align:center;">
+              <div id="lp-display-name" style="color:#fff;font-weight:800;font-size:0.9rem;letter-spacing:0.01em;">Your Name</div>
+              <div id="lp-handle" style="color:rgba(255,255,255,0.45);font-size:0.65rem;margin-top:1px;">massed.io/username</div>
+            </div>
+          </div>
+
+          <!-- Live comments feed -->
+          <div style="padding:6px 10px;display:flex;flex-direction:column;gap:4px;flex-shrink:0;" id="lp-comments">
+            <div><span style="color:#D4956E;font-size:0.6rem;font-weight:700;">@maya_j </span><span style="color:rgba(255,255,255,0.75);font-size:0.6rem;">omg this is amazing 🔥</span></div>
+            <div><span style="color:#D4956E;font-size:0.6rem;font-weight:700;">@sarah_k </span><span style="color:rgba(255,255,255,0.75);font-size:0.6rem;">where can I buy??</span></div>
+            <div><span style="color:#D4956E;font-size:0.6rem;font-weight:700;">@jones_r </span><span style="color:rgba(255,255,255,0.75);font-size:0.6rem;">just grabbed it! 🛒</span></div>
+          </div>
+
+          <!-- Product deal card — hidden until Go Live & Sell -->
+          <div id="phone-product-card" style="display:none;margin:0 8px 8px;background:rgba(30,18,10,0.92);backdrop-filter:blur(12px);border-radius:14px;padding:11px 13px;border:1px solid rgba(255,255,255,0.12);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="color:rgba(255,255,255,0.5);font-size:0.55rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;">🛒 Live Deal</span>
+              <span id="phone-timer" style="display:none;color:#ef4444;font-size:0.65rem;font-weight:800;background:rgba(239,68,68,0.18);padding:2px 8px;border-radius:20px;font-variant-numeric:tabular-nums;">15:00</span>
+            </div>
+            <div id="phone-pname" style="color:#fff;font-weight:800;font-size:0.82rem;margin-bottom:5px;line-height:1.3;">Product Name</div>
+            <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px;">
+              <span id="phone-sale" style="color:#D4956E;font-weight:900;font-size:0.95rem;">$0.00</span>
+              <span id="phone-orig" style="color:rgba(255,255,255,0.35);font-size:0.7rem;text-decoration:line-through;display:none;"></span>
+              <span id="phone-disc" style="background:rgba(192,122,80,0.25);color:#D4956E;font-size:0.55rem;font-weight:800;padding:2px 6px;border-radius:20px;display:none;"></span>
+            </div>
+            <button style="width:100%;padding:8px;background:linear-gradient(135deg,#D4956E,#A0623C);color:#fff;border:none;border-radius:9px;font-weight:800;font-size:0.75rem;cursor:pointer;letter-spacing:0.02em;">Buy Now →</button>
+          </div>
+
+          <!-- Comment input bar -->
+          <div style="padding:6px 10px 12px;display:flex;gap:7px;align-items:center;flex-shrink:0;">
+            <div style="flex:1;background:rgba(255,255,255,0.08);border-radius:20px;padding:7px 11px;border:1px solid rgba(255,255,255,0.08);">
+              <span style="color:rgba(255,255,255,0.25);font-size:0.65rem;">Add a comment...</span>
+            </div>
+            <span style="font-size:1.1rem;cursor:pointer;">❤️</span>
+            <span style="font-size:1.1rem;cursor:pointer;">🎁</span>
+          </div>
         </div>
+        <!-- End phone mockup -->
+
       </div>
+
+      <!-- ── RIGHT PANEL: LIVE CONTROLS ── -->
       <div class="lp-right">
-        <div style="margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <span style="width:10px;height:10px;background:#ef4444;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
-            <span style="color:#ef4444;font-weight:800;font-size:0.85rem;letter-spacing:0.1em;">LIVE CONTROLS</span>
+
+        <!-- Live status header -->
+        <div style="margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span id="lp-live-dot" style="width:10px;height:10px;background:#ef4444;border-radius:50%;display:inline-block;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></span>
+            <span style="color:#ef4444;font-weight:800;font-size:0.82rem;letter-spacing:0.1em;">LIVE CONTROLS</span>
           </div>
-          <p style="color:rgba(255,255,255,0.35);font-size:0.78rem;">This is what your audience sees. Manage your live sale below.</p>
+          <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin:0;">The phone shows what your audience sees on your MASSED page.</p>
         </div>
+
+        <!-- Feature a product -->
         <label class="lp-label">Feature a Product</label>
         <select class="lp-select" id="lp-product" onchange="lpUpdateProduct()">
-          <option value="">-- Select product --</option>
+          <option value="">— No product —</option>
           <option value="Beauty Guide eBook|29.99">Beauty Guide eBook — $29.99</option>
           <option value="UGC Creator Course|49.99">UGC Creator Course — $49.99</option>
           <option value="Skincare Bundle|34.99">Skincare Bundle — $34.99</option>
           <option value="Networking Event Ticket|15.00">Networking Event Ticket — $15.00</option>
           <option value="1-on-1 Consultation|150.00">1-on-1 Consultation — $150.00</option>
         </select>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div><label class="lp-label">Sale Price</label><input type="number" class="lp-input" id="lp-sale-input" placeholder="$0.00" oninput="lpUpdatePrice()"></div>
-          <div><label class="lp-label">Timer</label><select class="lp-select" id="lp-timer-sel" onchange="lpStartTimer()" style="margin-bottom:0"><option value="0">No timer</option><option value="5">5 min</option><option value="10">10 min</option><option value="15" selected>15 min</option><option value="30">30 min</option></select></div>
-        </div>
-        <button class="lp-action-btn" onclick="lpCloseProduct()" style="background:#2a2a2a;color:rgba(255,255,255,0.7);">Close Product</button>
-        <button class="lp-action-btn" onclick="lpBringBack()" style="background:rgba(192,122,80,0.2);color:#D4956E;">Bring Back</button>
-        <button class="lp-action-btn" onclick="nav(null,'dashboard');toast('Exited live preview')" style="background:#ef4444;color:#fff;margin-top:6px;">Exit Preview</button>
-        <div style="margin-top:20px;padding:16px;background:#222;border-radius:12px;">
-          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:12px;">Live Stats</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div><div style="color:rgba(255,255,255,0.35);font-size:0.7rem;">Viewers</div><div style="color:#fff;font-weight:700;font-size:1.2rem;">142</div></div>
-            <div><div style="color:rgba(255,255,255,0.35);font-size:0.7rem;">Orders</div><div style="color:#D4956E;font-weight:700;font-size:1.2rem;">7</div></div>
-            <div><div style="color:rgba(255,255,255,0.35);font-size:0.7rem;">Revenue</div><div style="color:#D4956E;font-weight:700;font-size:1.2rem;">$139</div></div>
-            <div><div style="color:rgba(255,255,255,0.35);font-size:0.7rem;">Duration</div><div id="lp-duration" style="color:#fff;font-weight:700;font-size:1.2rem;">00:00</div></div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0;">
+          <div>
+            <label class="lp-label">Live Sale Price</label>
+            <input type="number" class="lp-input" id="lp-sale-input" placeholder="$0.00" oninput="lpUpdatePrice()">
+          </div>
+          <div>
+            <label class="lp-label">Sale Timer</label>
+            <select class="lp-select" id="lp-timer-sel" onchange="lpStartTimer()" style="margin-bottom:0;">
+              <option value="0">No timer</option>
+              <option value="5">5 min</option>
+              <option value="10">10 min</option>
+              <option value="15" selected>15 min</option>
+              <option value="30">30 min</option>
+            </select>
           </div>
         </div>
+
+        <button class="lp-action-btn" onclick="lpCloseProduct()" style="background:#2a2a2a;color:rgba(255,255,255,0.65);margin-top:8px;">Close Product</button>
+        <button class="lp-action-btn" onclick="lpBringBack()" style="background:rgba(192,122,80,0.18);color:#D4956E;border:1px solid rgba(192,122,80,0.3);">Bring Back</button>
+
+        <!-- End live -->
+        <button class="lp-action-btn" onclick="endLive()" style="background:#ef4444;color:#fff;margin-top:4px;">⏹ End Live</button>
+        <button class="lp-action-btn" onclick="togglePause()" id="btn-pause" data-paused="false" style="background:#fef3c7;color:#d97706;margin-top:4px;">⏸ Pause</button>
+
+        <!-- Live stats -->
+        <div style="margin-top:16px;padding:14px;background:#1e1208;border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+          <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:12px;">Session Stats</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div><div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:2px;">Viewers</div><div id="lp-viewers" style="color:#fff;font-weight:800;font-size:1.15rem;">142</div></div>
+            <div><div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:2px;">Orders</div><div id="lp-orders" style="color:#D4956E;font-weight:800;font-size:1.15rem;">7</div></div>
+            <div><div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:2px;">Revenue</div><div id="lp-revenue" style="color:#D4956E;font-weight:800;font-size:1.15rem;">$139</div></div>
+            <div><div style="color:rgba(255,255,255,0.3);font-size:0.65rem;margin-bottom:2px;">Duration</div><div id="lp-duration" style="color:#fff;font-weight:800;font-size:1.15rem;">00:00</div></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -9988,18 +10041,190 @@ function pickMode(mode) {
   if (btnNext) btnNext.disabled = false;
 }
 
+// ── LIVE SESSION ──────────────────────────────────────────────────────────────
+var liveDurationInterval = null;
+var liveViewerInterval = null;
+var liveDurationSecs = 0;
+var lpCountdownInterval = null;
+
+function populateLiveProfile() {
+  // Pull real display name & handle from Media Profile
+  var nameInput = document.querySelector('#mptab-profile-content input[placeholder="Your name"]');
+  var displayName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'Your Name';
+  var handle = displayName.toLowerCase().replace(/\s+/g, '') || 'username';
+
+  var nameEl = document.getElementById('lp-display-name');
+  var handleEl = document.getElementById('lp-handle');
+  var urlEl = document.getElementById('lp-url-display');
+  if (nameEl) nameEl.textContent = displayName;
+  if (handleEl) handleEl.textContent = 'massed.io/' + handle;
+  if (urlEl) urlEl.textContent = 'massed.io/' + handle;
+
+  // Pull profile photo if set
+  var avatarEl = document.getElementById('lp-avatar');
+  var profileImg = document.querySelector('.avatar-upload img');
+  if (avatarEl && profileImg && profileImg.src) {
+    avatarEl.innerHTML = '<img src="' + profileImg.src + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+  }
+}
+
+function startLiveDuration() {
+  liveDurationSecs = 0;
+  if (liveDurationInterval) clearInterval(liveDurationInterval);
+  liveDurationInterval = setInterval(function() {
+    liveDurationSecs++;
+    var m = Math.floor(liveDurationSecs / 60), s = liveDurationSecs % 60;
+    var el = document.getElementById('lp-duration');
+    if (el) el.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }, 1000);
+
+  // Simulate viewer count gently fluctuating
+  if (liveViewerInterval) clearInterval(liveViewerInterval);
+  var viewers = 142;
+  liveViewerInterval = setInterval(function() {
+    viewers += Math.floor(Math.random() * 5) - 1;
+    if (viewers < 1) viewers = 1;
+    var el = document.getElementById('lp-viewer-count');
+    var el2 = document.getElementById('lp-viewers');
+    if (el) el.textContent = viewers;
+    if (el2) el2.textContent = viewers;
+  }, 4000);
+}
+
 function liveNext() {
   if (!liveMode) return;
   closeModal('modal-golive');
   if (liveMode === 'sell') {
     openModal('modal-sell');
   } else {
-    // Go live directly
+    // Go Live (no product)
     var banner = document.getElementById('live-banner');
     if (banner) banner.style.display = 'block';
+    // Hide product card — no product selected
+    var card = document.getElementById('phone-product-card');
+    if (card) card.style.display = 'none';
+    // Populate real profile data into phone mockup
+    populateLiveProfile();
+    // Navigate to Live Preview screen
+    var lpNav = document.querySelector('[onclick*="livepreview"]');
+    nav(lpNav || null, 'livepreview');
+    startLiveDuration();
     toast('🔴 You are now live!');
     liveMode = null;
   }
+}
+
+function startLiveAndSell() {
+  var sel = document.getElementById('sell-product');
+  var saleInput = document.getElementById('sell-sale');
+  if (!sel || !sel.value) { toast('Please select a product'); return; }
+
+  var productName = sel.value;
+  var salePrice = saleInput ? parseFloat(saleInput.value) || 0 : 0;
+  var opt = sel.options[sel.selectedIndex];
+  var origPrice = parseFloat(opt ? opt.getAttribute('data-price') : 0) || salePrice;
+  if (!salePrice) salePrice = origPrice;
+
+  var timerSel = document.getElementById('sell-timer');
+  var timerMins = timerSel ? parseInt(timerSel.value) : 0;
+
+  closeModal('modal-sell');
+  closeModal('modal-golive');
+
+  // ── Show live banner with all 3 pieces (product + price + timer) ──
+  var banner = document.getElementById('live-banner');
+  if (banner) banner.style.display = 'block';
+  var bannerProduct = document.getElementById('banner-product');
+  var bannerPname = document.getElementById('banner-pname');
+  var bannerPrice = document.getElementById('banner-price');
+  var bannerTimerWrap = document.getElementById('banner-timer-wrap');
+  var bannerTimer = document.getElementById('banner-timer');
+  var btnCloseProd = document.getElementById('btn-close-prod');
+  if (bannerProduct) bannerProduct.style.display = 'flex';
+  if (bannerPname) bannerPname.textContent = productName;
+  if (bannerPrice) bannerPrice.textContent = '$' + salePrice.toFixed(2);
+  if (bannerTimerWrap) bannerTimerWrap.style.display = timerMins > 0 ? 'block' : 'none';
+  if (btnCloseProd) btnCloseProd.style.display = 'inline-flex';
+
+  // ── Sync phone mockup on Live Preview screen ──
+  var phoneCard = document.getElementById('phone-product-card');
+  var phoneName = document.getElementById('phone-pname');
+  var phoneSale = document.getElementById('phone-sale');
+  var phoneOrig = document.getElementById('phone-orig');
+  var phoneDisc = document.getElementById('phone-disc');
+  var phoneTimer = document.getElementById('phone-timer');
+
+  if (phoneCard) phoneCard.style.display = 'block';
+  if (phoneName) phoneName.textContent = productName;
+  if (phoneSale) phoneSale.textContent = '$' + salePrice.toFixed(2);
+
+  if (origPrice > salePrice) {
+    if (phoneOrig) { phoneOrig.style.display = 'inline'; phoneOrig.textContent = '$' + origPrice.toFixed(2); }
+    var pct = Math.round(((origPrice - salePrice) / origPrice) * 100);
+    if (phoneDisc && pct > 0) { phoneDisc.style.display = 'inline'; phoneDisc.textContent = pct + '% OFF'; }
+  }
+
+  // ── Sync LP product dropdown + sale price ──
+  var lpSel = document.getElementById('lp-product');
+  if (lpSel) {
+    for (var i = 0; i < lpSel.options.length; i++) {
+      if (lpSel.options[i].value.split('|')[0] === productName) { lpSel.selectedIndex = i; break; }
+    }
+  }
+  var lpSaleInput = document.getElementById('lp-sale-input');
+  if (lpSaleInput) lpSaleInput.value = salePrice.toFixed(2);
+  var lpTimerSel = document.getElementById('lp-timer-sel');
+  if (lpTimerSel && timerMins > 0) {
+    for (var j = 0; j < lpTimerSel.options.length; j++) {
+      if (parseInt(lpTimerSel.options[j].value) === timerMins) { lpTimerSel.selectedIndex = j; break; }
+    }
+  }
+
+  // ── Populate real profile data ──
+  populateLiveProfile();
+
+  // ── Navigate to Live Preview screen ──
+  var lpNav = document.querySelector('[onclick*="livepreview"]');
+  nav(lpNav || null, 'livepreview');
+  startLiveDuration();
+
+  // ── Start countdown timer ──
+  if (timerMins > 0) {
+    var secs = timerMins * 60;
+    if (phoneTimer) { phoneTimer.style.display = 'inline'; phoneTimer.textContent = timerMins + ':00'; }
+    if (bannerTimer) bannerTimer.textContent = timerMins + ':00';
+    if (lpCountdownInterval) clearInterval(lpCountdownInterval);
+    lpCountdownInterval = setInterval(function() {
+      secs--;
+      var m2 = Math.floor(secs / 60), s2 = secs % 60;
+      var t = m2 + ':' + (s2 < 10 ? '0' : '') + s2;
+      if (phoneTimer) phoneTimer.textContent = t;
+      if (bannerTimer) bannerTimer.textContent = t;
+      if (secs <= 0) {
+        clearInterval(lpCountdownInterval);
+        if (phoneTimer) phoneTimer.style.display = 'none';
+        if (bannerTimerWrap) bannerTimerWrap.style.display = 'none';
+        stopLive();
+        toast('⏰ Sale timer ended — live session closed.');
+      }
+    }, 1000);
+  }
+
+  toast('🔴 You are now live & selling ' + productName + '!');
+  liveMode = null;
+}
+
+function stopLive() {
+  var banner = document.getElementById('live-banner');
+  if (banner) banner.style.display = 'none';
+  if (liveDurationInterval) { clearInterval(liveDurationInterval); liveDurationInterval = null; }
+  if (liveViewerInterval) { clearInterval(liveViewerInterval); liveViewerInterval = null; }
+  if (lpCountdownInterval) { clearInterval(lpCountdownInterval); lpCountdownInterval = null; }
+  if (lpTimerInterval) { clearInterval(lpTimerInterval); lpTimerInterval = null; }
+  var card = document.getElementById('phone-product-card');
+  if (card) card.style.display = 'none';
+  toast('Live session ended.');
+  liveMode = null;
 }
 
 function onSellProduct() {
@@ -10021,12 +10246,6 @@ function onSellProduct() {
   if (btnGo) btnGo.disabled = false;
 }
 
-function stopLive() {
-  var banner = document.getElementById('live-banner');
-  if (banner) banner.style.display = 'none';
-  toast('Live session ended.');
-  liveMode = null;
-}
 
 function endLive() {
   if (!confirm('Are you sure you want to end your live session?')) return;
@@ -10054,43 +10273,6 @@ function togglePause() {
     toast('⏸ Live paused');
   }
 }
-
-function startLiveAndSell() {
-  var sel = document.getElementById('sell-product');
-  var saleInput = document.getElementById('sell-sale');
-  if (!sel || !sel.value) { toast('Please select a product'); return; }
-  var productName = sel.value;
-  var salePrice = saleInput ? saleInput.value : '';
-  var timerSel = document.getElementById('sell-timer');
-  var timerMins = timerSel ? parseInt(timerSel.value) : 0;
-  closeModal('modal-sell');
-  closeModal('modal-golive');
-  // Show live banner
-  var banner = document.getElementById('live-banner');
-  if (banner) banner.style.display = 'block';
-  var liveTitle = document.getElementById('live-banner-title');
-  if (liveTitle) liveTitle.textContent = productName + (salePrice ? ' — $' + salePrice : '');
-  toast('🔴 You are now live & selling ' + productName + '!');
-  // Start countdown timer if set
-  if (timerMins > 0) {
-    var secs = timerMins * 60;
-    var timerEl = document.getElementById('live-banner-timer');
-    var interval = setInterval(function() {
-      secs--;
-      if (timerEl) {
-        var m = Math.floor(secs/60), s = secs % 60;
-        timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
-      }
-      if (secs <= 0) {
-        clearInterval(interval);
-        stopLive();
-        toast('⏰ Sale timer ended — live session closed.');
-      }
-    }, 1000);
-  }
-  liveMode = null;
-}
-
 function savePaymentMethod() {
   var name = document.getElementById('pm-name');
   var num = document.getElementById('pm-number');
