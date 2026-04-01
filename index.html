@@ -988,6 +988,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </div>
             <div style="margin-top:18px;"><button class="btn-save" onclick="saveProfile()">Save Profile</button></div>
           </div>
+
+          <!-- OPEN TO CONNECT TOGGLE -->
+          <div class="profile-card full">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+              <!-- Icon + text -->
+              <div style="display:flex;align-items:center;gap:16px;flex:1;min-width:0;">
+                <div style="width:56px;height:56px;border-radius:14px;background:var(--cream2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+                  <img src="data:image/png;base64,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" style="width:36px;height:36px;object-fit:contain;" alt="Equal Link">
+                </div>
+                <div style="min-width:0;">
+                  <div style="font-weight:800;font-size:0.95rem;color:var(--text);margin-bottom:3px;">Equal Link</div>
+                  <div style="font-size:0.78rem;color:var(--text-dim);line-height:1.5;">Turn on to show visitors that you&#39;re open to linking with others. An <strong>Equal Link</strong> badge will appear on your public profile.</div>
+                </div>
+              </div>
+              <!-- Toggle switch -->
+              <label style="position:relative;display:inline-block;width:52px;height:28px;cursor:pointer;flex-shrink:0;">
+                <input type="checkbox" id="connect-toggle" onchange="toggleOpenToConnect(this)" style="opacity:0;width:0;height:0;">
+                <span id="connect-track" style="position:absolute;inset:0;background:#e5e7eb;border-radius:28px;transition:background 0.2s;"></span>
+                <span id="connect-thumb" style="position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:left 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.22);"></span>
+              </label>
+            </div>
+            <!-- Status pill — shown when toggled on -->
+            <div id="connect-status" style="display:none;margin-top:14px;padding:9px 14px;background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.06));border:1px solid rgba(192,122,80,0.3);border-radius:10px;display:flex;align-items:center;gap:8px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#C07A50;flex-shrink:0;animation:pulseDot 1.5s ease-in-out infinite;"></span>
+              <span style="font-size:0.8rem;font-weight:700;color:var(--brown);">Your profile is showing as Equal Link</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2755,9 +2782,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <video id="camera-feed" style="width:100%;display:block;border-radius:14px;min-height:220px;object-fit:cover;" autoplay playsinline muted></video>
             <canvas id="camera-canvas" style="display:none;"></canvas>
             <!-- Overlay when camera off -->
-            <div id="camera-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#111;border-radius:14px;">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
-              <div style="color:rgba(255,255,255,0.3);font-size:0.82rem;">Camera not started</div>
+            <div id="camera-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#111;border-radius:14px;padding:20px;text-align:center;">
+              <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <div style="color:rgba(255,255,255,0.5);font-size:0.82rem;font-weight:600;">Camera not started</div>
+              <div style="color:rgba(255,255,255,0.28);font-size:0.7rem;line-height:1.5;">Tap <strong style="color:rgba(255,255,255,0.45);">Start Camera</strong> below.<br>Allow camera access when prompted.</div>
             </div>
             <!-- Scan frame overlay (shown when camera is on) -->
             <div id="scan-frame-overlay" style="display:none;position:absolute;inset:0;pointer-events:none;">
@@ -6919,60 +6947,141 @@ function loadJsQR(callback) {
 }
 
 function startCamera() {
+  // Check for HTTPS (getUserMedia requires secure context except localhost)
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    const statusEl = document.getElementById('scan-status');
+    if (statusEl) statusEl.textContent = '⚠️ Camera requires HTTPS. Please open this page over a secure connection.';
+    toast('⚠️ Camera requires HTTPS');
+    return;
+  }
+
+  // Check API support
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    const statusEl = document.getElementById('scan-status');
+    if (statusEl) statusEl.textContent = '⚠️ Camera not supported on this browser.';
+    toast('⚠️ Camera API not supported on this browser');
+    return;
+  }
+
+  const statusEl = document.getElementById('scan-status');
+  if (statusEl) statusEl.textContent = '⏳ Requesting camera access…';
+
   loadJsQR(() => {
-    const constraints = {
+    // Try back camera first, fall back to any camera
+    const tryStart = (constraints) => {
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => {
+          cameraStream = stream;
+          const video = document.getElementById('camera-feed');
+          if (!video) return;
+
+          // Revoke any old stream
+          video.srcObject = null;
+          video.srcObject = stream;
+
+          // Ensure play works on iOS/Android
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {
+              // Autoplay blocked — still try to show the frame
+            });
+          }
+
+          // Show camera UI
+          const placeholder = document.getElementById('camera-placeholder');
+          const overlay = document.getElementById('scan-frame-overlay');
+          const btnStart = document.getElementById('btn-start-camera');
+          const btnStop = document.getElementById('btn-stop-camera');
+          if (placeholder) placeholder.style.display = 'none';
+          if (overlay) overlay.style.display = 'block';
+          if (btnStart) btnStart.style.display = 'none';
+          if (btnStop) { btnStop.style.display = 'flex'; }
+
+          // Show torch button if device supports it
+          const track = stream.getVideoTracks()[0];
+          if (track && track.getCapabilities) {
+            try {
+              const caps = track.getCapabilities();
+              if (caps && caps.torch) {
+                const btnTorch = document.getElementById('btn-torch');
+                if (btnTorch) btnTorch.style.display = 'flex';
+              }
+            } catch(e) {}
+          }
+
+          if (statusEl) statusEl.textContent = '🟢 Scanning — point at a QR code';
+          const scanResult = document.getElementById('scan-result');
+          if (scanResult) scanResult.style.display = 'none';
+
+          // Wait for video metadata before scanning
+          const onReady = () => {
+            if (video.videoWidth > 0) {
+              startFrameScan(video);
+            } else {
+              video.addEventListener('loadeddata', () => startFrameScan(video), { once: true });
+            }
+          };
+          if (video.readyState >= 2) {
+            onReady();
+          } else {
+            video.addEventListener('loadedmetadata', onReady, { once: true });
+          }
+        })
+        .catch(err => {
+          // If back camera failed, retry with any camera
+          if (constraints.video && constraints.video.facingMode && err.name !== 'NotAllowedError' && err.name !== 'SecurityError') {
+            tryStart({ video: true, audio: false });
+            return;
+          }
+          let msg = 'Camera access denied.';
+          if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') msg = 'No camera found on this device.';
+          else if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') msg = 'Camera permission denied. Tap the camera icon in your browser address bar to allow access.';
+          else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') msg = 'Camera is in use by another app. Close other apps and try again.';
+          else if (err.name === 'OverconstrainedError') msg = 'Camera constraints not supported. Trying default camera.';
+          else if (err.name === 'SecurityError') msg = 'Camera blocked. This page must be served over HTTPS.';
+          if (statusEl) statusEl.textContent = '⚠️ ' + msg;
+          toast('⚠️ ' + msg);
+        });
+    };
+
+    // Start with rear camera preferred
+    tryStart({
       video: {
-        facingMode: { ideal: 'environment' }, // use back camera
+        facingMode: { ideal: 'environment' },
         width: { ideal: 1280 },
         height: { ideal: 720 }
-      }
-    };
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then(stream => {
-        cameraStream = stream;
-        const video = document.getElementById('camera-feed');
-        video.srcObject = stream;
-        video.play();
-        // Show camera UI
-        document.getElementById('camera-placeholder').style.display = 'none';
-        document.getElementById('scan-frame-overlay').style.display = 'block';
-        document.getElementById('btn-start-camera').style.display = 'none';
-        document.getElementById('btn-stop-camera').style.display = 'flex';
-        // Show torch button if supported
-        const track = stream.getVideoTracks()[0];
-        if (track && track.getCapabilities && track.getCapabilities().torch) {
-          document.getElementById('btn-torch').style.display = 'flex';
-        }
-        document.getElementById('scan-status').textContent = '🟢 Scanning — point at a QR code';
-        document.getElementById('scan-result').style.display = 'none';
-        // Start scanning frames
-        video.addEventListener('loadedmetadata', () => startFrameScan(video));
-      })
-      .catch(err => {
-        let msg = 'Camera access denied.';
-        if (err.name === 'NotFoundError') msg = 'No camera found on this device.';
-        else if (err.name === 'NotAllowedError') msg = 'Camera permission denied. Please allow camera access.';
-        document.getElementById('scan-status').textContent = '⚠️ ' + msg;
-        toast('⚠️ ' + msg);
-      });
+      },
+      audio: false
+    });
   });
 }
 
 function startFrameScan(video) {
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
   const canvas = document.getElementById('camera-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   scanInterval = setInterval(() => {
-    if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
+    // Guard: video must be playing with real dimensions
+    if (!video || video.paused || video.ended || video.readyState < 2) return;
+    if (video.videoWidth === 0 || video.videoHeight === 0) return;
+    if (!cameraStream) { clearInterval(scanInterval); return; }
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    try { ctx.drawImage(video, 0, 0, canvas.width, canvas.height); }
+    catch(e) { return; }
+
+    let imageData;
+    try { imageData = ctx.getImageData(0, 0, canvas.width, canvas.height); }
+    catch(e) { return; }
+
+    if (!window.jsQR) return;
     const code = window.jsQR(imageData.data, imageData.width, imageData.height, {
       inversionAttempts: 'dontInvert'
     });
     if (code && code.data) {
       const now = Date.now();
-      // Debounce — don't re-scan the same code within 3 seconds
       if (code.data !== lastScanned || now - lastScannedTime > 3000) {
         lastScanned = code.data;
         lastScannedTime = now;
@@ -6980,7 +7089,7 @@ function startFrameScan(video) {
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
       }
     }
-  }, 200);
+  }, 250);
 }
 
 function stopCamera() {
@@ -7508,6 +7617,23 @@ function mpTab(tab) {
 
 function toggleGenre(el) {
   el.classList.toggle('selected');
+}
+
+function toggleOpenToConnect(cb) {
+  var track = document.getElementById('connect-track');
+  var thumb = document.getElementById('connect-thumb');
+  var status = document.getElementById('connect-status');
+  if (cb.checked) {
+    if (track) track.style.background = 'var(--brown)';
+    if (thumb) thumb.style.left = '27px';
+    if (status) { status.style.display = 'flex'; }
+    toast('✓ Equal Link is now showing on your profile');
+  } else {
+    if (track) track.style.background = '#e5e7eb';
+    if (thumb) thumb.style.left = '3px';
+    if (status) status.style.display = 'none';
+    toast('Equal Link turned off');
+  }
 }
 
 function toggleCollab(cb) {
@@ -11540,6 +11666,7 @@ function openFullPagePreview() {
         <p>Your public identity on MASSED — visible at <strong>massed.io/yourusername</strong>. Set your photo, display name, title/role, bio (under 200 words), category, and contact info. Click Save Profile — changes are not auto-saved.</p>
         <p style="margin-top:6px;"><strong>Collaboration tab:</strong> Toggle your visibility on, choose your genres, browse other creators by genre, send and accept connection requests, message active collaborators, and sign legally binding NDAs. Signed NDAs auto-save to the Documents tab — click View to open the full signed document with both digital signatures and timestamps, or Download to save a copy.</p>
         <p style="margin-top:6px;"><strong>My Hearts tab:</strong> See everyone who saved or hearted your profile, along with total heart count, hearts this week, and profile view stats.</p>
+        <p style="margin-top:6px;"><strong>Equal Link toggle:</strong> Found at the bottom of the Profile tab, below Contact Info. Turn it on to show visitors that you're open to linking with others. When enabled, an <strong>Equal Link</strong> badge appears on your public profile. A status indicator shows inside the dashboard confirming it's live. Toggle it off at any time to remove the badge.</p>
       </div>
 
       <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
