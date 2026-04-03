@@ -8252,7 +8252,7 @@ function toggleSidebar() {
       setTimeout(function(){ if (ov && !ov.classList.contains('open')) ov.style.visibility = 'hidden'; }, 280);
     }
   } else {
-    if (ov) { ov.style.display = 'block'; }
+    if (ov) { ov.style.visibility = 'visible'; }
     // Force reflow before adding open class so CSS transition fires
     requestAnimationFrame(function() {
       sb.classList.add('open');
@@ -8266,7 +8266,7 @@ function closeSidebar() {
   if (sb) sb.classList.remove('open');
   if (ov) {
     ov.classList.remove('open');
-    setTimeout(function(){ if (ov && !ov.classList.contains('open')) ov.style.display = 'none'; }, 280);
+    setTimeout(function(){ if (ov && !ov.classList.contains('open')) ov.style.visibility = 'hidden'; }, 280);
   }
 }
 
