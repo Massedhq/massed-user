@@ -150,7 +150,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
   /* Topbar + content */
   .topbar{height:var(--topbar-h);flex-shrink:0;padding:0 16px;}
   .content{flex:1;height:0;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
-  .screen{padding:16px;padding-bottom:100px;}
+ .screen{padding:16px;padding-bottom:calc(100px + env(safe-area-inset-bottom));}
   .screen.active{display:block;padding:16px;padding-bottom:100px;}
   #screen-payoutsettings.screen,#screen-payoutsettings.active{background:#1a1a1a !important;}
   .hamburger{display:flex;}
