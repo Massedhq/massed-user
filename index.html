@@ -8249,7 +8249,7 @@ function toggleSidebar() {
     sb.classList.remove('open');
     if (ov) {
       ov.classList.remove('open');
-      setTimeout(function(){ if (ov && !ov.classList.contains('open')) ov.style.display = 'none'; }, 280);
+      setTimeout(function(){ if (ov && !ov.classList.contains('open')) ov.style.visibility = 'hidden'; }, 280);
     }
   } else {
     if (ov) { ov.style.display = 'block'; }
