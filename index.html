@@ -122,18 +122,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* SIDEBAR OVERLAY */
 .sidebar-overlay{
-  display:none;
+  visibility:hidden;
   position:fixed;
   inset:0;
   background:rgba(44,26,14,0.45);
   z-index:299;
   opacity:0;
-  transition:opacity 0.28s ease;
+  transition:opacity 0.28s ease, visibility 0.28s ease;
   -webkit-tap-highlight-color:transparent;
   cursor:pointer;
 }
 .sidebar-overlay.open{
-  display:block;
+  visibility:visible;
   opacity:1;
 }
 
