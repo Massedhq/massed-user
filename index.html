@@ -2983,6 +2983,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <button onclick="spTab('about',this)" class="sp-tab" style="padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.45);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">About</button>
             <button onclick="spTab('store',this)" class="sp-tab" style="padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.45);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">Store</button>
             <button onclick="spTab('media',this)" class="sp-tab" style="padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.45);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">Media</button>
+            <button onclick="spTab('signals',this)" class="sp-tab" style="padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.45);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">Shared Signals</button>
+            <button onclick="spTab('vault',this)" class="sp-tab" style="padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;color:rgba(255,255,255,0.45);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">My Vault</button>
           </div>
         </div>
       </div>
@@ -2997,7 +2999,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div style="display:flex;gap:12px;align-items:flex-start;">
               <div style="width:38px;height:38px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:var(--brown);flex-shrink:0;">L</div>
               <div style="flex:1;">
-                <textarea id="sp-post-text" placeholder="Share something knowledgeable with your audience..." rows="3" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:0.88rem;resize:none;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+                <textarea id="sp-post-text" placeholder="Create a Signal..." rows="3" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:0.88rem;resize:none;outline:none;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:8px;">
                   <div style="display:flex;gap:8px;">
                     <label style="display:flex;align-items:center;gap:5px;padding:7px 12px;background:var(--cream);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.78rem;color:var(--text-mid);font-weight:600;">
@@ -3013,7 +3015,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                       Audio<input type="file" accept="audio/*" style="display:none;" onchange="spAttachMedia(event,'audio')">
                     </label>
                   </div>
-                  <button onclick="spPublishPost()" style="padding:8px 20px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;">Post</button>
+                  <button onclick="spPublishPost()" style="padding:8px 20px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;">Post Signal</button>
                 </div>
                 <div id="sp-media-preview" style="display:none;margin-top:10px;"></div>
               </div>
@@ -3065,8 +3067,69 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           </div>
         </div>
 
+        <!-- SIGNALS TAB -->
+        <div id="sp-tab-signals" style="display:none;">
+          <!-- Stats row -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;">
+              <div style="font-size:1.3rem;margin-bottom:3px;">📡</div>
+              <div id="sptab-signals-count" style="font-size:1.4rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">0</div>
+              <div style="font-size:0.65rem;color:var(--text-dim);margin-top:1px;">Signals</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;">
+              <div style="font-size:1.3rem;margin-bottom:3px;">🔗</div>
+              <div id="sptab-shared-count" style="font-size:1.4rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">0</div>
+              <div style="font-size:0.65rem;color:var(--text-dim);margin-top:1px;">Times Shared</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;">
+              <div style="font-size:1.3rem;margin-bottom:3px;">💡</div>
+              <div id="sptab-sparks-count" style="font-size:1.4rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">0</div>
+              <div style="font-size:0.65rem;color:var(--text-dim);margin-top:1px;">Sparks</div>
+            </div>
+          </div>
+          <!-- Signals feed -->
+          <div id="sptab-signals-feed"></div>
+        </div>
+
+        <!-- MY VAULT TAB -->
+        <div id="sp-tab-vault" style="display:none;">
+          <!-- Add to Vault form -->
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:20px;">
+            <div style="font-size:0.62rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Save to Vault</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <input id="vault-title-input" type="text" placeholder="Title or name..." style="padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+              <textarea id="vault-notes-input" placeholder="Notes, details, or description..." rows="2" style="padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;resize:none;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+                <select id="vault-cat-select" style="padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);background:var(--cream);outline:none;cursor:pointer;flex:1;">
+                  <option value="all">All</option>
+                  <option value="services">Services</option>
+                  <option value="products">Products</option>
+                  <option value="listings">Listings</option>
+                  <option value="people">People</option>
+                  <option value="opportunities">Opportunities</option>
+                </select>
+                <button onclick="vaultSave()" style="padding:9px 18px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;display:flex;align-items:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Save to Vault
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- Vault category filter -->
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+            <button onclick="vaultTab('all',this)" class="vault-tab-btn" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--brown);background:var(--brown);color:#fff;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">All</button>
+            <button onclick="vaultTab('services',this)" class="vault-tab-btn" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;">Services</button>
+            <button onclick="vaultTab('products',this)" class="vault-tab-btn" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;">Products</button>
+            <button onclick="vaultTab('listings',this)" class="vault-tab-btn" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;">Listings</button>
+            <button onclick="vaultTab('people',this)" class="vault-tab-btn" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;">People</button>
+            <button onclick="vaultTab('opportunities',this)" class="vault-tab-btn" style="padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;">Opportunities</button>
+          </div>
+          <!-- Vault entries -->
+          <div id="vault-entries" style="display:flex;flex-direction:column;gap:12px;"></div>
+        </div>
+
       </div>
     </div>
+
 
     <div id="screen-scanner" class="screen">
       <div class="section-header">
@@ -8278,7 +8341,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',signals:'Signals',vault:'My Vault',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon'};
 
 function navStoreTab(el, tab) {
   nav(el, 'mystore');
@@ -8912,6 +8975,8 @@ function nav(el,screen) {
     if(target) target.classList.add('active');
     var pt=document.getElementById('page-title');
     if(pt) pt.textContent=pageTitles[screen]||'';
+    // Render dynamic screens
+    if(screen==='switchprofile') setTimeout(function(){ spTab('posts', document.querySelector('.sp-tab')); renderSpFeed(); }, 50);
     // Close sidebar on mobile after navigating
     closeSidebar();
   } catch(e){console.warn('nav error:',e);}
@@ -9326,7 +9391,7 @@ var spPosts = [
 var spMediaPreviews = {};
 
 function spTab(tab, btn) {
-  ['posts','about','store','media'].forEach(function(t){
+  ['posts','about','store','media','signals','vault'].forEach(function(t){
     var el = document.getElementById('sp-tab-'+t);
     if (el) el.style.display = t===tab ? 'block' : 'none';
   });
@@ -9337,6 +9402,8 @@ function spTab(tab, btn) {
   });
   if (btn) { btn.style.color = '#D4956E'; btn.style.borderBottomColor = '#D4956E'; btn.style.fontWeight = '700'; }
   if (tab === 'posts') renderSpFeed();
+  if (tab === 'signals') renderSignalsTab();
+  if (tab === 'vault') renderVault();
 }
 
 function renderSpFeed() {
@@ -9361,7 +9428,11 @@ function renderSpFeed() {
         + '</button>'
         + '<button onclick="spSharePost('+post.id+')" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.82rem;color:var(--text-mid);font-weight:600;padding:6px 10px;border-radius:8px;transition:all 0.15s;" onmouseover="this.style.background=\'var(--cream)\'" onmouseout="this.style.background=\'none\'">'
           + '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>'
-          + post.shared + ' Share'
+          + post.shared + ' Shared'
+        + '</button>'
+        + '<button onclick="spAddToVault('+post.id+')" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.82rem;color:var(--text-mid);font-weight:600;padding:6px 10px;border-radius:8px;transition:all 0.15s;margin-left:auto;" onmouseover="this.style.background=\'var(--cream)\'" onmouseout="this.style.background=\'none\'">'
+          + '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>'
+          + 'Add to Vault'
         + '</button>'
       + '</div>'
       + '<div id="sp-comments-'+post.id+'" style="display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">'
@@ -9372,7 +9443,7 @@ function renderSpFeed() {
         + '</div>'
       + '</div>'
     + '</div>';
-  }).join('') || '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:40px;text-align:center;color:var(--text-dim);">No posts yet. Share something knowledgeable!</div>';
+  }).join('') || '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:40px;text-align:center;color:var(--text-dim);">No Signals yet. Create your first Signal above!</div>';
 }
 
 function spLightIt(postId, btn) {
@@ -9434,12 +9505,145 @@ function spAddComment(postId) {
 
 function spSharePost(postId) {
   var post = spPosts.find(function(p){return p.id===postId;});
-  if (post) { post.shared++; toast('🔗 Post link copied!'); renderSpFeed(); }
+  if (post) { post.shared++; toast('🔗 Signal link copied!'); renderSpFeed(); }
 }
+
+// ── VAULT ──
+var vaultItems = [];
+var vaultCurrentTab = 'all';
+
+function vaultTab(cat, btn) {
+  vaultCurrentTab = cat;
+  document.querySelectorAll('.vault-tab-btn').forEach(function(b) {
+    b.style.background = 'var(--cream)';
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--text-mid)';
+    b.style.fontWeight = '600';
+  });
+  if (btn) {
+    btn.style.background = 'var(--brown)';
+    btn.style.borderColor = 'var(--brown)';
+    btn.style.color = '#fff';
+    btn.style.fontWeight = '700';
+  }
+  renderVault();
+}
+
+function vaultSave() {
+  var title = document.getElementById('vault-title-input');
+  var notes = document.getElementById('vault-notes-input');
+  var cat = document.getElementById('vault-cat-select');
+  if (!title || !title.value.trim()) { toast('Please enter a title to save'); return; }
+  var catIcons = { all:'📁', services:'🛠️', products:'📦', listings:'📋', people:'👤', opportunities:'⚡' };
+  vaultItems.unshift({ id: Date.now(), title: title.value.trim(), notes: (notes ? notes.value.trim() : ''), category: (cat ? cat.value : 'all'), time: 'Just now' });
+  title.value = ''; if (notes) notes.value = '';
+  renderVault();
+  renderSignalsTab();
+  toast('🔒 Saved to Vault!');
+}
+
+function vaultDelete(id) {
+  vaultItems = vaultItems.filter(function(v){return v.id !== id;});
+  renderVault();
+}
+
+function renderVault() {
+  var container = document.getElementById('vault-entries');
+  if (!container) return;
+  var catIcons = { all:'📁', services:'🛠️', products:'📦', listings:'📋', people:'👤', opportunities:'⚡' };
+  var catLabels = { all:'All', services:'Services', products:'Products', listings:'Listings', people:'People', opportunities:'Opportunities' };
+  var filtered = vaultCurrentTab === 'all' ? vaultItems : vaultItems.filter(function(v){ return v.category === vaultCurrentTab; });
+  if (!filtered.length) {
+    container.innerHTML = '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:40px;text-align:center;color:var(--text-dim);">'
+      + '<div style="font-size:2rem;margin-bottom:10px;">🔒</div>'
+      + '<div style="font-weight:700;font-size:0.92rem;margin-bottom:6px;">Your vault is empty</div>'
+      + '<div style="font-size:0.82rem;">Save information using the form above or click "Add to Vault" on any Signal.</div></div>';
+    return;
+  }
+  container.innerHTML = filtered.map(function(v) {
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;gap:14px;">'
+      + '<div style="width:40px;height:40px;border-radius:10px;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">'+(catIcons[v.category]||'📁')+'</div>'
+      + '<div style="flex:1;min-width:0;">'
+        + '<div style="font-weight:700;font-size:0.9rem;color:var(--text);">'+v.title+'</div>'
+        + (v.notes ? '<div style="font-size:0.8rem;color:var(--text-mid);margin-top:3px;line-height:1.5;">'+v.notes+'</div>' : '')
+        + '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;">'
+          + '<span style="font-size:0.68rem;font-weight:700;background:var(--brown-bg);color:var(--brown);padding:2px 8px;border-radius:20px;">'+(catLabels[v.category]||'All')+'</span>'
+          + '<span style="font-size:0.7rem;color:var(--text-dim);">'+v.time+'</span>'
+        + '</div>'
+      + '</div>'
+      + '<button onclick="vaultDelete('+v.id+')" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--text-dim);flex-shrink:0;" title="Remove">'
+        + '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>'
+      + '</button>'
+    + '</div>';
+  }).join('');
+}
+
+function spAddToVault(postId) {
+  var post = spPosts.find(function(p){return p.id===postId;});
+  if (!post) return;
+  // Store pending post id and pre-fill title
+  document.getElementById('vault-modal-post-id').value = postId;
+  var title = post.text.length > 70 ? post.text.slice(0,70)+'…' : post.text;
+  document.getElementById('vault-modal-title').value = title;
+  document.getElementById('vault-modal-notes').value = '';
+  // Reset category selection
+  document.querySelectorAll('.vault-modal-cat').forEach(function(b){ b.classList.remove('selected'); b.style.background='var(--cream)'; b.style.borderColor='var(--border)'; b.style.color='var(--text-mid)'; });
+  document.getElementById('vault-modal-selected-cat').value = 'all';
+  openModal('modal-add-to-vault');
+}
+
+function vaultModalSelectCat(cat, btn) {
+  document.getElementById('vault-modal-selected-cat').value = cat;
+  document.querySelectorAll('.vault-modal-cat').forEach(function(b){ b.style.background='var(--cream)'; b.style.borderColor='var(--border)'; b.style.color='var(--text-mid)'; b.style.fontWeight='600'; });
+  btn.style.background='var(--brown)'; btn.style.borderColor='var(--brown)'; btn.style.color='#fff'; btn.style.fontWeight='700';
+}
+
+function vaultModalSave() {
+  var cat = document.getElementById('vault-modal-selected-cat').value || 'all';
+  var title = document.getElementById('vault-modal-title').value.trim();
+  var notes = document.getElementById('vault-modal-notes').value.trim();
+  if (!title) { toast('Please enter a title'); return; }
+  var catLabels = { all:'All', services:'Services', products:'Products', listings:'Listings', people:'People', opportunities:'Opportunities' };
+  vaultItems.unshift({ id: Date.now(), title: title, notes: notes || 'Saved from Signal', category: cat, time: 'Just now' });
+  closeModal('modal-add-to-vault');
+  toast('🔒 Saved to ' + (catLabels[cat]||'Vault') + '!');
+}
+
+// ── SIGNALS ──
+function renderSignalsTab() {
+  var feed = document.getElementById('sptab-signals-feed');
+  if (!feed) return;
+  var countEl = document.getElementById('sptab-signals-count');
+  var sharedEl = document.getElementById('sptab-shared-count');
+  var sparksEl2 = document.getElementById('sptab-sparks-count');
+  if (countEl) countEl.textContent = spPosts.length;
+  if (sharedEl) sharedEl.textContent = spPosts.reduce(function(s,p){return s+p.shared;},0);
+  if (sparksEl2) sparksEl2.textContent = spPosts.reduce(function(s,p){return s+p.sparks;},0);
+  if (!spPosts.length) {
+    feed.innerHTML = '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:40px;text-align:center;color:var(--text-dim);">No Signals yet. Post your first Signal from the Posts tab.</div>';
+    return;
+  }
+  feed.innerHTML = spPosts.map(function(post) {
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;">'
+      + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'
+        + '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#D4956E,#8B5E3C);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.82rem;flex-shrink:0;">L</div>'
+        + '<div style="flex:1;"><div style="font-weight:700;font-size:0.85rem;">Luk Like</div><div style="font-size:0.7rem;color:var(--text-dim);">'+post.time+'</div></div>'
+        + '<span style="font-size:0.68rem;font-weight:700;background:var(--brown-bg);color:var(--brown);padding:2px 10px;border-radius:20px;">Shared</span>'
+      + '</div>'
+      + '<div style="font-size:0.88rem;color:var(--text);line-height:1.65;margin-bottom:12px;">'+post.text+'</div>'
+      + '<div style="display:flex;align-items:center;gap:14px;padding-top:10px;border-top:1px solid var(--border);font-size:0.78rem;color:var(--text-dim);flex-wrap:wrap;">'
+        + '<span>💡 '+post.sparks+' Sparks</span>'
+        + '<span>💬 '+post.comments.length+' Comments</span>'
+        + '<span>🔗 '+post.shared+' Shared</span>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+}
+
 
 function spPublishPost() {
   var textarea = document.getElementById('sp-post-text');
-  if (!textarea || !textarea.value.trim()) { toast('Please write something knowledgeable to post'); return; }
+  if (!textarea || !textarea.value.trim()) { toast('Please write something to signal'); return; }
   var now = new Date();
   var newPost = { id:Date.now(), text:textarea.value.trim(), type:'text', time:'Just now', sparks:0, comments:[], shared:0 };
   spPosts.unshift(newPost);
@@ -9448,7 +9652,7 @@ function spPublishPost() {
   var prev = document.getElementById('sp-media-preview');
   if (prev) { prev.style.display = 'none'; prev.innerHTML = ''; }
   renderSpFeed();
-  toast('✓ Post published!');
+  toast('✓ Signal posted!');
 }
 
 function spAttachMedia(event, type) {
@@ -13866,6 +14070,57 @@ document.addEventListener('DOMContentLoaded', function() {
     <div style="display:flex;gap:10px;margin-top:16px;">
       <button class="btn-cancel" onclick="closeModal('modal-bk-ban')">Cancel</button>
       <button id="bk-ban-confirm" class="btn-save" style="flex:1;background:#dc2626;color:#fff;">Ban Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TO VAULT MODAL -->
+<div id="modal-add-to-vault" class="modal-overlay" onclick="closeModal('modal-add-to-vault')">
+  <div class="modal" style="max-width:400px;" onclick="event.stopPropagation()">
+    <input type="hidden" id="vault-modal-post-id">
+    <input type="hidden" id="vault-modal-selected-cat" value="all">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <div>
+        <h2 class="modal-title" style="margin:0;font-size:1.1rem;">Add to Vault</h2>
+        <div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px;">Choose where to save this Signal</div>
+      </div>
+      <button onclick="closeModal('modal-add-to-vault')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <!-- Signal preview -->
+    <div style="background:var(--cream);border-radius:10px;padding:12px 14px;margin-bottom:18px;border-left:3px solid var(--brown);">
+      <div style="font-size:0.62rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:5px;">Signal Preview</div>
+      <input id="vault-modal-title" type="text" style="width:100%;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:var(--text);outline:none;font-weight:600;" placeholder="Signal text...">
+    </div>
+    <!-- Optional notes -->
+    <div class="form-field" style="margin-bottom:18px;">
+      <label style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:6px;">Notes (optional)</label>
+      <textarea id="vault-modal-notes" placeholder="Add a note about why you're saving this..." rows="2" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;resize:none;outline:none;transition:border-color 0.2s;box-sizing:border-box;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+    </div>
+    <!-- Category picker -->
+    <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Save to</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:22px;">
+      <button onclick="vaultModalSelectCat('all',this)" class="vault-modal-cat" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;">
+        <span style="font-size:1rem;">📁</span> All
+      </button>
+      <button onclick="vaultModalSelectCat('services',this)" class="vault-modal-cat" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;">
+        <span style="font-size:1rem;">🛠️</span> Services
+      </button>
+      <button onclick="vaultModalSelectCat('products',this)" class="vault-modal-cat" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;">
+        <span style="font-size:1rem;">📦</span> Products
+      </button>
+      <button onclick="vaultModalSelectCat('listings',this)" class="vault-modal-cat" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;">
+        <span style="font-size:1rem;">📋</span> Listings
+      </button>
+      <button onclick="vaultModalSelectCat('people',this)" class="vault-modal-cat" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;">
+        <span style="font-size:1rem;">👤</span> People
+      </button>
+      <button onclick="vaultModalSelectCat('opportunities',this)" class="vault-modal-cat" style="padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;">
+        <span style="font-size:1rem;">⚡</span> Opportunities
+      </button>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn-cancel" onclick="closeModal('modal-add-to-vault')">Cancel</button>
+      <button class="btn-confirm" onclick="vaultModalSave()" style="flex:2;">Save to Vault</button>
     </div>
   </div>
 </div>
