@@ -87,9 +87,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 .topbar{height:var(--topbar-h);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;flex-shrink:0;}
 .topbar-title{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);}
 .topbar-right{display:flex;align-items:center;gap:10px;}
-.link-badge{display:flex;align-items:center;gap:7px;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:0.8rem;color:var(--text-mid);font-weight:500;}
+.link-badge{display:flex;align-items:center;gap:7px;background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:0.8rem;color:var(--text-mid);font-weight:500;transition:all 0.25s;}
 .link-badge:hover{border-color:var(--brown);color:var(--brown);}
-.link-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+.link-badge svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;transition:all 0.25s;}
+.link-badge.linked{border-color:var(--brown);color:var(--brown);background:var(--brown-bg);box-shadow:0 0 0 3px rgba(192,122,80,0.18),0 0 12px rgba(192,122,80,0.22);}
+.link-badge.linked svg{filter:drop-shadow(0 0 4px rgba(192,122,80,0.7));stroke:var(--brown);}
+@keyframes linkPulse{0%{box-shadow:0 0 0 0 rgba(192,122,80,0.55);}70%{box-shadow:0 0 0 8px rgba(192,122,80,0);}100%{box-shadow:0 0 0 0 rgba(192,122,80,0);}}
+.link-badge.linking{animation:linkPulse 0.6s ease-out;}
 .btn-logout{padding:8px 16px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;}
 .btn-logout:hover{background:var(--brown-dark);}
 .content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain;min-height:0;max-width:100%;}
@@ -755,8 +759,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <span style="width:9px;height:9px;background:#fff;border-radius:50%;display:inline-block;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></span>
         Go Live
       </button>
-      <div class="link-badge">
-        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <div class="link-badge" id="dual-link-badge" onclick="dualLinkOpen(this)" title="Open your public profile + switch to Public View">
+        <svg viewBox="0 0 24 24" id="chain-link-icon"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
         massed.io/username
       </div>
       <button class="btn-logout" onclick="toast('Logging out...')">Log Out</button>
@@ -8744,6 +8748,22 @@ function closeSidebar() {
 
 function openModal(id) { var el=document.getElementById(id); if(el) el.classList.add('open'); }
 function closeModal(id) { var el=document.getElementById(id); if(el) el.classList.remove('open'); }
+
+// Dual-link: lights up the chain icon, opens public page in new tab, AND switches dashboard to Public View
+function dualLinkOpen(el) {
+  el.classList.add('linking');
+  el.classList.add('linked');
+  setTimeout(function(){ el.classList.remove('linking'); }, 700);
+  // Open the public page URL in a new tab
+  var username = el.textContent.trim();
+  window.open('https://' + username, '_blank');
+  // Also switch this dashboard to the Switch Profile (public view) screen
+  if(typeof nav === 'function') {
+    nav(null, 'switchprofile');
+  }
+  toast('🔗 Linked! Public page opened + switched to Public View');
+}
+
 function toast(msg) {
   var t=document.getElementById('toast');
   if(!t) return;
