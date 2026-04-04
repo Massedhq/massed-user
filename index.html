@@ -689,6 +689,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>My Messages
       <span id="msg-badge" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:#ef4444;color:#fff;font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:20px;min-width:18px;text-align:center;">3</span>
     </div>
+    <div class="nav-item" onclick="nav(this,'bannedblocked')">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Banned / Blocked
+    </div>
 
     <div class="nav-section-label">System</div>
     <div class="nav-item" onclick="nav(this,'settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</div>
@@ -721,11 +724,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div onclick="closeMoreMenu();nav(null,'switchprofile')" style="display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-size:0.88rem;color:var(--text);font-weight:500;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
             Switch Profile
-          </div>
-          <div style="height:1px;background:var(--border);margin:0 12px;"></div>
-          <div onclick="closeMoreMenu();nav(null,'bannedblocked');renderBannedBlocked();" style="display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-size:0.88rem;color:var(--text);font-weight:500;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-            Banned / Blocked
           </div>
           <div style="height:1px;background:var(--border);margin:0 12px;"></div>
           <div onclick="closeMoreMenu();toast('Share link copied!')" style="display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-size:0.88rem;color:var(--text);font-weight:500;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
@@ -3264,7 +3262,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <!-- Thread header -->
               <div id="sp-msg-thread-header" style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;min-height:54px;">
                 <div id="sp-msg-thread-name" style="font-weight:700;font-size:0.9rem;color:var(--text);">Select a conversation</div>
-                <div id="sp-msg-thread-actions" style="display:flex;gap:6px;visibility:hidden;">
+                <div id="sp-msg-thread-actions" style="display:none;gap:6px;">
                   <button onclick="spMsgAction('mute')" title="Mute" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 8px;cursor:pointer;color:var(--text-mid);font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:4px;">
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg> Mute
                   </button>
@@ -6271,25 +6269,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.1em;text-transform:uppercase;">Live Now</span>
             </div>
             <h1 style="font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;margin-bottom:8px;line-height:1.2;">The Gateway Room</h1>
-            <p style="font-size:0.88rem;color:rgba(255,255,255,0.55);max-width:420px;margin:0 auto 28px;line-height:1.7;">A live hybrid discovery stage. Watch presenters pitch in real time — signal your interest, commit on the spot, or request distribution.</p>
-            <!-- Role picker -->
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;max-width:560px;margin:0 auto;">
-              <button onclick="gwEnter('public')" style="padding:18px 14px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.15);border-radius:14px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='rgba(192,122,80,0.18)';this.style.borderColor='rgba(192,122,80,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.15)'">
-                <div style="font-size:1.6rem;margin-bottom:8px;">👁</div>
-                <div style="font-weight:700;color:#fff;font-size:0.9rem;">Public Viewer</div>
-                <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:4px;">Watch &amp; signal interest</div>
-              </button>
-              <button onclick="gwEnter('business')" style="padding:18px 14px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.15);border-radius:14px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='rgba(192,122,80,0.18)';this.style.borderColor='rgba(192,122,80,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.15)'">
-                <div style="font-size:1.6rem;margin-bottom:8px;">🏢</div>
-                <div style="font-weight:700;color:#fff;font-size:0.9rem;">Business Attendee</div>
-                <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:4px;">+ shelf placement requests</div>
-              </button>
-              <button onclick="gwEnter('presenter')" style="padding:18px 14px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(192,122,80,0.4);border-radius:14px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='rgba(192,122,80,0.18)';this.style.borderColor='rgba(192,122,80,0.7)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(192,122,80,0.4)'">
-                <div style="font-size:1.6rem;margin-bottom:8px;">🎤</div>
-                <div style="font-weight:700;color:#D4956E;font-size:0.9rem;">Presenter</div>
-                <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:4px;">Graduated users only</div>
-              </button>
-            </div>
+            <p id="gw-landing-sub" style="font-size:0.88rem;color:rgba(255,255,255,0.55);max-width:420px;margin:0 auto 28px;line-height:1.7;">A live hybrid discovery stage. Watch presenters pitch in real time — signal your interest, commit on the spot, or request distribution.</p>
+            <!-- Role picker — rendered dynamically based on user context -->
+            <div id="gw-role-picker" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;max-width:560px;margin:0 auto;"></div>
           </div>
         </div>
         <!-- Upcoming schedule teaser -->
@@ -6384,25 +6366,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
             <div>
               <h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text);margin-bottom:4px;">🎤 Presenter Dashboard</h2>
-              <p style="font-size:0.82rem;color:var(--text-dim);">Your live Gateway Room analytics — updating in real time</p>
+              <p style="font-size:0.82rem;color:var(--text-dim);">Your Gateway Room analytics — live during your scheduled session</p>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button onclick="gwTogglePresenterLive()" id="gw-go-live-btn" style="padding:9px 18px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;display:flex;align-items:center;gap:7px;">
-                <span id="gw-live-dot" style="width:8px;height:8px;background:#fff;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
-                <span id="gw-live-btn-label">Go Live</span>
-              </button>
-              <button onclick="gwLeave()" style="padding:9px 16px;background:var(--cream2);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--text-mid);font-weight:600;">← Back</button>
+            <button onclick="gwLeave()" style="padding:9px 16px;background:var(--cream2);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--text-mid);font-weight:600;">← Back</button>
+          </div>
+
+          <!-- Approved session info banner -->
+          <div style="background:linear-gradient(135deg,rgba(192,122,80,0.08),rgba(192,122,80,0.04));border:1.5px solid var(--border);border-left:4px solid var(--brown);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div style="width:40px;height:40px;background:var(--brown-bg2);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--brown)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:0.7rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:2px;">Your Approved Session</div>
+              <div id="gw-session-info" style="font-weight:700;font-size:0.9rem;color:var(--text);">Saturday, May 10, 2026 · 2:00 PM EST</div>
+              <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Admin approved · 20-minute slot · Gateway Room Stage</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;background:#dcfce7;border-radius:20px;padding:5px 12px;flex-shrink:0;">
+              <span style="width:7px;height:7px;background:#16a34a;border-radius:50%;display:inline-block;"></span>
+              <span style="font-size:0.72rem;font-weight:700;color:#16a34a;">Confirmed</span>
             </div>
           </div>
 
           <!-- Presenter profile setup -->
           <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:20px;">
-            <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Your Pitch Setup</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px;">
+              <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);">Your Pitch Details</div>
+              <span style="font-size:0.68rem;color:var(--text-dim);">Submitted at signup · editable until 24hrs before your session</span>
+            </div>
             <div style="display:flex;flex-direction:column;gap:10px;">
               <input id="gw-setup-title" placeholder="Pitch title (e.g. 'NaturalGlow Skincare Line')" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
               <input id="gw-setup-cat" placeholder="Category (e.g. Beauty, Tech, Food, Finance...)" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
               <textarea id="gw-setup-pitch" placeholder="Your pitch description — what are you presenting?" rows="2" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;resize:none;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-              <button onclick="gwSavePitchSetup()" style="padding:10px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;">Save Pitch</button>
+              <button onclick="gwSavePitchSetup()" style="padding:10px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;">Save Changes</button>
             </div>
           </div>
 
@@ -10186,7 +10181,7 @@ function spMsgOpenConvo(id) {
   var nameEl = document.getElementById('sp-msg-thread-name');
   var actionsEl = document.getElementById('sp-msg-thread-actions');
   if (nameEl) nameEl.innerHTML = '<div style="font-weight:700;font-size:0.9rem;">' + convo.name + '</div><div style="font-size:0.72rem;color:var(--text-dim);">' + convo.handle + '</div>';
-  if (actionsEl) actionsEl.style.visibility = 'visible';
+  if (actionsEl) actionsEl.style.display = 'flex';
 
   // Enable compose
   var input = document.getElementById('sp-msg-input');
@@ -10221,7 +10216,7 @@ function spMsgResetThread() {
   var input = document.getElementById('sp-msg-input');
   if (thread) thread.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.82rem;margin-top:40px;">Select a conversation to start messaging</div>';
   if (nameEl) nameEl.textContent = 'Select a conversation';
-  if (actionsEl) actionsEl.style.visibility = 'hidden';
+  if (actionsEl) actionsEl.style.display = 'none';
   if (input) { input.placeholder = 'Select a conversation to reply…'; input.disabled = false; input.style.background = 'var(--cream)'; }
   spMsgRenderList();
 }
@@ -10336,22 +10331,60 @@ function bbUnblock(id) {
 }
 
 // ── GATEWAY ROOM ─────────────────────────────────────────────────────────────
-var gwRole = null; // 'public' | 'business' | 'presenter'
+var gwRole = null;
 var gwActivePresenterId = 0;
-var gwPresenterLive = false;
 
-var gwPresenters = [
-  { id:1, name:'Aaliyah Morris', initials:'AM', title:'Founder, NaturalGlow Skincare', category:'Beauty', pitch:'A clean, vegan skincare line built for melanin-rich skin tones. 3 hero products, zero harsh chemicals, already retailing in 4 boutiques.', signals:14, ins:6, shelf:3, time:'On now', feedback:[], signals_list:[], ins_list:[], shelf_list:[] },
-  { id:2, name:'Devon Chase', initials:'DC', title:'CEO, ShiftLogic AI', category:'Tech', pitch:'An AI workflow tool that cuts admin time by 60% for solopreneurs. No code required. Monthly subscription model with a free tier.', signals:9, ins:4, shelf:2, time:'Up next', feedback:[], signals_list:[], ins_list:[], shelf_list:[] },
-  { id:3, name:'Priya Nair', initials:'PN', title:'Creator, The Meal Shift', category:'Food & Wellness', pitch:'Weekly meal prep kits designed for busy professionals who want to eat whole foods without the planning. Launching in Q3.', signals:7, ins:2, shelf:1, time:'In 20 min', feedback:[], signals_list:[], ins_list:[], shelf_list:[] }
-];
+// Context detection:
+// - 'public'    → user is in Switch Profile / public view
+// - 'business'  → user is in business dashboard (not graduated)
+// - 'graduated' → user is in business dashboard AND is a graduated presenter
+var GW_IS_GRADUATED = true; // Simulated: this user is a graduated MASSED user
 
-// Presenter dashboard data (for the logged-in presenter)
-var gwMyDash = { signals:[], ready:[], shelf:[], feedback:[] };
-var gwCurrentDashTab = 'signals';
+function gwDetectContext() {
+  // If the previous screen was switchprofile, they arrived from public view
+  // But Gateway Room is a sidebar item only reachable from the business dashboard.
+  // We simulate: if _prevScreenBeforeSwitch === 'switchprofile' context = public,
+  // otherwise context = business (or graduated).
+  // In production this would read the actual user account flags.
+  var fromPublic = (typeof _currentScreen !== 'undefined' && _currentScreen === 'switchprofile');
+  if (fromPublic) return 'public';
+  if (GW_IS_GRADUATED) return 'graduated';
+  return 'business';
+}
 
 function gwInit() {
-  // Render lineup on landing
+  var ctx = gwDetectContext();
+  gwRenderLanding(ctx);
+}
+
+function gwRenderLanding(ctx) {
+  var picker = document.getElementById('gw-role-picker');
+  var subtitle = document.getElementById('gw-landing-sub');
+  if (!picker) return;
+
+  picker.innerHTML = '';
+
+  if (ctx === 'public') {
+    // Public view — only Public Viewer, auto-enter immediately with a note
+    if (subtitle) subtitle.textContent = 'You\'re viewing as a public visitor. Enter as a Public Viewer.';
+    picker.innerHTML = gwRoleCard('public','👁','Public Viewer','Watch & signal interest','rgba(255,255,255,0.15)','#fff');
+    // Auto-enter after a short delay so they see the landing
+    setTimeout(function(){ gwEnter('public'); }, 900);
+
+  } else if (ctx === 'business') {
+    // Business profile, not graduated — Business Attendee only
+    if (subtitle) subtitle.textContent = 'You\'re attending as a registered business.';
+    picker.innerHTML = gwRoleCard('business','🏢','Business Attendee','Signal, commit & request distribution','rgba(192,122,80,0.2)','#D4956E');
+
+  } else if (ctx === 'graduated') {
+    // Graduated — Business Attendee + Presenter (two options)
+    if (subtitle) subtitle.textContent = 'You have presenter access. Choose how you\'d like to enter.';
+    picker.innerHTML =
+      gwRoleCard('business','🏢','Enter as Attendee','Signal interest & request distribution','rgba(255,255,255,0.06)','#fff') +
+      gwRoleCard('presenter','🎤','Enter as Presenter','Graduated access — go live & view your dashboard','rgba(192,122,80,0.15)','#D4956E');
+  }
+
+  // Render lineup
   var lineup = document.getElementById('gw-lineup');
   if (lineup) {
     lineup.innerHTML = gwPresenters.map(function(p) {
@@ -10370,6 +10403,26 @@ function gwInit() {
     }).join('');
   }
 }
+
+function gwRoleCard(role, icon, label, sub, bg, color) {
+  return '<button onclick="gwEnter(\''+role+'\')" style="padding:20px 14px;background:'+bg+';border:1.5px solid '+(role==='presenter'?'rgba(192,122,80,0.5)':'rgba(255,255,255,0.15)')+';border-radius:14px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:\'DM Sans\',sans-serif;width:100%;" '
+    +'onmouseover="this.style.background=\'rgba(192,122,80,0.22)\';this.style.borderColor=\'rgba(192,122,80,0.6)\'" '
+    +'onmouseout="this.style.background=\''+bg+'\';this.style.borderColor=\''+(role==='presenter'?'rgba(192,122,80,0.5)':'rgba(255,255,255,0.15)')+'\';">'
+    +'<div style="font-size:1.7rem;margin-bottom:8px;">'+icon+'</div>'
+    +'<div style="font-weight:700;color:'+color+';font-size:0.92rem;">'+label+'</div>'
+    +'<div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:4px;">'+sub+'</div>'
+  +'</button>';
+}
+
+var gwPresenters = [
+  { id:1, name:'Aaliyah Morris', initials:'AM', title:'Founder, NaturalGlow Skincare', category:'Beauty', pitch:'A clean, vegan skincare line built for melanin-rich skin tones. 3 hero products, zero harsh chemicals, already retailing in 4 boutiques.', signals:14, ins:6, shelf:3, time:'On now', feedback:[], signals_list:[], ins_list:[], shelf_list:[] },
+  { id:2, name:'Devon Chase', initials:'DC', title:'CEO, ShiftLogic AI', category:'Tech', pitch:'An AI workflow tool that cuts admin time by 60% for solopreneurs. No code required. Monthly subscription model with a free tier.', signals:9, ins:4, shelf:2, time:'Up next', feedback:[], signals_list:[], ins_list:[], shelf_list:[] },
+  { id:3, name:'Priya Nair', initials:'PN', title:'Creator, The Meal Shift', category:'Food & Wellness', pitch:'Weekly meal prep kits designed for busy professionals who want to eat whole foods without the planning. Launching in Q3.', signals:7, ins:2, shelf:1, time:'In 20 min', feedback:[], signals_list:[], ins_list:[], shelf_list:[] }
+];
+
+// Presenter dashboard data (for the logged-in presenter)
+var gwMyDash = { signals:[], ready:[], shelf:[], feedback:[] };
+var gwCurrentDashTab = 'signals';
 
 function gwEnter(role) {
   gwRole = role;
@@ -10393,15 +10446,18 @@ function gwEnter(role) {
 
 function gwLeave() {
   gwRole = null;
+  if (gwFeedTimer) { clearInterval(gwFeedTimer); gwFeedTimer = null; }
   document.getElementById('gw-landing').style.display = 'block';
   document.getElementById('gw-attendee-view').style.display = 'none';
   document.getElementById('gw-presenter-view').style.display = 'none';
-  // Reset action buttons
   ['gw-btn-signal','gw-btn-in','gw-btn-shelf'].forEach(function(id){
     var b = document.getElementById(id);
     if (b) { b.classList.remove('gw-active'); b.style.borderColor = 'var(--border)'; b.style.background = '#fff'; }
   });
-  document.getElementById('gw-action-confirm').style.display = 'none';
+  var conf = document.getElementById('gw-action-confirm');
+  if (conf) conf.style.display = 'none';
+  // Re-render context-aware picker
+  gwRenderLanding(gwDetectContext());
 }
 
 function gwLoadPresenter(id) {
@@ -10566,23 +10622,10 @@ function gwSubmitFeedback() {
 }
 
 // ── PRESENTER DASHBOARD ───────────────────────────────────────────────────────
-function gwTogglePresenterLive() {
-  gwPresenterLive = !gwPresenterLive;
-  var btn = document.getElementById('gw-live-btn-label');
-  var dot = document.getElementById('gw-live-dot');
-  if (btn) btn.textContent = gwPresenterLive ? 'End Session' : 'Go Live';
-  if (dot) dot.style.background = gwPresenterLive ? '#fff' : '#fff';
-  var goBtn = document.getElementById('gw-go-live-btn');
-  if (goBtn) goBtn.style.background = gwPresenterLive ? 'linear-gradient(135deg,#6b7280,#4b5563)' : 'linear-gradient(135deg,#ef4444,#dc2626)';
-  toast(gwPresenterLive ? '🔴 You are now live in the Gateway Room!' : '⏹ Session ended');
-}
-
 function gwSavePitchSetup() {
   var title = (document.getElementById('gw-setup-title')||{}).value||'';
-  var cat = (document.getElementById('gw-setup-cat')||{}).value||'';
-  var pitch = (document.getElementById('gw-setup-pitch')||{}).value||'';
   if (!title.trim()) { toast('Please enter a pitch title'); return; }
-  toast('✓ Pitch saved! You\'re ready to go live.');
+  toast('✓ Pitch details saved!');
 }
 
 function gwDashTab(tab, btn) {
@@ -14412,8 +14455,8 @@ document.addEventListener('DOMContentLoaded', function() {
       <div id="help-sec-gateway" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🚪 Gateway Room</div>
         <p>Found in the sidebar under <strong>Trust &amp; Community → Gateway Room</strong>. A hybrid live discovery stage where graduated MASSED presenters pitch in real time to a live audience of public viewers and registered business attendees — all from their devices, fully synchronized.</p>
-        <p style="margin-top:6px;"><strong>Who can present:</strong> Only <em>graduated MASSED users</em> — those who have completed the 12-month build cycle or paid in full. Presenters set up their pitch (title, category, description) and tap <strong>Go Live</strong> to broadcast to the room.</p>
-        <p style="margin-top:6px;"><strong>Entering the room:</strong> Choose your role on the landing screen — <strong>👁 Public Viewer</strong>, <strong>🏢 Business Attendee</strong>, or <strong>🎤 Presenter</strong>. Your role determines which actions you can take.</p>
+        <p style="margin-top:6px;"><strong>Who can present:</strong> Only <em>graduated MASSED users</em> — those who have completed the 12-month build cycle or paid in full. When applying to present, they submit their pitch details and select a preferred date and time. Admin reviews and approves the application, then confirms their scheduled slot. The presenter receives a confirmation and their session is locked in — they do not self-trigger going live.</p>
+        <p style="margin-top:6px;"><strong>Presenter Dashboard:</strong> Shows the presenter's approved session date, time, and slot status (Confirmed). Their pitch details (title, category, description) submitted at signup are editable up to 24 hours before the session. Below that are the four live analytics sections that populate in real time during the session.</p>
         <p style="margin-top:6px;"><strong>Four attendee actions per presenter:</strong></p>
         <p style="margin-top:6px;">📡 <strong>Signal Me</strong> — Available to all. Captures your interest. The presenter is notified and will follow up. Increments the live Signals counter visible to everyone in the room.</p>
         <p style="margin-top:4px;">✅ <strong>I'm In</strong> — Available to all. An immediate commitment — you're signing up or buying in on the spot. Feeds into the presenter's Ready Now dashboard section.</p>
