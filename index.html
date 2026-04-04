@@ -423,6 +423,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 /* TOAST */
 #toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:#fff;padding:12px 20px;border-radius:10px;font-size:0.85rem;font-weight:500;opacity:0;transform:translateY(8px);transition:all 0.3s;pointer-events:none;z-index:9999;}
 #toast.show{opacity:1;transform:translateY(0);}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
 /* ── GLOBAL MOBILE OVERFLOW FIX ── */
 @media(max-width:768px){
@@ -679,6 +680,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <div class="nav-section-label">Trust & Community</div>
+    <div class="nav-item" onclick="nav(this,'gateway')">
+      <svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>Gateway Room
+    </div>
     <div class="nav-item" onclick="nav(this,'reviews')"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Reviews</div>
     <div class="nav-item" onclick="nav(this,'scanner')"><svg viewBox="0 0 24 24"><path d="M3 9V5a2 2 0 012-2h4"/><path d="M15 3h4a2 2 0 012 2v4"/><path d="M21 15v4a2 2 0 01-2 2h-4"/><path d="M9 21H5a2 2 0 01-2-2v-4"/><line x1="3" y1="12" x2="21" y2="12"/></svg>Scanner</div>
     <div class="nav-item" onclick="nav(this,'messages')" style="position:relative;">
@@ -717,6 +721,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div onclick="closeMoreMenu();nav(null,'switchprofile')" style="display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-size:0.88rem;color:var(--text);font-weight:500;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
             Switch Profile
+          </div>
+          <div style="height:1px;background:var(--border);margin:0 12px;"></div>
+          <div onclick="closeMoreMenu();nav(null,'bannedblocked');renderBannedBlocked();" style="display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-size:0.88rem;color:var(--text);font-weight:500;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            Banned / Blocked
           </div>
           <div style="height:1px;background:var(--border);margin:0 12px;"></div>
           <div onclick="closeMoreMenu();toast('Share link copied!')" style="display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-size:0.88rem;color:var(--text);font-weight:500;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
@@ -3244,6 +3253,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                 <button onclick="spMsgFilter('all',this)" class="sp-msg-filter active-filter" style="flex:1;padding:9px 4px;background:none;border:none;border-bottom:2px solid var(--brown);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;cursor:pointer;">All</button>
                 <button onclick="spMsgFilter('unread',this)" class="sp-msg-filter" style="flex:1;padding:9px 4px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;">Unread</button>
                 <button onclick="spMsgFilter('requests',this)" class="sp-msg-filter" style="flex:1;padding:9px 4px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;">Requests</button>
+                <button onclick="spMsgFilter('blocked',this)" class="sp-msg-filter" style="flex:1;padding:9px 4px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;cursor:pointer;">Blocked</button>
               </div>
               <!-- Conversations -->
               <div id="sp-msg-conversations" style="flex:1;overflow-y:auto;"></div>
@@ -3254,7 +3264,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <!-- Thread header -->
               <div id="sp-msg-thread-header" style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;min-height:54px;">
                 <div id="sp-msg-thread-name" style="font-weight:700;font-size:0.9rem;color:var(--text);">Select a conversation</div>
-                <div id="sp-msg-thread-actions" style="display:none;gap:6px;display:flex;">
+                <div id="sp-msg-thread-actions" style="display:flex;gap:6px;visibility:hidden;">
                   <button onclick="spMsgAction('mute')" title="Mute" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 8px;cursor:pointer;color:var(--text-mid);font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:4px;">
                     <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg> Mute
                   </button>
@@ -3267,14 +3277,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                 </div>
               </div>
               <!-- Messages -->
-              <div id="sp-msg-thread" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--cream);"></div>
-              <!-- Compose -->
-              <div id="sp-msg-compose" style="display:none;padding:12px 14px;border-top:1px solid var(--border);display:flex;align-items:flex-end;gap:8px;">
+              <div id="sp-msg-thread" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--cream);">
+                <div style="text-align:center;color:var(--text-dim);font-size:0.82rem;margin-top:40px;">Select a conversation to start messaging</div>
+              </div>
+              <!-- Compose — always visible, disabled until convo selected -->
+              <div id="sp-msg-compose" style="padding:12px 14px;border-top:1px solid var(--border);display:flex;align-items:flex-end;gap:8px;background:#fff;">
                 <label style="cursor:pointer;color:var(--text-dim);padding:6px;" title="Attach file">
                   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
                   <input type="file" style="display:none;" onchange="spMsgAttach(event)">
                 </label>
-                <textarea id="sp-msg-input" placeholder="Type a message..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();spMsgSend();}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';" style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;resize:none;outline:none;overflow:hidden;line-height:1.4;box-sizing:border-box;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+                <textarea id="sp-msg-input" placeholder="Select a conversation to reply..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();spMsgSend();}" oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';" style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;resize:none;outline:none;overflow:hidden;line-height:1.4;box-sizing:border-box;background:var(--cream);" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
                 <button onclick="spMsgSend()" style="padding:9px 14px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;flex-shrink:0;">
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </button>
@@ -6244,6 +6256,225 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
 
     <!-- COMING SOON SCREEN -->
+    <!-- ══════════════════════════════════════════════
+         GATEWAY ROOM SCREEN
+    ══════════════════════════════════════════════ -->
+    <div id="screen-gateway" class="screen" style="padding:0;background:var(--cream);min-height:100vh;">
+
+      <!-- ── ROLE SELECTOR (landing state) ── -->
+      <div id="gw-landing" style="display:block;">
+        <div style="background:linear-gradient(160deg,#1a0a00,#2d1200 50%,#1a0a00);padding:40px 24px 32px;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(192,122,80,0.18) 0%,transparent 65%);"></div>
+          <div style="position:relative;max-width:640px;margin:0 auto;text-align:center;">
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(192,122,80,0.15);border:1px solid rgba(192,122,80,0.3);border-radius:20px;padding:5px 14px;margin-bottom:18px;">
+              <span style="width:8px;height:8px;background:#ef4444;border-radius:50%;animation:pulse 1.5s infinite;display:inline-block;"></span>
+              <span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.1em;text-transform:uppercase;">Live Now</span>
+            </div>
+            <h1 style="font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;margin-bottom:8px;line-height:1.2;">The Gateway Room</h1>
+            <p style="font-size:0.88rem;color:rgba(255,255,255,0.55);max-width:420px;margin:0 auto 28px;line-height:1.7;">A live hybrid discovery stage. Watch presenters pitch in real time — signal your interest, commit on the spot, or request distribution.</p>
+            <!-- Role picker -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;max-width:560px;margin:0 auto;">
+              <button onclick="gwEnter('public')" style="padding:18px 14px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.15);border-radius:14px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='rgba(192,122,80,0.18)';this.style.borderColor='rgba(192,122,80,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.15)'">
+                <div style="font-size:1.6rem;margin-bottom:8px;">👁</div>
+                <div style="font-weight:700;color:#fff;font-size:0.9rem;">Public Viewer</div>
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:4px;">Watch &amp; signal interest</div>
+              </button>
+              <button onclick="gwEnter('business')" style="padding:18px 14px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.15);border-radius:14px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='rgba(192,122,80,0.18)';this.style.borderColor='rgba(192,122,80,0.5)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(255,255,255,0.15)'">
+                <div style="font-size:1.6rem;margin-bottom:8px;">🏢</div>
+                <div style="font-weight:700;color:#fff;font-size:0.9rem;">Business Attendee</div>
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:4px;">+ shelf placement requests</div>
+              </button>
+              <button onclick="gwEnter('presenter')" style="padding:18px 14px;background:rgba(255,255,255,0.06);border:1.5px solid rgba(192,122,80,0.4);border-radius:14px;cursor:pointer;text-align:center;transition:all 0.2s;font-family:'DM Sans',sans-serif;" onmouseover="this.style.background='rgba(192,122,80,0.18)';this.style.borderColor='rgba(192,122,80,0.7)'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.borderColor='rgba(192,122,80,0.4)'">
+                <div style="font-size:1.6rem;margin-bottom:8px;">🎤</div>
+                <div style="font-weight:700;color:#D4956E;font-size:0.9rem;">Presenter</div>
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:4px;">Graduated users only</div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Upcoming schedule teaser -->
+        <div style="max-width:640px;margin:0 auto;padding:24px 20px;">
+          <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Today's Lineup</div>
+          <div style="display:flex;flex-direction:column;gap:10px;" id="gw-lineup"></div>
+        </div>
+      </div>
+
+      <!-- ── ATTENDEE VIEW (public + business) ── -->
+      <div id="gw-attendee-view" style="display:none;">
+        <!-- Live presenter banner -->
+        <div style="background:linear-gradient(160deg,#1a0a00,#2d1200);padding:22px 20px 0;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(192,122,80,0.15) 0%,transparent 60%);pointer-events:none;"></div>
+          <div style="position:relative;max-width:680px;margin:0 auto;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="width:8px;height:8px;background:#ef4444;border-radius:50%;animation:pulse 1.5s infinite;display:inline-block;flex-shrink:0;"></span>
+                <span style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.1em;text-transform:uppercase;">Gateway Room — Live</span>
+              </div>
+              <button onclick="gwLeave()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.55);padding:5px 12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;">← Leave</button>
+            </div>
+            <!-- Presenter card -->
+            <div id="gw-presenter-card" style="display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+              <div id="gw-pres-avatar" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#D4956E,#8B5E3C);border:2px solid rgba(192,122,80,0.4);display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;font-weight:800;color:#fff;">A</div>
+              <div style="flex:1;min-width:0;">
+                <div id="gw-pres-name" style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;"></div>
+                <div id="gw-pres-title" style="font-size:0.8rem;color:rgba(255,255,255,0.5);margin-top:2px;"></div>
+                <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
+                  <span id="gw-pres-cat" style="font-size:0.68rem;font-weight:700;background:rgba(192,122,80,0.25);color:#D4956E;padding:2px 10px;border-radius:20px;"></span>
+                  <span id="gw-timer" style="font-size:0.72rem;color:rgba(255,255,255,0.4);"></span>
+                </div>
+              </div>
+              <!-- Live counters -->
+              <div style="display:flex;gap:14px;flex-shrink:0;">
+                <div style="text-align:center;">
+                  <div id="gw-signal-count" style="font-size:1.2rem;font-weight:900;color:#D4956E;">0</div>
+                  <div style="font-size:0.6rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;">Signals</div>
+                </div>
+                <div style="text-align:center;">
+                  <div id="gw-in-count" style="font-size:1.2rem;font-weight:900;color:#22c55e;">0</div>
+                  <div style="font-size:0.6rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;">In</div>
+                </div>
+              </div>
+            </div>
+            <!-- Pitch description -->
+            <div id="gw-pres-pitch" style="font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.65;padding-bottom:20px;"></div>
+            <!-- Tab bar (next presenter navigation) -->
+            <div style="display:flex;gap:0;overflow-x:auto;scrollbar-width:none;border-top:1px solid rgba(255,255,255,0.08);" id="gw-pres-tabs"></div>
+          </div>
+        </div>
+
+        <!-- Action panel -->
+        <div style="max-width:680px;margin:0 auto;padding:20px 20px 40px;">
+          <!-- Primary action buttons -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;" id="gw-action-grid">
+            <button onclick="gwAction('signal')" id="gw-btn-signal" style="padding:16px 10px;background:#fff;border:2px solid var(--border);border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;box-shadow:0 2px 10px rgba(0,0,0,0.06);" onmouseover="this.style.borderColor='var(--brown)';this.style.background='var(--brown-bg)'" onmouseout="if(!this.classList.contains('gw-active'))this.style.borderColor='var(--border)';this.style.background='#fff'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">📡</div>
+              <div style="font-weight:800;font-size:0.88rem;color:var(--text);">Signal Me</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">I'm interested</div>
+            </button>
+            <button onclick="gwAction('in')" id="gw-btn-in" style="padding:16px 10px;background:#fff;border:2px solid var(--border);border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;box-shadow:0 2px 10px rgba(0,0,0,0.06);" onmouseover="this.style.borderColor='#22c55e';this.style.background='#f0fdf4'" onmouseout="if(!this.classList.contains('gw-active'))this.style.borderColor='var(--border)';this.style.background='#fff'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">✅</div>
+              <div style="font-weight:800;font-size:0.88rem;color:var(--text);">I'm In</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Sign me up now</div>
+            </button>
+            <button onclick="gwAction('shelf')" id="gw-btn-shelf" style="display:none;padding:16px 10px;background:#fff;border:2px solid var(--border);border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;box-shadow:0 2px 10px rgba(0,0,0,0.06);" onmouseover="this.style.borderColor='#7c3aed';this.style.background='#faf5ff'" onmouseout="if(!this.classList.contains('gw-active'))this.style.borderColor='var(--border)';this.style.background='#fff'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">📦</div>
+              <div style="font-weight:800;font-size:0.88rem;color:var(--text);">Add to My Shelf</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Request distribution</div>
+            </button>
+            <button onclick="gwOpenFeedback()" id="gw-btn-feedback" style="padding:16px 10px;background:#fff;border:2px solid var(--border);border-radius:14px;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;transition:all 0.2s;box-shadow:0 2px 10px rgba(0,0,0,0.06);" onmouseover="this.style.borderColor='var(--brown)';this.style.background='var(--brown-bg)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#fff'">
+              <div style="font-size:1.4rem;margin-bottom:6px;">💬</div>
+              <div style="font-weight:800;font-size:0.88rem;color:var(--text);">Send Feedback</div>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:3px;">Quick tags + message</div>
+            </button>
+          </div>
+
+          <!-- Action confirmation strip -->
+          <div id="gw-action-confirm" style="display:none;background:var(--brown-bg);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:0.82rem;color:var(--brown);font-weight:600;margin-bottom:16px;text-align:center;"></div>
+
+          <!-- Live feed -->
+          <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Live Activity</div>
+          <div id="gw-live-feed" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;"></div>
+        </div>
+      </div>
+
+      <!-- ── PRESENTER DASHBOARD ── -->
+      <div id="gw-presenter-view" style="display:none;padding:28px 20px 60px;">
+        <div style="max-width:700px;margin:0 auto;">
+          <!-- Header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;">
+            <div>
+              <h2 style="font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text);margin-bottom:4px;">🎤 Presenter Dashboard</h2>
+              <p style="font-size:0.82rem;color:var(--text-dim);">Your live Gateway Room analytics — updating in real time</p>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onclick="gwTogglePresenterLive()" id="gw-go-live-btn" style="padding:9px 18px;background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;display:flex;align-items:center;gap:7px;">
+                <span id="gw-live-dot" style="width:8px;height:8px;background:#fff;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
+                <span id="gw-live-btn-label">Go Live</span>
+              </button>
+              <button onclick="gwLeave()" style="padding:9px 16px;background:var(--cream2);border:1px solid var(--border);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;color:var(--text-mid);font-weight:600;">← Back</button>
+            </div>
+          </div>
+
+          <!-- Presenter profile setup -->
+          <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:20px;">
+            <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">Your Pitch Setup</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <input id="gw-setup-title" placeholder="Pitch title (e.g. 'NaturalGlow Skincare Line')" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+              <input id="gw-setup-cat" placeholder="Category (e.g. Beauty, Tech, Food, Finance...)" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+              <textarea id="gw-setup-pitch" placeholder="Your pitch description — what are you presenting?" rows="2" style="padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;resize:none;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+              <button onclick="gwSavePitchSetup()" style="padding:10px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;">Save Pitch</button>
+            </div>
+          </div>
+
+          <!-- 4 dashboard stat cards -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;">
+              <div style="font-size:1.4rem;margin-bottom:4px;">📡</div>
+              <div id="pdb-signals" style="font-size:1.8rem;font-weight:900;color:var(--brown);font-family:'Georgia',serif;">0</div>
+              <div style="font-size:0.68rem;color:var(--text-dim);margin-top:2px;font-weight:600;">Signals</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;">
+              <div style="font-size:1.4rem;margin-bottom:4px;">✅</div>
+              <div id="pdb-ready" style="font-size:1.8rem;font-weight:900;color:#22c55e;font-family:'Georgia',serif;">0</div>
+              <div style="font-size:0.68rem;color:var(--text-dim);margin-top:2px;font-weight:600;">Ready Now</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;">
+              <div style="font-size:1.4rem;margin-bottom:4px;">📦</div>
+              <div id="pdb-shelf" style="font-size:1.8rem;font-weight:900;color:#7c3aed;font-family:'Georgia',serif;">0</div>
+              <div style="font-size:0.68rem;color:var(--text-dim);margin-top:2px;font-weight:600;">Shelf Requests</div>
+            </div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;">
+              <div style="font-size:1.4rem;margin-bottom:4px;">💬</div>
+              <div id="pdb-feedback" style="font-size:1.8rem;font-weight:900;color:var(--text);font-family:'Georgia',serif;">0</div>
+              <div style="font-size:0.68rem;color:var(--text-dim);margin-top:2px;font-weight:600;">Feedback</div>
+            </div>
+          </div>
+
+          <!-- Dashboard tabs -->
+          <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:20px;overflow-x:auto;scrollbar-width:none;">
+            <button onclick="gwDashTab('signals',this)" id="gw-dtab-signals" style="padding:10px 18px;background:none;border:none;border-bottom:3px solid var(--brown);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;white-space:nowrap;margin-bottom:-2px;">📡 Signals</button>
+            <button onclick="gwDashTab('ready',this)" id="gw-dtab-ready" style="padding:10px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;margin-bottom:-2px;">✅ Ready Now</button>
+            <button onclick="gwDashTab('shelf',this)" id="gw-dtab-shelf" style="padding:10px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;margin-bottom:-2px;">📦 Shelf Requests</button>
+            <button onclick="gwDashTab('feedback',this)" id="gw-dtab-feedback" style="padding:10px 18px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;white-space:nowrap;margin-bottom:-2px;">💬 Feedback</button>
+          </div>
+
+          <!-- Dashboard panels -->
+          <div id="gw-dash-signals"></div>
+          <div id="gw-dash-ready" style="display:none;"></div>
+          <div id="gw-dash-shelf" style="display:none;"></div>
+          <div id="gw-dash-feedback" style="display:none;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FEEDBACK SLIDE-UP PANEL -->
+    <div id="gw-feedback-overlay" style="display:none;position:fixed;inset:0;background:rgba(44,26,14,0.5);z-index:600;backdrop-filter:blur(3px);" onclick="gwCloseFeedback()">
+      <div id="gw-feedback-panel" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 32px;max-height:80vh;overflow-y:auto;" onclick="event.stopPropagation()">
+        <div style="width:36px;height:4px;background:var(--cream3);border-radius:2px;margin:0 auto 20px;"></div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:4px;">Send Feedback</div>
+        <div id="gw-feedback-for" style="font-size:0.78rem;color:var(--text-dim);margin-bottom:16px;"></div>
+        <!-- Tag grid -->
+        <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Select all that apply</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;" id="gw-feedback-tags">
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Wasn't catchy" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Wasn't catchy</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Could work" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Could work</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Strong idea" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Strong idea</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Delivery needs work" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Delivery needs work</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Not enough information" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Not enough information</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Too rushed" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Too rushed</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Clear offer" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Clear offer</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="I'm still confused" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">I'm still confused</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Needs more work" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Needs more work</button>
+          <button onclick="gwToggleTag(this)" class="gw-tag" data-tag="Felt polished" style="padding:7px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-mid);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;">Felt polished</button>
+        </div>
+        <!-- Optional message -->
+        <div style="font-size:0.65rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Optional message</div>
+        <textarea id="gw-feedback-msg" placeholder="Anything else to add? (optional)" rows="2" style="width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;resize:none;outline:none;box-sizing:border-box;margin-bottom:14px;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        <button onclick="gwSubmitFeedback()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;">Submit Feedback</button>
+      </div>
+    </div>
+
     <div id="screen-coming" class="screen">
       <div class="coming-wrap">
         <div class="coming-box">
@@ -6252,6 +6483,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <p>This feature is being built. Check back soon!</p>
         </div>
       </div>
+    </div>
+
+    <!-- ── BANNED / BLOCKED SCREEN ── -->
+    <div id="screen-bannedblocked" class="screen">
+      <div class="section-header" style="margin-bottom:24px;">
+        <h2 class="section-title">Banned / Blocked</h2>
+        <p class="section-sub">Manage everyone you've banned from bookings or blocked from messaging</p>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:24px;">
+        <button onclick="bbTab('banned',this)" id="bb-tab-banned" style="padding:10px 22px;background:none;border:none;border-bottom:3px solid var(--brown);color:var(--brown);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;margin-bottom:-2px;">⛔ Banned</button>
+        <button onclick="bbTab('blocked',this)" id="bb-tab-blocked" style="padding:10px 22px;background:none;border:none;border-bottom:3px solid transparent;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;margin-bottom:-2px;">🚫 Blocked</button>
+      </div>
+
+      <!-- Banned list -->
+      <div id="bb-banned-list"></div>
+
+      <!-- Blocked list -->
+      <div id="bb-blocked-list" style="display:none;"></div>
     </div>
 
   </div>
@@ -8497,7 +8748,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',signals:'Signals',vault:'My Vault',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',signals:'Signals',vault:'My Vault',bannedblocked:'Banned / Blocked',gateway:'Gateway Room',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon'};
 
 function navStoreTab(el, tab) {
   nav(el, 'mystore');
@@ -9133,6 +9384,8 @@ function nav(el,screen) {
     if(pt) pt.textContent=pageTitles[screen]||'';
     // Render dynamic screens
     if(screen==='switchprofile') setTimeout(function(){ spTab('posts', document.querySelector('.sp-tab')); renderSpFeed(); }, 50);
+    if(screen==='bannedblocked') setTimeout(renderBannedBlocked, 50);
+    if(screen==='gateway') setTimeout(gwInit, 50);
     // Close sidebar on mobile after navigating
     closeSidebar();
   } catch(e){console.warn('nav error:',e);}
@@ -9860,6 +10113,8 @@ function spMsgFilter(type, btn) {
     b.style.fontWeight = '600';
   });
   if (btn) { btn.style.borderBottomColor = 'var(--brown)'; btn.style.color = 'var(--brown)'; btn.style.fontWeight = '700'; }
+  // Clear thread when switching to blocked tab — no conversations to open there
+  if (type === 'blocked') spMsgResetThread();
   spMsgRenderList();
 }
 
@@ -9871,6 +10126,27 @@ function spMsgSearch(val) {
 function spMsgRenderList() {
   var list = document.getElementById('sp-msg-conversations');
   if (!list) return;
+
+  // BLOCKED tab — show blocked users with unblock option
+  if (spMsgCurrentFilter === 'blocked') {
+    var blocked = spMsgConversations.filter(function(c){ return c.blocked; });
+    if (!blocked.length) {
+      list.innerHTML = '<div style="padding:28px 14px;text-align:center;color:var(--text-dim);font-size:0.82rem;line-height:1.6;">No blocked users.<br>Block someone from a conversation to see them here.</div>';
+      return;
+    }
+    list.innerHTML = blocked.map(function(c) {
+      return '<div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);background:#fff;">'
+        + '<div style="width:38px;height:38px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-weight:800;font-size:0.75rem;flex-shrink:0;">' + c.avatar + '</div>'
+        + '<div style="flex:1;min-width:0;">'
+          + '<div style="font-weight:700;font-size:0.85rem;color:var(--text);">' + c.name + '</div>'
+          + '<div style="font-size:0.72rem;color:var(--text-dim);">' + c.handle + '</div>'
+        + '</div>'
+        + '<button onclick="spMsgUnblock('+c.id+')" style="padding:5px 12px;background:var(--cream);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.72rem;font-weight:700;color:var(--text-mid);white-space:nowrap;transition:all 0.15s;" onmouseover="this.style.borderColor=\'var(--brown)\';this.style.color=\'var(--brown)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text-mid)\'">Unblock</button>'
+      + '</div>';
+    }).join('');
+    return;
+  }
+
   var filtered = spMsgConversations.filter(function(c) {
     if (c.blocked) return false;
     if (spMsgCurrentFilter === 'unread' && c.unread === 0) return false;
@@ -9887,7 +10163,7 @@ function spMsgRenderList() {
     var isActive = c.id === spMsgActiveId;
     var preview = last ? (last.from === 'me' ? 'You: ' : '') + last.text : '';
     if (preview.length > 38) preview = preview.slice(0,38) + '…';
-    return '<div onclick="spMsgOpenConvo('+c.id+')" style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--border);background:'+(isActive?'var(--brown-bg)':'#fff')+';transition:background 0.15s;" onmouseover="if(!'+isActive+')this.style.background=\'var(--cream)\'" onmouseout="if(!'+isActive+')this.style.background=\'#fff\'">'
+    return '<div onclick="spMsgOpenConvo('+c.id+')" style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--border);background:'+(isActive?'var(--brown-bg)':'#fff')+';transition:background 0.15s;" onmouseover="if('+(!isActive)+')this.style.background=\'var(--cream)\'" onmouseout="if('+(!isActive)+')this.style.background=\''+(isActive?'var(--brown-bg)':'#fff')+'\';">'
       + '<div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.75rem;flex-shrink:0;">' + c.avatar + '</div>'
       + '<div style="flex:1;min-width:0;">'
         + '<div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">'
@@ -9905,11 +10181,21 @@ function spMsgOpenConvo(id) {
   var convo = spMsgConversations.find(function(c){return c.id===id;});
   if (!convo) return;
   convo.unread = 0;
+
   // Update header
   var nameEl = document.getElementById('sp-msg-thread-name');
   var actionsEl = document.getElementById('sp-msg-thread-actions');
   if (nameEl) nameEl.innerHTML = '<div style="font-weight:700;font-size:0.9rem;">' + convo.name + '</div><div style="font-size:0.72rem;color:var(--text-dim);">' + convo.handle + '</div>';
-  if (actionsEl) actionsEl.style.display = 'flex';
+  if (actionsEl) actionsEl.style.visibility = 'visible';
+
+  // Enable compose
+  var input = document.getElementById('sp-msg-input');
+  if (input) {
+    input.placeholder = 'Reply to ' + convo.name + '…';
+    input.disabled = false;
+    input.style.background = '#fff';
+  }
+
   // Render thread
   var thread = document.getElementById('sp-msg-thread');
   if (thread) {
@@ -9923,11 +10209,555 @@ function spMsgOpenConvo(id) {
     }).join('');
     setTimeout(function(){ thread.scrollTop = thread.scrollHeight; }, 50);
   }
-  // Show compose
-  var compose = document.getElementById('sp-msg-compose');
-  if (compose) compose.style.display = 'flex';
+
   spMsgRenderList();
 }
+
+function spMsgResetThread() {
+  spMsgActiveId = null;
+  var thread = document.getElementById('sp-msg-thread');
+  var nameEl = document.getElementById('sp-msg-thread-name');
+  var actionsEl = document.getElementById('sp-msg-thread-actions');
+  var input = document.getElementById('sp-msg-input');
+  if (thread) thread.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:0.82rem;margin-top:40px;">Select a conversation to start messaging</div>';
+  if (nameEl) nameEl.textContent = 'Select a conversation';
+  if (actionsEl) actionsEl.style.visibility = 'hidden';
+  if (input) { input.placeholder = 'Select a conversation to reply…'; input.disabled = false; input.style.background = 'var(--cream)'; }
+  spMsgRenderList();
+}
+
+function spMsgUnblock(id) {
+  var convo = spMsgConversations.find(function(c){return c.id===id;});
+  if (!convo) return;
+  convo.blocked = false;
+  spMsgRenderList();
+  toast('✓ ' + convo.name + ' has been unblocked');
+}
+
+// ── BANNED / BLOCKED SCREEN ──────────────────────────────────────────────────
+var bbCurrentTab = 'banned';
+
+// Banned clients pulled from booking data (people banned via Manage Booking → Ban)
+var bbBannedClients = [
+  { id:1, name:'Tyler James', email:'tyler@email.com', reason:'No-show x3', date:'Mar 12, 2026', type:'booking' },
+  { id:2, name:'Keisha Brown', email:'keisha@email.com', reason:'Repeated cancellations', date:'Feb 28, 2026', type:'booking' }
+];
+
+// Blocked users pulled from messages (people blocked via Messages → Block)
+var bbBlockedUsers = [];
+
+function bbTab(tab, btn) {
+  bbCurrentTab = tab;
+  document.querySelectorAll('#bb-tab-banned,#bb-tab-blocked').forEach(function(b){
+    b.style.borderBottomColor = 'transparent';
+    b.style.color = 'var(--text-dim)';
+    b.style.fontWeight = '600';
+  });
+  btn.style.borderBottomColor = 'var(--brown)';
+  btn.style.color = 'var(--brown)';
+  btn.style.fontWeight = '700';
+  document.getElementById('bb-banned-list').style.display = tab === 'banned' ? 'block' : 'none';
+  document.getElementById('bb-blocked-list').style.display = tab === 'blocked' ? 'block' : 'none';
+}
+
+function renderBannedBlocked() {
+  // Sync blocked users from messages
+  bbBlockedUsers = spMsgConversations.filter(function(c){ return c.blocked; }).map(function(c){
+    return { id: c.id, name: c.name, handle: c.handle, avatar: c.avatar, source: 'Messages' };
+  });
+  renderBannedList();
+  renderBlockedList();
+}
+
+function renderBannedList() {
+  var el = document.getElementById('bb-banned-list');
+  if (!el) return;
+  if (!bbBannedClients.length) {
+    el.innerHTML = '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:48px;text-align:center;"><div style="font-size:2rem;margin-bottom:10px;">⛔</div><div style="font-weight:700;font-size:0.95rem;margin-bottom:6px;">No banned clients</div><div style="font-size:0.82rem;color:var(--text-dim);">Clients banned from booking will appear here.</div></div>';
+    return;
+  }
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px;">'
+    + bbBannedClients.map(function(b) {
+      return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+        + '<div style="width:44px;height:44px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#dc2626;flex-shrink:0;">' + b.name.split(' ').map(function(n){return n[0];}).join('') + '</div>'
+        + '<div style="flex:1;min-width:0;">'
+          + '<div style="font-weight:700;font-size:0.9rem;color:var(--text);">' + b.name + '</div>'
+          + '<div style="font-size:0.75rem;color:var(--text-dim);">' + b.email + '</div>'
+          + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:5px;">'
+            + '<span style="font-size:0.68rem;background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:6px;font-weight:700;">⛔ Banned from Booking</span>'
+            + (b.reason ? '<span style="font-size:0.68rem;background:var(--cream);color:var(--text-mid);padding:2px 8px;border-radius:6px;">Reason: ' + b.reason + '</span>' : '')
+            + '<span style="font-size:0.68rem;color:var(--text-dim);">Since ' + b.date + '</span>'
+          + '</div>'
+        + '</div>'
+        + '<button onclick="bbUnban(' + b.id + ')" style="padding:7px 16px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text-mid);white-space:nowrap;transition:all 0.15s;flex-shrink:0;" onmouseover="this.style.borderColor=\'var(--brown)\';this.style.color=\'var(--brown)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text-mid)\'">Unban</button>'
+      + '</div>';
+    }).join('')
+  + '</div>';
+}
+
+function renderBlockedList() {
+  var el = document.getElementById('bb-blocked-list');
+  if (!el) return;
+  if (!bbBlockedUsers.length) {
+    el.innerHTML = '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:48px;text-align:center;"><div style="font-size:2rem;margin-bottom:10px;">🚫</div><div style="font-weight:700;font-size:0.95rem;margin-bottom:6px;">No blocked users</div><div style="font-size:0.82rem;color:var(--text-dim);">Users you block from Messages will appear here.</div></div>';
+    return;
+  }
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px;">'
+    + bbBlockedUsers.map(function(u) {
+      return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+        + '<div style="width:44px;height:44px;border-radius:50%;background:#e5e7eb;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.85rem;color:#9ca3af;flex-shrink:0;">' + u.avatar + '</div>'
+        + '<div style="flex:1;min-width:0;">'
+          + '<div style="font-weight:700;font-size:0.9rem;color:var(--text);">' + u.name + '</div>'
+          + '<div style="font-size:0.75rem;color:var(--text-dim);">' + u.handle + '</div>'
+          + '<div style="margin-top:5px;"><span style="font-size:0.68rem;background:#f3f4f6;color:#6b7280;padding:2px 8px;border-radius:6px;font-weight:700;">🚫 Blocked via ' + u.source + '</span></div>'
+        + '</div>'
+        + '<button onclick="bbUnblock(' + u.id + ')" style="padding:7px 16px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text-mid);white-space:nowrap;transition:all 0.15s;flex-shrink:0;" onmouseover="this.style.borderColor=\'var(--brown)\';this.style.color=\'var(--brown)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text-mid)\'">Unblock</button>'
+      + '</div>';
+    }).join('')
+  + '</div>';
+}
+
+function bbUnban(id) {
+  var person = bbBannedClients.find(function(b){return b.id===id;});
+  if (!person) return;
+  if (confirm('Unban ' + person.name + '? They will be able to book your services again.')) {
+    bbBannedClients = bbBannedClients.filter(function(b){return b.id !== id;});
+    renderBannedList();
+    toast('✓ ' + person.name + ' has been unbanned');
+  }
+}
+
+function bbUnblock(id) {
+  // Unblock from both the business screen and the profile messages
+  var convo = spMsgConversations.find(function(c){return c.id===id;});
+  if (convo) convo.blocked = false;
+  renderBannedBlocked();
+  toast('✓ User has been unblocked');
+}
+
+// ── GATEWAY ROOM ─────────────────────────────────────────────────────────────
+var gwRole = null; // 'public' | 'business' | 'presenter'
+var gwActivePresenterId = 0;
+var gwPresenterLive = false;
+
+var gwPresenters = [
+  { id:1, name:'Aaliyah Morris', initials:'AM', title:'Founder, NaturalGlow Skincare', category:'Beauty', pitch:'A clean, vegan skincare line built for melanin-rich skin tones. 3 hero products, zero harsh chemicals, already retailing in 4 boutiques.', signals:14, ins:6, shelf:3, time:'On now', feedback:[], signals_list:[], ins_list:[], shelf_list:[] },
+  { id:2, name:'Devon Chase', initials:'DC', title:'CEO, ShiftLogic AI', category:'Tech', pitch:'An AI workflow tool that cuts admin time by 60% for solopreneurs. No code required. Monthly subscription model with a free tier.', signals:9, ins:4, shelf:2, time:'Up next', feedback:[], signals_list:[], ins_list:[], shelf_list:[] },
+  { id:3, name:'Priya Nair', initials:'PN', title:'Creator, The Meal Shift', category:'Food & Wellness', pitch:'Weekly meal prep kits designed for busy professionals who want to eat whole foods without the planning. Launching in Q3.', signals:7, ins:2, shelf:1, time:'In 20 min', feedback:[], signals_list:[], ins_list:[], shelf_list:[] }
+];
+
+// Presenter dashboard data (for the logged-in presenter)
+var gwMyDash = { signals:[], ready:[], shelf:[], feedback:[] };
+var gwCurrentDashTab = 'signals';
+
+function gwInit() {
+  // Render lineup on landing
+  var lineup = document.getElementById('gw-lineup');
+  if (lineup) {
+    lineup.innerHTML = gwPresenters.map(function(p) {
+      var isLive = p.id === 1;
+      return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;">'
+        + '<div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:0.8rem;flex-shrink:0;">'+p.initials+'</div>'
+        + '<div style="flex:1;min-width:0;">'
+          + '<div style="font-weight:700;font-size:0.88rem;color:var(--text);">'+p.name+'</div>'
+          + '<div style="font-size:0.75rem;color:var(--text-dim);">'+p.title+'</div>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">'
+          + (isLive ? '<span style="width:7px;height:7px;background:#ef4444;border-radius:50%;animation:pulse 1.5s infinite;display:inline-block;"></span>' : '')
+          + '<span style="font-size:0.72rem;font-weight:700;color:'+(isLive?'#ef4444':'var(--text-dim)')+';">'+p.time+'</span>'
+        + '</div>'
+      + '</div>';
+    }).join('');
+  }
+}
+
+function gwEnter(role) {
+  gwRole = role;
+  document.getElementById('gw-landing').style.display = 'none';
+  if (role === 'presenter') {
+    document.getElementById('gw-presenter-view').style.display = 'block';
+    gwRenderDash();
+    return;
+  }
+  document.getElementById('gw-attendee-view').style.display = 'block';
+  // Show shelf button only for business
+  var shelfBtn = document.getElementById('gw-btn-shelf');
+  if (shelfBtn) shelfBtn.style.display = role === 'business' ? 'block' : 'none';
+  // Adjust grid columns
+  var grid = document.getElementById('gw-action-grid');
+  if (grid) grid.style.gridTemplateColumns = role === 'business' ? '1fr 1fr' : '1fr 1fr';
+  gwLoadPresenter(gwPresenters[0].id);
+  gwRenderTabs();
+  gwSimulateLiveFeed();
+}
+
+function gwLeave() {
+  gwRole = null;
+  document.getElementById('gw-landing').style.display = 'block';
+  document.getElementById('gw-attendee-view').style.display = 'none';
+  document.getElementById('gw-presenter-view').style.display = 'none';
+  // Reset action buttons
+  ['gw-btn-signal','gw-btn-in','gw-btn-shelf'].forEach(function(id){
+    var b = document.getElementById(id);
+    if (b) { b.classList.remove('gw-active'); b.style.borderColor = 'var(--border)'; b.style.background = '#fff'; }
+  });
+  document.getElementById('gw-action-confirm').style.display = 'none';
+}
+
+function gwLoadPresenter(id) {
+  gwActivePresenterId = id;
+  var p = gwPresenters.find(function(x){return x.id===id;});
+  if (!p) return;
+  document.getElementById('gw-pres-avatar').textContent = p.initials;
+  document.getElementById('gw-pres-name').textContent = p.name;
+  document.getElementById('gw-pres-title').textContent = p.title;
+  document.getElementById('gw-pres-cat').textContent = p.category;
+  document.getElementById('gw-pres-pitch').textContent = p.pitch;
+  document.getElementById('gw-timer').textContent = p.time;
+  document.getElementById('gw-signal-count').textContent = p.signals;
+  document.getElementById('gw-in-count').textContent = p.ins;
+  // Reset action button states
+  ['gw-btn-signal','gw-btn-in','gw-btn-shelf'].forEach(function(btnId){
+    var b = document.getElementById(btnId);
+    if (b) { b.classList.remove('gw-active'); b.style.borderColor='var(--border)'; b.style.background='#fff'; b.style.opacity='1'; }
+  });
+  document.getElementById('gw-action-confirm').style.display = 'none';
+  gwRenderTabs();
+}
+
+function gwRenderTabs() {
+  var bar = document.getElementById('gw-pres-tabs');
+  if (!bar) return;
+  bar.innerHTML = gwPresenters.map(function(p) {
+    var isActive = p.id === gwActivePresenterId;
+    return '<button onclick="gwLoadPresenter('+p.id+')" style="padding:10px 16px;background:none;border:none;border-bottom:2px solid '+(isActive?'#D4956E':'transparent')+';color:'+(isActive?'#D4956E':'rgba(255,255,255,0.4)')+';font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:'+(isActive?'700':'500')+';cursor:pointer;white-space:nowrap;transition:all 0.15s;">'+p.name+'</button>';
+  }).join('');
+}
+
+function gwAction(type) {
+  var p = gwPresenters.find(function(x){return x.id===gwActivePresenterId;});
+  if (!p) return;
+  var now = new Date();
+  var ts = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')+' '+(now.getHours()>=12?'PM':'AM');
+  var entry = { role: gwRole, time: ts };
+
+  if (type === 'signal') {
+    var btn = document.getElementById('gw-btn-signal');
+    if (btn.classList.contains('gw-active')) return;
+    btn.classList.add('gw-active');
+    btn.style.borderColor = 'var(--brown)';
+    btn.style.background = 'var(--brown-bg)';
+    p.signals++;
+    document.getElementById('gw-signal-count').textContent = p.signals;
+    gwShowConfirm('📡 Signal sent to '+p.name+'! They\'ll follow up with you.');
+    gwAddLiveFeedItem('📡', (gwRole==='business'?'A business':'Someone')+' signalled interest in '+p.name);
+    gwMyDash.signals.push({ name: p.name, time: ts, role: gwRole });
+  } else if (type === 'in') {
+    var btn = document.getElementById('gw-btn-in');
+    if (btn.classList.contains('gw-active')) return;
+    btn.classList.add('gw-active');
+    btn.style.borderColor = '#22c55e';
+    btn.style.background = '#f0fdf4';
+    p.ins++;
+    document.getElementById('gw-in-count').textContent = p.ins;
+    gwShowConfirm('✅ You\'re In! '+p.name+' has been notified of your commitment.');
+    gwAddLiveFeedItem('✅', (gwRole==='business'?'A business':'Someone')+' committed to '+p.name);
+    gwMyDash.ready.push({ name: p.name, time: ts, role: gwRole });
+  } else if (type === 'shelf') {
+    var btn = document.getElementById('gw-btn-shelf');
+    if (btn.classList.contains('gw-active')) return;
+    btn.classList.add('gw-active');
+    btn.style.borderColor = '#7c3aed';
+    btn.style.background = '#faf5ff';
+    p.shelf++;
+    gwShowConfirm('📦 Added to your shelf! Distribution request sent to '+p.name+'.');
+    gwAddLiveFeedItem('📦', 'A business added '+p.name+' to their shelf');
+    gwMyDash.shelf.push({ name: p.name, time: ts, role: 'business' });
+  }
+  gwRenderDash();
+}
+
+function gwShowConfirm(msg) {
+  var el = document.getElementById('gw-action-confirm');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display = 'none'; }, 4000);
+}
+
+function gwAddLiveFeedItem(icon, text) {
+  var feed = document.getElementById('gw-live-feed');
+  if (!feed) return;
+  var div = document.createElement('div');
+  div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 12px;background:#fff;border:1px solid var(--border);border-radius:9px;font-size:0.78rem;color:var(--text-mid);animation:fadeInUp 0.3s ease;';
+  div.innerHTML = '<span style="flex-shrink:0;">'+icon+'</span><span>'+text+'</span>';
+  feed.insertBefore(div, feed.firstChild);
+  if (feed.children.length > 12) feed.removeChild(feed.lastChild);
+}
+
+var gwFeedTimer = null;
+function gwSimulateLiveFeed() {
+  var items = [
+    ['📡','Someone signalled interest in Aaliyah Morris'],
+    ['✅','A viewer committed — I\'m In'],
+    ['📡','A business signalled Devon Chase'],
+    ['💬','Feedback submitted for Aaliyah Morris'],
+    ['📦','A business added Priya Nair to their shelf'],
+    ['✅','New commitment — I\'m In for Devon Chase'],
+    ['📡','3 new signals in the last minute'],
+  ];
+  var i = 0;
+  gwFeedTimer = setInterval(function(){
+    if (!document.getElementById('gw-live-feed')) { clearInterval(gwFeedTimer); return; }
+    var item = items[i % items.length];
+    gwAddLiveFeedItem(item[0], item[1]);
+    i++;
+  }, 4500);
+}
+
+// ── FEEDBACK PANEL ────────────────────────────────────────────────────────────
+function gwOpenFeedback() {
+  var p = gwPresenters.find(function(x){return x.id===gwActivePresenterId;});
+  var forEl = document.getElementById('gw-feedback-for');
+  if (forEl && p) forEl.textContent = 'For: '+p.name+' — '+p.title;
+  // Reset tags
+  document.querySelectorAll('.gw-tag').forEach(function(t){
+    t.style.background='var(--cream)'; t.style.borderColor='var(--border)'; t.style.color='var(--text-mid)'; t.classList.remove('selected');
+  });
+  var msgEl = document.getElementById('gw-feedback-msg');
+  if (msgEl) msgEl.value = '';
+  var overlay = document.getElementById('gw-feedback-overlay');
+  var panel = document.getElementById('gw-feedback-panel');
+  if (overlay) { overlay.style.display = 'block'; }
+  if (panel) { panel.style.transform = 'translateY(100%)'; panel.style.transition = 'transform 0.35s cubic-bezier(0.4,0,0.2,1)'; setTimeout(function(){ panel.style.transform = 'translateY(0)'; },10); }
+}
+
+function gwCloseFeedback() {
+  var overlay = document.getElementById('gw-feedback-overlay');
+  var panel = document.getElementById('gw-feedback-panel');
+  if (panel) { panel.style.transform = 'translateY(100%)'; setTimeout(function(){ if(overlay) overlay.style.display='none'; },320); }
+}
+
+function gwToggleTag(btn) {
+  var selected = btn.classList.contains('selected');
+  if (selected) {
+    btn.classList.remove('selected'); btn.style.background='var(--cream)'; btn.style.borderColor='var(--border)'; btn.style.color='var(--text-mid)';
+  } else {
+    btn.classList.add('selected'); btn.style.background='var(--brown)'; btn.style.borderColor='var(--brown)'; btn.style.color='#fff';
+  }
+}
+
+function gwSubmitFeedback() {
+  var p = gwPresenters.find(function(x){return x.id===gwActivePresenterId;});
+  if (!p) return;
+  var tags = [];
+  document.querySelectorAll('.gw-tag.selected').forEach(function(t){ tags.push(t.getAttribute('data-tag')); });
+  var msg = (document.getElementById('gw-feedback-msg')||{}).value||'';
+  if (!tags.length && !msg.trim()) { toast('Please select at least one tag or write a message'); return; }
+  var now = new Date();
+  var ts = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')+' '+(now.getHours()>=12?'PM':'AM');
+  var entry = { tags: tags, msg: msg.trim(), time: ts, role: gwRole };
+  p.feedback.push(entry);
+  gwMyDash.feedback.push({ presenter: p.name, tags: tags, msg: msg.trim(), time: ts });
+  gwCloseFeedback();
+  gwAddLiveFeedItem('💬','Feedback submitted for '+p.name);
+  toast('💬 Feedback sent — thank you!');
+  gwRenderDash();
+}
+
+// ── PRESENTER DASHBOARD ───────────────────────────────────────────────────────
+function gwTogglePresenterLive() {
+  gwPresenterLive = !gwPresenterLive;
+  var btn = document.getElementById('gw-live-btn-label');
+  var dot = document.getElementById('gw-live-dot');
+  if (btn) btn.textContent = gwPresenterLive ? 'End Session' : 'Go Live';
+  if (dot) dot.style.background = gwPresenterLive ? '#fff' : '#fff';
+  var goBtn = document.getElementById('gw-go-live-btn');
+  if (goBtn) goBtn.style.background = gwPresenterLive ? 'linear-gradient(135deg,#6b7280,#4b5563)' : 'linear-gradient(135deg,#ef4444,#dc2626)';
+  toast(gwPresenterLive ? '🔴 You are now live in the Gateway Room!' : '⏹ Session ended');
+}
+
+function gwSavePitchSetup() {
+  var title = (document.getElementById('gw-setup-title')||{}).value||'';
+  var cat = (document.getElementById('gw-setup-cat')||{}).value||'';
+  var pitch = (document.getElementById('gw-setup-pitch')||{}).value||'';
+  if (!title.trim()) { toast('Please enter a pitch title'); return; }
+  toast('✓ Pitch saved! You\'re ready to go live.');
+}
+
+function gwDashTab(tab, btn) {
+  gwCurrentDashTab = tab;
+  ['signals','ready','shelf','feedback'].forEach(function(t){
+    var panel = document.getElementById('gw-dash-'+t);
+    var tabBtn = document.getElementById('gw-dtab-'+t);
+    if (panel) panel.style.display = t===tab ? 'block' : 'none';
+    if (tabBtn) { tabBtn.style.borderBottomColor = t===tab?'var(--brown)':'transparent'; tabBtn.style.color = t===tab?'var(--brown)':'var(--text-dim)'; tabBtn.style.fontWeight = t===tab?'700':'600'; }
+  });
+  gwRenderDash();
+}
+
+function gwRenderDash() {
+  // Update stat cards
+  var p = gwPresenters[0]; // Simulated: current user's presenter slot
+  var el = function(id){ return document.getElementById(id); };
+  if(el('pdb-signals')) el('pdb-signals').textContent = gwMyDash.signals.length + p.signals;
+  if(el('pdb-ready'))   el('pdb-ready').textContent   = gwMyDash.ready.length + p.ins;
+  if(el('pdb-shelf'))   el('pdb-shelf').textContent   = gwMyDash.shelf.length + p.shelf;
+  if(el('pdb-feedback'))el('pdb-feedback').textContent= gwMyDash.feedback.length + p.feedback.length;
+
+  var empty = function(label, icon, note){
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:48px;text-align:center;">'
+      +'<div style="font-size:2rem;margin-bottom:10px;">'+icon+'</div>'
+      +'<div style="font-weight:700;font-size:0.92rem;margin-bottom:6px;">'+label+'</div>'
+      +'<div style="font-size:0.8rem;color:var(--text-dim);">'+note+'</div></div>';
+  };
+
+  // Signals panel
+  var sp = el('gw-dash-signals');
+  if (sp) {
+    var all = gwMyDash.signals.slice();
+    // Add demo signals from presenter data
+    for(var i=0;i<p.signals;i++) all.push({name:'Aaliyah Morris', time:'Live', role: i%2===0?'public':'business'});
+    if (!all.length) { sp.innerHTML = empty('No signals yet','📡','When attendees signal you, they\'ll appear here with their role and timestamp.'); }
+    else sp.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+all.slice(0,20).map(function(s,i){
+      return '<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;">'
+        +'<span style="font-size:1rem;">📡</span>'
+        +'<div style="flex:1;"><div style="font-size:0.82rem;font-weight:600;color:var(--text);">Signal #'+(i+1)+'</div><div style="font-size:0.72rem;color:var(--text-dim);">'+s.time+' · '+(s.role==='business'?'🏢 Business':'👁 Public')+'</div></div>'
+        +'<span style="font-size:0.68rem;background:var(--brown-bg);color:var(--brown);padding:2px 8px;border-radius:10px;font-weight:700;">New</span>'
+      +'</div>';
+    }).join('')+'</div>';
+  }
+
+  // Ready Now panel
+  var rp = el('gw-dash-ready');
+  if (rp) {
+    var all2 = gwMyDash.ready.slice();
+    for(var j=0;j<p.ins;j++) all2.push({name:'Aaliyah Morris',time:'Live',role:j%3===0?'business':'public'});
+    if (!all2.length) { rp.innerHTML = empty('No commitments yet','✅','When attendees tap "I\'m In", they\'ll show here as committed prospects.'); }
+    else rp.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+all2.map(function(s,i){
+      return '<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;">'
+        +'<span style="font-size:1rem;">✅</span>'
+        +'<div style="flex:1;"><div style="font-size:0.82rem;font-weight:700;color:#16a34a;">Committed — I\'m In</div><div style="font-size:0.72rem;color:var(--text-dim);">'+s.time+' · '+(s.role==='business'?'🏢 Business':'👁 Public')+'</div></div>'
+      +'</div>';
+    }).join('')+'</div>';
+  }
+
+  // Shelf panel
+  var shp = el('gw-dash-shelf');
+  if (shp) {
+    var all3 = gwMyDash.shelf.slice();
+    for(var k=0;k<p.shelf;k++) all3.push({name:'Aaliyah Morris',time:'Live',role:'business'});
+    if (!all3.length) { shp.innerHTML = empty('No shelf requests yet','📦','Business attendees who request distribution will appear here.'); }
+    else shp.innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;">'+all3.map(function(s,i){
+      return '<div style="background:#fff;border:1px solid #ede9fe);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;">'
+        +'<span style="font-size:1rem;">📦</span>'
+        +'<div style="flex:1;"><div style="font-size:0.82rem;font-weight:700;color:#7c3aed;">Shelf / Distribution Request</div><div style="font-size:0.72rem;color:var(--text-dim);">'+s.time+' · 🏢 Business Attendee</div></div>'
+        +'<span style="font-size:0.68rem;background:#faf5ff;color:#7c3aed;padding:2px 8px;border-radius:10px;font-weight:700;border:1px solid #ede9fe;">New</span>'
+      +'</div>';
+    }).join('')+'</div>';
+  }
+
+  // Feedback panel
+  var fp = el('gw-dash-feedback');
+  if (fp) {
+    var allFb = gwMyDash.feedback.slice();
+    p.feedback.forEach(function(f){ allFb.push(f); });
+    // Add demo feedback
+    if (allFb.length === 0) allFb = [
+      { tags:['Strong idea','Felt polished','Clear offer'], msg:'Really compelling pitch, great energy!', time:'2:14 PM', role:'public' },
+      { tags:['Delivery needs work','Not enough information'], msg:'', time:'2:16 PM', role:'business' },
+      { tags:['Could work','Too rushed'], msg:'Would love to see more about pricing.', time:'2:19 PM', role:'public' }
+    ];
+    // Tag frequency summary
+    var tagCount = {};
+    allFb.forEach(function(f){ (f.tags||[]).forEach(function(t){ tagCount[t]=(tagCount[t]||0)+1; }); });
+    var tagSorted = Object.keys(tagCount).sort(function(a,b){return tagCount[b]-tagCount[a];});
+    var summary = tagSorted.length ? '<div style="margin-bottom:16px;"><div style="font-size:0.62rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Top Tags</div><div style="display:flex;flex-wrap:wrap;gap:6px;">'
+      +tagSorted.map(function(t){ return '<span style="padding:4px 10px;border-radius:20px;background:var(--brown-bg);color:var(--brown);font-size:0.75rem;font-weight:700;">'+t+' <span style="opacity:0.7;">×'+tagCount[t]+'</span></span>'; }).join('')
+      +'</div></div>' : '';
+    fp.innerHTML = summary + '<div style="display:flex;flex-direction:column;gap:10px;">'
+      +allFb.map(function(f){
+        return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;">'
+          +'<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:'+(f.msg?'8px':'0')+';">'
+          +(f.tags||[]).map(function(t){ return '<span style="padding:3px 9px;border-radius:20px;background:var(--cream);color:var(--text-mid);font-size:0.72rem;font-weight:600;border:1px solid var(--border);">'+t+'</span>'; }).join('')
+          +'</div>'
+          +(f.msg ? '<div style="font-size:0.82rem;color:var(--text);font-style:italic;">"'+f.msg+'"</div>' : '')
+          +'<div style="font-size:0.68rem;color:var(--text-dim);margin-top:6px;">'+f.time+' · '+(f.role==='business'?'🏢 Business':'👁 Public')+'</div>'
+        +'</div>';
+      }).join('')
+    +'</div>';
+  }
+}
+
+// ── HELP MODAL SEARCH / JUMP TO ──────────────────────────────────────────────
+var helpSections = [
+  { id:'help-sec-mediaprofile',   label:'👤 Media Profile' },
+  { id:'help-sec-mystore',        label:'🛍️ My Store' },
+  { id:'help-sec-weblinks',       label:'🔗 Web Links' },
+  { id:'help-sec-listings',       label:'📋 Listings' },
+  { id:'help-sec-booking',        label:'📅 Booking / Your Services' },
+  { id:'help-sec-sociallinks',    label:'📱 Social Links' },
+  { id:'help-sec-video',          label:'🎬 Video' },
+  { id:'help-sec-events',         label:'🎟️ Events / Tickets' },
+  { id:'help-sec-golive',         label:'🔴 Go Live' },
+  { id:'help-sec-sales',          label:'💰 Sales & Payouts' },
+  { id:'help-sec-settings',       label:'⚙️ Settings' },
+  { id:'help-sec-support',        label:'❓ Support Tab (inside Settings)' },
+  { id:'help-sec-browsericon',    label:'🌐 Browser Icon' },
+  { id:'help-sec-subs',           label:'💳 Subscriptions / Memberships' },
+  { id:'help-sec-hearts',         label:'❤️ Hearts — Save Feature' },
+  { id:'help-sec-custom',         label:'🔤 Other / Custom Fields' },
+  { id:'help-sec-messages',       label:'💬 My Messages' },
+  { id:'help-sec-switchprofile',  label:'👥 Switch Profile' },
+  { id:'help-sec-banned',         label:'⛔🚫 Banned / Blocked' },
+  { id:'help-sec-gateway',        label:'🚪 Gateway Room' }
+];
+
+function helpSearch(val) {
+  var suggestions = document.getElementById('help-suggestions');
+  if (!suggestions) return;
+  var q = val.trim().toLowerCase();
+  if (!q) { suggestions.style.display = 'none'; return; }
+  var matches = helpSections.filter(function(s){
+    return s.label.toLowerCase().indexOf(q) !== -1;
+  });
+  if (!matches.length) {
+    suggestions.style.display = 'block';
+    suggestions.innerHTML = '<div style="padding:10px 14px;font-size:0.82rem;color:var(--text-dim);">No sections found</div>';
+    return;
+  }
+  suggestions.style.display = 'block';
+  suggestions.innerHTML = matches.map(function(s) {
+    return '<div onclick="helpJumpTo(\''+s.id+'\')" style="padding:10px 14px;font-size:0.85rem;font-weight:600;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.15s;" onmouseover="this.style.background=\'var(--brown-bg)\'" onmouseout="this.style.background=\'#fff\'">'
+      + s.label + '</div>';
+  }).join('');
+}
+
+function helpJumpTo(sectionId) {
+  var el = document.getElementById(sectionId);
+  var scroll = document.getElementById('help-scroll-area');
+  var input = document.getElementById('help-search');
+  var suggestions = document.getElementById('help-suggestions');
+  if (!el || !scroll) return;
+  // Close dropdown
+  if (suggestions) suggestions.style.display = 'none';
+  if (input) input.value = '';
+  // Scroll to section
+  scroll.scrollTo({ top: el.offsetTop - 12, behavior: 'smooth' });
+  // Flash highlight
+  el.style.transition = 'box-shadow 0.3s';
+  el.style.boxShadow = '0 0 0 3px rgba(192,122,80,0.5)';
+  setTimeout(function(){ el.style.boxShadow = 'none'; }, 1400);
+}
+
+// Close suggestions when clicking outside the help search
+document.addEventListener('click', function(e) {
+  var bar = document.getElementById('help-search');
+  var sug = document.getElementById('help-suggestions');
+  if (sug && bar && !bar.contains(e.target) && !sug.contains(e.target)) {
+    sug.style.display = 'none';
+  }
+});
 
 function spMsgSend() {
   var input = document.getElementById('sp-msg-input');
@@ -9963,31 +10793,16 @@ function spMsgAction(action) {
   } else if (action === 'block') {
     if (confirm('Block ' + convo.name + '? They won\'t be able to message you.')) {
       convo.blocked = true;
-      spMsgActiveId = null;
-      var thread = document.getElementById('sp-msg-thread');
-      var compose = document.getElementById('sp-msg-compose');
-      var nameEl = document.getElementById('sp-msg-thread-name');
-      var actionsEl = document.getElementById('sp-msg-thread-actions');
-      if (thread) thread.innerHTML = '';
-      if (compose) compose.style.display = 'none';
-      if (nameEl) nameEl.textContent = 'Select a conversation';
-      if (actionsEl) actionsEl.style.display = 'none';
-      spMsgRenderList();
+      spMsgResetThread();
+      // Sync to business Banned/Blocked screen if it's open
+      var bbScreen = document.getElementById('bb-blocked-list');
+      if (bbScreen) renderBannedBlocked();
       toast('🚫 ' + convo.name + ' has been blocked');
     }
   } else if (action === 'delete') {
     if (confirm('Delete this conversation? This cannot be undone.')) {
       spMsgConversations = spMsgConversations.filter(function(c){return c.id !== spMsgActiveId;});
-      spMsgActiveId = null;
-      var thread = document.getElementById('sp-msg-thread');
-      var compose = document.getElementById('sp-msg-compose');
-      var nameEl = document.getElementById('sp-msg-thread-name');
-      var actionsEl = document.getElementById('sp-msg-thread-actions');
-      if (thread) thread.innerHTML = '';
-      if (compose) compose.style.display = 'none';
-      if (nameEl) nameEl.textContent = 'Select a conversation';
-      if (actionsEl) actionsEl.style.display = 'none';
-      spMsgRenderList();
+      spMsgResetThread();
       toast('🗑️ Conversation deleted');
     }
   }
@@ -13435,13 +14250,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div id="modal-help-system" class="modal-overlay" onclick="closeModal('modal-help-system')">
   <div class="modal" style="max-width:600px;" onclick="event.stopPropagation()">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
       <h2 class="modal-title" style="margin:0;">🗺️ How MASSED Works</h2>
       <button onclick="closeModal('modal-help-system')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:14px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+    <!-- Jump To search bar -->
+    <div style="position:relative;margin-bottom:16px;">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--text-dim)" stroke-width="2" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="help-search" type="text" placeholder="Jump to…" oninput="helpSearch(this.value)" autocomplete="off"
+        style="width:100%;padding:9px 12px 9px 34px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;box-sizing:border-box;transition:border-color 0.2s;"
+        onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+      <!-- Suggestions dropdown -->
+      <div id="help-suggestions" style="display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(44,26,14,0.12);z-index:10;overflow:hidden;max-height:220px;overflow-y:auto;"></div>
+    </div>
+
+    <div id="help-scroll-area" style="display:flex;flex-direction:column;gap:14px;font-size:0.85rem;color:var(--text);line-height:1.7;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+
+      <div id="help-sec-mediaprofile" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">👤 Media Profile</div>
         <p>Your public identity on MASSED — visible at <strong>massed.io/yourusername</strong>. Set your photo, display name, title/role, bio (under 200 words), category, and contact info. Click Save Profile — changes are not auto-saved.</p>
         <p style="margin-top:6px;"><strong>Collaboration tab:</strong> Toggle your visibility on, choose your genres, browse other creators by genre, send and accept connection requests, message active collaborators, and sign legally binding NDAs. Signed NDAs auto-save to the Documents tab — click View to open the full signed document with both digital signatures and timestamps, or Download to save a copy.</p>
@@ -13449,7 +14275,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <p style="margin-top:6px;"><strong>Equal Link toggle:</strong> Found at the bottom of the Profile tab, below Contact Info. Turn it on to show visitors that you're open to linking with others. When enabled, an <strong>Equal Link</strong> badge appears on your public profile. A status indicator shows inside the dashboard confirming it's live. Toggle it off at any time to remove the badge.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-mystore" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🛍️ My Store</div>
         <p>Your public storefront. Toggle <strong>Store Live</strong> to make it visible at your MASSED link. Click <strong>Preview Live Store</strong> to see exactly how your store looks to your audience. The store has four tabs: <strong>Physical</strong>, <strong>Digital</strong>, <strong>Courses</strong>, and <strong>Visibility</strong>. You can also navigate directly to each tab from the sidebar sub-items.</p>
         <p style="margin-top:6px;"><strong>Physical Products:</strong> Up to 6 photos (first is main image, others become thumbnails), product name, price, sale price, tax rate, description, composition/material, inventory count, low stock alert (notifies you when stock hits the number you set), allow pre-order toggle, fulfillment method (Shipped / Meet Up / Local Pickup / Delivered — if Delivered, set a delivery fee), available sizes (type and Add — appear as selectable chips), available colors (pick color + name — appear as color dots), gender, category (type your own if you select Other — added to all forms system-wide), discount %, promo code, discount type (e.g. Christmas, New Years), product variants (same product in different flavors, styles, or editions — each with its own name and price), affiliate earner settings (% or $ per sale), subscription option, membership requirement, subscribe for product updates (customers notified on restocks/sales/drops), hide from store.</p>
@@ -13460,12 +14286,12 @@ document.addEventListener('DOMContentLoaded', function() {
         <p style="margin-top:6px;"><strong>Custom categories:</strong> Select "Other" in any category dropdown and type your own — it's instantly added to Physical, Digital, and Course category dropdowns across the entire system.</p>
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-weblinks" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔗 Web Links</div>
         <p>Add any URL to your public page — websites, landing pages, booking links, portfolios, or anything you want your audience to tap. Each link appears as a card on your MASSED profile with a cover image, title, and Open Link button. URL and Title are both required — the URL is validated before saving. Each card has: Copy · Analytics · ✏️ Edit · Delete. Edit opens a pre-filled modal to update URL, title, or swap the cover image.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-listings" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📋 Listings</div>
         <p>Found in the sidebar under <strong>Build → Listings</strong>. Listings is a browsing-based catalog for high-consideration items — <em>inquiry first, no immediate checkout</em>.</p>
         <p style="margin-top:6px;"><strong>Who it's for:</strong> Real estate agents, independent car sellers, event venues (weddings, parties), Airbnb / short-term rentals, salon suite rentals, photography studios, office spaces, job postings, freelance gig listings, casting calls, brand ambassador roles, travel agents, travel packages, spa packages, party packages, and guided experiences.</p>
@@ -13476,7 +14302,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <p style="margin-top:6px;"><strong>Refunds tab:</strong> Process refunds with client name/email, amount, reason, and optional reference ID. Full refund history log maintained.</p>
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-booking" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">📅 Booking / Your Services</div>
         <p>Found in the sidebar under <strong>Booking / Your Services</strong>. Two tabs: <strong>Services</strong> and <strong>Incoming Bookings</strong>.</p>
         <p style="margin-top:6px;"><strong>Services tab:</strong> Add bookable services with name, price, duration, category (Hair / Beauty / Wellness / Consulting / Classes / + custom), description, optional cover photo. <strong>Classes</strong> — when selected, choose between <em>Single Class</em> (one-on-one) or <em>Group Class</em> (multiple students, set max capacity and location/platform). Toggle <strong>Booking Page Live</strong> to make booking visible. Each service card has Visible/Hidden, 🤍 Heart, and Delete. Category chips filter by type — add new categories with the + New Category button.</p>
@@ -13485,50 +14311,50 @@ document.addEventListener('DOMContentLoaded', function() {
         <p style="margin-top:6px;"><strong>Review Questionnaire:</strong> Build custom review questions with multiple-choice answers. 5-star rating always included. Send to any client from their Manage menu.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-sociallinks" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">📱 Social Links</div>
         <p>Connect Instagram, X/Twitter, TikTok, YouTube, Facebook, Pinterest, LinkedIn, and Amazon. Each platform has a toggle — on shows publicly, off hides it. Only toggled-on platforms are visible to visitors.</p>
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-video" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🎬 Video</div>
         <p>Upload or link videos. They appear directly on your public MASSED profile — audience watches without leaving your page. Add a title, genre, and duration for each video.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-events" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🎟️ Events / Tickets</div>
         <p>Create in-person or online events. Set ticket tiers, prices, and capacity. Manage attendees and collect payments through Stripe. Use the built-in <strong>Ticket Scanner</strong> in the sidebar to scan QR codes at the door. Select <strong>Other</strong> as event type to type a custom type.</p>
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-golive" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔴 Go Live</div>
         <p>Click the Go Live button in the top bar. Choose <strong>Go Live</strong> to connect with your audience, or <strong>Go Live &amp; Sell</strong> to feature a product at a sale price with an optional countdown timer. Use ⏸ Pause to pause without ending, and End Live to close the session.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-sales" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">💰 Sales &amp; Payouts</div>
         <p><strong>Sales tab:</strong> Today's revenue, sessions, conversion funnel, traffic channels with interactive world map, top products, and social media analysis.</p>
         <p style="margin-top:6px;"><strong>Payout tab:</strong> Balance Breakdown (Available Now, Processing, Held), Earnings Overview, and Transaction Feed. Switch to <strong>Affiliate Earnings</strong> to see Top Earners with Pending/Paid status and Pay Now buttons. Once paid, tap View Receipt to see amount, recipient, date and time.</p>
         <p style="margin-top:6px;"><strong>Payout Settings</strong> — sidebar sub-item under Sales &amp; Payouts. Configure your payout preferences here.</p>
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-settings" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">⚙️ Settings</div>
         <p>Five tabs: <strong>Settings</strong> (account, phone number, password change with 6-digit SMS code), <strong>Billing</strong> (plan, payment method, Manage Plan, Graduation Countdown), <strong>Stripe</strong> (connect Stripe account), <strong>Support</strong> (quick help guides, FAQ, contact support), and <strong>API</strong> (integrations — coming soon).</p>
         <p style="margin-top:6px;"><strong>Graduation Countdown:</strong> Pay $30/month for 12 months → FREE 24-month plan → then $79.99/year forever.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-support" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">❓ Support Tab (inside Settings)</div>
         <p>Quick Help guides that open as popups: Media Profile, My Store, Sales &amp; Payouts, this full platform walkthrough, and FAQ. The FAQ has 9 questions each with a ← Back button. Contact Support lets you send a message or create a ticket — team responds within 24–48 hours.</p>
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-browsericon" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🌐 Browser Icon</div>
         <p>Upload a PNG, JPG, or SVG favicon — auto-resizes to 16×16 and 32×32. Live browser tab preview shows exactly how it looks before applying. Set a custom Browser Tab Title. Click <strong>Apply Browser Icon to My Page</strong> to publish.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-subs" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">💳 Subscriptions / Subscribers / Memberships</div>
         <p><strong>Subscribers:</strong> Total count with avatars. Click any avatar for a read-only view of that subscriber's profile.</p>
         <p style="margin-top:6px;"><strong>Subscriptions:</strong> Paid recurring accounts. Tap Manage: Charge Now, Change Amount/Type, Send Invoice, View Invoices, Refund, Cancel, Delete.</p>
@@ -13536,12 +14362,12 @@ document.addEventListener('DOMContentLoaded', function() {
         <p style="margin-top:6px;"><strong>Filters:</strong> All · Subscribers · Subscriptions · Memberships · Late/Overdue.</p>
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-hearts" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">❤️ Hearts — Save Feature (Public)</div>
         <p>Every Physical Product, Digital Product, Service, and Listing card has a 🤍 heart button. When the public taps it on your live page, it saves that item to their favourites. The heart fills (❤️) to confirm. Saved items appear in their account for easy reference later.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-custom" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🔤 Other / Custom Fields</div>
         <p>Anywhere you see <strong>Other</strong> — Event Type, Genre, Media Profile Category, Video Genre, Product Category, Booking Category — selecting it reveals a text field. For product categories, your custom entry is added to all three product form dropdowns (Physical, Digital, Course) system-wide instantly.</p>
       </div>
@@ -13550,16 +14376,17 @@ document.addEventListener('DOMContentLoaded', function() {
         💡 This guide is updated each time a new section is completed. More features are being added — check back here for the latest walkthroughs.
       </div>
 
-      <div style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-messages" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">💬 My Messages</div>
         <p>Found in the sidebar under <strong>Trust &amp; Community → My Messages</strong>. Your full direct messaging inbox — all conversations in one place.</p>
-        <p style="margin-top:6px;"><strong>Conversation list:</strong> Shows all DMs with sender name, preview of last message, timestamp, and unread badge. Three filter tabs: <strong>All</strong> · <strong>Unread</strong> · <strong>Requests</strong>. Search bar filters conversations in real time.</p>
+        <p style="margin-top:6px;"><strong>Conversation list:</strong> Shows all DMs with sender name, preview of last message, timestamp, and unread badge. Four filter tabs: <strong>All</strong> · <strong>Unread</strong> · <strong>Requests</strong> · <strong>Blocked</strong>. Search bar filters conversations in real time.</p>
         <p style="margin-top:6px;"><strong>Conversation thread:</strong> Tap any conversation to open the full thread on the right. Your messages appear on the right in brown, incoming on the left in white. Timestamps shown per message.</p>
         <p style="margin-top:6px;"><strong>Actions:</strong> Three buttons in the conversation header — 🔇 <strong>Mute</strong> (silence notifications from that person), 🚫 <strong>Block</strong> (permanently block them from messaging you), 🗑️ <strong>Delete</strong> (remove the entire conversation). Blocking and deleting both require confirmation.</p>
-        <p style="margin-top:6px;"><strong>Compose:</strong> Type in the message bar and hit Enter or the send button. Attach files using the paperclip icon (images, PDFs, etc.). The input auto-resizes as you type.</p>
+        <p style="margin-top:6px;"><strong>Blocked tab:</strong> Shows everyone you've blocked from messaging. Each entry has an <strong>Unblock</strong> button — tap it to restore their ability to message you. Unblocking also syncs with the business-side Banned/Blocked screen.</p>
+        <p style="margin-top:6px;"><strong>Compose:</strong> Type in the message bar and hit Enter or the send button. Attach files using the paperclip icon. The input auto-resizes as you type.</p>
       </div>
 
-      <div style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+      <div id="help-sec-switchprofile" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">👥 Switch Profile</div>
         <p>Found in the <strong>three-dot (⋯) menu</strong> next to Go Live at the bottom of the sidebar. This is your public-facing profile — what anyone sees when they visit your MASSED page. Toggle into it anytime to see exactly what your audience sees.</p>
         <p style="margin-top:6px;"><strong>Profile header:</strong> Your avatar, display name, title, location, astrological sign, and <strong>Sparks</strong> count. The <strong>⚡ Equal Link</strong> badge shows if you have Equal Link enabled. Sparks are the total number of times your posts have been lit — your reputation score on MASSED.</p>
@@ -13571,7 +14398,30 @@ document.addEventListener('DOMContentLoaded', function() {
         <p style="margin-top:6px;"><strong>Store tab &amp; Media tab:</strong> Your published products and uploaded media as visitors see them.</p>
         <p style="margin-top:6px;"><strong>Shared Signals tab:</strong> A full log of every Signal (post) you've broadcast. Shows stats — total Signals, times Shared, and total Sparks. Each entry displays the signal text, engagement counts, and a "Shared" badge confirming it's been sent to your audience.</p>
         <p style="margin-top:6px;"><strong>My Vault tab:</strong> Your personal knowledge storage. Save any information into six categories — <strong>All</strong>, <strong>Services</strong>, <strong>Products</strong>, <strong>Listings</strong>, <strong>People</strong>, and <strong>Opportunities</strong>. Use the Save to Vault form at the top to add a title, notes, and choose a category. Filter saved items by category using the pill buttons. Each entry shows the category icon, title, notes, and timestamp. Delete entries with the trash icon. You can also save directly from any Signal post using the <strong>Add to Vault</strong> button — a modal will pop up letting you pick the category before saving.</p>
-        <p style="margin-top:6px;"><strong>Messages tab:</strong> Your full direct messaging inbox inside your profile view. Conversations are listed on the left with sender name, message preview, timestamp, and unread badge. Three filter tabs: <strong>All</strong> · <strong>Unread</strong> · <strong>Requests</strong>. Search bar filters in real time. Tap any conversation to open the full thread on the right — your messages appear on the right in brown, incoming on the left in white. Compose bar at the bottom: type and hit Enter or the send button to send. Attach files with the paperclip icon. Three action buttons in the thread header: 🔇 <strong>Mute</strong>, 🚫 <strong>Block</strong>, 🗑️ <strong>Delete</strong> — blocking and deleting both require confirmation.</p>
+        <p style="margin-top:6px;"><strong>Messages tab:</strong> Your full direct messaging inbox inside your profile view. Conversations listed on the left with sender name, preview, and unread badge. Four filter tabs: <strong>All</strong> · <strong>Unread</strong> · <strong>Requests</strong> · <strong>Blocked</strong>. The Blocked tab shows everyone you've blocked with an Unblock button to restore access. Search bar filters in real time. Tap any conversation to open the full thread — your messages right-aligned in brown, incoming left-aligned in white. Compose bar always visible at the bottom: type and hit Enter or the send button. Attach files with the paperclip icon. Thread header actions: 🔇 Mute · 🚫 Block · 🗑️ Delete, both block and delete require confirmation.</p>
+      </div>
+
+      <div id="help-sec-banned" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">⛔🚫 Banned / Blocked (Business Side)</div>
+        <p>Found in the <strong>three-dot (⋯) menu</strong> next to Go Live at the bottom of the sidebar. A single place to manage everyone you've restricted from your business.</p>
+        <p style="margin-top:6px;"><strong>Two tabs:</strong></p>
+        <p style="margin-top:6px;"><strong>⛔ Banned tab:</strong> All clients banned from booking your services — populated automatically when you ban someone via Manage Booking → Ban from Booking. Each entry shows the client's name, email, reason for the ban, and the date banned. Tap <strong>Unban</strong> to restore their ability to book with you (requires confirmation).</p>
+        <p style="margin-top:6px;"><strong>🚫 Blocked tab:</strong> All users you've blocked from messaging — synced directly from the Messages tab in your profile (Switch Profile → Messages → Block). Each entry shows the person's name and handle. Tap <strong>Unblock</strong> to restore their ability to message you — this also syncs back to the Messages Blocked tab instantly.</p>
+      </div>
+
+      <div id="help-sec-gateway" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🚪 Gateway Room</div>
+        <p>Found in the sidebar under <strong>Trust &amp; Community → Gateway Room</strong>. A hybrid live discovery stage where graduated MASSED presenters pitch in real time to a live audience of public viewers and registered business attendees — all from their devices, fully synchronized.</p>
+        <p style="margin-top:6px;"><strong>Who can present:</strong> Only <em>graduated MASSED users</em> — those who have completed the 12-month build cycle or paid in full. Presenters set up their pitch (title, category, description) and tap <strong>Go Live</strong> to broadcast to the room.</p>
+        <p style="margin-top:6px;"><strong>Entering the room:</strong> Choose your role on the landing screen — <strong>👁 Public Viewer</strong>, <strong>🏢 Business Attendee</strong>, or <strong>🎤 Presenter</strong>. Your role determines which actions you can take.</p>
+        <p style="margin-top:6px;"><strong>Four attendee actions per presenter:</strong></p>
+        <p style="margin-top:6px;">📡 <strong>Signal Me</strong> — Available to all. Captures your interest. The presenter is notified and will follow up. Increments the live Signals counter visible to everyone in the room.</p>
+        <p style="margin-top:4px;">✅ <strong>I'm In</strong> — Available to all. An immediate commitment — you're signing up or buying in on the spot. Feeds into the presenter's Ready Now dashboard section.</p>
+        <p style="margin-top:4px;">📦 <strong>Add to My Shelf</strong> — <em>Business attendees only.</em> Sends a distribution or placement request directly to the presenter. Feeds into their Shelf Requests dashboard section.</p>
+        <p style="margin-top:4px;">💬 <strong>Send Feedback</strong> — Available to all. Opens a non-disruptive slide-up panel with 10 multi-select feedback tags: <em>Wasn't catchy · Could work · Strong idea · Delivery needs work · Not enough information · Too rushed · Clear offer · I'm still confused · Needs more work · Felt polished.</em> Plus an optional short message field. One submit button — fast and frictionless.</p>
+        <p style="margin-top:6px;"><strong>Presenter Dashboard (private):</strong> Four live sections — <strong>📡 Signals</strong> (everyone who signalled interest, with role and timestamp), <strong>✅ Ready Now</strong> (committed attendees), <strong>📦 Shelf Requests</strong> (business distribution interest), and <strong>💬 Presentation Feedback</strong> (aggregated tag frequency summary + individual entries with optional messages). All data updates in real time as the session runs.</p>
+        <p style="margin-top:6px;"><strong>Live Activity feed:</strong> A scrolling feed visible to all attendees showing real-time signals, commitments, shelf adds, and feedback submissions — creating social proof and momentum during the session.</p>
+        <p style="margin-top:6px;"><strong>Today's Lineup:</strong> The Gateway Room landing page shows all scheduled presenters for the session with their name, title, and slot status (On now / Up next / time until).</p>
       </div>
 
     </div>
