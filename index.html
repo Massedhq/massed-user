@@ -9950,9 +9950,36 @@ function nav(el,screen) {
     var pt=document.getElementById('page-title');
     if(pt) pt.textContent=pageTitles[screen]||'';
     // Render dynamic screens
-    if(screen==='switchprofile') setTimeout(function(){
-    spTab('posts', document.querySelector('.sp-tab'));
-    renderSpFeed();
+    if(screen==='switchprofile') {
+    // Force the setup flag to true so the profile displays
+    window._publicProfileSetup = true; 
+
+    setTimeout(function(){
+        // Update the header with your saved info
+        if (window._userData) {
+            const nameEl = document.getElementById('sp-username');
+            const locEl = document.getElementById('sp-location');
+            if (nameEl) nameEl.textContent = _userData.display_name || "New User";
+            if (locEl) locEl.textContent = _userData.location || "Texas, USA";
+        }
+
+        spTab('posts', document.querySelector('.sp-tab'));
+        renderSpFeed();
+        
+        // Show your Link in Bio if you saved one
+        const container = document.getElementById('sp-link-container');
+        const linkDisplay = document.getElementById('sp-link-display');
+        const linkData = (_userData && _userData.linkInBio) ? _userData.linkInBio.trim() : "";
+
+        if (container && linkDisplay && linkData !== "") {
+            let url = linkData;
+            if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+            linkDisplay.href = url;
+            linkDisplay.textContent = linkData;
+            container.style.display = 'flex';
+        }
+    }, 50);
+}
     
     // Logic to display Link in Bio
     const container = document.getElementById('sp-link-container');
