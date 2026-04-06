@@ -370,7 +370,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
 /* LIVE OPTIONS */
 .live-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px;}
-.live-opt{border:2px solid var(--border);border-radius:14px;padding:20px;cursor:pointer;transition:all 0.2s;text-align:center;}
+.live-opt{border:2px solid var(--border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all 0.2s;text-align:center;}
 .live-opt:hover{border-color:var(--brown);background:var(--brown-bg);}
 .live-opt.selected{border-color:var(--brown);background:var(--brown-bg2);}
 .live-opt-icon{font-size:1.8rem;margin-bottom:8px;}
@@ -656,6 +656,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div class="nav-item" onclick="nav(this,'subs')"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Subscriptions / Memberships / Subs</div>
       <div class="nav-item" onclick="nav(this,'tickets')"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010-6h20a3 3 0 010 6"/><path d="M2 9v11a2 2 0 002 2h16a2 2 0 002-2V9"/><path d="M12 9v13"/></svg>Events / Tickets</div>
       <div class="nav-item" onclick="nav(this,'listings')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Listings</div>
+      <div class="nav-item" onclick="nav(this,'createpoll')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="18" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="17" y="13" width="4" height="8" rx="1"/></svg>Create Poll</div>
+      <div class="nav-item" onclick="nav(this,'forms')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Forms</div>
     </div>
 
     <div class="nav-group-header" onclick="toggleGroup(this)">
@@ -725,6 +727,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             Live Preview
           </div>
           <div style="height:1px;background:var(--border);margin:0 12px;"></div>
+
           <div onclick="closeMoreMenu();nav(null,'switchprofile')" style="display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;font-size:0.88rem;color:var(--text);font-weight:500;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='#fff'">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
             Switch Profile
@@ -1696,6 +1699,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             <div><span style="color:#D4956E;font-size:0.6rem;font-weight:700;">@jones_r </span><span style="color:rgba(255,255,255,0.75);font-size:0.6rem;">just grabbed it! 🛒</span></div>
           </div>
 
+          <!-- Live Poll card — hidden until host launches a poll -->
+          <div id="phone-poll-card" style="display:none;margin:0 8px 6px;background:rgba(20,12,4,0.88);border-radius:12px;padding:10px 12px;border:1px solid rgba(192,122,80,0.3);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <span style="color:#D4956E;font-size:0.52rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;">📊 Live Poll</span>
+              <span id="phone-poll-timer" style="color:rgba(255,255,255,0.4);font-size:0.52rem;"></span>
+            </div>
+            <div id="phone-poll-question" style="color:#fff;font-weight:700;font-size:0.72rem;margin-bottom:8px;line-height:1.4;">Poll question appears here</div>
+            <div id="phone-poll-options" style="display:flex;flex-direction:column;gap:5px;"></div>
+          </div>
+
           <!-- Product deal card — hidden until Go Live & Sell -->
           <div id="phone-product-card" style="display:none;margin:0 8px 8px;background:rgba(30,18,10,0.92);backdrop-filter:blur(12px);border-radius:14px;padding:11px 13px;border:1px solid rgba(255,255,255,0.12);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
@@ -1788,6 +1801,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
         <button class="lp-action-btn" onclick="lpCloseProduct()" style="background:#2a2a2a;color:rgba(255,255,255,0.65);margin-top:8px;">Close Product</button>
         <button class="lp-action-btn" onclick="lpBringBack()" style="background:rgba(192,122,80,0.18);color:#D4956E;border:1px solid rgba(192,122,80,0.3);">Bring Back</button>
+
+        <!-- Live Poll -->
+        <div style="margin-top:16px;padding:14px;background:#1e1208;border-radius:12px;border:1px solid rgba(192,122,80,0.18);">
+          <div style="font-size:0.6rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px;">📊 Launch Poll</div>
+          <input id="lp-poll-question" type="text" placeholder="Ask your audience something…" class="lp-input" style="margin-bottom:8px;" />
+          <input id="lp-poll-opt1" type="text" placeholder="Option 1" class="lp-input" style="margin-bottom:6px;" />
+          <input id="lp-poll-opt2" type="text" placeholder="Option 2" class="lp-input" style="margin-bottom:6px;" />
+          <input id="lp-poll-opt3" type="text" placeholder="Option 3 (optional)" class="lp-input" style="margin-bottom:6px;" />
+          <input id="lp-poll-opt4" type="text" placeholder="Option 4 (optional)" class="lp-input" style="margin-bottom:10px;" />
+          <div style="display:flex;gap:8px;">
+            <button class="lp-action-btn" id="btn-launch-poll" onclick="lpLaunchPoll()" style="background:rgba(192,122,80,0.25);color:#D4956E;border:1px solid rgba(192,122,80,0.35);margin:0;flex:1;">Launch Poll</button>
+            <button class="lp-action-btn" onclick="lpEndPoll()" style="background:#2a2a2a;color:rgba(255,255,255,0.5);margin:0;flex:1;">End Poll</button>
+          </div>
+        </div>
 
         <!-- End live -->
         <button class="lp-action-btn" onclick="endLive()" style="background:#ef4444;color:#fff;margin-top:4px;">⏹ End Live</button>
@@ -6279,7 +6306,432 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       </div>
     </div>
 
-    <!-- COMING SOON SCREEN -->
+    <!-- CREATE POLL SCREEN -->
+    <div id="screen-createpoll" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Create Poll</h2>
+        <p class="section-sub">Build polls for your live stream or pin them permanently to your link in bio</p>
+      </div>
+
+      <!-- ══ SECTION 1: LIVE POLL ══ -->
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#ef4444;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></div>
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);">Live Poll</div>
+            <div style="font-size:0.78rem;color:var(--text-dim);margin-top:1px;">Launch a real-time poll during your live stream — viewers vote as you broadcast</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;align-items:start;margin-bottom:48px;">
+
+        <!-- LEFT: Live Poll builder -->
+        <div style="display:flex;flex-direction:column;gap:16px;">
+
+          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">Poll Question</div>
+            <div class="form-field" style="margin:0;">
+              <input type="text" id="cp-question" placeholder="Ask your audience something…" maxlength="120" oninput="cpUpdatePreview()" style="font-size:0.95rem;font-weight:600;">
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;text-align:right;"><span id="cp-q-count">0</span>/120</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">Answer Options</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:var(--brown);color:#fff;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div>
+                <input type="text" id="cp-opt1" placeholder="Option 1" oninput="cpUpdatePreview()" style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:var(--brown);color:#fff;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div>
+                <input type="text" id="cp-opt2" placeholder="Option 2" oninput="cpUpdatePreview()" style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:var(--cream3);color:var(--text-dim);font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div>
+                <input type="text" id="cp-opt3" placeholder="Option 3 (optional)" oninput="cpUpdatePreview()" style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:22px;height:22px;border-radius:50%;background:var(--cream3);color:var(--text-dim);font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div>
+                <input type="text" id="cp-opt4" placeholder="Option 4 (optional)" oninput="cpUpdatePreview()" style="flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.85rem;outline:none;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Poll Duration</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="cp-duration-btns">
+              <button onclick="cpSetDuration(0,this)" class="cp-dur-btn" data-val="0" style="padding:9px 6px;border-radius:9px;border:1.5px solid var(--brown);background:var(--brown-bg2);color:var(--brown-dark);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">No limit</button>
+              <button onclick="cpSetDuration(60,this)" class="cp-dur-btn" data-val="60" style="padding:9px 6px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">1 min</button>
+              <button onclick="cpSetDuration(120,this)" class="cp-dur-btn" data-val="120" style="padding:9px 6px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">2 min</button>
+              <button onclick="cpSetDuration(300,this)" class="cp-dur-btn" data-val="300" style="padding:9px 6px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">5 min</button>
+              <button onclick="cpSetDuration(600,this)" class="cp-dur-btn" data-val="600" style="padding:9px 6px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">10 min</button>
+              <button onclick="cpSetDuration(900,this)" class="cp-dur-btn" data-val="900" style="padding:9px 6px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;">15 min</button>
+            </div>
+          </div>
+
+          <button onclick="cpLaunchPoll()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:800;box-shadow:0 4px 16px rgba(192,122,80,0.4);display:flex;align-items:center;justify-content:center;gap:10px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Launch Poll to Live
+          </button>
+          <button onclick="cpEndPoll()" style="width:100%;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text-mid);">⏹ End Active Poll</button>
+        </div>
+
+        <!-- RIGHT: Live preview phone -->
+        <div style="position:sticky;top:20px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Live Preview</div>
+          <div style="background:#1a0d08;border-radius:36px;width:100%;max-width:260px;margin:0 auto;padding:16px 12px 20px;box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 2px #333;display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0 6px;">
+              <span style="color:#fff;font-size:0.6rem;font-weight:700;">9:41</span>
+              <div style="width:40px;height:3px;background:#2a2a2a;border-radius:4px;"></div>
+              <span style="color:#fff;font-size:0.6rem;">•••</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px;">
+              <span style="background:#ef4444;color:#fff;font-size:0.5rem;font-weight:900;padding:2px 6px;border-radius:4px;letter-spacing:0.05em;">LIVE</span>
+              <div style="display:flex;align-items:center;gap:3px;">
+                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span style="color:rgba(255,255,255,0.5);font-size:0.55rem;">142</span>
+              </div>
+            </div>
+            <div id="cp-phone-preview" style="background:rgba(20,12,4,0.9);border-radius:12px;padding:12px;border:1px solid rgba(192,122,80,0.25);">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="color:#D4956E;font-size:0.5rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;">📊 Live Poll</span>
+                <span id="cp-phone-timer-label" style="color:rgba(255,255,255,0.35);font-size:0.5rem;"></span>
+              </div>
+              <div id="cp-phone-question" style="font-weight:700;font-size:0.68rem;margin-bottom:10px;line-height:1.4;min-height:20px;color:rgba(255,255,255,0.4);font-style:italic;">Your question will appear here…</div>
+              <div id="cp-phone-options" style="display:flex;flex-direction:column;gap:5px;">
+                <div style="padding:5px 8px;border:1px solid rgba(255,255,255,0.08);border-radius:6px;font-size:0.58rem;color:rgba(255,255,255,0.25);">Option 1</div>
+                <div style="padding:5px 8px;border:1px solid rgba(255,255,255,0.08);border-radius:6px;font-size:0.58rem;color:rgba(255,255,255,0.25);">Option 2</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:5px;align-items:center;padding:0 2px;">
+              <div style="flex:1;background:rgba(255,255,255,0.06);border-radius:16px;padding:5px 10px;font-size:0.55rem;color:rgba(255,255,255,0.2);">Add a comment…</div>
+              <div style="width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;">
+                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+              </div>
+            </div>
+          </div>
+          <div id="cp-active-status" style="display:none;margin-top:16px;background:var(--brown-bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:8px;">● Poll is live</div>
+            <div id="cp-results-list" style="display:flex;flex-direction:column;gap:7px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ DIVIDER ══ -->
+      <div style="border-top:1px solid var(--border);margin-bottom:40px;max-width:860px;"></div>
+
+      <!-- ══ SECTION 2: LINK IN BIO POLL ══ -->
+      <div style="margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);">Link in Bio Poll</div>
+            <div style="font-size:0.78rem;color:var(--text-dim);margin-top:1px;">Pin a poll permanently to your public profile — visitors answer directly from your link in bio</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;align-items:start;">
+
+        <!-- LEFT: Bio Poll builder -->
+        <div style="display:flex;flex-direction:column;gap:16px;">
+
+          <!-- Poll title -->
+          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:14px;">Poll Title</div>
+            <input type="text" id="bio-poll-title" placeholder="e.g. Help me decide!" maxlength="60" oninput="bioUpdatePreview()" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--brown)'" onblur="this.style.borderColor='var(--border)'">
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Shown as the heading above your poll on your profile page</div>
+          </div>
+
+          <!-- Questions list -->
+          <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);">Questions</div>
+              <button onclick="bioAddQuestion()" style="display:flex;align-items:center;gap:5px;padding:6px 12px;background:var(--brown-bg);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;color:var(--brown);">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Question
+              </button>
+            </div>
+            <div id="bio-questions-list" style="display:flex;flex-direction:column;gap:16px;"></div>
+          </div>
+
+          <button onclick="bioPollSave()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:800;box-shadow:0 4px 16px rgba(192,122,80,0.4);display:flex;align-items:center;justify-content:center;gap:10px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            Save Poll
+          </button>
+
+          <!-- Show/hide + delete — only visible once poll is saved -->
+          <div id="bio-poll-actions" style="display:none;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;gap:8px;">
+              <!-- Toggle visibility -->
+              <button id="bio-toggle-btn" onclick="bioPollToggleVisibility()" style="flex:1;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text-mid);display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span id="bio-toggle-label">Show on Profile</span>
+              </button>
+              <!-- Delete poll -->
+              <button onclick="bioPollDelete()" style="padding:11px 16px;background:#fff;border:1.5px solid #fecaca;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:#dc2626;display:flex;align-items:center;gap:6px;transition:all 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff'">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Two previews stacked -->
+        <div style="position:sticky;top:20px;display:flex;flex-direction:column;gap:24px;">
+
+          <!-- Preview 1: How it looks on the profile (name + Vote button only) -->
+          <div>
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">On Your Profile</div>
+            <div style="background:#f5f0ea;border-radius:36px;width:100%;max-width:260px;margin:0 auto;padding:16px 12px 24px;box-shadow:0 24px 60px rgba(44,26,14,0.18),0 0 0 2px #d4c4b0;display:flex;flex-direction:column;gap:0;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0 6px 10px;">
+                <span style="color:var(--text);font-size:0.6rem;font-weight:700;">9:41</span>
+                <div style="width:40px;height:3px;background:var(--cream3);border-radius:4px;"></div>
+                <span style="color:var(--text);font-size:0.6rem;">•••</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:5px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+                <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#D4956E,#8B5E3C);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">👤</div>
+                <div style="font-weight:800;font-size:0.7rem;color:var(--text);">Your Name</div>
+                <div style="font-size:0.55rem;color:var(--text-dim);">massed.io/username</div>
+              </div>
+              <div id="bio-phone-preview" style="margin-top:12px;background:#fff;border-radius:12px;padding:14px;border:1px solid var(--border);">
+                <div style="font-size:0.6rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--brown);margin-bottom:8px;">📊 Poll</div>
+                <div id="bio-phone-title" style="font-weight:800;font-size:0.72rem;margin-bottom:12px;min-height:14px;color:var(--text-dim);font-style:italic;">Poll title appears here…</div>
+                <button style="width:100%;padding:7px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.65rem;font-weight:800;cursor:pointer;letter-spacing:0.03em;">Vote</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview 2: Full poll detail (what they see after tapping Vote) -->
+          <div>
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Poll Detail (after tapping Vote)</div>
+            <div style="background:#f5f0ea;border-radius:36px;width:100%;max-width:260px;margin:0 auto;padding:16px 12px 24px;box-shadow:0 24px 60px rgba(44,26,14,0.18),0 0 0 2px #d4c4b0;display:flex;flex-direction:column;gap:0;">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:0 6px 10px;">
+                <span style="color:var(--text);font-size:0.6rem;font-weight:700;">9:41</span>
+                <div style="width:40px;height:3px;background:var(--cream3);border-radius:4px;"></div>
+                <span style="color:var(--text);font-size:0.6rem;">•••</span>
+              </div>
+              <div style="background:#fff;border-radius:12px;padding:14px;border:1px solid var(--border);">
+                <div style="font-size:0.6rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:var(--brown);margin-bottom:6px;">📊 Poll</div>
+                <div id="bio-detail-title" style="font-weight:800;font-size:0.72rem;margin-bottom:10px;color:var(--text-dim);font-style:italic;">Poll title appears here…</div>
+                <div id="bio-detail-questions" style="display:flex;flex-direction:column;gap:10px;">
+                  <div style="font-size:0.6rem;color:var(--text-dim);font-style:italic;">Questions and options appear here…</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status badge -->
+          <div id="bio-saved-status" style="display:none;border-radius:12px;padding:12px 14px;">
+            <div id="bio-status-icon" style="font-size:0.72rem;font-weight:700;"></div>
+            <div id="bio-status-sub" style="font-size:0.72rem;margin-top:2px;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FORMS SCREEN -->
+    <div id="screen-forms" class="screen">
+      <div class="section-header">
+        <h2 class="section-title">Forms</h2>
+        <p class="section-sub">Create, send, and collect responses from any type of business form — contracts, applications, intake forms, waivers, and more</p>
+      </div>
+
+      <!-- Top bar -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+        <div style="display:flex;gap:4px;background:var(--cream2);border:1px solid var(--border);border-radius:12px;padding:4px;flex-wrap:wrap;">
+          <button id="ftab-all" onclick="formsTab('all',this)" style="padding:7px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:var(--brown);color:#fff;">All Forms</button>
+          <button id="ftab-active" onclick="formsTab('active',this)" style="padding:7px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);">Active</button>
+          <button id="ftab-draft" onclick="formsTab('draft',this)" style="padding:7px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);">Drafts</button>
+          <button id="ftab-responses" onclick="formsTab('responses',this)" style="padding:7px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.78rem;background:transparent;color:var(--text-dim);">Responses</button>
+        </div>
+        <button onclick="formsOpenBuilder(null)" style="display:flex;align-items:center;gap:7px;padding:10px 20px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.85rem;box-shadow:0 3px 12px rgba(192,122,80,0.3);white-space:nowrap;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Create Form
+        </button>
+      </div>
+
+      <!-- Forms list / empty state -->
+      <div id="forms-list-wrap">
+        <div id="forms-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:16px;"></div>
+        <div id="forms-empty" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:52px 28px;text-align:center;">
+          <div style="font-size:2.8rem;margin-bottom:14px;">📋</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:8px;">No forms yet</div>
+          <div style="font-size:0.88rem;color:var(--text-dim);margin-bottom:20px;max-width:400px;margin-left:auto;margin-right:auto;">Build contracts, intake forms, waivers, applications, NDAs, questionnaires — any form your business needs. Add a signature field, then send by email or message.</div>
+          <button onclick="formsOpenBuilder(null)" style="padding:12px 26px;background:var(--brown);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;">+ Create Your First Form</button>
+        </div>
+      </div>
+
+      <!-- Responses tab content -->
+      <div id="forms-responses-wrap" style="display:none;">
+        <div id="forms-responses-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="forms-responses-empty" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:40px 28px;text-align:center;">
+          <div style="font-size:2rem;margin-bottom:10px;">📬</div>
+          <div style="font-size:0.95rem;font-weight:700;margin-bottom:6px;color:var(--text);">No responses yet</div>
+          <div style="font-size:0.85rem;color:var(--text-dim);">Completed forms submitted by recipients will appear here.</div>
+        </div>
+      </div>
+
+      <!-- ══ FORM BUILDER ══ -->
+      <div id="form-builder" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px;align-items:start;">
+
+          <!-- LEFT: builder -->
+          <div style="display:flex;flex-direction:column;gap:16px;">
+
+            <!-- Back link -->
+            <button onclick="formsCloseBuilder()" style="display:flex;align-items:center;gap:6px;background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text-mid);padding:0;width:fit-content;" onmouseover="this.style.color='var(--brown)'" onmouseout="this.style.color='var(--text-mid)'">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              Back to Forms
+            </button>
+
+            <!-- Form meta -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">Form Details</div>
+              <div class="form-field" style="margin-bottom:14px;">
+                <label>Form Title *</label>
+                <input type="text" id="fb-title" placeholder="e.g. Client Intake Form" maxlength="80" oninput="fbUpdatePreview()">
+              </div>
+              <div class="form-field" style="margin-bottom:14px;">
+                <label>Form Type</label>
+                <select id="fb-type" onchange="fbUpdatePreview()">
+                  <option value="">— Select a type —</option>
+                  <optgroup label="Client & Business">
+                    <option>Client Intake Form</option>
+                    <option>New Client Questionnaire</option>
+                    <option>Service Agreement</option>
+                    <option>Contract</option>
+                    <option>NDA / Non-Disclosure Agreement</option>
+                    <option>Invoice Authorization</option>
+                    <option>Deposit Agreement</option>
+                  </optgroup>
+                  <optgroup label="Health & Wellness">
+                    <option>Health Intake Form</option>
+                    <option>Medical History Form</option>
+                    <option>Consent & Waiver</option>
+                    <option>Liability Waiver</option>
+                    <option>Photo / Media Release</option>
+                  </optgroup>
+                  <optgroup label="Creative & Events">
+                    <option>Brand Collaboration Form</option>
+                    <option>Event Registration</option>
+                    <option>Vendor Application</option>
+                    <option>Casting / Talent Form</option>
+                    <option>UGC Creator Brief</option>
+                  </optgroup>
+                  <optgroup label="Feedback & Research">
+                    <option>Customer Feedback Form</option>
+                    <option>Review Request Form</option>
+                    <option>Survey</option>
+                    <option>Waitlist Sign-Up</option>
+                    <option>Job Application</option>
+                  </optgroup>
+                  <optgroup label="Other">
+                    <option>Custom Form</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-field" style="margin-bottom:14px;">
+                <label>Description (optional)</label>
+                <textarea id="fb-desc" placeholder="Briefly explain what this form is for…" rows="2" oninput="fbUpdatePreview()" style="resize:none;"></textarea>
+              </div>
+              <div class="form-field" style="margin:0;">
+                <label>Form Body <span style="font-weight:400;color:var(--text-dim);">(contract text, clauses, terms & conditions)</span></label>
+                <textarea id="fb-body" placeholder="Write the full body of your form here — clauses, terms, conditions, scope of work, payment terms, confidentiality agreements, or any legal language the recipient needs to read before signing or submitting…" rows="10" oninput="fbUpdatePreview()" style="font-size:0.85rem;line-height:1.7;resize:vertical;min-height:180px;"></textarea>
+                <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">This text appears in the form above all fields. Use it for your contract clauses, waiver terms, NDA language, service agreement details, or any content the recipient must read.</div>
+              </div>
+            </div>
+
+            <!-- Fields -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);">Form Fields</div>
+              </div>
+              <!-- Field type buttons -->
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;">
+                <button onclick="fbAddField('text')" style="padding:6px 11px;background:var(--cream);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-mid);" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">+ Short Text</button>
+                <button onclick="fbAddField('textarea')" style="padding:6px 11px;background:var(--cream);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-mid);" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">+ Long Text</button>
+                <button onclick="fbAddField('email')" style="padding:6px 11px;background:var(--cream);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-mid);" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">+ Email</button>
+                <button onclick="fbAddField('phone')" style="padding:6px 11px;background:var(--cream);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-mid);" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">+ Phone</button>
+                <button onclick="fbAddField('date')" style="padding:6px 11px;background:var(--cream);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-mid);" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">+ Date</button>
+                <button onclick="fbAddField('select')" style="padding:6px 11px;background:var(--cream);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-mid);" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">+ Dropdown</button>
+                <button onclick="fbAddField('checkbox')" style="padding:6px 11px;background:var(--cream);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-mid);" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-mid)'">+ Checkbox</button>
+                <button onclick="fbAddField('signature')" style="padding:6px 11px;background:var(--brown-bg2);border:1px solid var(--brown);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;color:var(--brown);" onmouseover="this.style.background='var(--brown)';this.style.color='#fff'" onmouseout="this.style.background='var(--brown-bg2)';this.style.color='var(--brown)'">✍️ + Signature</button>
+              </div>
+              <!-- Fields list -->
+              <div id="fb-fields-list" style="display:flex;flex-direction:column;gap:10px;">
+                <div style="font-size:0.82rem;color:var(--text-dim);text-align:center;padding:22px 0;border:1.5px dashed var(--border);border-radius:10px;">Add fields using the buttons above</div>
+              </div>
+            </div>
+
+            <!-- Submission settings -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">Submission</div>
+              <div class="form-field" style="margin-bottom:12px;">
+                <label>Submit Button Label</label>
+                <input type="text" id="fb-submit-label" value="Submit" oninput="fbUpdatePreview()">
+              </div>
+              <div class="form-field" style="margin:0;">
+                <label>Confirmation Message</label>
+                <input type="text" id="fb-confirm-msg" placeholder="Thank you! We'll be in touch soon." oninput="fbUpdatePreview()">
+              </div>
+            </div>
+
+            <!-- Send options -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:16px;">Send Form</div>
+              <div class="form-field" style="margin-bottom:14px;">
+                <label>Recipient Name (optional)</label>
+                <input type="text" id="fb-recipient-name" placeholder="e.g. Jane Smith">
+              </div>
+              <div class="form-field" style="margin-bottom:16px;">
+                <label>Recipient Email</label>
+                <input type="email" id="fb-recipient-email" placeholder="recipient@email.com">
+              </div>
+              <div class="form-field" style="margin-bottom:16px;">
+                <label>Personal Note (optional)</label>
+                <textarea id="fb-send-note" rows="2" placeholder="e.g. Hi! Please fill out this form before our session." style="resize:none;"></textarea>
+              </div>
+              <div style="display:flex;gap:10px;">
+                <button onclick="fbSendEmail()" style="flex:1;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  Send via Email
+                </button>
+                <button onclick="fbSendMessage()" style="flex:1;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                  Send in Message
+                </button>
+              </div>
+            </div>
+
+            <!-- Save / Publish -->
+            <div style="display:flex;gap:8px;">
+              <button onclick="fbSaveDraft()" style="flex:1;padding:13px;background:#fff;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;color:var(--text-mid);transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brown)'" onmouseout="this.style.borderColor='var(--border)'">Save Draft</button>
+              <button onclick="fbPublish()" style="flex:2;padding:13px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:800;box-shadow:0 3px 12px rgba(192,122,80,0.3);">Publish Form</button>
+            </div>
+          </div>
+
+          <!-- RIGHT: live preview -->
+          <div style="position:sticky;top:20px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;">Form Preview</div>
+            <div style="background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;">
+              <div id="fb-preview-type" style="font-size:0.62rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:6px;display:none;"></div>
+              <div id="fb-preview-title" style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);margin-bottom:6px;">Form title</div>
+              <div id="fb-preview-desc" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:20px;display:none;line-height:1.6;"></div>
+              <div id="fb-preview-fields" style="display:flex;flex-direction:column;gap:14px;">
+                <div style="font-size:0.82rem;color:var(--text-dim);font-style:italic;">Fields will appear here as you add them</div>
+              </div>
+              <button id="fb-preview-submit-btn" style="margin-top:22px;width:100%;padding:12px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:800;">Submit</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <!-- ══════════════════════════════════════════════
          GATEWAY ROOM SCREEN
     ══════════════════════════════════════════════ -->
@@ -7284,11 +7736,68 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 </div>
 
 <!-- MODAL: GO LIVE STEP 1 -->
+<!-- CREATE POLL MODAL -->
+<div id="modal-create-poll" class="modal-overlay" onclick="closeModal('modal-create-poll')">
+  <div class="modal" style="max-width:460px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">📊 Create a Poll</h2>
+      <button onclick="closeModal('modal-create-poll')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:18px;">Launch a live poll your audience can vote on in real time.</p>
+
+    <div class="form-field">
+      <label>Poll Question *</label>
+      <input type="text" id="poll-modal-question" placeholder="e.g. Which product should I launch next?" maxlength="120" oninput="pollModalPreview()">
+    </div>
+
+    <div class="form-field">
+      <label>Option 1 *</label>
+      <input type="text" id="poll-modal-opt1" placeholder="e.g. Skincare Bundle" oninput="pollModalPreview()">
+    </div>
+    <div class="form-field">
+      <label>Option 2 *</label>
+      <input type="text" id="poll-modal-opt2" placeholder="e.g. Digital Course" oninput="pollModalPreview()">
+    </div>
+    <div class="form-field">
+      <label>Option 3 <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+      <input type="text" id="poll-modal-opt3" placeholder="e.g. Ebook" oninput="pollModalPreview()">
+    </div>
+    <div class="form-field">
+      <label>Option 4 <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+      <input type="text" id="poll-modal-opt4" placeholder="e.g. Merch Drop" oninput="pollModalPreview()">
+    </div>
+
+    <div class="form-field">
+      <label>Poll Duration</label>
+      <select id="poll-modal-duration">
+        <option value="0">No time limit — close manually</option>
+        <option value="60">1 minute</option>
+        <option value="120">2 minutes</option>
+        <option value="300" selected>5 minutes</option>
+        <option value="600">10 minutes</option>
+        <option value="900">15 minutes</option>
+      </select>
+    </div>
+
+    <!-- Live preview of poll inside modal -->
+    <div id="poll-modal-preview" style="display:none;background:var(--cream);border-radius:12px;padding:14px 16px;margin-bottom:16px;border-left:3px solid var(--brown);">
+      <div style="font-size:0.62rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:8px;">Preview</div>
+      <div id="poll-preview-q" style="font-weight:700;font-size:0.88rem;color:var(--text);margin-bottom:10px;"></div>
+      <div id="poll-preview-opts" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn-cancel" onclick="closeModal('modal-create-poll')">Cancel</button>
+      <button class="btn-save" id="poll-modal-launch" onclick="launchPollFromModal()" style="flex:1;">🚀 Launch Poll</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-golive" onclick="closeModal('modal-golive')">
   <div class="modal" style="max-width:480px;" onclick="event.stopPropagation()">
     <h2 class="modal-title">Go Live 🎙️</h2>
     <p class="modal-sub">Choose how you want to go live.</p>
-    <div class="live-options">
+    <div class="live-options" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));">
       <div class="live-opt" id="opt-live" onclick="pickMode('live')">
         <div class="live-opt-icon">🔴</div>
         <div class="live-opt-title">Go Live</div>
@@ -7298,6 +7807,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div class="live-opt-icon">🛒</div>
         <div class="live-opt-title">Go Live & Sell</div>
         <div class="live-opt-desc">Feature a product with a sale price and timer.</div>
+      </div>
+      <div class="live-opt" id="opt-poll" onclick="pickMode('poll')">
+        <div class="live-opt-icon">📊</div>
+        <div class="live-opt-title">Go Live with a Poll</div>
+        <div class="live-opt-desc">Launch a live poll your audience votes on in real time.</div>
       </div>
     </div>
     <div class="modal-actions">
@@ -8792,7 +9306,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',signals:'Signals',vault:'My Vault',bannedblocked:'Banned / Blocked',gateway:'Gateway Room',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',signals:'Signals',vault:'My Vault',bannedblocked:'Banned / Blocked',gateway:'Gateway Room',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',createpoll:'Create Poll',forms:'Forms',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon'};
 
 function navStoreTab(el, tab) {
   nav(el, 'mystore');
@@ -10782,6 +11296,7 @@ var helpSections = [
   { id:'help-sec-mystore',        label:'🛍️ My Store' },
   { id:'help-sec-weblinks',       label:'🔗 Web Links' },
   { id:'help-sec-listings',       label:'📋 Listings' },
+  { id:'help-sec-forms',          label:'📝 Forms' },
   { id:'help-sec-booking',        label:'📅 Booking / Your Services' },
   { id:'help-sec-sociallinks',    label:'📱 Social Links' },
   { id:'help-sec-video',          label:'🎬 Video' },
@@ -10977,6 +11492,735 @@ function lpBringBack() {
   if (card) card.style.display = 'block';
   lpUpdateProduct();
   toast('Product brought back');
+}
+
+// ── POLL FUNCTIONS ──
+var lpPollTimerInterval = null;
+var lpPollVotes = [];
+
+function lpLaunchPoll() {
+  var q = (document.getElementById('lp-poll-question')||{}).value || '';
+  var o1 = (document.getElementById('lp-poll-opt1')||{}).value || '';
+  var o2 = (document.getElementById('lp-poll-opt2')||{}).value || '';
+  var o3 = (document.getElementById('lp-poll-opt3')||{}).value || '';
+  var o4 = (document.getElementById('lp-poll-opt4')||{}).value || '';
+  if (!q.trim() || !o1.trim() || !o2.trim()) { toast('⚠️ Add a question and at least 2 options'); return; }
+  var opts = [o1, o2];
+  if (o3.trim()) opts.push(o3);
+  if (o4.trim()) opts.push(o4);
+  lpShowPollOnPhone(q, opts);
+  toast('📊 Poll launched to your live!');
+}
+
+function launchPollFromModal() {
+  var q = (document.getElementById('poll-modal-question')||{}).value || '';
+  var o1 = (document.getElementById('poll-modal-opt1')||{}).value || '';
+  var o2 = (document.getElementById('poll-modal-opt2')||{}).value || '';
+  var o3 = (document.getElementById('poll-modal-opt3')||{}).value || '';
+  var o4 = (document.getElementById('poll-modal-opt4')||{}).value || '';
+  var dur = parseInt((document.getElementById('poll-modal-duration')||{}).value || '0');
+  if (!q.trim() || !o1.trim() || !o2.trim()) { toast('⚠️ Add a question and at least 2 options'); return; }
+  var opts = [o1, o2];
+  if (o3.trim()) opts.push(o3);
+  if (o4.trim()) opts.push(o4);
+  lpShowPollOnPhone(q, opts, dur);
+  closeModal('modal-create-poll');
+  toast('📊 Poll launched to your live!');
+}
+
+function lpShowPollOnPhone(question, opts, durationSecs) {
+  if (lpPollTimerInterval) { clearInterval(lpPollTimerInterval); lpPollTimerInterval = null; }
+  lpPollVotes = opts.map(function(){ return Math.floor(Math.random()*18)+2; });
+  var card = document.getElementById('phone-poll-card');
+  var qEl = document.getElementById('phone-poll-question');
+  var optsEl = document.getElementById('phone-poll-options');
+  var timerEl = document.getElementById('phone-poll-timer');
+  if (!card || !qEl || !optsEl) return;
+  qEl.textContent = question;
+  optsEl.innerHTML = '';
+  renderPhonePollBars(opts, optsEl);
+  card.style.display = 'block';
+  // Simulate votes growing
+  var voteInterval = setInterval(function() {
+    var idx = Math.floor(Math.random() * lpPollVotes.length);
+    lpPollVotes[idx] += Math.floor(Math.random() * 3) + 1;
+    renderPhonePollBars(opts, optsEl);
+  }, 1800);
+  // Duration countdown
+  if (durationSecs && durationSecs > 0) {
+    var remaining = durationSecs;
+    timerEl.textContent = formatPollTime(remaining);
+    lpPollTimerInterval = setInterval(function() {
+      remaining--;
+      timerEl.textContent = formatPollTime(remaining);
+      if (remaining <= 0) { clearInterval(lpPollTimerInterval); clearInterval(voteInterval); lpPollTimerInterval = null; lpEndPoll(); }
+    }, 1000);
+  } else {
+    timerEl.textContent = '';
+    // still clear vote sim after 5 min
+    setTimeout(function(){ clearInterval(voteInterval); }, 300000);
+  }
+}
+
+function renderPhonePollBars(opts, container) {
+  var total = lpPollVotes.reduce(function(a,b){return a+b;},0) || 1;
+  container.innerHTML = '';
+  opts.forEach(function(opt, i) {
+    var pct = Math.round((lpPollVotes[i]/total)*100);
+    var bar = document.createElement('div');
+    bar.style.cssText = 'position:relative;cursor:pointer;';
+    bar.innerHTML = '<div style="position:absolute;left:0;top:0;bottom:0;width:'+pct+'%;background:rgba(192,122,80,0.28);border-radius:6px;transition:width 0.4s;"></div>'
+      +'<div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border:1px solid rgba(192,122,80,0.2);border-radius:6px;">'
+      +'<span style="color:#fff;font-size:0.6rem;font-weight:600;">'+opt+'</span>'
+      +'<span style="color:#D4956E;font-size:0.6rem;font-weight:800;">'+pct+'%</span>'
+      +'</div>';
+    bar.onclick = function() {
+      lpPollVotes[i] += 1;
+      renderPhonePollBars(opts, container);
+    };
+    container.appendChild(bar);
+  });
+}
+
+function formatPollTime(secs) {
+  var m = Math.floor(secs/60); var s = secs%60;
+  return m+':'+(s<10?'0':'')+s;
+}
+
+function lpEndPoll() {
+  if (lpPollTimerInterval) { clearInterval(lpPollTimerInterval); lpPollTimerInterval = null; }
+  var card = document.getElementById('phone-poll-card');
+  if (card) card.style.display = 'none';
+  toast('Poll ended');
+}
+
+// ── CREATE POLL SCREEN ──
+var cpSelectedDuration = 0;
+
+function cpSetDuration(val, btn) {
+  cpSelectedDuration = val;
+  document.querySelectorAll('.cp-dur-btn').forEach(function(b) {
+    b.style.border = '1.5px solid var(--border)';
+    b.style.background = 'var(--cream)';
+    b.style.color = 'var(--text-dim)';
+  });
+  btn.style.border = '1.5px solid var(--brown)';
+  btn.style.background = 'var(--brown-bg2)';
+  btn.style.color = 'var(--brown-dark)';
+  // update timer label in phone preview
+  var timerLabel = document.getElementById('cp-phone-timer-label');
+  if (timerLabel) timerLabel.textContent = val > 0 ? formatPollTime(val) : '';
+}
+
+function cpUpdatePreview() {
+  var q = (document.getElementById('cp-question')||{}).value || '';
+  var o1 = (document.getElementById('cp-opt1')||{}).value || '';
+  var o2 = (document.getElementById('cp-opt2')||{}).value || '';
+  var o3 = (document.getElementById('cp-opt3')||{}).value || '';
+  var o4 = (document.getElementById('cp-opt4')||{}).value || '';
+  // character counter
+  var counter = document.getElementById('cp-q-count');
+  if (counter) counter.textContent = q.length;
+  // phone preview question
+  var qEl = document.getElementById('cp-phone-question');
+  if (qEl) {
+    qEl.textContent = q || 'Your question will appear here…';
+    qEl.style.color = q ? '#fff' : 'rgba(255,255,255,0.4)';
+    qEl.style.fontStyle = q ? 'normal' : 'italic';
+  }
+  // phone preview options
+  var optsEl = document.getElementById('cp-phone-options');
+  if (!optsEl) return;
+  var opts = [o1, o2, o3, o4].filter(function(x){ return x.trim(); });
+  if (opts.length === 0) opts = ['Option 1', 'Option 2'];
+  optsEl.innerHTML = opts.map(function(opt, i) {
+    var hasText = (i < 2) ? true : opt.trim();
+    return '<div style="padding:5px 8px;border:1px solid rgba(255,255,255,' + (hasText ? '0.15' : '0.06') + ');border-radius:6px;font-size:0.58rem;color:rgba(255,255,255,' + (hasText ? '0.75' : '0.25') + ');">' + (opt || 'Option ' + (i+1)) + '</div>';
+  }).join('');
+}
+
+function cpLaunchPoll() {
+  var q = (document.getElementById('cp-question')||{}).value || '';
+  var o1 = (document.getElementById('cp-opt1')||{}).value || '';
+  var o2 = (document.getElementById('cp-opt2')||{}).value || '';
+  var o3 = (document.getElementById('cp-opt3')||{}).value || '';
+  var o4 = (document.getElementById('cp-opt4')||{}).value || '';
+  if (!q.trim()) { toast('⚠️ Please add a poll question'); return; }
+  if (!o1.trim() || !o2.trim()) { toast('⚠️ Please add at least 2 options'); return; }
+  var opts = [o1, o2];
+  if (o3.trim()) opts.push(o3);
+  if (o4.trim()) opts.push(o4);
+  lpShowPollOnPhone(q, opts, cpSelectedDuration);
+  // Show live results panel on the page
+  var status = document.getElementById('cp-active-status');
+  if (status) {
+    status.style.display = 'block';
+    cpRenderResults(opts);
+    // Simulate votes growing on screen
+    var voteRefresh = setInterval(function() {
+      if (document.getElementById('cp-active-status') && document.getElementById('cp-active-status').style.display !== 'none') {
+        cpRenderResults(opts);
+      } else {
+        clearInterval(voteRefresh);
+      }
+    }, 2000);
+  }
+  toast('📊 Poll launched to your live!');
+}
+
+function cpRenderResults(opts) {
+  var el = document.getElementById('cp-results-list');
+  if (!el) return;
+  var total = lpPollVotes.reduce(function(a,b){return a+b;},0) || 1;
+  el.innerHTML = opts.map(function(opt, i) {
+    var pct = Math.round(((lpPollVotes[i]||0)/total)*100);
+    return '<div style="font-size:0.8rem;">'
+      + '<div style="display:flex;justify-content:space-between;margin-bottom:3px;">'
+      + '<span style="font-weight:600;color:var(--text);">' + opt + '</span>'
+      + '<span style="font-weight:800;color:var(--brown);">' + pct + '%</span>'
+      + '</div>'
+      + '<div style="height:6px;background:var(--cream3);border-radius:4px;overflow:hidden;">'
+      + '<div style="height:100%;width:' + pct + '%;background:var(--brown);border-radius:4px;transition:width 0.5s;"></div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function cpEndPoll() {
+  lpEndPoll();
+  var status = document.getElementById('cp-active-status');
+  if (status) status.style.display = 'none';
+}
+
+// ── FORMS ──────────────────────────────────────────────────────────────────
+var formsData = []; // {id, title, type, desc, fields, submitLabel, confirmMsg, status:'draft'|'active', responses:[]}
+var fbCurrentId = null;
+var fbFields = []; // [{id, type, label, required, options:[]}]
+var fbFieldCounter = 0;
+
+function formsTab(tab, btn) {
+  document.querySelectorAll('#ftab-all,#ftab-active,#ftab-draft,#ftab-responses').forEach(function(b){
+    b.style.background='transparent'; b.style.color='var(--text-dim)';
+  });
+  btn.style.background='var(--brown)'; btn.style.color='#fff';
+  var listWrap = document.getElementById('forms-list-wrap');
+  var respWrap = document.getElementById('forms-responses-wrap');
+  if (tab === 'responses') {
+    if (listWrap) listWrap.style.display = 'none';
+    if (respWrap) respWrap.style.display = 'block';
+    formsRenderResponses();
+  } else {
+    if (listWrap) listWrap.style.display = 'block';
+    if (respWrap) respWrap.style.display = 'none';
+    formsRenderGrid(tab);
+  }
+}
+
+function formsRenderGrid(filter) {
+  var grid = document.getElementById('forms-grid');
+  var empty = document.getElementById('forms-empty');
+  if (!grid) return;
+  var filtered = formsData.filter(function(f){
+    if (filter === 'all') return true;
+    if (filter === 'active') return f.status === 'active';
+    if (filter === 'draft') return f.status === 'draft';
+    return true;
+  });
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  grid.innerHTML = filtered.map(function(f) {
+    var statusColor = f.status === 'active' ? '#22c55e' : 'var(--text-dim)';
+    var statusLabel = f.status === 'active' ? '● Active' : '○ Draft';
+    var respCount = f.responses ? f.responses.length : 0;
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:10px;">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">'
+      + '<div>'
+      + (f.type ? '<div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:4px;">'+f.type+'</div>' : '')
+      + '<div style="font-weight:700;font-size:0.92rem;color:var(--text);">'+f.title+'</div>'
+      + '</div>'
+      + '<span style="font-size:0.7rem;font-weight:700;color:'+statusColor+';white-space:nowrap;">'+statusLabel+'</span>'
+      + '</div>'
+      + (f.desc ? '<div style="font-size:0.78rem;color:var(--text-dim);line-height:1.5;">'+f.desc+'</div>' : '')
+      + '<div style="font-size:0.75rem;color:var(--text-dim);">'+f.fields.length+' field'+(f.fields.length!==1?'s':'')+' · '+respCount+' response'+(respCount!==1?'s':'')+'</div>'
+      + '<div style="display:flex;gap:7px;flex-wrap:wrap;">'
+      + '<button onclick="formsOpenBuilder(\''+f.id+'\')" style="flex:1;padding:8px;background:var(--cream);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text-mid);">✏️ Edit</button>'
+      + '<button onclick="formsSend(\''+f.id+'\')" style="flex:1;padding:8px;background:var(--cream);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;color:var(--text-mid);">📤 Send</button>'
+      + '<button onclick="formsDelete(\''+f.id+'\')" style="padding:8px 12px;background:var(--cream);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;color:#dc2626;" onmouseover="this.style.background=\'#fee2e2\'" onmouseout="this.style.background=\'var(--cream)\'">🗑</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function formsRenderResponses() {
+  var list = document.getElementById('forms-responses-list');
+  var empty = document.getElementById('forms-responses-empty');
+  if (!list) return;
+  var all = [];
+  formsData.forEach(function(f){ (f.responses||[]).forEach(function(r){ all.push({form:f, resp:r}); }); });
+  if (all.length === 0) { list.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if (empty) empty.style.display='none';
+  list.innerHTML = all.map(function(item) {
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 20px;">'
+      + '<div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--brown);margin-bottom:4px;">'+item.form.title+'</div>'
+      + '<div style="font-weight:600;font-size:0.85rem;color:var(--text);margin-bottom:4px);">'+item.resp.from+'</div>'
+      + '<div style="font-size:0.75rem;color:var(--text-dim);">'+item.resp.date+'</div>'
+      + '</div>';
+  }).join('');
+}
+
+function formsOpenBuilder(id) {
+  var listWrap = document.getElementById('forms-list-wrap');
+  var respWrap = document.getElementById('forms-responses-wrap');
+  var builder = document.getElementById('form-builder');
+  if (listWrap) listWrap.style.display = 'none';
+  if (respWrap) respWrap.style.display = 'none';
+  document.querySelector('.section-header') && (document.querySelector('#screen-forms .section-header').style.display = 'none');
+  document.querySelectorAll('#screen-forms > div:first-of-type, #screen-forms > div:nth-of-type(2)').forEach(function(el){ if (el.id !== 'form-builder') el.style.display = 'none'; });
+  if (builder) builder.style.display = 'block';
+
+  if (id) {
+    var form = formsData.find(function(f){ return f.id === id; });
+    if (form) {
+      fbCurrentId = id;
+      fbFields = JSON.parse(JSON.stringify(form.fields));
+      document.getElementById('fb-title').value = form.title || '';
+      document.getElementById('fb-type').value = form.type || '';
+      document.getElementById('fb-desc').value = form.desc || '';
+      document.getElementById('fb-body').value = form.body || '';
+      document.getElementById('fb-submit-label').value = form.submitLabel || 'Submit';
+      document.getElementById('fb-confirm-msg').value = form.confirmMsg || '';
+    }
+  } else {
+    fbCurrentId = null;
+    fbFields = [];
+    document.getElementById('fb-title').value = '';
+    document.getElementById('fb-type').value = '';
+    document.getElementById('fb-desc').value = '';
+    document.getElementById('fb-body').value = '';
+    document.getElementById('fb-submit-label').value = 'Submit';
+    document.getElementById('fb-confirm-msg').value = '';
+    document.getElementById('fb-recipient-name').value = '';
+    document.getElementById('fb-recipient-email').value = '';
+    document.getElementById('fb-send-note').value = '';
+  }
+  fbRenderFields();
+  fbUpdatePreview();
+}
+
+function formsCloseBuilder() {
+  var builder = document.getElementById('form-builder');
+  if (builder) builder.style.display = 'none';
+  var header = document.querySelector('#screen-forms .section-header');
+  if (header) header.style.display = '';
+  var topBar = document.querySelector('#screen-forms > div:nth-child(2)');
+  if (topBar) topBar.style.display = '';
+  var listWrap = document.getElementById('forms-list-wrap');
+  if (listWrap) listWrap.style.display = '';
+  formsRenderGrid('all');
+  document.querySelectorAll('#ftab-all,#ftab-active,#ftab-draft,#ftab-responses').forEach(function(b){b.style.background='transparent';b.style.color='var(--text-dim)';});
+  var allBtn = document.getElementById('ftab-all');
+  if (allBtn) { allBtn.style.background='var(--brown)'; allBtn.style.color='#fff'; }
+}
+
+function fbAddField(type) {
+  fbFieldCounter++;
+  var defaultLabel = {text:'Text Field',textarea:'Long Text',email:'Email Address',phone:'Phone Number',date:'Date',select:'Dropdown',checkbox:'Checkbox',signature:'Signature'}[type] || 'Field';
+  fbFields.push({ id:'field_'+fbFieldCounter, type:type, label:defaultLabel, required:false, options:type==='select'?['Option 1','Option 2']:[] });
+  fbRenderFields();
+  fbUpdatePreview();
+}
+
+function fbRenderFields() {
+  var container = document.getElementById('fb-fields-list');
+  if (!container) return;
+  if (fbFields.length === 0) {
+    container.innerHTML = '<div style="font-size:0.82rem;color:var(--text-dim);text-align:center;padding:22px 0;border:1.5px dashed var(--border);border-radius:10px;">Add fields using the buttons above</div>';
+    return;
+  }
+  container.innerHTML = fbFields.map(function(field, idx) {
+    var isSig = field.type === 'signature';
+    var isSelect = field.type === 'select';
+    var typeLabel = {text:'Short Text',textarea:'Long Text',email:'Email',phone:'Phone',date:'Date',select:'Dropdown',checkbox:'Checkbox',signature:'✍️ Signature'}[field.type]||field.type;
+    var html = '<div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:14px;" id="fcard_'+field.id+'">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+      + '<span style="font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:'+(isSig?'var(--brown)':'var(--text-dim)')+';">'+typeLabel+'</span>'
+      + '<div style="display:flex;align-items:center;gap:8px;">'
+      + '<label style="display:flex;align-items:center;gap:4px;font-size:0.72rem;color:var(--text-dim);cursor:pointer;"><input type="checkbox"'+(field.required?' checked':'')+' onchange="fbSetRequired(\''+field.id+'\',this.checked)" style="accent-color:var(--brown);"> Required</label>'
+      + '<button onclick="fbRemoveField(\''+field.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:1rem;line-height:1;" onmouseover="this.style.color=\'#dc2626\'" onmouseout="this.style.color=\'var(--text-dim)\'">×</button>'
+      + '</div></div>'
+      + (isSig ? '<div style="height:56px;border:1.5px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;background:#fff;"><span style="font-size:0.75rem;color:var(--text-dim);">Signature box</span></div>'
+        : '<input type="text" value="'+field.label.replace(/"/g,'&quot;')+'" onchange="fbSetLabel(\''+field.id+'\',this.value)" placeholder="Field label" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:\'DM Sans\',sans-serif;font-size:0.82rem;outline:none;box-sizing:border-box;background:#fff;" onfocus="this.style.borderColor=\'var(--brown)\'" onblur="this.style.borderColor=\'var(--border)\'">')
+      + (isSelect ? '<div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;" id="fopts_'+field.id+'">'
+          + field.options.map(function(opt,oi){
+              return '<div style="display:flex;gap:6px;align-items:center;">'
+                +'<input type="text" value="'+opt.replace(/"/g,'&quot;')+'" onchange="fbSetOption(\''+field.id+'\','+oi+',this.value)" style="flex:1;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;outline:none;background:#fff;" onfocus="this.style.borderColor=\'var(--brown)\'" onblur="this.style.borderColor=\'var(--border)\'">'
+                +'<button onclick="fbRemoveOption(\''+field.id+'\','+oi+')" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:0.9rem;" title="Remove">×</button>'
+                +'</div>';
+            }).join('')
+          + '<button onclick="fbAddOption(\''+field.id+'\')" style="margin-top:2px;padding:4px 10px;background:none;border:1px dashed var(--border);border-radius:7px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.72rem;color:var(--text-dim);width:100%;" onmouseover="this.style.borderColor=\'var(--brown)\';this.style.color=\'var(--brown)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text-dim)\'">+ Add Option</button>'
+          + '</div>'
+        : '')
+      + '</div>';
+    return html;
+  }).join('');
+}
+
+function fbSetLabel(id, val) { var f=fbFields.find(function(x){return x.id===id;}); if(f){f.label=val; fbUpdatePreview();} }
+function fbSetRequired(id, val) { var f=fbFields.find(function(x){return x.id===id;}); if(f) f.required=val; }
+function fbRemoveField(id) { fbFields=fbFields.filter(function(x){return x.id!==id;}); fbRenderFields(); fbUpdatePreview(); }
+function fbAddOption(id) { var f=fbFields.find(function(x){return x.id===id;}); if(f){f.options.push('Option '+(f.options.length+1)); fbRenderFields(); fbUpdatePreview();} }
+function fbRemoveOption(id,oi) { var f=fbFields.find(function(x){return x.id===id;}); if(f&&f.options.length>1){f.options.splice(oi,1); fbRenderFields(); fbUpdatePreview();} }
+function fbSetOption(id,oi,val) { var f=fbFields.find(function(x){return x.id===id;}); if(f) f.options[oi]=val; fbUpdatePreview(); }
+
+function fbUpdatePreview() {
+  var title = (document.getElementById('fb-title')||{}).value || 'Form title';
+  var desc = (document.getElementById('fb-desc')||{}).value || '';
+  var body = (document.getElementById('fb-body')||{}).value || '';
+  var type = (document.getElementById('fb-type')||{}).value || '';
+  var submitLabel = (document.getElementById('fb-submit-label')||{}).value || 'Submit';
+  var titleEl = document.getElementById('fb-preview-title');
+  var descEl = document.getElementById('fb-preview-desc');
+  var typeEl = document.getElementById('fb-preview-type');
+  var fieldsEl = document.getElementById('fb-preview-fields');
+  var submitEl = document.getElementById('fb-preview-submit-btn');
+  if (titleEl) titleEl.textContent = title;
+  if (descEl) { descEl.textContent = desc; descEl.style.display = desc ? 'block' : 'none'; }
+  if (typeEl) { typeEl.textContent = type; typeEl.style.display = type ? 'block' : 'none'; }
+  if (submitEl) submitEl.textContent = submitLabel || 'Submit';
+
+  // Render form body (clauses/terms) in preview
+  var bodyPreviewId = 'fb-preview-body';
+  var existing = document.getElementById(bodyPreviewId);
+  if (body) {
+    if (!existing) {
+      var bodyEl = document.createElement('div');
+      bodyEl.id = bodyPreviewId;
+      bodyEl.style.cssText = 'background:var(--cream);border-radius:10px;padding:14px 16px;font-size:0.8rem;line-height:1.8;color:var(--text);white-space:pre-wrap;border:1px solid var(--border);margin-bottom:0;';
+      if (fieldsEl && fieldsEl.parentNode) fieldsEl.parentNode.insertBefore(bodyEl, fieldsEl);
+    }
+    document.getElementById(bodyPreviewId).textContent = body;
+    document.getElementById(bodyPreviewId).style.display = 'block';
+  } else if (existing) {
+    existing.style.display = 'none';
+  }
+  if (!fieldsEl) return;
+  if (fbFields.length === 0) { fieldsEl.innerHTML = '<div style="font-size:0.82rem;color:var(--text-dim);font-style:italic;">Fields will appear here as you add them</div>'; return; }
+  fieldsEl.innerHTML = fbFields.map(function(field) {
+    var req = field.required ? ' <span style="color:#dc2626;">*</span>' : '';
+    if (field.type === 'signature') {
+      return '<div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:5px;">✍️ Signature'+req+'</div>'
+        +'<div style="height:56px;border:1.5px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--cream);">'
+        +'<span style="font-size:0.72rem;color:var(--text-dim);">Sign here</span></div></div>';
+    }
+    if (field.type === 'textarea') {
+      return '<div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:5px;">'+field.label+req+'</div>'
+        +'<div style="height:60px;border:1.5px solid var(--border);border-radius:8px;background:var(--cream);padding:8px 10px;font-size:0.75rem;color:var(--text-dim);">Type here…</div></div>';
+    }
+    if (field.type === 'checkbox') {
+      return '<div style="display:flex;align-items:center;gap:8px;"><div style="width:16px;height:16px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;background:var(--cream);"></div><div style="font-size:0.78rem;font-weight:600;color:var(--text);">'+field.label+req+'</div></div>';
+    }
+    if (field.type === 'select') {
+      return '<div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:5px;">'+field.label+req+'</div>'
+        +'<div style="border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;background:var(--cream);font-size:0.75rem;color:var(--text-dim);">'+(field.options[0]||'Select…')+' ▾</div></div>';
+    }
+    var ph = {email:'email@example.com',phone:'+1 (000) 000-0000',date:'MM / DD / YYYY',text:''}[field.type]||'';
+    return '<div><div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:5px;">'+field.label+req+'</div>'
+      +'<div style="border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;background:var(--cream);font-size:0.75rem;color:var(--text-dim);">'+(ph||'Answer…')+'</div></div>';
+  }).join('');
+}
+
+function fbSaveDraft() {
+  var title = (document.getElementById('fb-title')||{}).value || '';
+  if (!title.trim()) { toast('⚠️ Please add a form title'); return; }
+  fbPersist('draft');
+  formsCloseBuilder();
+  toast('📝 Form saved as draft');
+}
+
+function fbPublish() {
+  var title = (document.getElementById('fb-title')||{}).value || '';
+  if (!title.trim()) { toast('⚠️ Please add a form title'); return; }
+  if (fbFields.length === 0) { toast('⚠️ Add at least one field'); return; }
+  fbPersist('active');
+  formsCloseBuilder();
+  toast('✓ Form published!');
+}
+
+function fbPersist(status) {
+  var title = document.getElementById('fb-title').value;
+  var type = document.getElementById('fb-type').value;
+  var desc = document.getElementById('fb-desc').value;
+  var body = document.getElementById('fb-body').value;
+  var submitLabel = document.getElementById('fb-submit-label').value;
+  var confirmMsg = document.getElementById('fb-confirm-msg').value;
+  if (fbCurrentId) {
+    var f = formsData.find(function(x){ return x.id===fbCurrentId; });
+    if (f) { f.title=title; f.type=type; f.desc=desc; f.body=body; f.fields=JSON.parse(JSON.stringify(fbFields)); f.submitLabel=submitLabel; f.confirmMsg=confirmMsg; f.status=status; }
+  } else {
+    var newId = 'form_'+(Date.now());
+    formsData.push({ id:newId, title:title, type:type, desc:desc, body:body, fields:JSON.parse(JSON.stringify(fbFields)), submitLabel:submitLabel, confirmMsg:confirmMsg, status:status, responses:[] });
+    fbCurrentId = newId;
+  }
+}
+
+function fbSendEmail() {
+  var title = (document.getElementById('fb-title')||{}).value || '';
+  if (!title.trim()) { toast('⚠️ Please add a form title first'); return; }
+  if (fbFields.length === 0) { toast('⚠️ Add at least one field first'); return; }
+  var email = (document.getElementById('fb-recipient-email')||{}).value || '';
+  var name = (document.getElementById('fb-recipient-name')||{}).value || '';
+  var note = (document.getElementById('fb-send-note')||{}).value || '';
+  if (!email.trim()) { toast('⚠️ Please enter a recipient email'); return; }
+  fbPersist('active');
+  // Simulate opening email client
+  var subject = encodeURIComponent('Form: ' + title);
+  var body = encodeURIComponent((name ? 'Hi ' + name + ',\n\n' : '') + (note ? note + '\n\n' : '') + 'Please complete the form "' + title + '" and sign if required, then send it back.\n\n— Sent via MASSED');
+  window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+  toast('✉️ Email opened — form sent to ' + email);
+}
+
+function fbSendMessage() {
+  var title = (document.getElementById('fb-title')||{}).value || '';
+  if (!title.trim()) { toast('⚠️ Please add a form title first'); return; }
+  if (fbFields.length === 0) { toast('⚠️ Add at least one field first'); return; }
+  fbPersist('active');
+  toast('💬 Form sent in message!');
+  // Navigate to messages
+  var msgNav = document.querySelector('[onclick*="messages"]');
+  nav(msgNav||null, 'messages');
+}
+
+function formsSend(id) {
+  var f = formsData.find(function(x){ return x.id===id; });
+  if (!f) return;
+  openModal('modal-form-send');
+  document.getElementById('fsend-form-id').value = id;
+  document.getElementById('fsend-title').textContent = f.title;
+  document.getElementById('fsend-recipient-name').value = '';
+  document.getElementById('fsend-recipient-email').value = '';
+  document.getElementById('fsend-note').value = '';
+}
+
+function fsendViaEmail() {
+  var id = document.getElementById('fsend-form-id').value;
+  var f = formsData.find(function(x){ return x.id===id; });
+  var email = document.getElementById('fsend-recipient-email').value;
+  var name = document.getElementById('fsend-recipient-name').value;
+  var note = document.getElementById('fsend-note').value;
+  if (!email.trim()) { toast('⚠️ Please enter a recipient email'); return; }
+  var subject = encodeURIComponent('Form: ' + (f?f.title:''));
+  var body = encodeURIComponent((name?'Hi '+name+',\n\n':'')+(note?note+'\n\n':'')+'Please complete and return the form "'+(f?f.title:'')+'".\n\n— Sent via MASSED');
+  window.location.href = 'mailto:'+email+'?subject='+subject+'&body='+body;
+  closeModal('modal-form-send');
+  toast('✉️ Email opened for ' + (f?f.title:'form'));
+}
+
+function fsendViaMessage() {
+  var id = document.getElementById('fsend-form-id').value;
+  var f = formsData.find(function(x){ return x.id===id; });
+  closeModal('modal-form-send');
+  toast('💬 Form "' + (f?f.title:'') + '" sent in message!');
+  var msgNav = document.querySelector('[onclick*="messages"]');
+  nav(msgNav||null, 'messages');
+}
+
+function formsDelete(id) {
+  if (!confirm('Delete this form? This cannot be undone.')) return;
+  formsData = formsData.filter(function(f){ return f.id!==id; });
+  formsRenderGrid('all');
+  toast('🗑 Form deleted');
+}
+var bioPollQuestions = []; // [{question:'', options:['','',...]}]
+
+function bioInitIfEmpty() {
+  if (bioPollQuestions.length === 0) bioAddQuestion();
+}
+
+function bioAddQuestion() {
+  var idx = bioPollQuestions.length;
+  bioPollQuestions.push({ question: '', options: ['', ''] });
+  bioRenderQuestions();
+}
+
+function bioRenderQuestions() {
+  var container = document.getElementById('bio-questions-list');
+  if (!container) return;
+  container.innerHTML = '';
+  bioPollQuestions.forEach(function(q, qi) {
+    var card = document.createElement('div');
+    card.style.cssText = 'background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:16px;';
+    var headerHTML = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+      + '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Question ' + (qi+1) + '</div>'
+      + (bioPollQuestions.length > 1 ? '<button onclick="bioRemoveQuestion('+qi+')" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--text-dim);font-weight:600;font-family:\'DM Sans\',sans-serif;" onmouseover="this.style.color=\'#dc2626\'" onmouseout="this.style.color=\'var(--text-dim)\'">✕ Remove</button>' : '')
+      + '</div>';
+    var qHTML = '<input type="text" placeholder="Ask something…" value="'+q.question.replace(/"/g,'&quot;')+'" oninput="bioSetQuestion('+qi+',this.value)" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;font-weight:600;outline:none;box-sizing:border-box;background:#fff;margin-bottom:10px;" onfocus="this.style.borderColor=\'var(--brown)\'" onblur="this.style.borderColor=\'var(--border)\'">';
+    var optsHTML = '<div style="display:flex;flex-direction:column;gap:7px;" id="bio-opts-'+qi+'">';
+    q.options.forEach(function(opt, oi) {
+      optsHTML += '<div style="display:flex;align-items:center;gap:7px;">'
+        + '<div style="width:20px;height:20px;border-radius:50%;background:'+(oi<2?'var(--brown)':'var(--cream3)')+';color:'+(oi<2?'#fff':'var(--text-dim)')+';font-size:0.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+(oi+1)+'</div>'
+        + '<input type="text" placeholder="Option '+(oi+1)+(oi>=2?' (optional)':'')+'" value="'+opt.replace(/"/g,'&quot;')+'" oninput="bioSetOption('+qi+','+oi+',this.value)" style="flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px;font-family:\'DM Sans\',sans-serif;font-size:0.82rem;outline:none;background:#fff;" onfocus="this.style.borderColor=\'var(--brown)\'" onblur="this.style.borderColor=\'var(--border)\'">'
+        + (oi >= 2 ? '<button onclick="bioRemoveOption('+qi+','+oi+')" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:1rem;line-height:1;flex-shrink:0;" title="Remove option">×</button>' : '')
+        + '</div>';
+    });
+    optsHTML += '</div>';
+    var addOptBtn = '<button onclick="bioAddOption('+qi+')" style="margin-top:8px;display:flex;align-items:center;gap:5px;padding:5px 10px;background:none;border:1px dashed var(--border);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.75rem;font-weight:600;color:var(--text-dim);width:100%;justify-content:center;" onmouseover="this.style.borderColor=\'var(--brown)\';this.style.color=\'var(--brown)\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--text-dim)\'">'
+      + '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Option</button>';
+    card.innerHTML = headerHTML + qHTML + optsHTML + addOptBtn;
+    container.appendChild(card);
+  });
+  bioUpdatePreview();
+}
+
+function bioSetQuestion(qi, val) { bioPollQuestions[qi].question = val; bioUpdatePreview(); }
+function bioSetOption(qi, oi, val) { bioPollQuestions[qi].options[oi] = val; bioUpdatePreview(); }
+
+function bioAddOption(qi) {
+  bioPollQuestions[qi].options.push('');
+  bioRenderQuestions();
+}
+function bioRemoveOption(qi, oi) {
+  if (bioPollQuestions[qi].options.length <= 2) { toast('Minimum 2 options required'); return; }
+  bioPollQuestions[qi].options.splice(oi, 1);
+  bioRenderQuestions();
+}
+function bioRemoveQuestion(qi) {
+  bioPollQuestions.splice(qi, 1);
+  bioRenderQuestions();
+}
+
+function bioUpdatePreview() {
+  var title = (document.getElementById('bio-poll-title')||{}).value || '';
+
+  // Preview 1 — profile card: title + Vote button
+  var titleEl = document.getElementById('bio-phone-title');
+  if (titleEl) {
+    titleEl.textContent = title || 'Poll title appears here…';
+    titleEl.style.color = title ? 'var(--text)' : 'var(--text-dim)';
+    titleEl.style.fontStyle = title ? 'normal' : 'italic';
+  }
+
+  // Preview 2 — full detail: title + all questions + options
+  var detailTitle = document.getElementById('bio-detail-title');
+  if (detailTitle) {
+    detailTitle.textContent = title || 'Poll title appears here…';
+    detailTitle.style.color = title ? 'var(--text)' : 'var(--text-dim)';
+    detailTitle.style.fontStyle = title ? 'normal' : 'italic';
+  }
+  var qContainer = document.getElementById('bio-detail-questions');
+  if (!qContainer) return;
+  var filled = bioPollQuestions.filter(function(q){ return q.question.trim(); });
+  if (filled.length === 0) {
+    qContainer.innerHTML = '<div style="font-size:0.6rem;color:var(--text-dim);font-style:italic;">Questions and options appear here…</div>';
+    return;
+  }
+  qContainer.innerHTML = filled.map(function(q, i) {
+    var opts = q.options.filter(function(o){ return o.trim(); });
+    if (opts.length === 0) opts = ['Option 1', 'Option 2'];
+    return '<div style="' + (i > 0 ? 'margin-top:10px;padding-top:10px;border-top:1px solid var(--border);' : '') + '">'
+      + '<div style="font-weight:700;font-size:0.62rem;color:var(--text);margin-bottom:6px;line-height:1.35;">' + q.question + '</div>'
+      + opts.map(function(o) {
+          return '<div style="padding:4px 8px;background:var(--cream);border:1px solid var(--border);border-radius:6px;font-size:0.58rem;color:var(--text);margin-bottom:4px;cursor:pointer;">' + o + '</div>';
+        }).join('')
+      + '</div>';
+  }).join('');
+}
+
+var bioPollVisible = false;
+var bioPollSaved = false;
+
+function bioPollSave() {
+  var title = (document.getElementById('bio-poll-title')||{}).value || '';
+  if (!title.trim()) { toast('⚠️ Please add a poll title'); return; }
+  var filled = bioPollQuestions.filter(function(q){ return q.question.trim() && q.options.filter(function(o){return o.trim();}).length >= 2; });
+  if (filled.length === 0) { toast('⚠️ Add at least one question with 2 options'); return; }
+  bioPollSaved = true;
+  bioPollVisible = true;
+  var actions = document.getElementById('bio-poll-actions');
+  if (actions) actions.style.display = 'flex';
+  bioPollUpdateStatus();
+  toast('✓ Poll saved!');
+}
+
+function bioPollToggleVisibility() {
+  if (!bioPollSaved) return;
+  bioPollVisible = !bioPollVisible;
+  bioPollUpdateStatus();
+  toast(bioPollVisible ? '👁 Poll is now visible on your profile' : '🚫 Poll hidden from your profile');
+}
+
+function bioPollUpdateStatus() {
+  var statusBox = document.getElementById('bio-saved-status');
+  var iconEl = document.getElementById('bio-status-icon');
+  var subEl = document.getElementById('bio-status-sub');
+  var toggleBtn = document.getElementById('bio-toggle-btn');
+  var toggleLabel = document.getElementById('bio-toggle-label');
+  var phonePreview = document.getElementById('bio-phone-preview');
+  if (!statusBox) return;
+  statusBox.style.display = 'block';
+  if (bioPollVisible) {
+    statusBox.style.background = '#eaf3de';
+    statusBox.style.border = '1px solid #c0dd97';
+    if (iconEl) { iconEl.textContent = '✓ Poll is visible on your profile'; iconEl.style.color = '#3b6d11'; }
+    if (subEl) { subEl.textContent = 'Shown at massed.io/username'; subEl.style.color = '#639922'; }
+    if (toggleLabel) toggleLabel.textContent = 'Hide from Profile';
+    if (toggleBtn) { toggleBtn.style.borderColor = 'var(--brown)'; toggleBtn.style.color = 'var(--brown)'; }
+    if (phonePreview) phonePreview.style.opacity = '1';
+  } else {
+    statusBox.style.background = 'var(--cream2)';
+    statusBox.style.border = '1px solid var(--border)';
+    if (iconEl) { iconEl.textContent = '⏸ Poll is hidden from your profile'; iconEl.style.color = 'var(--text-mid)'; }
+    if (subEl) { subEl.textContent = 'Save and show when ready'; subEl.style.color = 'var(--text-dim)'; }
+    if (toggleLabel) toggleLabel.textContent = 'Show on Profile';
+    if (toggleBtn) { toggleBtn.style.borderColor = 'var(--border)'; toggleBtn.style.color = 'var(--text-mid)'; }
+    if (phonePreview) phonePreview.style.opacity = '0.35';
+  }
+}
+
+function bioPollDelete() {
+  if (!confirm('Delete this poll? This will remove it from your profile.')) return;
+  bioPollSaved = false;
+  bioPollVisible = false;
+  // Reset form
+  var titleEl = document.getElementById('bio-poll-title');
+  if (titleEl) titleEl.value = '';
+  bioPollQuestions = [];
+  bioAddQuestion();
+  bioUpdatePreview();
+  var actions = document.getElementById('bio-poll-actions');
+  if (actions) actions.style.display = 'none';
+  var statusBox = document.getElementById('bio-saved-status');
+  if (statusBox) statusBox.style.display = 'none';
+  var phonePreview = document.getElementById('bio-phone-preview');
+  if (phonePreview) phonePreview.style.opacity = '1';
+  toast('🗑 Poll deleted');
+}
+
+// Init bio poll with one empty question on page load
+document.addEventListener('DOMContentLoaded', function() {
+  bioAddQuestion();
+});
+
+// Poll modal live preview
+function pollModalPreview() {
+  var q = (document.getElementById('poll-modal-question')||{}).value || '';
+  var o1 = (document.getElementById('poll-modal-opt1')||{}).value || '';
+  var o2 = (document.getElementById('poll-modal-opt2')||{}).value || '';
+  var o3 = (document.getElementById('poll-modal-opt3')||{}).value || '';
+  var o4 = (document.getElementById('poll-modal-opt4')||{}).value || '';
+  var prev = document.getElementById('poll-modal-preview');
+  var pq = document.getElementById('poll-preview-q');
+  var po = document.getElementById('poll-preview-opts');
+  if (!prev || !pq || !po) return;
+  if (!q.trim() && !o1.trim()) { prev.style.display = 'none'; return; }
+  prev.style.display = 'block';
+  pq.textContent = q || 'Your question…';
+  var opts = [o1,o2,o3,o4].filter(function(x){return x.trim();});
+  po.innerHTML = opts.map(function(o){
+    return '<div style="padding:7px 10px;background:var(--cream2);border-radius:8px;font-size:0.82rem;color:var(--text);font-weight:500;">'+o+'</div>';
+  }).join('');
 }
 
 function salesTab(tab) {
@@ -12199,9 +13443,11 @@ function pickMode(mode) {
   liveMode = mode;
   var optLive = document.getElementById('opt-live');
   var optSell = document.getElementById('opt-sell');
+  var optPoll = document.getElementById('opt-poll');
   var btnNext = document.getElementById('btn-next');
   if (optLive) optLive.style.border = mode === 'live' ? '2px solid var(--brown)' : '2px solid var(--border)';
   if (optSell) optSell.style.border = mode === 'sell' ? '2px solid var(--brown)' : '2px solid var(--border)';
+  if (optPoll) optPoll.style.border = mode === 'poll' ? '2px solid var(--brown)' : '2px solid var(--border)';
   if (btnNext) btnNext.disabled = false;
 }
 
@@ -12260,22 +13506,59 @@ function liveNext() {
   closeModal('modal-golive');
   if (liveMode === 'sell') {
     openModal('modal-sell');
+  } else if (liveMode === 'poll') {
+    // Clear poll modal fields fresh
+    ['poll-modal-question','poll-modal-opt1','poll-modal-opt2','poll-modal-opt3','poll-modal-opt4'].forEach(function(id){
+      var el = document.getElementById(id); if (el) el.value = '';
+    });
+    var prev = document.getElementById('poll-modal-preview'); if (prev) prev.style.display = 'none';
+    // Swap launch button to also start the live session
+    var btn = document.getElementById('poll-modal-launch');
+    if (btn) btn.setAttribute('onclick','launchPollFromGoLive()');
+    openModal('modal-create-poll');
   } else {
     // Go Live (no product)
     var banner = document.getElementById('live-banner');
     if (banner) banner.style.display = 'block';
-    // Hide product card — no product selected
     var card = document.getElementById('phone-product-card');
     if (card) card.style.display = 'none';
-    // Populate real profile data into phone mockup
     populateLiveProfile();
-    // Navigate to Live Preview screen
     var lpNav = document.querySelector('[onclick*="livepreview"]');
     nav(lpNav || null, 'livepreview');
     startLiveDuration();
     toast('🔴 You are now live!');
     liveMode = null;
   }
+}
+
+function launchPollFromGoLive() {
+  var q = (document.getElementById('poll-modal-question')||{}).value || '';
+  var o1 = (document.getElementById('poll-modal-opt1')||{}).value || '';
+  var o2 = (document.getElementById('poll-modal-opt2')||{}).value || '';
+  var o3 = (document.getElementById('poll-modal-opt3')||{}).value || '';
+  var o4 = (document.getElementById('poll-modal-opt4')||{}).value || '';
+  var dur = parseInt((document.getElementById('poll-modal-duration')||{}).value || '0');
+  if (!q.trim() || !o1.trim() || !o2.trim()) { toast('⚠️ Add a question and at least 2 options'); return; }
+  var opts = [o1, o2];
+  if (o3.trim()) opts.push(o3);
+  if (o4.trim()) opts.push(o4);
+  closeModal('modal-create-poll');
+  // Start live session
+  var banner = document.getElementById('live-banner');
+  if (banner) banner.style.display = 'block';
+  var card = document.getElementById('phone-product-card');
+  if (card) card.style.display = 'none';
+  populateLiveProfile();
+  var lpNav = document.querySelector('[onclick*="livepreview"]');
+  nav(lpNav || null, 'livepreview');
+  startLiveDuration();
+  // Launch poll after a brief delay so screen transition completes
+  setTimeout(function(){ lpShowPollOnPhone(q, opts, dur); }, 300);
+  toast('🔴 You are now live with a poll!');
+  // Reset launch button back to normal
+  var btn = document.getElementById('poll-modal-launch');
+  if (btn) btn.setAttribute('onclick','launchPollFromModal()');
+  liveMode = null;
 }
 
 function startLiveAndSell() {
@@ -14387,6 +15670,18 @@ document.addEventListener('DOMContentLoaded', function() {
         <p style="margin-top:6px;"><strong>Payment & Deposit:</strong> Toggle <em>Send Payment Link</em> to enter amount + recipient email/phone. Toggle <em>Send Deposit Link</em> to collect a hold deposit immediately to secure the customer's interest.</p>
         <p style="margin-top:6px;"><strong>Listing cards:</strong> CTA button · 👁 Preview · 🤍 Heart (public can save) · 👁 Visible / 🚫 Hidden toggle · ✏️ Edit · 🗑 Delete. Hidden listings are dimmed. Preview opens a full-detail view with photo gallery, thumbnail rail, detail chips, full description, and CTA. Edit modal is pre-filled with all current data including photo swap.</p>
         <p style="margin-top:6px;"><strong>Refunds tab:</strong> Process refunds with client name/email, amount, reason, and optional reference ID. Full refund history log maintained.</p>
+        <p style="margin-top:6px;"><strong>Create Poll:</strong> <strong>Create Poll</strong> sits as its own page directly under <strong>Listings</strong> in the sidebar. The page has two separate sections:</p>
+        <p style="margin-top:6px;">🔴 <strong>Live Poll</strong> — For real-time polls during your live stream. Type a question (up to 120 characters), add up to 4 answer options, choose a duration with the pill buttons (No limit, 1 min, 2 min, 5 min, 10 min, 15 min), and see a live phone preview that updates as you type. Click <strong>Launch Poll to Live</strong> to push it to your active broadcast. A results panel shows vote percentages updating in real time. Click <strong>End Active Poll</strong> to remove it.</p>
+        <p style="margin-top:6px;">🔗 <strong>Link in Bio Poll</strong> — Pins a poll to your public profile page. Add a poll title, then build one or more questions — each question has its own set of answer options. Click <strong>Add Option</strong> under any question to add more than 2 choices, or <strong>Add Question</strong> to stack multiple questions into the same poll. Two live previews update as you type: the first shows <strong>how it appears on your profile</strong> — just the poll name and a Vote button; the second shows <strong>the full poll detail</strong> — the title, every question, and all options exactly as visitors see them after tapping Vote. Click <strong>Save Poll</strong> to save it — once saved two controls appear: <strong>Show / Hide on Profile</strong> (toggles visibility without deleting — status badge shows whether it's currently visible or hidden) and <strong>Delete</strong> (removes the poll permanently and resets the form).</p>
+      </div>
+
+      <div id="help-sec-forms" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">📝 Forms</div>
+        <p>Found in the sidebar under <strong>Forms</strong>. Create any type of business form — client intake forms, contracts, NDAs, service agreements, liability waivers, health intake forms, photo release forms, brand collaboration forms, job applications, event registrations, surveys, and more. Select <strong>Custom Form</strong> if none of the presets fit.</p>
+        <p style="margin-top:6px;"><strong>Form builder:</strong> Add a title, choose a form type from the dropdown, and write an optional description. Below that is the <strong>Form Body</strong> — a large text area where you write the actual content of the document: the clauses, terms and conditions, scope of work, payment terms, confidentiality language, liability disclaimers, or any contract text the recipient needs to read. This appears in the preview exactly as it will look to the recipient. Then add fields using the field buttons — <strong>Short Text</strong>, <strong>Long Text</strong>, <strong>Email</strong>, <strong>Phone</strong>, <strong>Date</strong>, <strong>Dropdown</strong>, <strong>Checkbox</strong>, and <strong>✍️ Signature</strong>. Each field has a label you can edit and a Required toggle. Dropdown fields have an Add Option button to add as many choices as needed. Remove any field with the × button. A live form preview on the right updates as you build — showing exactly what the recipient will see including the full form body text.</p>
+        <p style="margin-top:6px;"><strong>Signature field:</strong> Add the Signature field to any form that requires a legal signature — contracts, waivers, NDAs, agreements. The recipient signs directly inside the form before submitting.</p>
+        <p style="margin-top:6px;"><strong>Sending:</strong> Enter the recipient's name (optional), email, and a personal note. Then hit <strong>Send via Email</strong> — this opens your email client pre-filled with the subject and message so you can send it directly. Or hit <strong>Send in Message</strong> to deliver the form through MASSED Messages. The recipient can open the form, fill it out, sign if required, and send it back through the same channel.</p>
+        <p style="margin-top:6px;"><strong>Tabs:</strong> <strong>All Forms</strong> shows every form you've created. <strong>Active</strong> shows published forms. <strong>Drafts</strong> shows saved drafts. <strong>Responses</strong> shows all completed submissions returned by recipients. Each form card has Edit, Send, and Delete buttons. Save Draft saves without publishing. Publish Form makes it active and ready to send.</p>
       </div>
 
       <div id="help-sec-booking" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
@@ -14415,13 +15710,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
       <div id="help-sec-golive" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🔴 Go Live</div>
-        <p>Click the Go Live button in the top bar. Choose <strong>Go Live</strong> to connect with your audience, or <strong>Go Live &amp; Sell</strong> to feature a product at a sale price with an optional countdown timer. Use ⏸ Pause to pause without ending, and End Live to close the session.</p>
+        <p>Click the Go Live button in the top bar. Choose from three modes: <strong>Go Live</strong> (connect with your audience without a product), <strong>Go Live &amp; Sell</strong> (feature a product with a sale price and optional countdown timer), or <strong>Go Live with a Poll</strong> (launch a live poll straight into your session — viewers vote in real time as soon as you go live). Use ⏸ Pause to pause without ending, and End Live to close the session.</p>
         <p style="margin-top:6px;"><strong>Live action bar</strong> — Five controls appear at the bottom of your live for viewers:</p>
         <p style="margin-top:6px;">💬 <strong>Add a Comment</strong> — A text input bar lets viewers type and send a message in real time. Tap the send arrow to post it to the live comment feed.</p>
         <p style="margin-top:4px;">🔗 <strong>Share Live</strong> — Lets viewers push your live directly to their own page, a post, or a message to someone.</p>
         <p style="margin-top:4px;">💡 <strong>Spark</strong> — A lightbulb icon viewers tap to highlight a standout moment in your live. Sparks add to your engagement signals.</p>
         <p style="margin-top:4px;">👤+ <strong>Add Viewer</strong> — Lets the host or a viewer invite someone into the live audience directly.</p>
         <p style="margin-top:4px;">👤↓ <strong>Request to Join</strong> — Viewers tap this to request to appear on the live themselves. The host sees the request and can approve or decline.</p>
+        <p style="margin-top:6px;"><strong>📊 Live Polls</strong> — Launch a poll to your live audience three ways: (1) from the <strong>Launch Poll</strong> section in the Live Controls panel on the right side of your screen; (2) from the <strong>Create Poll page</strong> in the sidebar under Listings — the Live Poll section has a full builder with question, options, duration pills, live phone preview, and a real-time results panel; or (3) select <strong>Go Live with a Poll</strong> in the Go Live modal — opens the poll builder first, then starts your live session with the poll already active. The <strong>Link in Bio Poll</strong> section on the same page lets you pin a permanent multi-question poll to your public profile — no duration, stays live until you remove it.</p>
       </div>
 
       <div id="help-sec-sales" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
@@ -15409,6 +16705,41 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 
+<!-- SEND FORM MODAL -->
+<div id="modal-form-send" class="modal-overlay" onclick="closeModal('modal-form-send')">
+  <div class="modal" style="max-width:440px;" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <h2 class="modal-title" style="margin:0;">📤 Send Form</h2>
+      <button onclick="closeModal('modal-form-send')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+    </div>
+    <input type="hidden" id="fsend-form-id">
+    <div id="fsend-title" style="font-size:0.82rem;color:var(--text-dim);margin-bottom:18px;font-weight:600;"></div>
+    <div class="form-field">
+      <label>Recipient Name (optional)</label>
+      <input type="text" id="fsend-recipient-name" placeholder="e.g. Jane Smith">
+    </div>
+    <div class="form-field">
+      <label>Recipient Email *</label>
+      <input type="email" id="fsend-recipient-email" placeholder="recipient@email.com">
+    </div>
+    <div class="form-field">
+      <label>Personal Note (optional)</label>
+      <textarea id="fsend-note" rows="2" placeholder="e.g. Hi! Please complete this before our session." style="resize:none;"></textarea>
+    </div>
+    <div style="background:var(--cream);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:0.78rem;color:var(--text-dim);line-height:1.6;">
+      The recipient can open the form, fill it out, add their signature if required, and send it back — via email or message.
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="fsendViaEmail()" style="flex:1;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Send via Email
+      </button>
+      <button onclick="fsendViaMessage()" style="flex:1;padding:12px;background:#fff;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--brown)';this.style.color='var(--brown)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Send in Message
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
-</body>
-</html>
