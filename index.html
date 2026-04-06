@@ -10328,7 +10328,13 @@ function savePublicProfile() {
   }
 
   // Store public profile data — completely independent
-  window._publicProfile = { name: name.trim(), location: location.trim(), astro: astro, bio: bio.trim() };
+  window._publicProfile = {
+  name: name.trim(),
+  location: location.trim(),
+  astro: astro,
+  bio: bio.trim(),
+  linkInBio: linkInBio.trim()
+};
   window._publicProfileSetup = true;
 
   // Update the Switch Profile screen with real data
@@ -10337,12 +10343,29 @@ function savePublicProfile() {
   var locationEl = document.getElementById('sp-location');
   var astroEl    = document.getElementById('sp-astro');
   var bioEl      = document.getElementById('sp-bio');
+  var linkWrapEl = document.getElementById('sp-link-wrap');
+  var linkEl     = document.getElementById('sp-link');
   var aboutLoc   = document.getElementById('sp-about-location');
   var aboutAstro = document.getElementById('sp-about-astro');
   var avatarEl   = document.getElementById('sp-avatar');
 
   if (nameEl) nameEl.textContent = name.trim();
   if (locationEl) locationEl.textContent = location.trim() || '—';
+  if (linkWrapEl && linkEl) {
+  if (linkInBio.trim()) {
+    var finalLink = linkInBio.trim();
+    if (!/^https?:\/\//i.test(finalLink)) {
+      finalLink = 'https://' + finalLink;
+    }
+    linkEl.href = finalLink;
+    linkEl.textContent = linkInBio.trim();
+    linkWrapEl.style.display = 'block';
+  } else {
+    linkEl.href = '#';
+    linkEl.textContent = '';
+    linkWrapEl.style.display = 'none';
+  }
+}
   if (astroEl) astroEl.textContent = astro || '—';
   if (bioEl) bioEl.textContent = bio.trim() || '';
   if (aboutLoc) aboutLoc.textContent = location.trim() || '—';
