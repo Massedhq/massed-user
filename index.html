@@ -9950,7 +9950,26 @@ function nav(el,screen) {
     var pt=document.getElementById('page-title');
     if(pt) pt.textContent=pageTitles[screen]||'';
     // Render dynamic screens
-    if(screen==='switchprofile') setTimeout(function(){ spTab('posts', document.querySelector('.sp-tab')); renderSpFeed(); }, 50);
+    if(screen==='switchprofile') setTimeout(function(){
+    spTab('posts', document.querySelector('.sp-tab'));
+    renderSpFeed();
+    
+    // Logic to display Link in Bio
+    const container = document.getElementById('sp-link-container');
+    const linkDisplay = document.getElementById('sp-link-display');
+    const linkData = (window._userData && window._userData.linkInBio) || "";
+
+    if (linkData && linkData.trim() !== "") {
+        let url = linkData.trim();
+        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+        
+        linkDisplay.href = url;
+        linkDisplay.textContent = linkData;
+        container.style.display = 'flex';
+    } else {
+        container.style.display = 'none';
+    }
+}, 50);
     if(screen==='bannedblocked') setTimeout(renderBannedBlocked, 50);
     if(screen==='gateway') setTimeout(gwInit, 50);
     // Close sidebar on mobile after navigating
