@@ -4,7 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Massed — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+/* Hide everything until JS boot runs — prevents flash of unstyled/unpositioned content */
+body { visibility: hidden; }
+</style>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 aside{display:block;}
@@ -729,10 +735,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
     <div class="bottom-btns">
       <button class="btn-golive" onclick="openGoLive()">
-        <span style="width:9px;height:9px;background:#fff;border-radius:50%;display:inline-block;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></span>
+        <span class="pulse-dot" style="width:9px;height:9px;background:#fff;"></span>
         Go Live
       </button>
-      <!-- ⋯ More dropdown -->
       <div style="position:relative;">
         <button class="btn-more" onclick="toggleMoreMenu()" id="btn-more-trigger">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5" fill="var(--text-mid)"/><circle cx="12" cy="12" r="1.5" fill="var(--text-mid)"/><circle cx="12" cy="19" r="1.5" fill="var(--text-mid)"/></svg>
@@ -776,7 +781,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     </div>
     <div class="topbar-right">
       <button class="desktop-golive" onclick="openGoLive()" style="display:flex;align-items:center;gap:8px;padding:10px 22px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:50px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;box-shadow:0 3px 14px rgba(192,122,80,0.4);letter-spacing:0.02em;">
-        <span style="width:9px;height:9px;background:#fff;border-radius:50%;display:inline-block;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></span>
+        <span class="pulse-dot" style="width:9px;height:9px;background:#fff;"></span>
         Go Live
       </button>
       <div class="link-badge" id="dual-link-badge" onclick="dualLinkOpen(this)" title="Open your public profile + switch to Public View">
@@ -790,7 +795,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
 
     <!-- DASHBOARD -->
     <!-- ══ DASHBOARD — dual state: welcome until profile saved ══ -->
-    <div id="screen-dashboard" class="screen active">
+    <div id="screen-dashboard" class="screen">
 
       <!-- ── WELCOME STATE (shown until Save Profile is clicked) ── -->
       <div id="dashboard-welcome" class="welcome-wrap">
@@ -1192,7 +1197,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
             </div>
             <!-- Status pill — shown when toggled on -->
             <div id="connect-status" style="display:none;margin-top:14px;padding:9px 14px;background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.06));border:1px solid rgba(192,122,80,0.3);border-radius:10px;display:flex;align-items:center;gap:8px;">
-              <span style="width:8px;height:8px;border-radius:50%;background:#C07A50;flex-shrink:0;animation:pulseDot 1.5s ease-in-out infinite;"></span>
+              <span class="pulse-dot" style="width:8px;height:8px;background:#C07A50;"></span>
               <span style="font-size:0.8rem;font-weight:700;color:var(--brown);">Your profile is showing as Equal Link</span>
             </div>
           </div>
@@ -1782,7 +1787,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <!-- Live status header -->
         <div style="margin-bottom:18px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span id="lp-live-dot" style="width:10px;height:10px;background:#ef4444;border-radius:50%;display:inline-block;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></span>
+            <span id="lp-live-dot" class="pulse-dot" style="width:10px;height:10px;background:#ef4444;"></span>
             <span style="color:#ef4444;font-weight:800;font-size:0.82rem;letter-spacing:0.1em;">LIVE CONTROLS</span>
           </div>
           <p style="color:rgba(255,255,255,0.3);font-size:0.75rem;margin:0;">The phone shows what your audience sees on your MASSED page.</p>
@@ -3466,7 +3471,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <style>
     @keyframes scanLine{0%{top:5%;}50%{top:90%;}100%{top:5%;}}
 @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.6;transform:scale(0.75);}}
-[style*="pulseDot"],[class*="pulseDot"]{animation-fill-mode:both;}
+.pulse-dot{border-radius:50%;display:inline-block;flex-shrink:0;animation:pulseDot 1.5s ease-in-out infinite;animation-fill-mode:both;will-change:transform,opacity;}
 
 /* Live Preview scrollable on mobile */
 @media(max-width:768px){
@@ -6334,7 +6339,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <!-- ══ SECTION 1: LIVE POLL ══ -->
       <div style="margin-bottom:10px;">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
-          <div style="width:8px;height:8px;border-radius:50%;background:#ef4444;animation:pulseDot 1.5s ease-in-out infinite;flex-shrink:0;"></div>
+          <div class="pulse-dot" style="width:8px;height:8px;background:#ef4444;"></div>
           <div>
             <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);">Live Poll</div>
             <div style="font-size:0.78rem;color:var(--text-dim);margin-top:1px;">Launch a real-time poll during your live stream — viewers vote as you broadcast</div>
@@ -15600,6 +15605,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mobile layout fixes — run last, after all renders
     applyMobileLayouts();
+
+    // Reveal the app — everything is positioned and rendered, no flash
+    document.body.style.visibility = 'visible';
   });
 });
 </script>
