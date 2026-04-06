@@ -3125,16 +3125,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   <span id="sp-location">Los Angeles, CA</span>
                 </span>
-                
-                <div id="sp-link-wrap" style="display:none;margin-top:6px;">
-  <a id="sp-link"
-     href="#"
-     target="_blank"
-     rel="noopener noreferrer"
-     style="color:#D4956E;font-size:0.82rem;text-decoration:none;word-break:break-word;">
-    mylink.com
-  </a>
-</div>
                 <span style="color:rgba(255,255,255,0.5);font-size:0.78rem;display:flex;align-items:center;gap:5px;">
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   <span id="sp-astro">♐ Sagittarius</span>
@@ -10282,10 +10272,6 @@ function showPublicProfileSetup() {
           '<input id="pp-location" type="text" placeholder="City, State" style="width:100%;padding:11px 14px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;font-family:\'DM Sans\',sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor=\'var(--brown)\'" onblur="this.style.borderColor=\'var(--border)\'">',
         '</div>',
         '<div>',
-      '<div>',
-    '<label style="display:block;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Link in Bio</label>',
-    '<input id="pp-link" type="text" placeholder="yourlink.com" style="width:100%;padding:11px 14px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;font-family:\\'DM Sans\\',sans-serif;font-size:0.88rem;color:var(--text);outline:none;">',
-  '</div>',
           '<label style="display:block;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Astrology Sign</label>',
           '<select id="pp-astro" style="width:100%;padding:11px 14px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;font-family:\'DM Sans\',sans-serif;font-size:0.88rem;outline:none;box-sizing:border-box;">',
             '<option value="">Select sign</option>',
@@ -10324,7 +10310,6 @@ function savePublicProfile() {
   var location = (document.getElementById('pp-location') || {}).value || '';
   var astro    = (document.getElementById('pp-astro')    || {}).value || '';
   var bio      = (document.getElementById('pp-bio')      || {}).value || '';
-  var linkInBio = (document.getElementById('pp-link') || {}).value || '';
 
   if (!name.trim()) {
     toast('Please enter your display name');
@@ -10332,13 +10317,7 @@ function savePublicProfile() {
   }
 
   // Store public profile data — completely independent
-  window._publicProfile = {
-  name: name.trim(),
-  location: location.trim(),
-  astro: astro,
-  bio: bio.trim(),
-  linkInBio: linkInBio.trim()
-};
+  window._publicProfile = { name: name.trim(), location: location.trim(), astro: astro, bio: bio.trim() };
   window._publicProfileSetup = true;
 
   // Update the Switch Profile screen with real data
@@ -10347,29 +10326,12 @@ function savePublicProfile() {
   var locationEl = document.getElementById('sp-location');
   var astroEl    = document.getElementById('sp-astro');
   var bioEl      = document.getElementById('sp-bio');
-  var linkWrapEl = document.getElementById('sp-link-wrap');
-  var linkEl     = document.getElementById('sp-link');
   var aboutLoc   = document.getElementById('sp-about-location');
   var aboutAstro = document.getElementById('sp-about-astro');
   var avatarEl   = document.getElementById('sp-avatar');
 
   if (nameEl) nameEl.textContent = name.trim();
   if (locationEl) locationEl.textContent = location.trim() || '—';
-  if (linkWrapEl && linkEl) {
-  if (linkInBio.trim()) {
-    var finalLink = linkInBio.trim();
-    if (!/^https?:\/\//i.test(finalLink)) {
-      finalLink = 'https://' + finalLink;
-    }
-    linkEl.href = finalLink;
-    linkEl.textContent = linkInBio.trim();
-    linkWrapEl.style.display = 'block';
-  } else {
-    linkEl.href = '#';
-    linkEl.textContent = '';
-    linkWrapEl.style.display = 'none';
-  }
-}
   if (astroEl) astroEl.textContent = astro || '—';
   if (bioEl) bioEl.textContent = bio.trim() || '';
   if (aboutLoc) aboutLoc.textContent = location.trim() || '—';
