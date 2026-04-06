@@ -10320,6 +10320,7 @@ function savePublicProfile() {
   var location = (document.getElementById('pp-location') || {}).value || '';
   var astro    = (document.getElementById('pp-astro')    || {}).value || '';
   var bio      = (document.getElementById('pp-bio')      || {}).value || '';
+  var linkInBio = (document.getElementById('pp-link') || {}).value || '';
 
   if (!name.trim()) {
     toast('Please enter your display name');
