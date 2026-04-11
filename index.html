@@ -714,6 +714,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <div class="nav-item" onclick="nav(this,'bannedblocked')">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>Banned / Blocked
     </div>
+    <div class="nav-item" onclick="nav(this,'sparkfounder')" style="position:relative;">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Spark Founder
+      <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:var(--brown);color:#fff;font-size:0.58rem;font-weight:800;padding:2px 6px;border-radius:20px;letter-spacing:0.04em;">NEW</span>
+    </div>
 
     </div><!-- end group-trust -->
 
@@ -2585,10 +2590,425 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       eventGalleryFiles = [];
       document.querySelectorAll('input[name="ev-loc-type"]')[0].checked = true;
       document.getElementById('ev-location').style.display = 'block';
+      // Reset reservation / payment stability
+      toggleReservationMode('');
+      document.getElementById('ev-split-payment').checked = false;
+      document.getElementById('ev-split-payment-slider').style.background = 'var(--cream3)';
+      document.getElementById('ev-split-payment-knob').style.transform = 'translateX(0)';
+      document.getElementById('split-payment-fields').style.display = 'none';
+      document.getElementById('ev-cancel-penalty').value = '100.00';
+      document.getElementById('ev-refund-fee').value = '5.00';
+      document.getElementById('ev-cutoff-hours').value = '72';
+      document.getElementById('ev-cutoff-unit').value = 'hours';
+      document.getElementById('cutoff-preview-val').textContent = '72 hours';
+      var rlf = document.getElementById('reservation-link-flow'); if(rlf) rlf.style.display = 'none';
+      var rsp = document.getElementById('res-split-preview'); if(rsp) rsp.style.display = 'none';
+      if(document.getElementById('ev-reservation-attendees')) document.getElementById('ev-reservation-attendees').value = '';
+      if(document.getElementById('ev-reservation-total')) document.getElementById('ev-reservation-total').value = '';
+      if(document.getElementById('ev-res-first')) document.getElementById('ev-res-first').value = '';
+      if(document.getElementById('ev-res-last')) document.getElementById('ev-res-last').value = '';
+      if(document.getElementById('ev-res-phone')) document.getElementById('ev-res-phone').value = '';
+      if(document.getElementById('ev-res-email')) document.getElementById('ev-res-email').value = '';
+      if(document.getElementById('ev-reservation-due-date')) document.getElementById('ev-reservation-due-date').value = '';
+      if(document.getElementById('ev-res-date')) document.getElementById('ev-res-date').value = '';
+      if(document.getElementById('ev-res-time')) document.getElementById('ev-res-time').value = '';
+      if(document.getElementById('ev-res-location')) document.getElementById('ev-res-location').value = '';
+      if(document.getElementById('ev-res-perks')) document.getElementById('ev-res-perks').value = '';
+      if(document.getElementById('ev-bday-name')) document.getElementById('ev-bday-name').value = '';
+      if(document.getElementById('ev-bday-announcement')) document.getElementById('ev-bday-announcement').checked = false;
+      if(document.getElementById('ev-bday-fee')) document.getElementById('ev-bday-fee').value = '';
+      if(document.getElementById('bday-announcement-fee')) document.getElementById('bday-announcement-fee').style.display = 'none';
+      if(document.getElementById('bday-new-total')) document.getElementById('bday-new-total').style.display = 'none';
+      var bdaySlider = document.getElementById('ev-bday-announcement-slider'); if(bdaySlider) bdaySlider.style.background = 'var(--cream3)';
+      var bdayKnob = document.getElementById('ev-bday-announcement-knob'); if(bdayKnob) bdayKnob.style.transform = 'translateX(0)';
+      if(document.getElementById('birthday-block')) document.getElementById('birthday-block').style.display = 'none';
+      bdayNames = [{ id: Date.now(), value: '' }];
+      renderBdayNames();
+      var fullR = document.querySelector('input[name="ev-pay-type"][value="full"]'); if(fullR) fullR.checked = true;
+      window._pendingReservation = null;
       // Add one default tier to start
       addTicketTier('General Admission');
       openModal('modal-create-event');
     }
+
+    function toggleReservationMode(type) {
+      var isReservation = type === 'Reservation' || type === 'Birthday Reservation Table';
+      var isBirthday = type === 'Birthday Reservation Table';
+
+      var tiersSection = document.getElementById('ticket-tiers-section');
+      var reservationSection = document.getElementById('reservation-section');
+      var nonResFields = document.getElementById('ev-non-res-fields');
+
+      if (tiersSection) tiersSection.style.display = isReservation ? 'none' : '';
+      if (reservationSection) reservationSection.style.display = isReservation ? '' : 'none';
+      if (nonResFields) nonResFields.style.display = isReservation ? 'none' : '';
+
+      // Update section label
+      var label = document.getElementById('res-section-label');
+      if (label) label.textContent = isBirthday ? 'Birthday Reservation Details' : 'Reservation Details';
+
+      // Show/hide birthday block
+      var bdayBlock = document.getElementById('birthday-block');
+      if (bdayBlock) bdayBlock.style.display = isBirthday ? '' : 'none';
+
+      if (isReservation) updateReservationCalc();
+    }
+
+    var bdayNames = [];
+
+    function addBdayName() {
+      var id = Date.now();
+      bdayNames.push({ id: id, value: '' });
+      renderBdayNames();
+    }
+
+    function removeBdayName(id) {
+      bdayNames = bdayNames.filter(function(n){ return n.id !== id; });
+      renderBdayNames();
+    }
+
+    function renderBdayNames() {
+      var list = document.getElementById('bday-names-list');
+      if (!list) return;
+      if (bdayNames.length === 0) {
+        list.innerHTML = '';
+        return;
+      }
+      list.innerHTML = bdayNames.map(function(n, i) {
+        return '<div style="display:flex;align-items:center;gap:8px;">'
+          + '<div style="width:26px;height:26px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--brown);flex-shrink:0;">' + (i+1) + '</div>'
+          + '<input type="text" value="' + (n.value||'') + '" placeholder="e.g. Marcus Williams" '
+          + 'oninput="bdayNames[' + i + '].value=this.value" '
+          + 'style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:9px;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;outline:none;background:#fff;">'
+          + (bdayNames.length > 1 ? '<button type="button" onclick="removeBdayName(' + n.id + ')" style="padding:6px 10px;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;cursor:pointer;font-size:0.75rem;font-weight:700;flex-shrink:0;">✕</button>' : '')
+          + '</div>';
+      }).join('');
+    }
+
+    function toggleBdayAnnouncement() {
+      var cb = document.getElementById('ev-bday-announcement');
+      var feeBlock = document.getElementById('bday-announcement-fee');
+      var slider = document.getElementById('ev-bday-announcement-slider');
+      var knob = document.getElementById('ev-bday-announcement-knob');
+      if (!cb) return;
+      var on = cb.checked;
+      if (feeBlock) feeBlock.style.display = on ? 'block' : 'none';
+      if (slider) slider.style.background = on ? 'var(--brown)' : 'var(--cream3)';
+      if (knob) knob.style.transform = on ? 'translateX(18px)' : 'translateX(0)';
+      updateReservationCalc();
+    }
+
+    function updateReservationCalc() {
+      var base = parseFloat(document.getElementById('ev-reservation-total') ? document.getElementById('ev-reservation-total').value : 0) || 0;
+      var attendees = parseInt(document.getElementById('ev-reservation-attendees') ? document.getElementById('ev-reservation-attendees').value : 1) || 1;
+      var payType = document.querySelector('input[name="ev-pay-type"]:checked');
+      var isSplit = payType && payType.value === 'split';
+
+      // Include announcement fee in the total if active
+      var announced = document.getElementById('ev-bday-announcement') ? document.getElementById('ev-bday-announcement').checked : false;
+      var bdayFee = announced ? (parseFloat(document.getElementById('ev-bday-fee') ? document.getElementById('ev-bday-fee').value : 0) || 0) : 0;
+      var grandTotal = base + bdayFee;
+
+      var splitPreview = document.getElementById('res-split-preview');
+      var perPersonEl = document.getElementById('res-per-person-amt');
+      var breakdownEl = document.getElementById('res-split-breakdown');
+      var bdayNoteEl = document.getElementById('res-split-bday-note');
+
+      if (splitPreview) splitPreview.style.display = isSplit && grandTotal > 0 ? 'block' : 'none';
+
+      if (isSplit && grandTotal > 0 && perPersonEl) {
+        var perPerson = grandTotal / attendees;
+        perPersonEl.textContent = '$' + perPerson.toFixed(2);
+        if (breakdownEl) {
+          if (bdayFee > 0) {
+            breakdownEl.textContent = '($' + base.toFixed(2) + ' + $' + bdayFee.toFixed(2) + ' announcement) ÷ ' + attendees + ' ' + (attendees === 1 ? 'person' : 'people');
+          } else {
+            breakdownEl.textContent = '$' + grandTotal.toFixed(2) + ' ÷ ' + attendees + ' ' + (attendees === 1 ? 'person' : 'people');
+          }
+        }
+        if (bdayNoteEl) {
+          if (bdayFee > 0) {
+            bdayNoteEl.style.display = 'block';
+            bdayNoteEl.textContent = '✨ Announcement cost of $' + bdayFee.toFixed(2) + ' is included in each person\'s share';
+          } else {
+            bdayNoteEl.style.display = 'none';
+          }
+        }
+      }
+    }
+
+    // Attach live listeners for reservation calc
+    document.addEventListener('change', function(e) {
+      if (e.target.name === 'ev-pay-type') updateReservationCalc();
+    });
+    document.addEventListener('input', function(e) {
+      if (e.target.id === 'ev-bday-fee') updateReservationCalc();
+    });
+
+    function toggleSplitPaymentFields() {
+      var cb = document.getElementById('ev-split-payment');
+      var fields = document.getElementById('split-payment-fields');
+      var slider = document.getElementById('ev-split-payment-slider');
+      var knob = document.getElementById('ev-split-payment-knob');
+      if (!cb) return;
+      if (cb.checked) {
+        if (fields) fields.style.display = 'block';
+        if (slider) slider.style.background = 'var(--brown)';
+        if (knob) knob.style.transform = 'translateX(18px)';
+      } else {
+        if (fields) fields.style.display = 'none';
+        if (slider) slider.style.background = 'var(--cream3)';
+        if (knob) knob.style.transform = 'translateX(0)';
+      }
+    }
+
+    function createReservationWithLink() {
+      var name = document.getElementById('ev-name').value.trim();
+      var eventType = document.getElementById('ev-type').value;
+      var isBirthday = eventType === 'Birthday Reservation Table';
+      var baseTotal = parseFloat(document.getElementById('ev-reservation-total').value) || 0;
+      var bdayFee = (isBirthday && document.getElementById('ev-bday-announcement') && document.getElementById('ev-bday-announcement').checked)
+        ? (parseFloat(document.getElementById('ev-bday-fee').value) || 0) : 0;
+      var total = baseTotal + bdayFee;
+      var attendees = parseInt(document.getElementById('ev-reservation-attendees').value) || 0;
+      var firstName = document.getElementById('ev-res-first').value.trim();
+      var lastName = document.getElementById('ev-res-last').value.trim();
+      var phone = document.getElementById('ev-res-phone').value.trim();
+      var email = document.getElementById('ev-res-email').value.trim();
+      var dueDate = document.getElementById('ev-reservation-due-date').value;
+      var resDate = document.getElementById('ev-res-date').value;
+      var resTime = document.getElementById('ev-res-time').value;
+      var location = document.getElementById('ev-res-location') ? document.getElementById('ev-res-location').value.trim() : '';
+      var perks = document.getElementById('ev-res-perks') ? document.getElementById('ev-res-perks').value.trim() : '';
+      var bdayName = isBirthday ? bdayNames.filter(function(n){ return n.value.trim(); }).map(function(n){ return n.value.trim(); }) : [];
+      var hasAnnouncement = isBirthday && document.getElementById('ev-bday-announcement') ? document.getElementById('ev-bday-announcement').checked : false;
+      var payType = document.querySelector('input[name="ev-pay-type"]:checked');
+      var isSplit = payType && payType.value === 'split';
+
+      if (!name) { toast('Please enter a reservation name'); return; }
+      if (!resDate) { toast('Please set the arrival date'); return; }
+      if (!baseTotal) { toast('Please enter the total reservation cost'); return; }
+      if (!attendees) { toast('Please enter the number of attendees'); return; }
+      if (isBirthday && bdayName.length === 0) { toast('Please enter at least one birthday person\'s name'); return; }
+      if (!firstName || !lastName) { toast('Please enter the contact\'s name'); return; }
+      if (!phone) { toast('Please enter the contact\'s phone number'); return; }
+      if (!email) { toast('Please enter the contact\'s email'); return; }
+      if (!dueDate) { toast('Please set a payment due date'); return; }
+
+      var slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+      var link = 'https://pay.massed.io/r/' + slug + '-' + Date.now().toString(36);
+      document.getElementById('reservation-link-url').textContent = link;
+      document.getElementById('reservation-link-url')._href = link;
+      document.getElementById('reservation-link-flow').style.display = 'block';
+      document.getElementById('res-link-sent-msg').style.display = 'none';
+
+      generateQRDisplay('res-qr-canvas', link);
+
+      var resDateFormatted = resDate ? new Date(resDate+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+      var pendingData = {
+        eventName: name,
+        eventType: eventType,
+        eventDate: resDate,
+        eventDateFormatted: resDateFormatted,
+        eventTime: resTime,
+        totalCost: total,
+        baseCost: baseTotal,
+        bdayFee: bdayFee,
+        attendees: attendees,
+        splitPayment: isSplit,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        email: email,
+        location: location,
+        perks: perks,
+        birthdayNames: bdayName,
+        hasAnnouncement: hasAnnouncement,
+        announcementFee: bdayFee,
+        paymentDueDate: dueDate ? new Date(dueDate+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '',
+        paymentLink: link,
+        paymentLog: []
+      };
+      window._pendingReservation = pendingData;
+      populateCommitmentPanels(pendingData);
+      toast('✓ Reservation link generated!');
+    }
+
+    function populateCommitmentPanels(p) {
+      var total = parseFloat(p.totalCost) || 0;
+      var attendees = parseInt(p.attendees) || 1;
+      var isSplit = p.splitPayment;
+      var cancelPenalty = 100;
+      var refundFeePerPerson = 5;
+      var totalFees = isSplit ? attendees * refundFeePerPerson : refundFeePerPerson;
+      var perPerson = isSplit ? (total / attendees) : total;
+      var name = p.eventName || 'this reservation';
+      var dueDate = p.paymentDueDate || 'the deadline';
+      var hostName = (p.firstName || 'the host') + ' ' + (p.lastName || '');
+      var link = p.paymentLink || 'pay.massed.io/r/...';
+
+      // ── 1. MATH BREAKDOWN ──────────────────────────────────────────
+      var mathEl = document.getElementById('res-math-lines');
+      if (mathEl) {
+        var totalPool = isSplit ? (perPerson * attendees) : total;
+        var totalRefund = totalPool - cancelPenalty - totalFees;
+        var refundPer = isSplit ? (totalRefund / attendees) : totalRefund;
+        mathEl.innerHTML =
+          '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--cream3);"><span style="color:var(--text-mid);">Total pool collected</span><span style="font-weight:700;">$' + totalPool.toFixed(2) + '</span></div>'
+        + (isSplit ? '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--cream3);"><span style="color:var(--text-dim);font-size:0.75rem;">(' + attendees + ' people × $' + perPerson.toFixed(2) + ' each)</span><span></span></div>' : '')
+        + '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--cream3);"><span style="color:#dc2626;">− Holding Fee (business keeps)</span><span style="font-weight:700;color:#dc2626;">−$' + cancelPenalty.toFixed(2) + '</span></div>'
+        + '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--cream3);"><span style="color:#d97706;">− Transaction Fees ($' + refundFeePerPerson.toFixed(2) + (isSplit ? ' × ' + attendees + ' people' : '') + ')</span><span style="font-weight:700;color:#d97706;">−$' + totalFees.toFixed(2) + '</span></div>'
+        + '<div style="display:flex;justify-content:space-between;padding:6px 0;margin-top:2px;border-top:2px solid var(--border);"><span style="font-weight:700;color:var(--text);">Total Refunded</span><span style="font-weight:700;color:#16a34a;">$' + Math.max(0,totalRefund).toFixed(2) + '</span></div>'
+        + (isSplit ? '<div style="display:flex;justify-content:space-between;padding:2px 0;"><span style="color:var(--text-dim);font-size:0.75rem;">Each person receives back</span><span style="font-size:0.75rem;font-weight:700;color:#16a34a;">$' + Math.max(0,refundPer).toFixed(2) + '</span></div>' : '');
+      }
+
+      // ── 2. GUEST AGREEMENT TEXT ─────────────────────────────────────
+      var agreeEl = document.getElementById('res-guest-agreement-text');
+      if (agreeEl) {
+        var agreeText = isSplit
+          ? 'By completing your payment of $' + perPerson.toFixed(2) + ' for "' + name + '," you agree to the following: This is a split reservation with ' + attendees + ' participants. If the full reservation balance is not collected by ' + dueDate + ', the reservation will be automatically cancelled. A $100 Holding Fee will be deducted from the collected pool, plus a $' + refundFeePerPerson.toFixed(2) + ' transaction fee per person. The remaining balance will be refunded to each participant. By paying, you acknowledge that failure to collect full group payment — including non-payment from any other member — may result in the loss of the $100 fee shared across all contributors.'
+          : 'By completing your payment of $' + total.toFixed(2) + ' for "' + name + '," you agree to the following: This reservation is secured with a $100 Holding Fee. If you cancel or fail to complete payment by ' + dueDate + ', the $100 Holding Fee is non-refundable. The remaining balance (minus a $' + refundFeePerPerson.toFixed(2) + ' processing fee) will be returned to you.';
+        agreeEl.textContent = agreeText;
+      }
+
+      // ── 3. AUTOMATED SMS PREVIEWS ──────────────────────────────────
+      var sms72 = document.getElementById('res-sms-72');
+      var sms48 = document.getElementById('res-sms-48');
+      var sms24 = document.getElementById('res-sms-24');
+
+      if (sms72) sms72.innerHTML = isSplit
+        ? '📅 Reminder: Your group reservation for <strong>"' + name + '"</strong> is in 3 days. Full payment is due by <strong>' + dueDate + '</strong>. '
+          + (attendees > 1 ? 'Please confirm all ' + attendees + ' members have paid their $' + perPerson.toFixed(2) + ' share. ' : '')
+          + 'View your payment status: <span style="color:var(--brown);">' + link + '</span>'
+        : '📅 Reminder: Your reservation for <strong>"' + name + '"</strong> is in 3 days. Payment of $' + total.toFixed(2) + ' is due by <strong>' + dueDate + '</strong>. Pay here: <span style="color:var(--brown);">' + link + '</span>';
+
+      if (sms48) sms48.innerHTML = isSplit
+        ? '🚨 Group Accountability Alert: One or more members of your <strong>"' + name + '"</strong> reservation have not completed payment. '
+          + 'If the full balance is not settled within <strong>24 hours</strong>, the reservation will be cancelled and a <strong>$100 Holding Fee</strong> will be withheld from the group\'s current payments. '
+          + 'Each person will be refunded $' + Math.max(0,(total - cancelPenalty - totalFees)/attendees).toFixed(2) + ' after deductions. '
+          + 'Settle now or coordinate with your group: <span style="color:var(--brown);">' + link + '</span>'
+        : '🚨 Final Payment Alert: Your reservation for <strong>"' + name + '"</strong> is unpaid. Full payment of $' + total.toFixed(2) + ' must be received within 24 hours or the reservation is cancelled and the $100 Holding Fee is forfeited. Pay now: <span style="color:var(--brown);">' + link + '</span>';
+
+      if (sms24) sms24.innerHTML = isSplit
+        ? '🔴 Last Chance: Your <strong>"' + name + '"</strong> reservation will be cancelled in <strong>24 hours</strong> due to incomplete group payment. '
+          + 'The $100 Holding Fee will be deducted and the remainder refunded to all paid members. '
+          + 'If your group pays the remaining balance NOW, the reservation is saved. Pay immediately: <span style="color:var(--brown);">' + link + '</span>'
+        : '🔴 Last Chance: <strong>"' + name + '"</strong> — payment is due in 24 hours. Cancel now and lose the $100 Holding Fee, or pay the full balance to keep your table: <span style="color:var(--brown);">' + link + '</span>';
+
+      // ── 4. SAFETY SWITCH PREVIEW ───────────────────────────────────
+      var switchEl = document.getElementById('res-safety-switch-preview');
+      var shortfall = isSplit ? perPerson : (total * 0.2); // example: one person's share or 20%
+      if (switchEl) {
+        switchEl.innerHTML = '⚠️ <strong>Payment Alert for "' + name + '":</strong> The reservation is $' + shortfall.toFixed(2) + ' short of the full balance with 24 hours remaining until the deadline.<br><br>'
+          + '👉 <strong>Option A — Trigger Auto-Cancel:</strong> Deduct $100 Holding Fee + $' + totalFees.toFixed(2) + ' in fees. Refund $' + Math.max(0,total - shortfall - cancelPenalty - totalFees).toFixed(2) + ' to paid participants. Reliability Strike issued to non-payer.<br><br>'
+          + '👉 <strong>Option B — Send Final Offer to ' + hostName.trim() + ':</strong> Keep the $' + (total - shortfall).toFixed(2) + ' collected and honour the reservation with partial payment. No penalty applied.';
+      }
+    }
+
+    function generateQRDisplay(containerId, text) {
+      // Simple QR-style visual using a deterministic grid pattern from text hash
+      var container = document.getElementById(containerId);
+      if (!container) return;
+      var size = 80; var cells = 9;
+      var hash = 0;
+      for(var i=0;i<text.length;i++) hash = ((hash<<5)-hash)+text.charCodeAt(i), hash|=0;
+      var svg = '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+cells+' '+cells+'" xmlns="http://www.w3.org/2000/svg" style="border-radius:6px;border:2px solid var(--border);">';
+      svg += '<rect width="'+cells+'" height="'+cells+'" fill="#fff"/>';
+      // Corner finder patterns
+      var fp = function(x,y){ return '<rect x="'+x+'" y="'+y+'" width="3" height="3" fill="var(--text)" rx="0.2"/><rect x="'+(x+0.5)+'" y="'+(y+0.5)+'" width="2" height="2" fill="#fff" rx="0.1"/><rect x="'+(x+1)+'" y="'+(y+1)+'" width="1" height="1" fill="var(--text)"/>'; };
+      svg += fp(0,0)+fp(cells-3,0)+fp(0,cells-3);
+      // Data dots from hash
+      for(var r=0;r<cells;r++) for(var c=0;c<cells;c++){
+        var isFP=(r<4&&c<4)||(r<4&&c>cells-5)||(r>cells-5&&c<4);
+        if(!isFP){var bit=(hash^(r*13+c*7+r*c))&1;if(bit)svg+='<rect x="'+c+'" y="'+r+'" width="0.85" height="0.85" fill="var(--brown)" rx="0.15"/>';}
+      }
+      svg += '</svg>';
+      container.innerHTML = svg;
+    }
+
+    function downloadReservationQR() {
+      var container = document.getElementById('res-qr-canvas');
+      if (!container) return;
+      var svgEl = container.querySelector('svg');
+      if (!svgEl) return;
+      var data = new XMLSerializer().serializeToString(svgEl);
+      var blob = new Blob([data], {type:'image/svg+xml'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a'); a.href=url; a.download='reservation-qr.svg'; a.click();
+      URL.revokeObjectURL(url);
+      toast('✓ QR code downloaded!');
+    }
+
+    function sendReservationLink() {
+      var p = window._pendingReservation;
+      if (!p) return;
+      var sentMsg = document.getElementById('res-link-sent-msg');
+      var sentText = document.getElementById('res-link-sent-text');
+      var verifyBtn = document.getElementById('res-verify-btn');
+      if (sentText) sentText.textContent = 'Link sent to ' + p.firstName + ' via email (' + p.email + ') & SMS (' + p.phone + ')';
+      if (sentMsg) sentMsg.style.display = 'flex';
+      if (verifyBtn) { verifyBtn.disabled = false; verifyBtn.style.borderColor = 'var(--brown)'; verifyBtn.style.color = 'var(--brown)'; }
+      toast('✓ Link sent to ' + p.firstName + '!');
+    }
+
+    function verifyReservationLink() {
+      var p = window._pendingReservation;
+      if (!p) return;
+      p.linkVerified = true;
+      // Save to booking tab
+      addReservationToBookings(p);
+      // Also save as event in Events/Tickets for edit/delete
+      var ev = { id: Date.now(), name: p.eventName, type: 'Reservation', ticketType: 'Reservation', tiers: [], desc: '', date: p.eventDate, time: p.eventTime, location: document.getElementById('ev-location') ? document.getElementById('ev-location').value.trim() : '', onlineLink: '', qty: p.attendees, sold: 0, price: p.totalCost, salePrice: null, tags: ['Reservation'], coverUrl: null, galleryUrls: [], sendEmail: true, sendSMS: true, inPerson: false, active: true, isReservation: true, splitPayment: p.splitPayment };
+      events.unshift(ev);
+      renderEvents();
+      updateTicketStats();
+      window._pendingReservation = null;
+      closeModal('modal-create-event');
+      // Nav to bookings reservations tab
+      var bookingNavItem = document.querySelector('.nav-item[onclick*="booking"]');
+      if (bookingNavItem) { nav(bookingNavItem, 'booking'); setTimeout(function(){ bookingTab('reservations'); }, 200); }
+      toast('✓ Reservation confirmed & added to Bookings + Events!');
+    }
+
+    function copyReservationLink() {
+      var url = document.getElementById('reservation-link-url').textContent;
+      if (navigator.clipboard) navigator.clipboard.writeText(url);
+      toast('✓ Link copied!');
+    }
+
+    function generateReservationLink() {
+      createReservationWithLink();
+    }
+
+    function toggleSplitPaymentFields() {
+      const cb = document.getElementById('ev-split-payment');
+      const fields = document.getElementById('split-payment-fields');
+      const slider = document.getElementById('ev-split-payment-slider');
+      const knob = document.getElementById('ev-split-payment-knob');
+      if (cb.checked) {
+        fields.style.display = 'block';
+        slider.style.background = 'var(--brown)';
+        knob.style.transform = 'translateX(18px)';
+      } else {
+        fields.style.display = 'none';
+        slider.style.background = 'var(--cream3)';
+        knob.style.transform = 'translateX(0)';
+      }
+    }
+
+    // Live cutoff preview label
+    document.addEventListener('DOMContentLoaded', function() {
+      function updateCutoffPreview() {
+        const val = document.getElementById('ev-cutoff-hours') ? document.getElementById('ev-cutoff-hours').value || '72' : '72';
+        const unit = document.getElementById('ev-cutoff-unit') ? document.getElementById('ev-cutoff-unit').value : 'hours';
+        const label = unit === 'hours' ? 'hour' : unit === 'days' ? 'day' : 'week';
+        const plural = parseInt(val) !== 1 ? label+'s' : label;
+        const el = document.getElementById('cutoff-preview-val');
+        if (el) el.textContent = val + ' ' + plural;
+      }
+      document.addEventListener('input', function(e){ if(e.target.id==='ev-cutoff-hours') updateCutoffPreview(); });
+      document.addEventListener('change', function(e){ if(e.target.id==='ev-cutoff-unit') updateCutoffPreview(); });
+    });
 
     function toggleLocationField(radio) {
       const field = document.getElementById('ev-location');
@@ -2639,19 +3059,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       const sendSMS = document.getElementById('ev-send-sms').checked;
       const inPerson = document.getElementById('ev-in-person').checked;
 
+      // Payment stability settings
+      const splitPayment = document.getElementById('ev-split-payment').checked;
+      const cancelPenalty = splitPayment ? (parseFloat(document.getElementById('ev-cancel-penalty').value) || 100) : null;
+      const refundFee = splitPayment ? (parseFloat(document.getElementById('ev-refund-fee').value) || 5) : null;
+      const cutoffHours = splitPayment ? (parseInt(document.getElementById('ev-cutoff-hours').value) || 72) : null;
+      const cutoffUnit = splitPayment ? document.getElementById('ev-cutoff-unit').value : null;
+
       if (!name) { toast('Please enter an event name'); return; }
       if (!date) { toast('Please select a date'); return; }
+
+      let basePrice = 0;
+      let ticketType = '';
+
+      if (type === 'Reservation') {
+        // Reservation flow is handled by createReservationWithLink() + verifyReservationLink()
+        // If they click Publish before completing the flow, prompt them
+        toast('Please use "Create Reservation & Send Payment Link" to complete this reservation');
+        return;
+      }
+
       if (ticketTiers.length === 0) { toast('Please add at least one ticket type'); return; }
       const invalidTier = ticketTiers.find(t => !t.type);
       if (invalidTier) { toast('Please select a type for all ticket tiers'); return; }
 
       // Use lowest tier price as the base display price
       const prices = ticketTiers.map(t => parseFloat(t.price) || 0);
-      const basePrice = Math.min(...prices);
-      const ticketType = ticketTiers.map(t => t.type).join(', ');
+      basePrice = Math.min(...prices);
+      ticketType = ticketTiers.map(t => t.type).join(', ');
 
       const onlineLink = type === 'Online' ? updateStreamLink() : '';
-      const ev = { id: Date.now(), name, type, ticketType, tiers: [...ticketTiers], desc, date, time, location, onlineLink, qty, sold: 0, price: basePrice, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true };
+      const ev = { id: Date.now(), name, type, ticketType, tiers: [...ticketTiers], desc, date, time, location, onlineLink, qty, sold: 0, price: basePrice, salePrice, tags, coverUrl, galleryUrls, sendEmail, sendSMS, inPerson, active: true, splitPayment, cancelPenalty, refundFee, cutoffHours, cutoffUnit };
       if (currentEventIndex !== null) events[currentEventIndex] = ev;
       else events.unshift(ev);
       closeModal('modal-create-event');
@@ -3005,14 +3443,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       document.getElementById('event-modal-title').textContent = 'Edit Event';
       document.getElementById('ev-name').value = ev.name;
       document.getElementById('ev-type').value = ev.type;
-      document.getElementById('ev-desc').value = ev.desc;
-      document.getElementById('ev-date').value = ev.date;
-      document.getElementById('ev-time').value = ev.time;
-      document.getElementById('ev-location').value = ev.location;
-      // qty field removed
-      // salePrice field removed
-      document.getElementById('ev-tags').value = ev.tags.join(', ');
+      document.getElementById('ev-desc').value = ev.desc || '';
+      document.getElementById('ev-date').value = ev.date || '';
+      document.getElementById('ev-time').value = ev.time || '';
+      document.getElementById('ev-location').value = ev.location || '';
+      document.getElementById('ev-tags').value = ev.tags ? ev.tags.join(', ') : '';
       if (ev.coverUrl) { const prev = document.getElementById('ev-cover-preview'); prev.style.backgroundImage = `url(${ev.coverUrl})`; prev.style.backgroundSize = 'cover'; prev._coverUrl = ev.coverUrl; }
+      // Apply reservation/normal mode based on type
+      toggleReservationMode(ev.type);
+      toggleOnlineField(ev.type);
       renderTicketTiers();
       openModal('modal-create-event');
     }
@@ -5772,6 +6211,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       <div style="display:flex;gap:4px;background:var(--cream2);border-radius:12px;padding:4px;margin-bottom:20px;width:fit-content;">
         <button id="bk-tab-services" onclick="bookingTab('services')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:var(--brown);color:#fff;transition:all 0.2s;">Services</button>
         <button id="bk-tab-incoming" onclick="bookingTab('incoming')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">Incoming Bookings <span id="bk-incoming-badge" style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:0.7rem;margin-left:4px;">3</span></button>
+        <button id="bk-tab-reservations" onclick="bookingTab('reservations')" style="padding:8px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.82rem;background:transparent;color:var(--text-dim);transition:all 0.2s;">Reservations <span id="bk-reservations-badge" style="background:var(--brown);color:#fff;border-radius:10px;padding:1px 7px;font-size:0.7rem;margin-left:4px;display:none;">0</span></button>
       </div>
 
       <!-- SERVICES TAB -->
@@ -5845,6 +6285,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <div id="bk-deleted-section" style="margin-top:20px;display:none;">
           <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Recently Deleted (tap to restore)</div>
           <div id="bk-deleted-list" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+
+      <!-- RESERVATIONS TAB -->
+      <div id="bk-reservations-content" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">All Reservations</div>
+        </div>
+        <div id="bk-reservations-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+        <div id="bk-reservations-empty" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:48px 28px;text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:12px;">🍽️</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:8px;">No reservations yet</div>
+          <div style="font-size:0.85rem;color:var(--text-dim);">Reservations created from Events / Tickets will appear here.</div>
         </div>
       </div>
 
@@ -6758,6 +7211,205 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
     <!-- ══════════════════════════════════════════════
          GATEWAY ROOM SCREEN
     ══════════════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════════════════════
+         SPARK FOUNDER SCREEN
+    ══════════════════════════════════════════════════════ -->
+    <div id="screen-sparkfounder" class="screen">
+
+      <!-- Header -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));border-radius:10px;display:flex;align-items:center;justify-content:center;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h2 class="section-title" style="margin:0;">Spark Founder</h2>
+          </div>
+          <p class="section-sub">Sponsor an independent professional presence for a family member or junior partner — they build their own business, you support their launch.</p>
+        </div>
+        <button onclick="openSparkFounderModal()" style="display:flex;align-items:center;gap:8px;padding:12px 22px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;box-shadow:0 4px 14px rgba(192,122,80,0.35);flex-shrink:0;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Spark a New Founder — $15/mo
+        </button>
+      </div>
+
+      <!-- How it works banner -->
+      <div style="background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.04));border:1px solid rgba(192,122,80,0.3);border-radius:14px;padding:18px;margin-bottom:24px;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--brown);margin-bottom:12px;">How Spark Founder Works</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;color:var(--brown);flex-shrink:0;">1</div>
+            <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">You pay <strong style="color:var(--text);">$15/mo</strong> and enter their email to send an invitation link</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;color:var(--brown);flex-shrink:0;">2</div>
+            <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">They create their own login, choose their own URL — <strong style="color:var(--text);">massed.app/theirname</strong> — completely independent</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;color:var(--brown);flex-shrink:0;">3</div>
+            <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">They get a full Massed dashboard — store, events, bookings, messages — all private from you</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:10px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:800;color:var(--brown);flex-shrink:0;">4</div>
+            <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">After <strong style="color:var(--text);">12 payments</strong>, they automatically graduate to 2 years free hosting — then $79/yr on their own</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;background:#fff;border-radius:10px;padding:10px 14px;font-size:0.78rem;color:var(--text-mid);line-height:1.6;border-left:3px solid var(--brown);">
+          🔒 <strong>Full Firewall:</strong> You only see billing status. You cannot access their client data, messages, bookings, or revenue. Their Stripe connects directly to them.
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;" id="sf-stats-row">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Active Founders</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;" id="sf-stat-active">0</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Graduated</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#16a34a;" id="sf-stat-graduated">0</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Monthly Spend</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--brown);" id="sf-stat-spend">$0</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">Pending Invites</div>
+          <div style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#d97706;" id="sf-stat-pending">0</div>
+        </div>
+      </div>
+
+      <!-- Founders list -->
+      <div id="sf-founders-list" style="display:flex;flex-direction:column;gap:14px;"></div>
+
+      <!-- Empty state -->
+      <div id="sf-empty" style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:56px 28px;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:14px;">⚡</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:8px;">No Spark Founders yet</div>
+        <div style="font-size:0.85rem;color:var(--text-dim);margin-bottom:22px;max-width:340px;margin-left:auto;margin-right:auto;">Sponsor a family member or junior partner for just $15/mo. They get their own full Massed platform. After 12 months, they own it free for 2 years.</div>
+        <button onclick="openSparkFounderModal()" style="padding:13px 28px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.88rem;box-shadow:0 4px 14px rgba(192,122,80,0.3);">
+          ⚡ Spark Your First Founder
+        </button>
+      </div>
+
+    </div>
+
+    <!-- SPARK FOUNDER ONBOARDING MODAL -->
+    <div id="modal-spark-founder" class="modal-overlay" onclick="closeModal('modal-spark-founder')">
+      <div class="modal" style="max-width:480px;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+
+        <!-- Step 1: Payment + Email -->
+        <div id="sf-step-1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div>
+              <h2 class="modal-title" style="margin:0;">⚡ Spark a New Founder</h2>
+              <div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px;">Step 1 of 2 — Payment & Invitation</div>
+            </div>
+            <button onclick="closeModal('modal-spark-founder')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+          </div>
+
+          <!-- Price card -->
+          <div style="background:linear-gradient(135deg,var(--brown-dark),#7a4a28);border-radius:14px;padding:18px;margin-bottom:20px;color:#fff;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:6px;">Spark Founder Seat</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:2.2rem;margin-bottom:4px;">$15<span style="font-size:1rem;font-weight:400;opacity:0.7;">/mo</span></div>
+            <div style="font-size:0.78rem;opacity:0.75;line-height:1.6;">Billed monthly · Cancel anytime · 12 payments unlock 2-year free ownership for your Founder</div>
+            <div style="margin-top:12px;background:rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;">
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.85);line-height:1.7;">
+                ✓ Full independent Massed platform<br>
+                ✓ Their own URL — massed.app/theirname<br>
+                ✓ Their own Stripe account — revenue goes to them<br>
+                ✓ Complete data privacy firewall<br>
+                ✓ Graduates to free ownership after 12 payments
+              </div>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Founder's Email Address</label>
+            <input type="email" id="sf-email" placeholder="founder@email.com" style="width:100%;">
+            <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">They'll receive a unique invitation link to create their own login and URL</div>
+          </div>
+
+          <div class="form-field">
+            <label>Your Relationship (optional)</label>
+            <select id="sf-relationship" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;color:var(--text);">
+              <option value="">-- Select --</option>
+              <option>Daughter</option>
+              <option>Son</option>
+              <option>Sibling</option>
+              <option>Junior Partner</option>
+              <option>Mentee</option>
+              <option>Employee</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Add a Personal Note (optional)</label>
+            <textarea id="sf-note" placeholder="e.g. Hey — I'm sponsoring your Massed account. Click the link to set up your own business page!" style="min-height:72px;resize:none;"></textarea>
+          </div>
+
+          <div style="background:var(--cream);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:0.78rem;color:var(--text-mid);line-height:1.6;">
+            💳 Payment will be processed immediately. Your Founder receives their invite link within minutes.
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn-cancel" onclick="closeModal('modal-spark-founder')">Cancel</button>
+            <button class="btn-confirm" onclick="sfProceedToSend()" style="flex:1;">Pay & Send Invite →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Confirmation -->
+        <div id="sf-step-2" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+            <div>
+              <h2 class="modal-title" style="margin:0;">✅ Invite Sent!</h2>
+              <div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px;">Step 2 of 2 — Invitation Delivered</div>
+            </div>
+            <button onclick="closeModal('modal-spark-founder')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+          </div>
+
+          <div style="text-align:center;padding:20px 0 24px;">
+            <div style="width:64px;height:64px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:6px;">Invitation sent to</div>
+            <div style="font-size:1rem;font-weight:700;color:var(--brown);" id="sf-confirm-email"></div>
+          </div>
+
+          <div style="background:var(--cream);border-radius:12px;padding:14px 16px;margin-bottom:18px;">
+            <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">What happens next</div>
+            <div style="font-size:0.82rem;color:var(--text-mid);line-height:1.8;">
+              1. Your Founder receives a unique invite link via email<br>
+              2. They create their own login credentials<br>
+              3. They choose their URL — <em>massed.app/theirname</em><br>
+              4. Their full Massed dashboard activates instantly<br>
+              5. You see their billing status here — nothing else<br>
+              6. After 12 payments, they graduate to free ownership
+            </div>
+          </div>
+
+          <div style="background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.05));border:1px solid rgba(192,122,80,0.3);border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:0.78rem;color:var(--brown-dark);line-height:1.6;">
+            <strong>12-Month Graduation Clock starts now.</strong> Each $15 payment advances the cycle. After payment #12, their account automatically transitions to the 2-year free hosting period — no action needed from you or them.
+          </div>
+
+          <button class="btn-confirm" onclick="sfFinish()" style="width:100%;">Done →</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SPARK FOUNDER DETAIL MODAL -->
+    <div id="modal-sf-detail" class="modal-overlay" onclick="closeModal('modal-sf-detail')">
+      <div class="modal" style="max-width:460px;max-height:90vh;overflow-y:auto;" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h2 class="modal-title" style="margin:0;" id="sf-detail-title">Founder Details</h2>
+          <button onclick="closeModal('modal-sf-detail')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+        </div>
+        <div id="sf-detail-body"></div>
+      </div>
+    </div>
+
     <div id="screen-gateway" class="screen" style="padding:0;background:var(--cream);min-height:100vh;">
 
       <!-- ── ROLE SELECTOR (landing state) ── -->
@@ -7329,7 +7981,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           </div>
           <div class="form-field" style="margin:0;">
             <label>Event Type</label>
-            <select id="ev-type" onchange="toggleOnlineField(this.value);toggleOtherField(this.value,'ev-type-other-wrap')">
+            <select id="ev-type" onchange="toggleOnlineField(this.value);toggleOtherField(this.value,'ev-type-other-wrap');toggleReservationMode(this.value)">
               <option value="">-- Select type --</option>
               <option>Concert / Show</option>
               <option>Tour</option>
@@ -7346,6 +7998,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <option>Travel</option>
               <option>Invitation</option>
               <option>Online</option>
+              <option>Reservation</option>
+              <option>Birthday Reservation Table</option>
               <option>Other</option>
             </select>
           </div>
@@ -7373,8 +8027,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           </div>
         </div>
 
-        <!-- TICKET TIERS -->
-        <div style="margin-bottom:18px;">
+        <!-- TICKET TIERS (hidden in Reservation mode) -->
+        <div id="ticket-tiers-section" style="margin-bottom:18px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
             <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);">Ticket Types & Pricing</div>
             <button type="button" onclick="addTicketTier()" style="padding:6px 14px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:700;">+ Add Tier</button>
@@ -7382,14 +8036,302 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div id="ticket-tiers-list"></div>
         </div>
 
+        <!-- RESERVATION MODE (shown only when Event Type = Reservation or Birthday Reservation Table) -->
+        <div id="reservation-section" style="display:none;margin-bottom:18px;">
+          <div style="background:linear-gradient(135deg,rgba(192,122,80,0.08),rgba(192,122,80,0.04));border:1px solid rgba(192,122,80,0.3);border-radius:14px;padding:18px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);" id="res-section-label">Reservation Details</span>
+            </div>
+
+            <!-- DATE & TIME OF ARRIVAL — always at the top -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:10px;">Date & Time of Arrival</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-field" style="margin:0;">
+                  <label>Arrival Date</label>
+                  <input type="date" id="ev-res-date" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                </div>
+                <div class="form-field" style="margin:0;">
+                  <label>Arrival Time</label>
+                  <input type="time" id="ev-res-time" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                </div>
+              </div>
+            </div>
+
+            <!-- BIRTHDAY BLOCK — shown only for Birthday Reservation Table -->
+            <div id="birthday-block" style="display:none;background:linear-gradient(135deg,rgba(192,122,80,0.12),rgba(192,122,80,0.05));border:1px solid rgba(192,122,80,0.35);border-radius:12px;padding:16px;margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <span style="font-size:1rem;">🎂</span>
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Birthday Details</div>
+              </div>
+
+              <!-- Birthday names — dynamic list -->
+              <div style="margin-bottom:12px;">
+                <div style="font-size:0.78rem;font-weight:600;color:var(--text);margin-bottom:8px;">Birthday Person(s)</div>
+                <div id="bday-names-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px;"></div>
+                <button type="button" onclick="addBdayName()" style="width:100%;padding:9px;background:var(--cream2);color:var(--brown-dark);border:1.5px dashed var(--brown-light);border-radius:9px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add Another Birthday Person
+                </button>
+              </div>
+
+              <!-- Announcement toggle -->
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+                  <div style="flex:1;">
+                    <div style="font-size:0.88rem;font-weight:700;color:var(--text);margin-bottom:3px;">Add Birthday Announcement</div>
+                    <div style="font-size:0.75rem;color:var(--text-dim);line-height:1.5;">Grand entrance with sparklers, lights, and a personalized "Happy Birthday" sign carried out to the table</div>
+                  </div>
+                  <label style="position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;margin-left:4px;cursor:pointer;">
+                    <input type="checkbox" id="ev-bday-announcement" style="opacity:0;position:absolute;width:0;height:0;" onchange="toggleBdayAnnouncement()">
+                    <span style="position:absolute;cursor:pointer;inset:0;background:var(--cream3);border-radius:12px;transition:.2s;border:1px solid var(--border);" id="ev-bday-announcement-slider"></span>
+                    <span id="ev-bday-announcement-knob" style="position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.2s;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);"></span>
+                  </label>
+                </div>
+
+                <!-- Announcement fee — shown when toggled on -->
+                <div id="bday-announcement-fee" style="display:none;margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+                  <label style="font-size:0.78rem;font-weight:600;color:var(--text);display:block;margin-bottom:6px;">Announcement Cost ($)</label>
+                  <div style="position:relative;max-width:180px;">
+                    <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.88rem;color:var(--text-dim);pointer-events:none;">$</span>
+                    <input type="number" id="ev-bday-fee" min="0" step="0.01" placeholder="e.g. 50.00" oninput="updateReservationCalc()" style="width:100%;padding:10px 12px 10px 24px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                  </div>
+                  <div style="font-size:0.72rem;color:var(--text-dim);margin-top:5px;">Included in the total — split evenly across all attendees</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Total cost + attendees -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+              <div class="form-field" style="margin:0;">
+                <label>Total Reservation Cost ($)</label>
+                <div style="position:relative;">
+                  <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.88rem;color:var(--text-dim);pointer-events:none;">$</span>
+                  <input type="number" id="ev-reservation-total" min="0" step="0.01" placeholder="e.g. 1000.00" oninput="updateReservationCalc()" style="width:100%;padding:10px 12px 10px 24px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                </div>
+                <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">e.g. $1,000 to reserve a table</div>
+              </div>
+              <div class="form-field" style="margin:0;">
+                <label>Number of Attendees</label>
+                <input type="number" id="ev-reservation-attendees" min="1" placeholder="e.g. 8" oninput="updateReservationCalc()" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+              </div>
+            </div>
+
+            <!-- Payment type question -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;">
+              <div style="font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:10px;">How will this reservation be paid?</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);transition:all 0.15s;" id="pay-full-label">
+                  <input type="radio" name="ev-pay-type" value="full" checked onchange="updateReservationCalc()" style="accent-color:var(--brown);margin-top:2px;flex-shrink:0;">
+                  <div>
+                    <div style="font-size:0.85rem;font-weight:700;color:var(--text);">Pay in Full Today</div>
+                    <div style="font-size:0.75rem;color:var(--text-dim);">Full payment collected from the person making the reservation</div>
+                  </div>
+                </label>
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:10px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);transition:all 0.15s;" id="pay-split-label">
+                  <input type="radio" name="ev-pay-type" value="split" onchange="updateReservationCalc()" style="accent-color:var(--brown);margin-top:2px;flex-shrink:0;">
+                  <div>
+                    <div style="font-size:0.85rem;font-weight:700;color:var(--text);">Split Between All Attendees</div>
+                    <div style="font-size:0.75rem;color:var(--text-dim);">Cost divided equally — each person pays their share</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Split payment per-person display -->
+            <div id="res-split-preview" style="display:none;background:linear-gradient(135deg,rgba(192,122,80,0.12),rgba(192,122,80,0.06));border:1px solid rgba(192,122,80,0.4);border-radius:10px;padding:14px;margin-bottom:14px;text-align:center;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:4px;">Each Person Pays</div>
+              <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--brown-dark);" id="res-per-person-amt">$0.00</div>
+              <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;" id="res-split-breakdown">— per person</div>
+              <div id="res-split-bday-note" style="display:none;font-size:0.72rem;color:var(--brown);margin-top:6px;background:rgba(192,122,80,0.1);border-radius:6px;padding:5px 10px;"></div>
+            </div>
+
+            <!-- Payment due date -->
+            <div class="form-field" style="margin-bottom:14px;">
+              <label>Payment Must Be Paid in Full By</label>
+              <input type="date" id="ev-reservation-due-date" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">⏰ Automatic reminders will be sent every 3 days until this date</div>
+            </div>
+
+            <div style="border-top:1px solid rgba(192,122,80,0.2);margin:16px 0;"></div>
+
+            <!-- Reservation location + perks -->
+            <div class="form-field" style="margin-bottom:12px;">
+              <label>Venue / Location</label>
+              <input type="text" id="ev-res-location" placeholder="e.g. The Grand Hall, 123 Main St, Dallas TX" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">This address will be included in the payment link & confirmation email</div>
+            </div>
+            <div class="form-field" style="margin-bottom:16px;">
+              <label>What's Included with This Reservation</label>
+              <textarea id="ev-res-perks" placeholder="e.g. Reserved table for 10 · 2 complimentary champagne bottles · dedicated server · priority seating" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;resize:vertical;min-height:72px;line-height:1.5;"></textarea>
+              <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Shown on the payment page and confirmation email sent to the guest</div>
+            </div>
+
+            <div style="border-top:1px solid rgba(192,122,80,0.2);margin:16px 0;"></div>
+
+            <!-- Contact info collection -->
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Contact Making the Reservation</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+              <div class="form-field" style="margin:0;">
+                <label>First Name</label>
+                <input type="text" id="ev-res-first" placeholder="Jane" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+              </div>
+              <div class="form-field" style="margin:0;">
+                <label>Last Name</label>
+                <input type="text" id="ev-res-last" placeholder="Smith" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div class="form-field" style="margin:0;">
+                <label>Phone Number</label>
+                <input type="tel" id="ev-res-phone" placeholder="(555) 000-0000" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+              </div>
+              <div class="form-field" style="margin:0;">
+                <label>Email Address</label>
+                <input type="email" id="ev-res-email" placeholder="jane@email.com" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+              </div>
+            </div>
+
+            <!-- Generate & send link -->
+            <button type="button" onclick="createReservationWithLink()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 2px 10px rgba(192,122,80,0.35);">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+              Create Reservation & Send Payment Link
+            </button>
+
+            <!-- Link preview + verify flow -->
+            <div id="reservation-link-flow" style="display:none;margin-top:14px;">
+
+              <!-- ── COMMITMENT AGREEMENT PANEL ── -->
+              <div style="background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.04));border:1.5px solid rgba(192,122,80,0.4);border-radius:12px;padding:16px;margin-bottom:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--brown)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Commitment Fee Agreement — All-or-Nothing Rule</span>
+                </div>
+                <div style="font-size:0.78rem;color:var(--text-mid);line-height:1.7;margin-bottom:12px;">
+                  This reservation is protected by a <strong style="color:var(--text);">$100 Holding Fee</strong>. If the full balance is not settled by the payment deadline, the reservation is automatically cancelled and the following math applies to all collected funds:
+                </div>
+
+                <!-- Live math breakdown — populated by JS -->
+                <div id="res-math-breakdown" style="background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:0.82rem;line-height:1.8;">
+                  <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Cancellation Math Preview</div>
+                  <div id="res-math-lines"></div>
+                </div>
+
+                <!-- What gets sent to group -->
+                <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+                  <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#92400e;margin-bottom:8px;">📲 What the Payment Link Shows Each Guest</div>
+                  <div id="res-guest-agreement-text" style="font-size:0.78rem;color:#78350f;line-height:1.7;font-style:italic;background:#fff;border-radius:8px;padding:10px 12px;border-left:3px solid #f97316;"></div>
+                </div>
+              </div>
+
+              <!-- ── AUTOMATED PRESSURE NOTIFICATIONS ── -->
+              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#d97706" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                  <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#92400e;">Automated Group Accountability Alerts</span>
+                </div>
+                <div style="font-size:0.75rem;color:var(--text-dim);margin-bottom:10px;">The system acts as the "bad guy" so you don't have to. These texts go out automatically to the whole group:</div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="background:#fefce8;border:1px solid #fde68a;border-radius:9px;padding:10px 12px;">
+                    <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#92400e;margin-bottom:5px;">⏰ T-Minus 72 Hours — First Warning</div>
+                    <div id="res-sms-72" style="font-size:0.78rem;color:#78350f;line-height:1.6;font-family:'DM Sans',sans-serif;"></div>
+                  </div>
+                  <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;padding:10px 12px;">
+                    <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b45309;margin-bottom:5px;">🚨 T-Minus 48 Hours — Final Group Alert</div>
+                    <div id="res-sms-48" style="font-size:0.78rem;color:#78350f;line-height:1.6;font-family:'DM Sans',sans-serif;"></div>
+                  </div>
+                  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:10px 12px;">
+                    <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#991b1b;margin-bottom:5px;">🔴 T-Minus 24 Hours — Last Chance</div>
+                    <div id="res-sms-24" style="font-size:0.78rem;color:#7f1d1d;line-height:1.6;font-family:'DM Sans',sans-serif;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── RELIABILITY RATING / BLACKLIST ── -->
+              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="23 21 23 19 19 15"/><line x1="17" y1="17" x2="21" y2="17"/></svg>
+                  <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#4c1d95;">Reliability Rating &amp; Blacklist</span>
+                </div>
+                <div style="font-size:0.78rem;color:var(--text-mid);line-height:1.7;">
+                  If a non-paying member causes a group cancellation, their Massed Social Profile will receive a private <strong style="color:var(--text);">Reliability Strike</strong>. Three strikes result in a <strong style="color:#dc2626;">Booking Blacklist</strong> — they cannot join future split-pay reservations on Massed.
+                </div>
+                <div style="margin-top:10px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#6d28d9;margin-bottom:5px;">What the non-payer sees on their profile</div>
+                  <div style="font-size:0.78rem;color:#4c1d95;line-height:1.5;">⚠️ <em>"Your Reliability Rating has been affected. You caused a group cancellation on [date] for the reservation '[name].' Repeated incidents may restrict your ability to join split-pay reservations."</em></div>
+                </div>
+              </div>
+
+              <!-- ── BUSINESS OWNER SAFETY SWITCH ── -->
+              <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0369a1" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                  <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0369a1;">Business Owner Safety Switch</span>
+                </div>
+                <div style="font-size:0.78rem;color:var(--text-mid);line-height:1.7;margin-bottom:10px;">
+                  At T-24 hours, if payment is still short, you receive a <strong style="color:var(--text);">Manual Override Alert</strong> instead of an automatic cold cancellation. You choose what happens next:
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:9px;padding:10px 12px;">
+                    <div style="font-size:0.7rem;font-weight:700;color:#dc2626;margin-bottom:4px;">Option A — Auto-Cancel</div>
+                    <div style="font-size:0.75rem;color:#7f1d1d;line-height:1.5;">Trigger the penalty, deduct $100 + fees, and refund the rest. System handles everything automatically.</div>
+                  </div>
+                  <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:9px;padding:10px 12px;">
+                    <div style="font-size:0.7rem;font-weight:700;color:#16a34a;margin-bottom:4px;">Option B — Final Offer</div>
+                    <div style="font-size:0.75rem;color:#166534;line-height:1.5;">Send a "Final Offer" link to the host — keep the partial payment, honour the booking. Your call.</div>
+                  </div>
+                </div>
+                <div style="margin-top:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#1d4ed8;margin-bottom:4px;">What you'll see 24hrs before the deadline</div>
+                  <div id="res-safety-switch-preview" style="font-size:0.78rem;color:#1e3a8a;line-height:1.6;font-style:italic;"></div>
+                </div>
+              </div>
+
+              <!-- ── PAYMENT LINK + QR ── -->
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;">
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Payment Link</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span id="reservation-link-url" style="font-family:monospace;font-size:0.75rem;color:var(--brown-dark);font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                  <button onclick="copyReservationLink()" style="flex-shrink:0;padding:5px 10px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;">Copy</button>
+                </div>
+              </div>
+              <!-- QR Code -->
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:14px;">
+                <div id="res-qr-canvas" style="width:80px;height:80px;flex-shrink:0;"></div>
+                <div>
+                  <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;">QR Code</div>
+                  <div style="font-size:0.78rem;color:var(--text-mid);line-height:1.5;">Share or print — guests scan to pay directly. QR code is also emailed with the payment link.</div>
+                  <button onclick="downloadReservationQR()" style="margin-top:8px;padding:5px 12px;background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.75rem;font-weight:700;">Download QR</button>
+                </div>
+              </div>
+
+              <div id="res-link-sent-msg" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:0.82rem;color:#166534;align-items:center;gap:6px;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="res-link-sent-text">Link sent!</span>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <button onclick="sendReservationLink()" id="res-send-btn" style="flex:1;padding:11px;background:#fff;border:1.5px solid var(--brown);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--brown);">
+                  📤 Send Link
+                </button>
+                <button onclick="verifyReservationLink()" id="res-verify-btn" style="flex:1;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--text-mid);" disabled>
+                  ✓ Verify Received
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="ev-non-res-fields">
+
         <!-- Description -->
-        <div class="form-field">
+        <div class="form-field" id="ev-non-res-fields-start">
           <label>Event Description</label>
           <textarea id="ev-desc" placeholder="Describe your event, vibe, what to expect..." style="min-height:90px;"></textarea>
         </div>
 
         <!-- Date, Time, Location -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;" id="ev-date-time-row">
           <div class="form-field" style="margin:0;">
             <label>Date</label>
             <input type="date" id="ev-date">
@@ -7401,7 +8343,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
 
         <!-- Location -->
-        <div class="form-field">
+        <div class="form-field" id="ev-location-row">
           <label>Location</label>
           <div style="display:flex;gap:10px;margin-bottom:8px;">
             <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;">
@@ -7418,7 +8360,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
 
         <!-- Delivery Method -->
-        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;">
+        <div style="background:var(--cream);border-radius:12px;padding:16px;margin-bottom:16px;" id="ev-delivery-row">
           <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Ticket Delivery</div>
           <div style="display:flex;gap:16px;">
             <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:500;"><input type="checkbox" id="ev-send-email" checked style="accent-color:var(--brown);"> Email</label>
@@ -7428,13 +8370,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
 
         <!-- Tags -->
-        <div class="form-field">
+        <div class="form-field" id="ev-tags-row">
           <label>Event Tags</label>
           <input type="text" id="ev-tags" placeholder="e.g. Gathering, Social, Night Out (comma separated)">
         </div>
 
         <!-- RSVP Block -->
-        <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:18px;border:1px solid var(--border);">
+        <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:18px;border:1px solid var(--border);" id="ev-rsvp-row">
           <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;">RSVP</div>
           <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
             <label style="font-size:0.88rem;font-weight:600;color:var(--text);">Is RSVP required for this event?</label>
@@ -7469,7 +8411,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         </div>
 
         <!-- Gallery -->
-        <div style="margin-bottom:18px;">
+        <div style="margin-bottom:18px;" id="ev-gallery-row">
           <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Event Gallery (Optional)</div>
           <div onclick="document.getElementById('ev-gallery-input').click()" style="border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;background:var(--cream);">
             <input type="file" id="ev-gallery-input" accept="image/*" multiple style="display:none" onchange="handleEventGallery(event)">
@@ -7478,10 +8420,65 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
           <div id="ev-gallery-previews" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
         </div>
 
+        <!-- PAYMENT STABILITY SETTINGS -->
+        <div style="background:var(--cream);border-radius:14px;padding:18px;margin-bottom:18px;border:1px solid var(--border);" id="ev-payment-stability-row">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--brown)" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <div style="font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);">Payment Stability Settings</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#fff;border-radius:10px;border:1px solid var(--border);margin-bottom:10px;">
+            <div>
+              <div style="font-size:0.88rem;font-weight:600;color:var(--text);">Enable Split-Payment Accountability</div>
+              <div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">Track and enforce shared payment responsibilities across attendees</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;margin-left:12px;cursor:pointer;">
+              <input type="checkbox" id="ev-split-payment" style="opacity:0;position:absolute;width:0;height:0;" onchange="toggleSplitPaymentFields()">
+              <span style="position:absolute;cursor:pointer;inset:0;background:var(--cream3);border-radius:12px;transition:.2s;border:1px solid var(--border);" id="ev-split-payment-slider"></span>
+              <span id="ev-split-payment-knob" style="position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.2s;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,0.15);"></span>
+            </label>
+          </div>
+          <div id="split-payment-fields" style="display:none;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+              <div class="form-field" style="margin:0;">
+                <label>Cancellation Penalty Amount</label>
+                <div style="position:relative;">
+                  <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.88rem;color:var(--text-dim);pointer-events:none;">$</span>
+                  <input type="number" id="ev-cancel-penalty" min="0" step="0.01" value="100.00" placeholder="100.00" style="width:100%;padding:10px 12px 10px 24px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                </div>
+                <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Fee charged on cancellation</div>
+              </div>
+              <div class="form-field" style="margin:0;">
+                <label>Individual Refund Processing Fee</label>
+                <div style="position:relative;">
+                  <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.88rem;color:var(--text-dim);pointer-events:none;">$</span>
+                  <input type="number" id="ev-refund-fee" min="0" step="0.01" value="5.00" placeholder="5.00" style="width:100%;padding:10px 12px 10px 24px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                </div>
+                <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">Per-person refund processing cost</div>
+              </div>
+            </div>
+            <div class="form-field" style="margin:0;">
+              <label>Payment Cut-off Deadline</label>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <input type="number" id="ev-cutoff-hours" min="1" value="72" placeholder="72" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                <select id="ev-cutoff-unit" style="padding:10px 14px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;color:var(--text);">
+                  <option value="hours" selected>Hours before event</option>
+                  <option value="days">Days before event</option>
+                  <option value="weeks">Weeks before event</option>
+                </select>
+              </div>
+              <div style="margin-top:8px;background:var(--brown-bg);border-radius:8px;padding:9px 12px;font-size:0.78rem;color:var(--brown-dark);line-height:1.5;">
+                ⏱ Payments must be completed at least <strong id="cutoff-preview-val">72 hours</strong> before the event starts.
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="modal-actions">
           <button class="btn-cancel" onclick="closeModal('modal-create-event')">Cancel</button>
           <button class="btn-confirm" onclick="saveEvent()">Publish Event →</button>
         </div>
+
+        </div><!-- end ev-non-res-fields -->
       </div>
     </div>
 
@@ -9333,7 +10330,7 @@ function toast(msg) {
   t.textContent=msg; t.classList.add('show');
   setTimeout(function(){ if(t) t.classList.remove('show'); },3000);
 }
-var pageTitles={dashboard:'Dashboard',signals:'Signals',vault:'My Vault',bannedblocked:'Banned / Blocked',gateway:'Gateway Room',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',createpoll:'Create Poll',forms:'Forms',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon'};
+var pageTitles={dashboard:'Dashboard',signals:'Signals',vault:'My Vault',bannedblocked:'Banned / Blocked',gateway:'Gateway Room',showcase:'Showcase',mystore:'My Store',mydigital:'My Store — Digital Products',myphysical:'My Store — Physical Products',mycourses:'My Store — Courses',listings:'Listings',createpoll:'Create Poll',forms:'Forms',weblinks:'Web Links',mediaprofile:'Media Profile',sociallinks:'Social Links',video:'Video',analytics:'Analytics',reviews:'Reviews',tickets:'Events / Tickets',scanner:'Ticket Scanner',livepreview:'Live Preview',promo:'Promo / Referrals / Affiliates',settings:'Settings',billing:'Billing',salespayouts:'Sales & Payouts',booking:'Your Booking Services',subs:'Subscriptions / Subscribers / Memberships',browsericon:'Branding / Browser Icon',payoutsettings:'My Payout Earnings',messages:'My Messages',switchprofile:'',coming:'Coming Soon',sparkfounder:'Spark Founder'};
 
 function navStoreTab(el, tab) {
   nav(el, 'mystore');
@@ -9972,6 +10969,7 @@ function nav(el,screen) {
     if(screen==='switchprofile') setTimeout(function(){ spTab('posts', document.querySelector('.sp-tab')); renderSpFeed(); }, 50);
     if(screen==='bannedblocked') setTimeout(renderBannedBlocked, 50);
     if(screen==='gateway') setTimeout(gwInit, 50);
+    if(screen==='sparkfounder') setTimeout(function(){ sfUpdateStats(); renderSparkFounders(); }, 50);
     // Close sidebar on mobile after navigating
     closeSidebar();
   } catch(e){ console.warn('nav error:',e); }
@@ -11341,7 +12339,9 @@ var helpSections = [
   { id:'help-sec-messages',       label:'💬 My Messages' },
   { id:'help-sec-switchprofile',  label:'👥 Switch Profile' },
   { id:'help-sec-banned',         label:'⛔🚫 Banned / Blocked' },
-  { id:'help-sec-gateway',        label:'🚪 Gateway Room' }
+  { id:'help-sec-gateway',        label:'🚪 Gateway Room' },
+  { id:'help-sec-reservations',   label:'🍽️ Reservations' },
+  { id:'help-sec-sparkfounder',   label:'⚡ Spark Founder' }
 ];
 
 function helpSearch(val) {
@@ -14859,8 +15859,11 @@ var reviewQuestions = [
   { q:'Would you recommend this service to a friend?', type:'choice', choices:['Definitely','Maybe','No'] },
 ];
 
+// Reservation records
+var reservationBookings = [];
+
 function bookingTab(tab) {
-  var tabs = ['services','incoming'];
+  var tabs = ['services','incoming','reservations'];
   tabs.forEach(function(t) {
     var btn = document.getElementById('bk-tab-'+t);
     var content = document.getElementById('bk-'+t+'-content');
@@ -14868,6 +15871,294 @@ function bookingTab(tab) {
     if (content) content.style.display = t===tab ? 'block' : 'none';
   });
   if (tab === 'incoming') renderIncomingBookings();
+  if (tab === 'reservations') renderReservationBookings();
+}
+
+function renderReservationBookings() {
+  var list = document.getElementById('bk-reservations-list');
+  var empty = document.getElementById('bk-reservations-empty');
+  if (!list) return;
+  if (reservationBookings.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = reservationBookings.map(function(r) {
+    var statusColor = r.paymentStatus === 'paid' ? '#16a34a' : r.paymentStatus === 'partial' ? '#d97706' : '#dc2626';
+    var statusLabel = r.paymentStatus === 'paid' ? 'Paid in Full' : r.paymentStatus === 'partial' ? 'Partial' : 'Pending';
+    var perPerson = r.splitPayment && r.attendees > 0 ? (r.totalCost / r.attendees).toFixed(2) : null;
+    var log = r.paymentLog || [];
+    var totalPaid = log.reduce(function(s,p){ return s + (parseFloat(p.amount)||0); }, 0);
+    var pctPaid = r.totalCost > 0 ? Math.min(100, Math.round(totalPaid/r.totalCost*100)) : 0;
+    var qrId = 'qr-bk-'+r.id;
+    var resDateDisplay = r.eventDateFormatted || (r.eventDate ? new Date(r.eventDate+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'TBD');
+
+    return `<div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;" id="res-card-${r.id}">
+      <!-- Header bar -->
+      <div style="background:linear-gradient(135deg,rgba(192,122,80,0.1),rgba(192,122,80,0.04));border-bottom:1px solid var(--border);padding:14px 18px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-weight:700;font-size:0.95rem;color:var(--text);">${r.eventName}</div>
+          ${(r.birthdayNames && r.birthdayNames.length > 0) ? '<div style="font-size:0.82rem;color:var(--brown);margin-top:2px;">🎂 ' + r.birthdayNames.join(' & ') + '</div>' : (r.birthdayName ? '<div style="font-size:0.82rem;color:var(--brown);margin-top:2px;">🎂 ' + r.birthdayName + '</div>' : '')}
+          <div style="font-size:0.78rem;color:var(--text-dim);margin-top:3px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span>📅 <strong>${resDateDisplay}</strong>${r.eventTime?' at '+r.eventTime:''}</span>
+            <span>👥 ${r.attendees} ${r.attendees===1?'person':'people'}</span>
+            ${r.hasAnnouncement ? '<span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700;">✨ Announcement</span>' : ''}
+          </div>
+          ${r.hasAnnouncement && r.announcementFee ? '<div style="font-size:0.75rem;color:var(--text-dim);margin-top:3px;">Sparklers + lights + Happy Birthday sign · $' + (r.announcementFee||0).toFixed(2) + ' included in split</div>' : ''}
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:20px;background:${statusColor}18;color:${statusColor};">${statusLabel}</span>
+          <button onclick="editReservationEvent(${r.id})" style="padding:5px 10px;background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;">Edit</button>
+          <button onclick="deleteReservation(${r.id})" style="padding:5px 10px;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;">Delete</button>
+        </div>
+      </div>
+
+      <div style="padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <!-- Contact -->
+        <div style="background:var(--cream);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;">Contact</div>
+          <div style="font-size:0.88rem;font-weight:700;">${r.firstName} ${r.lastName}</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);">${r.email}</div>
+          <div style="font-size:0.75rem;color:var(--text-dim);">${r.phone}</div>
+        </div>
+        <!-- Payment summary -->
+        <div style="background:var(--cream);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;">Payment</div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--brown);">$${parseFloat(r.totalCost).toFixed(2)} total</div>
+          ${r.splitPayment ? `<div style="font-size:0.75rem;color:var(--text-dim);">Split: $${perPerson} × ${r.attendees}</div>` : '<div style="font-size:0.75rem;color:var(--text-dim);">Full payment</div>'}
+          <div style="font-size:0.72rem;color:#dc2626;margin-top:2px;font-weight:600;">Due: ${r.paymentDueDate||'N/A'}</div>
+        </div>
+      </div>
+
+      <!-- Payment progress -->
+      <div style="padding:0 18px 14px;">
+        <div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-dim);margin-bottom:5px;"><span>$${totalPaid.toFixed(2)} collected</span><span>$${(r.totalCost-totalPaid).toFixed(2)} remaining</span></div>
+        <div style="background:var(--cream3);border-radius:4px;height:6px;overflow:hidden;">
+          <div style="background:${pctPaid>=100?'#16a34a':'var(--brown)'};height:100%;width:${pctPaid}%;border-radius:4px;transition:width 0.4s;"></div>
+        </div>
+      </div>
+
+      ${r.splitPayment ? `<div style="padding:0 18px 14px;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Attendee Payment Status</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          ${Array.from({length:r.attendees},function(_,i){
+            var pl = (r.paymentLog||[]).find(function(p){return p.seat===(i+1);});
+            var paid = !!pl;
+            return '<div title="'+(paid?pl.name+' – $'+pl.amount:'Person '+(i+1)+' unpaid')+'" style="width:30px;height:30px;border-radius:50%;background:'+(paid?'#16a34a':'var(--cream3)')+';border:1.5px solid '+(paid?'#16a34a':'var(--border)')+';display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;color:'+(paid?'#fff':'var(--text-dim)')+';">'+(i+1)+'</div>';
+          }).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- Payment log -->
+      ${log.length > 0 ? `<div style="padding:0 18px 14px;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Payment Log</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${log.map(function(p,pi){return `<div style="display:flex;align-items:flex-start;justify-content:space-between;background:var(--cream);border-radius:8px;padding:8px 10px;font-size:0.78rem;">
+            <div><span style="font-weight:700;">${p.name}</span><span style="color:var(--text-dim);margin-left:6px;">${p.date} · ${p.method||''}${r.splitPayment&&p.seat?' · Seat '+p.seat:''}</span>${p.ticketNum?'<div style="font-size:0.68rem;color:#C07A50;font-weight:700;margin-top:2px;">🎟 '+p.ticketNum+'</div>':''}</div>
+            <span style="font-weight:700;color:#16a34a;flex-shrink:0;margin-left:8px;">+$${parseFloat(p.amount).toFixed(2)}</span>
+          </div>`;}).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- Link + QR + actions -->
+      <div style="padding:0 18px 16px;">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <div style="flex:1;background:var(--cream);border-radius:8px;padding:7px 10px;font-family:monospace;font-size:0.7rem;color:var(--brown-dark);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.paymentLink}</div>
+          <button onclick="navigator.clipboard&&navigator.clipboard.writeText('${r.paymentLink}');toast('✓ Copied!')" style="padding:7px 12px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;flex-shrink:0;">Copy</button>
+          <button onclick="toggleResQR('${qrId}','${r.paymentLink}')" style="padding:7px 12px;background:#fff;color:var(--text-mid);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;flex-shrink:0;">QR</button>
+          <button onclick="sendReminderNow(${r.id})" style="padding:7px 12px;background:#fff;color:var(--text-mid);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.72rem;font-weight:700;flex-shrink:0;">Remind</button>
+        </div>
+        <!-- QR toggle -->
+        <div id="${qrId}" style="display:none;background:var(--cream);border-radius:10px;padding:12px;text-align:center;margin-bottom:10px;">
+          <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Scan to Pay</div>
+          <div id="${qrId}-svg" style="display:inline-block;"></div>
+        </div>
+        <!-- Record payment button -->
+        <button onclick="openRecordPayment(${r.id})" style="width:100%;padding:11px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:7px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Record Payment Received
+        </button>
+        ${r.linkVerified ? '<div style="margin-top:8px;font-size:0.75rem;color:#16a34a;display:flex;align-items:center;gap:5px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Link delivered & verified</div>' : '<div style="margin-top:8px;font-size:0.75rem;color:#d97706;">⏳ Awaiting link verification</div>'}
+        <div style="margin-top:4px;font-size:0.72rem;color:var(--text-dim);">🔔 Next auto-reminder: ${r.nextReminder||'Scheduled'}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleResQR(qrId, link) {
+  var el = document.getElementById(qrId);
+  if (!el) return;
+  var visible = el.style.display !== 'none';
+  el.style.display = visible ? 'none' : 'block';
+  if (!visible) {
+    var svgEl = document.getElementById(qrId+'-svg');
+    if (svgEl && !svgEl.innerHTML) generateQRDisplay(qrId+'-svg', link);
+  }
+}
+
+function openRecordPayment(id) {
+  var r = reservationBookings.find(function(x){ return x.id===id; });
+  if (!r) return;
+  window._recordPaymentId = id;
+  var perPerson = r.splitPayment && r.attendees > 0 ? (r.totalCost / r.attendees).toFixed(2) : r.totalCost.toFixed(2);
+  var modal = document.getElementById('modal-record-payment');
+  if (!modal) {
+    var div = document.createElement('div');
+    div.id = 'modal-record-payment';
+    div.className = 'modal-overlay';
+    div.onclick = function(e){ if(e.target===div) closeModal('modal-record-payment'); };
+    div.innerHTML = `<div class="modal" style="max-width:420px;" onclick="event.stopPropagation()">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+        <h2 class="modal-title" style="margin:0;">Record Payment</h2>
+        <button onclick="closeModal('modal-record-payment')" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:var(--text-dim);">✕</button>
+      </div>
+      <div id="rp-reservation-info" style="background:var(--cream);border-radius:10px;padding:10px 12px;margin-bottom:16px;font-size:0.82rem;color:var(--text-mid);"></div>
+      <div class="form-field"><label>Payer Full Name</label><input type="text" id="rp-name" placeholder="Jane Smith" style="width:100%;"></div>
+      <div class="form-field"><label>Amount Paid ($)</label><div style="position:relative;"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.88rem;color:var(--text-dim);">$</span><input type="number" id="rp-amount" step="0.01" min="0" style="width:100%;padding-left:24px;" placeholder="0.00"></div></div>
+      <div id="rp-seat-row" style="display:none;" class="form-field"><label>Seat / Person #</label><input type="number" id="rp-seat" min="1" style="width:100%;" placeholder="1"></div>
+      <div class="form-field"><label>Payment Method</label><select id="rp-method" style="width:100%;"><option>Cash</option><option>Card</option><option>Venmo</option><option>Zelle</option><option>CashApp</option><option>Other</option></select></div>
+      <div class="form-field"><label>Notes (optional)</label><input type="text" id="rp-notes" placeholder="e.g. Paid via Venmo @handle" style="width:100%;"></div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button class="btn-cancel" onclick="closeModal('modal-record-payment')">Cancel</button>
+        <button class="btn-confirm" onclick="savePaymentRecord()" style="flex:1;">Save Payment →</button>
+      </div>
+    </div>`;
+    document.body.appendChild(div);
+  }
+  // Populate info
+  var info = document.getElementById('rp-reservation-info');
+  if (info) info.innerHTML = '<strong>'+r.eventName+'</strong> · '+r.firstName+' '+r.lastName+'<br>Total: $'+r.totalCost.toFixed(2)+' | Suggested: $'+perPerson+(r.splitPayment?' per person':'');
+  var seatRow = document.getElementById('rp-seat-row');
+  if (seatRow) seatRow.style.display = r.splitPayment ? 'block' : 'none';
+  var amtEl = document.getElementById('rp-amount');
+  if (amtEl) amtEl.value = perPerson;
+  openModal('modal-record-payment');
+}
+
+function savePaymentRecord() {
+  var id = window._recordPaymentId;
+  var r = reservationBookings.find(function(x){ return x.id===id; });
+  if (!r) return;
+  var name = document.getElementById('rp-name').value.trim();
+  var amount = parseFloat(document.getElementById('rp-amount').value) || 0;
+  var seat = document.getElementById('rp-seat') ? parseInt(document.getElementById('rp-seat').value) || null : null;
+  var method = document.getElementById('rp-method').value;
+  var notes = document.getElementById('rp-notes').value.trim();
+  if (!name) { toast('Please enter the payer name'); return; }
+  if (!amount) { toast('Please enter the amount'); return; }
+  if (!r.paymentLog) r.paymentLog = [];
+
+  // Generate unique ticket number for this payer
+  var ticketNum = 'RES-' + id.toString().slice(-4) + '-' + (r.paymentLog.length + 1).toString().padStart(3,'0');
+  r.paymentLog.push({ name:name, amount:amount, seat:seat, method:method, notes:notes, ticketNum:ticketNum, date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) });
+
+  var totalPaid = r.paymentLog.reduce(function(s,p){ return s+(parseFloat(p.amount)||0); }, 0);
+  var prevStatus = r.paymentStatus;
+  r.paymentStatus = totalPaid >= r.totalCost ? 'paid' : totalPaid > 0 ? 'partial' : 'pending';
+  if (r.splitPayment) r.paidCount = r.paymentLog.filter(function(p){ return !!p.seat; }).length;
+
+  closeModal('modal-record-payment');
+
+  // If just became fully paid — issue tickets to all payers
+  if (r.paymentStatus === 'paid' && prevStatus !== 'paid') {
+    issueReservationTickets(r);
+  } else {
+    // Send individual payment confirmation with ticket number
+    showPaymentConfirmationToast(name, ticketNum, r);
+  }
+
+  renderReservationBookings();
+  toast('✓ $' + amount.toFixed(2) + ' recorded for ' + name + ' · Ticket: ' + ticketNum);
+}
+
+function issueReservationTickets(r) {
+  // Simulate sending ticket emails to all payers
+  var perPerson = r.splitPayment ? (r.totalCost / r.attendees).toFixed(2) : r.totalCost.toFixed(2);
+  var ticketsSummary = r.paymentLog.map(function(p){ return p.name + ' → ' + p.ticketNum; }).join(', ');
+
+  // Show a confirmation modal-style toast
+  setTimeout(function() {
+    var msgDiv = document.createElement('div');
+    msgDiv.style.cssText = 'position:fixed;bottom:80px;right:24px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;max-width:340px;z-index:9999;box-shadow:0 8px 32px rgba(44,26,14,0.18);';
+    msgDiv.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'
+      + '<div style="width:32px;height:32px;border-radius:50%;background:#d1fae5;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
+      + '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>'
+      + '<div><div style="font-weight:700;font-size:0.88rem;color:var(--text);">Payment Complete — Tickets Issued!</div>'
+      + '<div style="font-size:0.75rem;color:var(--text-dim);margin-top:2px;">' + r.eventName + ' · ' + r.eventDateFormatted + '</div></div></div>'
+      + '<div style="font-size:0.78rem;color:var(--text-mid);line-height:1.6;margin-bottom:10px;">'
+      + '📧 Confirmation emails with ticket numbers & QR codes sent to each payer.<br>'
+      + '📍 Location: <strong>' + (r.location || 'See confirmation email') + '</strong><br>'
+      + (r.perks ? '🎁 Includes: ' + r.perks + '<br>' : '')
+      + '</div>'
+      + '<div style="font-size:0.72rem;color:var(--text-dim);background:var(--cream);border-radius:8px;padding:8px 10px;">'
+      + r.paymentLog.map(function(p){ return '<div>🎟️ <strong>' + p.name + '</strong> · ' + p.ticketNum + '</div>'; }).join('')
+      + '</div>'
+      + '<button onclick="this.parentNode.remove()" style="margin-top:10px;width:100%;padding:8px;background:var(--brown);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.82rem;font-weight:700;">Got it</button>';
+    document.body.appendChild(msgDiv);
+    setTimeout(function(){ if(msgDiv.parentNode) msgDiv.remove(); }, 12000);
+  }, 400);
+}
+
+function showPaymentConfirmationToast(name, ticketNum, r) {
+  setTimeout(function(){
+    toast('📧 Confirmation + QR sent to ' + name + ' · ' + ticketNum);
+  }, 600);
+}
+
+function editReservationEvent(id) {
+  // Find matching event in events array and open edit modal
+  var evIdx = events.findIndex(function(e){ return e.isReservation && (e.id===id || e.name === (reservationBookings.find(function(r){return r.id===id;})||{}).eventName); });
+  if (evIdx > -1) {
+    var bookingNavItem = document.querySelector('.nav-item[onclick*="tickets"]');
+    if (bookingNavItem) nav(bookingNavItem, 'tickets');
+    setTimeout(function(){ editEvent(evIdx); }, 200);
+  } else { toast('Open Events / Tickets tab to edit this reservation'); }
+}
+
+function deleteReservation(id) {
+  if (!confirm('Delete this reservation? This cannot be undone.')) return;
+  reservationBookings = reservationBookings.filter(function(r){ return r.id!==id; });
+  // Also remove from events
+  events = events.filter(function(e){ return !(e.isReservation && e.id===id); });
+  renderReservationBookings();
+  renderEvents();
+  updateTicketStats();
+  var badge = document.getElementById('bk-reservations-badge');
+  if (badge) { badge.textContent = reservationBookings.length; if(!reservationBookings.length) badge.style.display='none'; }
+  toast('Reservation deleted.');
+}
+
+function addReservationToBookings(resData) {
+  var id = Date.now();
+  var nextReminder = new Date();
+  nextReminder.setDate(nextReminder.getDate() + 3);
+  var rec = Object.assign({}, resData, {
+    id: id,
+    paymentStatus: 'pending',
+    paidCount: 0,
+    linkVerified: false,
+    nextReminder: nextReminder.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    createdAt: new Date().toISOString()
+  });
+  reservationBookings.unshift(rec);
+  // Update badge
+  var badge = document.getElementById('bk-reservations-badge');
+  if (badge) { badge.textContent = reservationBookings.length; badge.style.display = 'inline'; }
+  // Add to calendar
+  addReservationToCalendar(rec);
+}
+
+function addReservationToCalendar(rec) {
+  if (typeof calendarEvents !== 'undefined') {
+    calendarEvents.push({ date: rec.eventDate, title: rec.eventName + ' (Reservation)', color: 'var(--brown)' });
+  }
+}
+
+function sendReminderNow(id) {
+  var r = reservationBookings.find(function(x){ return x.id===id; });
+  if (!r) return;
+  toast('✓ Reminder sent to '+r.firstName+'!');
 }
 
 function renderIncomingBookings() {
@@ -15535,6 +16826,295 @@ toggleWebLinkVisibility = async function(id) {
   } catch(e) {}
 };
 
+// ── SPARK FOUNDER ─────────────────────────────────────────────────────────────
+var sparkFounders = [];
+
+function openSparkFounderModal() {
+  document.getElementById('sf-step-1').style.display = '';
+  document.getElementById('sf-step-2').style.display = 'none';
+  document.getElementById('sf-email').value = '';
+  document.getElementById('sf-relationship').value = '';
+  document.getElementById('sf-note').value = '';
+  openModal('modal-spark-founder');
+}
+
+function sfProceedToSend() {
+  var email = document.getElementById('sf-email').value.trim();
+  var relationship = document.getElementById('sf-relationship').value;
+  var note = document.getElementById('sf-note').value.trim();
+  if (!email || !email.includes('@')) { toast('Please enter a valid email address'); return; }
+
+  // Create founder record
+  var id = Date.now();
+  var slug = 'founder-' + id.toString(36);
+  var inviteLink = 'https://massed.app/join/spark/' + slug;
+  var founder = {
+    id: id,
+    email: email,
+    relationship: relationship || 'Founder',
+    note: note,
+    status: 'pending',           // pending → active → graduated → independent
+    inviteLink: inviteLink,
+    inviteSentAt: new Date().toISOString(),
+    acceptedAt: null,
+    urlSlug: null,
+    displayName: null,
+    stripeConnected: false,
+    paymentsCompleted: 0,         // 0–12
+    paymentHistory: [],
+    freeHostingStartDate: null,
+    freeHostingEndDate: null,
+    independentSince: null,
+    nextBillingDate: sfNextBillingDate(),
+    monthlyFee: 15
+  };
+
+  sparkFounders.unshift(founder);
+  sfUpdateStats();
+  renderSparkFounders();
+
+  // Show confirmation step
+  document.getElementById('sf-step-1').style.display = 'none';
+  document.getElementById('sf-step-2').style.display = '';
+  document.getElementById('sf-confirm-email').textContent = email;
+
+  // Simulate first payment record
+  sfRecordPayment(id);
+}
+
+function sfRecordPayment(id) {
+  var f = sparkFounders.find(function(x){ return x.id === id; });
+  if (!f) return;
+  f.paymentHistory.push({
+    num: f.paymentsCompleted + 1,
+    amount: 15,
+    date: new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),
+    status: 'paid'
+  });
+  f.paymentsCompleted = Math.min(f.paymentsCompleted + 1, 12);
+  f.nextBillingDate = sfNextBillingDate();
+
+  // Status transitions
+  if (f.status === 'pending') f.status = 'active';
+
+  // 12th payment — trigger graduation
+  if (f.paymentsCompleted >= 12 && f.status !== 'graduated' && f.status !== 'independent') {
+    sfGraduate(id);
+  }
+  sfUpdateStats();
+  renderSparkFounders();
+}
+
+function sfGraduate(id) {
+  var f = sparkFounders.find(function(x){ return x.id === id; });
+  if (!f) return;
+  f.status = 'graduated';
+  var start = new Date();
+  var end = new Date();
+  end.setFullYear(end.getFullYear() + 2);
+  f.freeHostingStartDate = start.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  f.freeHostingEndDate = end.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+  // After 2 years, they become independent (simulated)
+  // In production: a scheduled job would trigger sfSetIndependent(id) at freeHostingEndDate
+
+  // Show graduation toast
+  setTimeout(function(){
+    toast('🎓 ' + (f.displayName || f.email) + ' has graduated! 2-year free hosting activated.');
+  }, 600);
+}
+
+function sfSetIndependent(id) {
+  var f = sparkFounders.find(function(x){ return x.id === id; });
+  if (!f || f.status !== 'graduated') return;
+  f.status = 'independent';
+  f.independentSince = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  sfUpdateStats();
+  renderSparkFounders();
+}
+
+function sfNextBillingDate() {
+  var d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+function sfFinish() {
+  closeModal('modal-spark-founder');
+  renderSparkFounders();
+}
+
+function sfUpdateStats() {
+  var active = sparkFounders.filter(function(f){ return f.status === 'active'; }).length;
+  var graduated = sparkFounders.filter(function(f){ return f.status === 'graduated' || f.status === 'independent'; }).length;
+  var pending = sparkFounders.filter(function(f){ return f.status === 'pending'; }).length;
+  var spend = sparkFounders.filter(function(f){ return f.status === 'active' || f.status === 'pending'; }).length * 15;
+
+  var el = document.getElementById('sf-stat-active'); if(el) el.textContent = active;
+  var el2 = document.getElementById('sf-stat-graduated'); if(el2) el2.textContent = graduated;
+  var el3 = document.getElementById('sf-stat-spend'); if(el3) el3.textContent = '$' + spend;
+  var el4 = document.getElementById('sf-stat-pending'); if(el4) el4.textContent = pending;
+}
+
+function renderSparkFounders() {
+  var list = document.getElementById('sf-founders-list');
+  var empty = document.getElementById('sf-empty');
+  if (!list) return;
+
+  if (sparkFounders.length === 0) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  list.innerHTML = sparkFounders.map(function(f) {
+    var statusColors = {
+      pending: { bg:'#fef3c7', text:'#92400e', label:'Pending Invite' },
+      active: { bg:'#dcfce7', text:'#166534', label:'Active' },
+      graduated: { bg:'#dbeafe', text:'#1e3a8a', label:'🎓 Graduated — Free Hosting' },
+      independent: { bg:'#f3e8ff', text:'#4a1d96', label:'Independent Owner' }
+    };
+    var sc = statusColors[f.status] || statusColors.pending;
+    var pct = Math.round((f.paymentsCompleted / 12) * 100);
+    var initials = (f.displayName || f.email).substring(0,2).toUpperCase();
+
+    return '<div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">'
+        + '<div style="display:flex;align-items:center;gap:12px;">'
+          + '<div style="width:44px;height:44px;border-radius:50%;background:var(--brown-bg2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;color:var(--brown);flex-shrink:0;">' + initials + '</div>'
+          + '<div>'
+            + '<div style="font-weight:700;font-size:0.95rem;color:var(--text);">' + (f.displayName || 'Awaiting setup') + '</div>'
+            + '<div style="font-size:0.78rem;color:var(--text-dim);">' + f.email + (f.relationship ? ' · ' + f.relationship : '') + '</div>'
+            + (f.urlSlug ? '<div style="font-size:0.72rem;color:var(--brown);margin-top:1px;">massed.app/' + f.urlSlug + '</div>' : '')
+          + '</div>'
+        + '</div>'
+        + '<span style="font-size:0.72rem;font-weight:700;padding:4px 10px;border-radius:20px;background:' + sc.bg + ';color:' + sc.text + ';">' + sc.label + '</span>'
+      + '</div>'
+
+      // 12-month graduation progress
+      + '<div style="margin-bottom:14px;">'
+        + '<div style="display:flex;justify-content:space-between;font-size:0.72rem;color:var(--text-dim);margin-bottom:5px;">'
+          + '<span>Graduation Progress — ' + f.paymentsCompleted + ' of 12 payments</span>'
+          + '<span style="font-weight:700;color:' + (pct >= 100 ? '#16a34a' : 'var(--brown)') + ';">' + pct + '%</span>'
+        + '</div>'
+        + '<div style="background:var(--cream3);border-radius:4px;height:8px;overflow:hidden;">'
+          + '<div style="background:' + (pct >= 100 ? '#16a34a' : 'linear-gradient(90deg,var(--brown-light),var(--brown-dark))') + ';height:100%;width:' + pct + '%;border-radius:4px;transition:width 0.5s;"></div>'
+        + '</div>'
+        + (f.status === 'graduated' ? '<div style="font-size:0.72rem;color:#1e3a8a;margin-top:5px;">🎓 Free hosting: ' + f.freeHostingStartDate + ' → ' + f.freeHostingEndDate + '</div>' : '')
+        + (f.status === 'independent' ? '<div style="font-size:0.72rem;color:#4a1d96;margin-top:5px;">⚡ Independent owner since ' + f.independentSince + '</div>' : '')
+      + '</div>'
+
+      // Billing info
+      + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">'
+        + '<div style="background:var(--cream);border-radius:9px;padding:9px 12px;">'
+          + '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;">Monthly Fee</div>'
+          + '<div style="font-size:0.9rem;font-weight:700;color:var(--brown);">$' + f.monthlyFee + '/mo</div>'
+        + '</div>'
+        + '<div style="background:var(--cream);border-radius:9px;padding:9px 12px;">'
+          + '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:3px;">'
+            + (f.status === 'active' ? 'Next Billing' : f.status === 'graduated' ? 'Free Until' : 'Status')
+          + '</div>'
+          + '<div style="font-size:0.85rem;font-weight:600;color:var(--text);">'
+            + (f.status === 'active' ? f.nextBillingDate : f.status === 'graduated' ? f.freeHostingEndDate : f.status === 'pending' ? 'Awaiting signup' : 'Independent')
+          + '</div>'
+        + '</div>'
+      + '</div>'
+
+      // Privacy notice
+      + '<div style="background:var(--cream);border-radius:8px;padding:8px 12px;font-size:0.72rem;color:var(--text-dim);margin-bottom:12px;display:flex;align-items:center;gap:6px;">'
+        + '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>'
+        + 'Client data, messages, bookings &amp; revenue are private to your Founder'
+      + '</div>'
+
+      // Actions
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+        + '<button onclick="sfViewDetail(' + f.id + ')" style="padding:8px 14px;background:var(--cream2);color:var(--text-mid);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;">View Details</button>'
+        + (f.status === 'active' ? '<button onclick="sfSimulatePayment(' + f.id + ')" style="padding:8px 14px;background:var(--brown-bg2);color:var(--brown-dark);border:1px solid var(--brown);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;">+ Record Payment</button>' : '')
+        + (f.status === 'pending' ? '<button onclick="sfResendInvite(' + f.id + ')" style="padding:8px 14px;background:#fff;color:var(--text-mid);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;">Resend Invite</button>' : '')
+        + '<button onclick="sfCancelSeat(' + f.id + ')" style="padding:8px 14px;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:0.78rem;font-weight:700;">Cancel Seat</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function sfSimulatePayment(id) {
+  var f = sparkFounders.find(function(x){ return x.id === id; });
+  if (!f) return;
+  if (f.paymentsCompleted >= 12) { toast('All 12 payments completed — already graduated!'); return; }
+  sfRecordPayment(id);
+  toast('✓ Payment #' + f.paymentsCompleted + ' recorded for ' + (f.displayName || f.email));
+}
+
+function sfResendInvite(id) {
+  var f = sparkFounders.find(function(x){ return x.id === id; });
+  if (!f) return;
+  toast('✓ Invite resent to ' + f.email);
+}
+
+function sfCancelSeat(id) {
+  if (!confirm('Cancel this Spark Founder seat? This stops billing and their account will be suspended.')) return;
+  sparkFounders = sparkFounders.filter(function(x){ return x.id !== id; });
+  sfUpdateStats();
+  renderSparkFounders();
+  toast('Spark Founder seat cancelled.');
+}
+
+function sfViewDetail(id) {
+  var f = sparkFounders.find(function(x){ return x.id === id; });
+  if (!f) return;
+  var title = document.getElementById('sf-detail-title');
+  var body = document.getElementById('sf-detail-body');
+  if (title) title.textContent = '⚡ ' + (f.displayName || f.email);
+
+  var logHTML = f.paymentHistory.length > 0
+    ? f.paymentHistory.map(function(p){
+        return '<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:0.82rem;">'
+          + '<span style="color:var(--text-dim);">Payment #' + p.num + ' · ' + p.date + '</span>'
+          + '<span style="font-weight:700;color:#16a34a;">+$' + p.amount + '</span>'
+          + '</div>';
+      }).join('')
+    : '<div style="font-size:0.82rem;color:var(--text-dim);padding:10px 0;">No payments recorded yet.</div>';
+
+  body.innerHTML = '<div style="display:flex;flex-direction:column;gap:14px;font-size:0.85rem;">'
+
+    + '<div style="background:var(--cream);border-radius:10px;padding:12px 14px;">'
+      + '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Founder Info</div>'
+      + '<div><strong>Email:</strong> ' + f.email + '</div>'
+      + '<div style="margin-top:4px;"><strong>Relationship:</strong> ' + (f.relationship || '—') + '</div>'
+      + (f.urlSlug ? '<div style="margin-top:4px;"><strong>URL:</strong> massed.app/' + f.urlSlug + '</div>' : '<div style="margin-top:4px;color:var(--text-dim);">URL not yet chosen</div>')
+      + '<div style="margin-top:4px;"><strong>Stripe:</strong> ' + (f.stripeConnected ? '✓ Connected (their own account)' : 'Not connected yet') + '</div>'
+      + '<div style="margin-top:4px;"><strong>Status:</strong> ' + f.status + '</div>'
+    + '</div>'
+
+    + '<div style="background:var(--cream);border-radius:10px;padding:12px 14px;">'
+      + '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">12-Month Cycle — ' + f.paymentsCompleted + '/12 Payments</div>'
+      + '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;">'
+        + Array.from({length:12}).map(function(_,i){
+            var done = i < f.paymentsCompleted;
+            return '<div style="width:22px;height:22px;border-radius:4px;background:' + (done ? 'var(--brown)' : 'var(--cream3)') + ';border:1px solid ' + (done ? 'var(--brown-dark)' : 'var(--border)') + ';display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;color:' + (done ? '#fff' : 'var(--text-dim)') + ';">' + (i+1) + '</div>';
+          }).join('')
+      + '</div>'
+      + (f.status === 'graduated' ? '<div style="background:#dbeafe;border-radius:8px;padding:8px 10px;font-size:0.78rem;color:#1e3a8a;">🎓 Graduated — Free hosting active until ' + f.freeHostingEndDate + '</div>' : '')
+      + (f.status === 'active' && f.paymentsCompleted < 12 ? '<div style="font-size:0.75rem;color:var(--text-dim);">Next billing: ' + f.nextBillingDate + ' · Graduates after payment #12</div>' : '')
+    + '</div>'
+
+    + '<div style="background:var(--cream);border-radius:10px;padding:12px 14px;">'
+      + '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Payment History</div>'
+      + logHTML
+    + '</div>'
+
+    + '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 14px;font-size:0.78rem;color:#166534;line-height:1.6;">'
+      + '🔒 <strong>Privacy Firewall Active.</strong> You cannot view their client data, messages, booking details, or revenue. You only see billing status shown above.'
+    + '</div>'
+    + '</div>';
+
+  openModal('modal-sf-detail');
+}
+
+// ── SPARK FOUNDER ─────────────────────────────────────────────────────────────
+
+
 // ── BOOT — single DOMContentLoaded, all init in one place ────────────────
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -15902,10 +17482,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
       <div id="help-sec-booking" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">📅 Booking / Your Services</div>
-        <p>Found in the sidebar under <strong>Booking / Your Services</strong>. Two tabs: <strong>Services</strong> and <strong>Incoming Bookings</strong>.</p>
+        <p>Found in the sidebar under <strong>Booking / Your Services</strong>. Three tabs: <strong>Services</strong>, <strong>Incoming Bookings</strong>, and <strong>Reservations</strong>.</p>
         <p style="margin-top:6px;"><strong>Services tab:</strong> Add bookable services with name, price, duration, category (Hair / Beauty / Wellness / Consulting / Classes / + custom), description, optional cover photo. <strong>Classes</strong> — when selected, choose between <em>Single Class</em> (one-on-one) or <em>Group Class</em> (multiple students, set max capacity and location/platform). Toggle <strong>Booking Page Live</strong> to make booking visible. Each service card has Visible/Hidden, 🤍 Heart, and Delete. Category chips filter by type — add new categories with the + New Category button.</p>
         <p style="margin-top:6px;"><strong>Deposit system:</strong> Toggle Require Deposit when adding a service. Set fixed dollar amount or %. Client pays upfront to secure their date; remaining balance collected at time of service.</p>
         <p style="margin-top:6px;"><strong>Incoming Bookings tab:</strong> All booked appointments. Each shows client name, email, service, date, time, status, and deposit status. Tap Manage to: Reschedule, Send Deposit Request, Charge Fee (late/no-show/cancellation), Send Review Questionnaire, Cancel, Delete, or Ban from Booking.</p>
+        <p style="margin-top:6px;"><strong>Reservations tab:</strong> All table/event reservations created from Events / Tickets → Reservation or Birthday Reservation Table. See the 🍽️ Reservations section above for a full breakdown of this tab.</p>
         <p style="margin-top:6px;"><strong>Review Questionnaire:</strong> Build custom review questions with multiple-choice answers. 5-star rating always included. Send to any client from their Manage menu.</p>
       </div>
 
@@ -15921,7 +17502,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
       <div id="help-sec-events" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
         <div style="font-weight:800;color:var(--text);margin-bottom:6px;">🎟️ Events / Tickets</div>
-        <p>Create in-person or online events. Set ticket tiers, prices, and capacity. Manage attendees and collect payments through Stripe. Use the built-in <strong>Ticket Scanner</strong> in the sidebar to scan QR codes at the door. Select <strong>Other</strong> as event type to type a custom type.</p>
+        <p>Found in the sidebar. Create, manage, and sell tickets to any type of event. The screen shows three stat cards — Total Events, Tickets Sold, and Active Events — plus a Create Event button and your full events list.</p>
+        <p style="margin-top:6px;"><strong>Creating an Event:</strong> Upload a cover image, enter the Event Name and select an Event Type from the dropdown. Types include Concert / Show, Tour, Popup, Festival, Workshop, Networking, Party, Birthday Bash, Brunch, Watch Party, Listening Party, Award Show, Travel, Invitation, Online, Reservation, Birthday Reservation Table, and Other (type your own).</p>
+        <p style="margin-top:6px;"><strong>Ticket Tiers &amp; Pricing:</strong> For standard events, add one or more ticket tiers — each with a Ticket Type (General Admission, VIP, Early Bird, etc.), Price Per Ticket, Tickets Available, and a description of what's included. Click + Add Tier to stack multiple tiers. Tap ✕ to remove a tier.</p>
+        <p style="margin-top:6px;"><strong>Online Events:</strong> Selecting Online auto-generates a unique stream link — <em>stream.massed.io/yourslug</em> — which activates on your event date. Attendees must enter their ticket number to access it.</p>
+        <p style="margin-top:6px;"><strong>Event Description, Date, Time, Location:</strong> Describe the event vibe and what to expect. Set the date and time. Location has three modes — Set Location (type the venue), To Be Determined, or Sent After Purchase. Ticket Delivery options: Email, SMS/Phone, In-Person Barcode Scan. Add tags (comma-separated) for discoverability. Toggle RSVP required to add a deadline and confirmation message. Add optional gallery images.</p>
+        <p style="margin-top:6px;"><strong>Payment Stability Settings:</strong> Toggle Enable Split-Payment Accountability to reveal three sub-fields — Cancellation Penalty Amount (default $100), Individual Refund Processing Fee (default $5), and Payment Cut-off Deadline (default 72 hours before event, also supports days and weeks). A live preview line updates as you type, e.g. "Payments must be completed at least 3 days before the event starts."</p>
+        <p style="margin-top:6px;"><strong>Event cards:</strong> Each shows the cover image (or a placeholder), event name, date, time, location, type badge, a sold/remaining progress bar, base price, and three action buttons — View, Edit, Delete. Reservations also appear here for editing and deletion.</p>
+        <p style="margin-top:6px;"><strong>Ticket Scanner:</strong> Found in the sidebar under Trust &amp; Community. Scan QR codes at the door to validate tickets in real time.</p>
+      </div>
+
+      <div id="help-sec-reservations" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--brown);margin-bottom:6px;">🍽️ Reservations (inside Events / Tickets)</div>
+        <p>Select <strong>Reservation</strong> or <strong>Birthday Reservation Table</strong> from the Event Type dropdown. All standard event fields (Description, Date, Time, Location, Tags, RSVP, Gallery, Payment Stability) are automatically hidden — only the Reservation Details block is shown.</p>
+        <p style="margin-top:6px;"><strong>Date &amp; Time of Arrival</strong> — always at the top of the form. Set the exact date and arrival time for the reservation.</p>
+        <p style="margin-top:6px;"><strong>Birthday Reservation Table</strong> — shows an additional Birthday Details block. Add one or more birthday people by name (tap + Add Another Birthday Person to add multiple names). Toggle <strong>Add Birthday Announcement</strong> to include sparklers, lights, and a Happy Birthday sign — set the announcement cost and it is automatically folded into the total and split evenly across all attendees with a transparent breakdown shown.</p>
+        <p style="margin-top:6px;"><strong>Total Reservation Cost &amp; Attendees:</strong> Enter the full cost to reserve (e.g. $1,000 for a table). Enter the number of attendees.</p>
+        <p style="margin-top:6px;"><strong>Payment Type:</strong> Choose Pay in Full Today (full amount from the person booking) or Split Between All Attendees (cost divided equally — a live per-person calculator shows each person's share as you type, including any announcement fee). A breakdown line reads e.g. "$1,050 ÷ 8 people = $131.25 each."</p>
+        <p style="margin-top:6px;"><strong>Payment Due Date:</strong> Set the date by which the full balance must be paid. Automatic reminders are sent every 3 days until this date.</p>
+        <p style="margin-top:6px;"><strong>Venue / Location:</strong> Enter the full address — included in the payment link and confirmation email.</p>
+        <p style="margin-top:6px;"><strong>What's Included:</strong> Describe what comes with the reservation — e.g. "Reserved table for 10 · 2 complimentary champagne bottles · dedicated server." Shown on the payment page and in the confirmation email.</p>
+        <p style="margin-top:6px;"><strong>Contact Making the Reservation:</strong> Collect First Name, Last Name, Phone, and Email from the person booking.</p>
+        <p style="margin-top:6px;"><strong>Create Reservation &amp; Send Payment Link:</strong> Generates a unique <em>pay.massed.io/r/...</em> payment link and a QR code (downloadable as SVG). Click Send Link to deliver the link and QR via email and SMS to the contact. Click Verify Received once confirmed — this saves the reservation, creates the event card in Events/Tickets, adds it to the calendar, and navigates you to Booking → Reservations tab.</p>
+        <p style="margin-top:6px;"><strong>Booking → Reservations Tab:</strong> All reservations appear here as full cards showing the event name, birthday names (if applicable), arrival date/time, attendee count, announcement badge, contact details, payment status (Pending / Partial / Paid in Full), a live progress bar showing amount collected vs. remaining, attendee payment circles (split mode), a full payment log with ticket numbers, the payment link and QR toggle, a Record Payment Received button, and next auto-reminder date.</p>
+        <p style="margin-top:6px;"><strong>Recording a Payment:</strong> Tap Record Payment Received on any reservation card. Enter the payer's name, amount, seat number (for split reservations), payment method (Cash, Card, Venmo, Zelle, CashApp, Other), and optional notes. Each payment is logged with a unique ticket number (e.g. RES-1A2B-001). When full payment is collected, each payer automatically receives a confirmation email with their unique ticket number and QR code. The card status updates to Paid in Full.</p>
+        <p style="margin-top:6px;"><strong>Edit &amp; Delete:</strong> Edit opens the event in the Events/Tickets create modal for changes. Delete removes the reservation from both the Reservations tab and the Events list simultaneously.</p>
+      </div>
+
+      <div id="help-sec-sparkfounder" style="background:var(--cream);border-radius:10px;padding:14px 16px;">
+        <div style="font-weight:800;color:var(--text);margin-bottom:6px;">⚡ Spark Founder</div>
+        <p>Found in the sidebar. A sponsorship tier that lets a primary account holder launch a fully independent Massed presence for a family member or junior partner — such as a daughter starting her own cosmetology business — for <strong>$15/month</strong>.</p>
+        <p style="margin-top:6px;"><strong>How to Spark a Founder:</strong> Click "Spark a New Founder — $15/mo." Enter their email address, your relationship to them (Daughter, Son, Sibling, Junior Partner, Mentee, Employee, or Other), and an optional personal note. Click Pay &amp; Send Invite. Payment is processed immediately and a unique invitation link is sent to their email within minutes.</p>
+        <p style="margin-top:6px;"><strong>Onboarding Flow:</strong> The Founder receives their invite link, creates their own login credentials, and chooses their own URL slug — <em>massed.app/theirname</em>. This URL is completely independent and not nested under the primary account. Their full Massed dashboard activates immediately: Social Tab, Events, Bookings, Store, Messages, Stripe — everything.</p>
+        <p style="margin-top:6px;"><strong>The Firewall — Total Identity Separation:</strong> The primary account holder can only see billing status (Active, Pending, Graduated) and payment progress. They cannot access the Founder's client data, messages, booking details, or revenue under any circumstances. The Founder connects their own Stripe account — all revenue from their bookings goes directly to them, never through the primary account.</p>
+        <p style="margin-top:6px;"><strong>12-Month Graduation Cycle:</strong> Each $15 payment advances the graduation clock. A visual 12-block progress tracker shows exactly which payments have been made. After the 12th payment, the Founder's account automatically transitions to a <strong>2-year free hosting period</strong> — identical to the primary account's ownership model. A graduation notification is triggered for both parties and the billing stops automatically.</p>
+        <p style="margin-top:6px;"><strong>Path to Full Ownership:</strong> After the 2-year free hosting period ends, the Founder transitions to their own independent $79/year maintenance fee — billed directly to them, completely separate from the original sponsor. They are now a full independent Massed owner.</p>
+        <p style="margin-top:6px;"><strong>Managing Founders:</strong> The Spark Founder screen shows four stat cards — Active Founders, Graduated, Monthly Spend, and Pending Invites. Each Founder card displays their name/email, URL, relationship, status badge, graduation progress bar, billing info, and the privacy firewall notice. Actions: View Details (opens full payment history and 12-payment tracker), Record Payment (logs each $15 payment manually), Resend Invite (for pending founders who haven't signed up yet), and Cancel Seat (stops billing and suspends the account).</p>
+        <p style="margin-top:6px;"><strong>Backend Logic — Spark Relationship States:</strong> A Founder moves through four states: <em>Pending</em> (invite sent, account not yet created), <em>Active</em> (signed up, billing running, 1–11 payments made), <em>Graduated</em> (12 payments complete, 2-year free hosting active, billing stopped), <em>Independent</em> (free period ended, now on their own $79/yr plan with no connection to the original sponsor).</p>
       </div>
 
       <div id="help-sec-golive" style="background:var(--brown-bg);border-radius:10px;padding:14px 16px;">
