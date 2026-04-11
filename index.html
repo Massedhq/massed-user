@@ -2610,6 +2610,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       if(document.getElementById('ev-res-phone')) document.getElementById('ev-res-phone').value = '';
       if(document.getElementById('ev-res-email')) document.getElementById('ev-res-email').value = '';
       if(document.getElementById('ev-reservation-due-date')) document.getElementById('ev-reservation-due-date').value = '';
+      if(document.getElementById('ev-res-holding-fee')) document.getElementById('ev-res-holding-fee').value = '';
+      if(document.getElementById('ev-res-refund-fee')) document.getElementById('ev-res-refund-fee').value = '';
       if(document.getElementById('ev-res-date')) document.getElementById('ev-res-date').value = '';
       if(document.getElementById('ev-res-time')) document.getElementById('ev-res-time').value = '';
       if(document.getElementById('ev-res-location')) document.getElementById('ev-res-location').value = '';
@@ -2780,6 +2782,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       var resTime = document.getElementById('ev-res-time').value;
       var location = document.getElementById('ev-res-location') ? document.getElementById('ev-res-location').value.trim() : '';
       var perks = document.getElementById('ev-res-perks') ? document.getElementById('ev-res-perks').value.trim() : '';
+      var customHoldingFee = document.getElementById('ev-res-holding-fee') ? parseFloat(document.getElementById('ev-res-holding-fee').value) : null;
+      var customRefundFee  = document.getElementById('ev-res-refund-fee')  ? parseFloat(document.getElementById('ev-res-refund-fee').value)  : null;
+      var holdingFee  = (!isNaN(customHoldingFee) && customHoldingFee >= 0) ? customHoldingFee : 100;
+      var refundFeePerPerson = (!isNaN(customRefundFee)  && customRefundFee  >= 0) ? customRefundFee  : 5;
       var bdayName = isBirthday ? bdayNames.filter(function(n){ return n.value.trim(); }).map(function(n){ return n.value.trim(); }) : [];
       var hasAnnouncement = isBirthday && document.getElementById('ev-bday-announcement') ? document.getElementById('ev-bday-announcement').checked : false;
       var payType = document.querySelector('input[name="ev-pay-type"]:checked');
@@ -2826,6 +2832,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         hasAnnouncement: hasAnnouncement,
         announcementFee: bdayFee,
         paymentDueDate: dueDate ? new Date(dueDate+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '',
+        holdingFee: holdingFee,
+        refundFeePerPerson: refundFeePerPerson,
         paymentLink: link,
         paymentLog: []
       };
@@ -2838,8 +2846,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       var total = parseFloat(p.totalCost) || 0;
       var attendees = parseInt(p.attendees) || 1;
       var isSplit = p.splitPayment;
-      var cancelPenalty = 100;
-      var refundFeePerPerson = 5;
+      var cancelPenalty = (p.holdingFee != null && !isNaN(p.holdingFee)) ? parseFloat(p.holdingFee) : 100;
+      var refundFeePerPerson = (p.refundFeePerPerson != null && !isNaN(p.refundFeePerPerson)) ? parseFloat(p.refundFeePerPerson) : 5;
       var totalFees = isSplit ? attendees * refundFeePerPerson : refundFeePerPerson;
       var perPerson = isSplit ? (total / attendees) : total;
       var name = p.eventName || 'this reservation';
@@ -2974,6 +2982,311 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
       var url = document.getElementById('reservation-link-url').textContent;
       if (navigator.clipboard) navigator.clipboard.writeText(url);
       toast('✓ Link copied!');
+    }
+
+    function openReservationCheckout() {
+      var p = window._pendingReservation;
+      if (!p) return;
+      var total = parseFloat(p.totalCost) || 0;
+      var attendees = parseInt(p.attendees) || 1;
+      var isSplit = p.splitPayment;
+      var amount = isSplit ? (total / attendees) : total;
+      closeModal('modal-customer-payment-page');
+
+      // Populate header
+      var el; 
+      el = document.getElementById('rco-res-name');  if(el) el.textContent = p.eventName || 'Reservation';
+      el = document.getElementById('rco-res-date');  if(el) el.textContent = (p.eventDateFormatted||'') + (p.eventTime?' at '+p.eventTime:'') + (p.location?' · '+p.location:'');
+      el = document.getElementById('rco-res-amount'); if(el) el.textContent = '$' + amount.toFixed(2);
+      el = document.getElementById('rco-res-note');  if(el) el.textContent = isSplit ? 'Your share of a $'+total.toFixed(2)+' reservation split between '+attendees+' people' : 'Full reservation payment';
+      el = document.getElementById('rco-total-display'); if(el) el.textContent = '$' + amount.toFixed(2);
+
+      // Clear all fields
+      ['rco-name','rco-email','rco-phone','rco-cardholder','rco-card','rco-cvv','rco-zip',
+       'rco-cardholder2','rco-card2','rco-cvv2','rco-zip2','rco-card1-amount'].forEach(function(id){
+        var f = document.getElementById(id); if(f) f.value = '';
+      });
+      ['rco-exp-month','rco-exp-year','rco-exp-month2','rco-exp-year2'].forEach(function(id){
+        var f = document.getElementById(id); if(f) f.selectedIndex = 0;
+      });
+
+      // Reset split card section
+      var splitCb = document.getElementById('rco-split-cards'); if(splitCb) splitCb.checked = false;
+      var sec2 = document.getElementById('rco-card2-section'); if(sec2) sec2.style.display = 'none';
+      var amt1 = document.getElementById('rco-card1-amount-row'); if(amt1) amt1.style.display = 'none';
+      var lbl  = document.getElementById('rco-card1-label'); if(lbl) lbl.textContent = 'Card Details';
+
+      window._currentResPayment = p;
+      window._currentResAmount  = amount;
+
+      var payBtn = document.getElementById('rco-pay-btn');
+      if (payBtn) {
+        payBtn.textContent = 'Pay $' + amount.toFixed(2);
+        payBtn.onclick = function() { completeReservationPayment(p, amount); };
+      }
+      openModal('modal-reservation-checkout');
+    }
+
+    function rcoToggleSplitCards() {
+      var cb  = document.getElementById('rco-split-cards');
+      var on  = cb && cb.checked;
+      var amt1 = document.getElementById('rco-card1-amount-row'); if(amt1) amt1.style.display = on ? 'block' : 'none';
+      var lbl  = document.getElementById('rco-card1-label'); if(lbl) lbl.textContent = on ? 'Card 1 Details' : 'Card Details';
+      var payBtn = document.getElementById('rco-pay-btn');
+      if (payBtn) payBtn.textContent = on ? 'Charge Card 1 →' : 'Pay $' + (window._currentResAmount||0).toFixed(2);
+      rcoUpdateCard2Amount();
+    }
+
+    function rcoUpdateCard2Amount() {
+      var total = window._currentResAmount || 0;
+      var c1el  = document.getElementById('rco-card1-amount');
+      var c2el  = document.getElementById('rco-card2-amount-display');
+      var totEl = document.getElementById('rco-total-display');
+      var c1val = c1el ? (parseFloat(c1el.value) || 0) : 0;
+      if (c2el) c2el.textContent = '$' + Math.max(0, total - c1val).toFixed(2);
+      if (totEl) totEl.textContent = '$' + total.toFixed(2);
+    }
+
+    function completeReservationPayment(p, amount) {
+      // Validate contact + Card 1
+      var name       = (document.getElementById('rco-name')       ||{}).value||''; name = name.trim();
+      var email      = (document.getElementById('rco-email')      ||{}).value||''; email = email.trim();
+      var phone      = (document.getElementById('rco-phone')      ||{}).value||''; phone = phone.trim();
+      var cardholder = (document.getElementById('rco-cardholder') ||{}).value||''; cardholder = cardholder.trim();
+      var card       = (document.getElementById('rco-card')       ||{}).value||''; card = card.trim();
+      var expMonth   = (document.getElementById('rco-exp-month')  ||{}).value||'';
+      var expYear    = (document.getElementById('rco-exp-year')   ||{}).value||'';
+      var cvv        = (document.getElementById('rco-cvv')        ||{}).value||''; cvv = cvv.trim();
+      var zip        = (document.getElementById('rco-zip')        ||{}).value||''; zip = zip.trim();
+      var useTwoCards = !!(document.getElementById('rco-split-cards')||{}).checked;
+
+      if (!name)                                        { toast('Please enter your full name');           return; }
+      if (!email || !email.includes('@'))               { toast('Please enter a valid email address');    return; }
+      if (!phone)                                       { toast('Please enter your phone number');        return; }
+      if (!cardholder)                                  { toast('Please enter the name on the card');     return; }
+      if (!card || card.replace(/\s/g,'').length < 15) { toast('Please enter a valid card number');      return; }
+      if (!expMonth)                                    { toast('Please select the expiration month');    return; }
+      if (!expYear)                                     { toast('Please select the expiration year');     return; }
+      if (!cvv || cvv.length < 3)                      { toast('Please enter your CVV');                 return; }
+      if (!zip)                                         { toast('Please enter your billing zip code');    return; }
+
+      if (useTwoCards) {
+        var c1amt = parseFloat((document.getElementById('rco-card1-amount')||{}).value||'0') || 0;
+        if (c1amt <= 0 || c1amt >= amount) { toast('Enter how much to charge Card 1 — must be less than the total'); return; }
+
+        // Store Card 1 details, move to Step 2
+        window._rco_name        = name;
+        window._rco_email       = email;
+        window._rco_last4       = card.replace(/\s/g,'').slice(-4);
+        window._rco_card1Amount = c1amt;
+
+        // Show Step 2, hide Step 1
+        var s1 = document.getElementById('rco-step-1'); if (s1) s1.style.display = 'none';
+        var s2 = document.getElementById('rco-step-2'); if (s2) s2.style.display = 'block';
+
+        var ind = document.getElementById('rco-step-indicator'); if (ind) ind.textContent = 'Step 2 of 2';
+        var conf = document.getElementById('rco-card1-confirmed-amount');
+        if (conf) conf.textContent = 'Card ending ' + window._rco_last4 + ' — $' + c1amt.toFixed(2) + ' charged';
+
+        var rem = Math.max(0, amount - c1amt);
+        var c2disp = document.getElementById('rco-card2-amount-display'); if (c2disp) c2disp.textContent = '$' + rem.toFixed(2);
+        var c2btn  = document.getElementById('rco-card2-pay-btn');        if (c2btn)  c2btn.textContent  = 'Charge Card 2 — $' + rem.toFixed(2);
+
+      } else {
+        // Single card — close and finish
+        window._rco_name        = name;
+        window._rco_email       = email;
+        window._rco_last4       = card.replace(/\s/g,'').slice(-4);
+        window._rco_card1Amount = null;
+        closeModal('modal-reservation-checkout');
+        rcoFinishPayment(p, amount);
+      }
+    }
+
+    function rcoChargeCard2() {
+      var ch2 = ((document.getElementById('rco-cardholder2')||{}).value||'').trim();
+      var c2  = ((document.getElementById('rco-card2')      ||{}).value||'').trim();
+      var em2 = (document.getElementById('rco-exp-month2')  ||{}).value||'';
+      var ey2 = (document.getElementById('rco-exp-year2')   ||{}).value||'';
+      var cv2 = ((document.getElementById('rco-cvv2')       ||{}).value||'').trim();
+      var z2  = ((document.getElementById('rco-zip2')       ||{}).value||'').trim();
+
+      if (!ch2)                                        { toast('Please enter the name on Card 2');       return; }
+      if (!c2 || c2.replace(/\s/g,'').length < 15)    { toast('Please enter Card 2 number');            return; }
+      if (!em2)                                        { toast('Please select Card 2 expiry month');     return; }
+      if (!ey2)                                        { toast('Please select Card 2 expiry year');      return; }
+      if (!cv2 || cv2.length < 3)                      { toast('Please enter Card 2 CVV');               return; }
+      if (!z2)                                         { toast('Please enter Card 2 billing zip code');  return; }
+
+      var p      = window._currentResPayment;
+      var amount = window._currentResAmount;
+      window._rco_card2Last4  = c2.replace(/\s/g,'').slice(-4);
+      window._rco_card2Amount = Math.max(0, amount - (window._rco_card1Amount || 0));
+
+      closeModal('modal-reservation-checkout');
+      rcoFinishPayment(p, amount);
+    }
+
+    function rcoFinishPayment(p, amount) {
+      var name      = window._rco_name        || '';
+      var email     = window._rco_email       || '';
+      var last4     = window._rco_last4       || '????';
+      var c1amt     = window._rco_card1Amount;
+      var c2amt     = window._rco_card2Amount || 0;
+      var last4c2   = window._rco_card2Last4  || null;
+      var twoCards  = !!(c1amt);
+      var ticketNum = 'RES-' + (p.eventName||'EVT').replace(/[^A-Z0-9]/gi,'').substring(0,4).toUpperCase() + '-' + Math.random().toString(36).substring(2,6).toUpperCase();
+      var dateStr   = new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      var timeStr   = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+
+      var chargeLines = twoCards
+        ? '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:0.78rem;color:var(--text-mid);"><span>Card 1 ending ' + last4 + '</span><span style="font-weight:600;">$' + (c1amt||0).toFixed(2) + '</span></div>'
+          + '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:0.78rem;color:var(--text-mid);"><span>Card 2 ending ' + (last4c2||'????') + '</span><span style="font-weight:600;">$' + c2amt.toFixed(2) + '</span></div>'
+        : '<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:0.78rem;color:var(--text-mid);"><span>Card ending ' + last4 + '</span><span style="font-weight:600;">$' + amount.toFixed(2) + '</span></div>';
+
+      setTimeout(function() {
+        var msgDiv = document.createElement('div');
+        msgDiv.style.cssText = 'position:fixed;inset:0;background:rgba(44,26,14,0.75);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+        msgDiv.innerHTML =
+          '<div style="background:#fff;border-radius:20px;max-width:380px;width:100%;padding:26px 22px;">'
+          + '<div style="text-align:center;margin-bottom:18px;">'
+          +   '<div style="width:56px;height:56px;background:#d1fae5;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">'
+          +     '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>'
+          +   '<div style="font-family:\'DM Serif Display\',serif;font-size:1.25rem;margin-bottom:4px;">Payment Complete!</div>'
+          +   '<div style="font-size:0.78rem;color:var(--text-dim);">Receipt sent to <strong>' + email + '</strong></div>'
+          + '</div>'
+          + '<div style="background:var(--cream);border-radius:12px;padding:14px 16px;margin-bottom:14px;">'
+          +   '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Receipt</div>'
+          +   '<div style="display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:8px;">'
+          +     '<span style="font-weight:700;">' + (p.eventName||'Reservation') + '</span>'
+          +     '<span style="font-weight:700;color:var(--brown);">$' + amount.toFixed(2) + '</span>'
+          +   '</div>'
+          +   chargeLines
+          +   '<div style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;padding-top:6px;border-top:1px solid var(--border);">' + dateStr + ' at ' + timeStr + '</div>'
+          + '</div>'
+          + '<div style="background:var(--cream);border-radius:12px;padding:12px 16px;margin-bottom:16px;text-align:center;">'
+          +   '<div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;">Reservation Ticket</div>'
+          +   '<div style="font-family:monospace;font-size:1.1rem;font-weight:700;color:var(--brown);letter-spacing:0.08em;">' + ticketNum + '</div>'
+          +   '<div style="font-size:0.7rem;color:var(--text-dim);margin-top:4px;">QR code emailed to ' + email + '</div>'
+          + '</div>'
+          + '<button onclick="this.closest(\'[style*=fixed]\').remove()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-weight:700;font-size:0.88rem;">Done</button>'
+          + '</div>';
+        document.body.appendChild(msgDiv);
+
+        // Update booking tab
+        if (typeof reservationBookings !== 'undefined') {
+          var rec = reservationBookings.find(function(r){ return r.paymentLink === p.paymentLink; });
+          if (rec) {
+            if (!rec.paymentLog) rec.paymentLog = [];
+            rec.paymentLog.push({
+              name: name, amount: amount, ticketNum: ticketNum, date: dateStr,
+              method: twoCards ? 'Card ···'+last4+' + Card ···'+(last4c2||'????') : 'Card ···'+last4,
+              receipt: { email: email, card1: '$'+(c1amt||amount).toFixed(2), card2: twoCards?'$'+c2amt.toFixed(2):null }
+            });
+            var totalPaid = rec.paymentLog.reduce(function(s,x){ return s+(parseFloat(x.amount)||0); },0);
+            rec.paymentStatus = totalPaid >= rec.totalCost ? 'paid' : 'partial';
+            rec.receiptSent = true;
+            if (typeof renderReservationBookings === 'function') renderReservationBookings();
+          }
+        }
+        window._rco_card1Amount = null; window._rco_card2Amount = null; window._rco_card2Last4 = null;
+      }, 350);
+    }
+
+    function previewCustomerPaymentPage() {
+      var p = window._pendingReservation;
+      if (!p) { toast('Generate the payment link first'); return; }
+
+      var total = parseFloat(p.totalCost) || 0;
+      var attendees = parseInt(p.attendees) || 1;
+      var isSplit = p.splitPayment;
+      var perPerson = isSplit ? total / attendees : total;
+      var cancelPenalty = (p.holdingFee != null && !isNaN(p.holdingFee)) ? parseFloat(p.holdingFee) : 100;
+      var feePerPerson = (p.refundFeePerPerson != null && !isNaN(p.refundFeePerPerson)) ? parseFloat(p.refundFeePerPerson) : 5;
+      var totalFees = isSplit ? attendees * feePerPerson : feePerPerson;
+      var totalRefund = Math.max(0, total - cancelPenalty - totalFees);
+      var refundEach = isSplit ? Math.max(0, (total - cancelPenalty - totalFees) / attendees) : totalRefund;
+      var dueDate = p.paymentDueDate || 'the payment deadline';
+      var name = p.eventName || 'Reservation';
+      var resDate = p.eventDateFormatted || p.eventDate || '';
+      var resTime = p.eventTime || '';
+      var location = p.location || '';
+
+      // Reset checkbox & button
+      var cb = document.getElementById('cpp-agree');
+      var btn = document.getElementById('cpp-pay-btn');
+      if (cb) cb.checked = false;
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.45'; }
+
+      // Header
+      var nameEl = document.getElementById('cpp-name');
+      var metaEl = document.getElementById('cpp-meta');
+      if (nameEl) nameEl.textContent = name;
+      if (metaEl) metaEl.innerHTML =
+        (resDate ? '📅 ' + resDate + (resTime ? ' at ' + resTime : '') + '<br>' : '')
+        + (location ? '📍 ' + location : '');
+
+      // Amount
+      var amtLbl = document.getElementById('cpp-amount-label');
+      var amtEl  = document.getElementById('cpp-amount');
+      var amtNote = document.getElementById('cpp-amount-note');
+      if (amtLbl) amtLbl.textContent = isSplit ? 'Your Share' : 'Amount Due';
+      if (amtEl)  amtEl.textContent = '$' + perPerson.toFixed(2);
+      if (amtNote) amtNote.textContent = isSplit
+        ? 'Part of a $' + total.toFixed(2) + ' group reservation split between ' + attendees + ' people'
+        : 'Full reservation payment';
+
+      // Perks
+      var perksRow = document.getElementById('cpp-perks-row');
+      var perksEl  = document.getElementById('cpp-perks');
+      if (p.perks && p.perks.trim()) {
+        if (perksRow) perksRow.style.display = 'block';
+        if (perksEl)  perksEl.textContent = p.perks;
+      } else {
+        if (perksRow) perksRow.style.display = 'none';
+      }
+
+      // Terms
+      var termsEl = document.getElementById('cpp-terms');
+      if (termsEl) {
+        if (isSplit) {
+          termsEl.innerHTML =
+            'This is a <strong>group reservation</strong> for <strong>' + name + '</strong>. '
+            + 'Your share is <strong>$' + perPerson.toFixed(2) + '</strong>. '
+            + 'All <strong>' + attendees + ' members</strong> must complete payment by <strong>' + dueDate + '</strong> for the reservation to be confirmed.<br><br>'
+            + '⚠️ If the full group balance is not collected by the deadline, the reservation is automatically cancelled. '
+            + 'A <strong>$100 Holding Fee</strong> is deducted from the total funds collected, plus a <strong>$' + feePerPerson.toFixed(2) + ' processing fee per person</strong>. '
+            + 'The remaining balance is refunded to each paid member.<br><br>'
+            + '📲 You will receive reminder texts at 72, 48, and 24 hours before the deadline if any member has not paid.';
+        } else {
+          termsEl.innerHTML =
+            'This reservation for <strong>' + name + '</strong> requires payment of <strong>$' + total.toFixed(2) + '</strong> in full by <strong>' + dueDate + '</strong>.<br><br>'
+            + '⚠️ A <strong>$100 Holding Fee</strong> applies. If the reservation is cancelled or payment is not received by the deadline, '
+            + 'the $100 fee is non-refundable. The remaining balance (minus a $' + feePerPerson.toFixed(2) + ' processing fee) will be returned to you.';
+        }
+      }
+
+      // Cancellation math
+      var mathEl = document.getElementById('cpp-math-lines');
+      if (mathEl) {
+        mathEl.innerHTML =
+          row('Total collected', '$' + total.toFixed(2), '')
+          + (isSplit ? row('(' + attendees + ' people × $' + perPerson.toFixed(2) + ')', '', '#999') : '')
+          + row('− $100 Holding Fee (venue keeps)', '−$100.00', '#dc2626')
+          + row('− Processing fees ($' + feePerPerson.toFixed(2) + (isSplit ? ' × ' + attendees : '') + ')', '−$' + totalFees.toFixed(2), '#d97706')
+          + '<div style="border-top:1.5px solid #fecaca;margin:4px 0;"></div>'
+          + row('Total refunded', '$' + totalRefund.toFixed(2), '#16a34a')
+          + (isSplit ? row('Each person gets back', '$' + refundEach.toFixed(2), '#16a34a') : '');
+      }
+
+      openModal('modal-customer-payment-page');
+    }
+
+    function row(label, val, color) {
+      return '<div style="display:flex;justify-content:space-between;">'
+        + '<span style="color:' + (color||'var(--text-mid)') + ';">' + label + '</span>'
+        + '<span style="font-weight:700;color:' + (color||'var(--text)') + ';">' + val + '</span>'
+        + '</div>';
     }
 
     function generateReservationLink() {
@@ -8154,6 +8467,32 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
               <div style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">⏰ Automatic reminders will be sent every 3 days until this date</div>
             </div>
 
+            <!-- Custom fee overrides -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;">
+              <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px;">Cancellation & Refund Fees</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="form-field" style="margin:0;">
+                  <label>Holding Fee</label>
+                  <div style="position:relative;">
+                    <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.88rem;color:var(--text-dim);pointer-events:none;">$</span>
+                    <input type="number" id="ev-res-holding-fee" min="0" step="0.01" placeholder="100.00" style="width:100%;padding:10px 12px 10px 24px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                  </div>
+                  <div style="font-size:0.68rem;color:var(--text-dim);margin-top:4px;">Default: $100.00 — kept by you if cancelled</div>
+                </div>
+                <div class="form-field" style="margin:0;">
+                  <label>Refund Processing Fee</label>
+                  <div style="position:relative;">
+                    <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:0.88rem;color:var(--text-dim);pointer-events:none;">$</span>
+                    <input type="number" id="ev-res-refund-fee" min="0" step="0.01" placeholder="5.00" style="width:100%;padding:10px 12px 10px 24px;border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;outline:none;background:#fff;">
+                  </div>
+                  <div style="font-size:0.68rem;color:var(--text-dim);margin-top:4px;">Default: $5.00 per person — covers transaction cost</div>
+                </div>
+              </div>
+              <div style="margin-top:10px;background:var(--cream);border-radius:8px;padding:8px 11px;font-size:0.72rem;color:var(--text-mid);line-height:1.5;">
+                Leave blank to use Massed defaults ($100 holding fee · $5.00 per person). These amounts appear in the customer's payment terms and cancellation math.
+              </div>
+            </div>
+
             <div style="border-top:1px solid rgba(192,122,80,0.2);margin:16px 0;"></div>
 
             <!-- Reservation location + perks -->
@@ -8310,6 +8649,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
                 <span id="res-link-sent-text">Link sent!</span>
               </div>
+
+              <!-- Preview Customer View -->
+              <button onclick="previewCustomerPaymentPage()" style="width:100%;padding:10px;background:var(--cream);border:1.5px dashed var(--brown-light);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:700;color:var(--brown);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:7px;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                Preview What the Customer Sees
+              </button>
+
               <div style="display:flex;gap:8px;">
                 <button onclick="sendReservationLink()" id="res-send-btn" style="flex:1;padding:11px;background:#fff;border:1.5px solid var(--brown);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:700;color:var(--brown);">
                   📤 Send Link
@@ -15955,7 +16301,7 @@ function renderReservationBookings() {
         <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;">Payment Log</div>
         <div style="display:flex;flex-direction:column;gap:6px;">
           ${log.map(function(p,pi){return `<div style="display:flex;align-items:flex-start;justify-content:space-between;background:var(--cream);border-radius:8px;padding:8px 10px;font-size:0.78rem;">
-            <div><span style="font-weight:700;">${p.name}</span><span style="color:var(--text-dim);margin-left:6px;">${p.date} · ${p.method||''}${r.splitPayment&&p.seat?' · Seat '+p.seat:''}</span>${p.ticketNum?'<div style="font-size:0.68rem;color:#C07A50;font-weight:700;margin-top:2px;">🎟 '+p.ticketNum+'</div>':''}</div>
+            <div><span style="font-weight:700;">${p.name}</span><span style="color:var(--text-dim);margin-left:6px;">${p.date} · ${p.method||''}${r.splitPayment&&p.seat?' · Seat '+p.seat:''}</span>${p.ticketNum?'<div style="font-size:0.68rem;color:#C07A50;font-weight:700;margin-top:2px;">🎟 '+p.ticketNum+'</div>':''}${p.receipt?'<div style="font-size:0.68rem;color:#16a34a;margin-top:2px;">📧 Receipt sent to '+p.receipt.email+(p.receipt.card2?' · Split: '+p.receipt.card1+' + '+p.receipt.card2:'')+'</div>':''}</div>
             <span style="font-weight:700;color:#16a34a;flex-shrink:0;margin-left:8px;">+$${parseFloat(p.amount).toFixed(2)}</span>
           </div>`;}).join('')}
         </div>
@@ -18483,6 +18829,212 @@ document.addEventListener('DOMContentLoaded', function() {
     <div style="display:flex;gap:10px;margin-top:16px;">
       <button class="btn-cancel" onclick="closeModal('modal-bk-ban')">Cancel</button>
       <button id="bk-ban-confirm" class="btn-save" style="flex:1;background:#dc2626;color:#fff;">Ban Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER RESERVATION PAYMENT PAGE PREVIEW -->
+<div id="modal-customer-payment-page" class="modal-overlay" onclick="closeModal('modal-customer-payment-page')">
+  <div onclick="event.stopPropagation()" style="background:#fff;border-radius:20px;max-width:400px;width:92%;margin:auto;overflow-y:auto;max-height:92vh;box-shadow:0 30px 80px rgba(44,26,14,0.3);">
+
+    <!-- Top bar — looks like a real link page -->
+    <div style="background:linear-gradient(135deg,#1a0a00,#3d1f00);border-radius:20px 20px 0 0;padding:18px 20px 16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:7px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--brown-light)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span style="font-size:0.7rem;color:rgba(255,255,255,0.5);font-family:'DM Sans',sans-serif;">pay.massed.io</span>
+        </div>
+        <div style="background:rgba(74,222,128,0.15);border-radius:20px;padding:3px 9px;display:flex;align-items:center;gap:5px;">
+          <div style="width:6px;height:6px;border-radius:50%;background:#4ade80;"></div>
+          <span style="font-size:0.65rem;color:#4ade80;font-weight:700;">Secure</span>
+        </div>
+        <button onclick="closeModal('modal-customer-payment-page')" style="background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;color:#fff;font-size:1rem;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <div id="cpp-name" style="font-family:'DM Serif Display',serif;font-size:1.25rem;color:#fff;margin-bottom:3px;"></div>
+      <div id="cpp-meta" style="font-size:0.75rem;color:rgba(255,255,255,0.55);line-height:1.6;"></div>
+    </div>
+
+    <div style="padding:18px 20px 24px;">
+
+      <!-- Amount -->
+      <div style="text-align:center;padding:16px 0 14px;border-bottom:1px solid var(--border);margin-bottom:16px;">
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;" id="cpp-amount-label">Amount Due</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:2.2rem;color:var(--brown);" id="cpp-amount">$0.00</div>
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-top:3px;" id="cpp-amount-note"></div>
+      </div>
+
+      <!-- What's included -->
+      <div id="cpp-perks-row" style="display:none;background:var(--cream);border-radius:10px;padding:11px 13px;margin-bottom:14px;">
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--brown);margin-bottom:5px;">What's Included</div>
+        <div id="cpp-perks" style="font-size:0.82rem;color:var(--text-mid);line-height:1.6;"></div>
+      </div>
+
+      <!-- Terms & Agreement — the KEY section customers must read -->
+      <div style="border:1.5px solid #f97316;border-radius:12px;overflow:hidden;margin-bottom:16px;">
+        <div style="background:#fff7ed;padding:10px 13px;display:flex;align-items:center;gap:7px;border-bottom:1px solid #fed7aa;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#c2410c" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span style="font-size:0.72rem;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.04em;">Reservation Terms — Read Before Paying</span>
+        </div>
+        <div style="padding:12px 13px;background:#fff;">
+          <div id="cpp-terms" style="font-size:0.82rem;color:var(--text-mid);line-height:1.8;"></div>
+          <!-- Cancellation math -->
+          <div id="cpp-math" style="background:#fef2f2;border-radius:8px;padding:10px 12px;margin-top:12px;font-size:0.78rem;line-height:1.9;">
+            <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#991b1b;margin-bottom:6px;">If Cancelled or Payment Not Received by Deadline:</div>
+            <div id="cpp-math-lines"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- I Agree checkbox -->
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:12px 13px;background:var(--cream);border-radius:10px;border:1px solid var(--border);margin-bottom:14px;">
+        <input type="checkbox" id="cpp-agree" onchange="document.getElementById('cpp-pay-btn').disabled=!this.checked;document.getElementById('cpp-pay-btn').style.opacity=this.checked?'1':'0.45';" style="margin-top:2px;accent-color:var(--brown);width:16px;height:16px;flex-shrink:0;cursor:pointer;">
+        <span style="font-size:0.78rem;color:var(--text-mid);line-height:1.6;">I have read and agree to the payment terms above, including the $100 Holding Fee policy and the group cancellation rules.</span>
+      </label>
+
+      <button id="cpp-pay-btn" disabled onclick="openReservationCheckout()" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:1rem;opacity:0.45;transition:opacity 0.2s;">
+        Complete Payment →
+      </button>
+
+      <div style="text-align:center;margin-top:12px;font-size:0.72rem;color:var(--text-dim);">
+        🔒 Payments secured by Stripe · Powered by Massed
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESERVATION CHECKOUT MODAL -->
+<div id="modal-reservation-checkout" class="modal-overlay" onclick="closeModal('modal-reservation-checkout')" style="align-items:flex-start;overflow-y:auto;padding:30px 0;">
+  <div onclick="event.stopPropagation()" style="background:#0d0d0d;border-radius:24px;max-width:440px;width:92%;margin:auto;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.8);border:1px solid rgba(192,122,80,0.15);">
+
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1a0a00,#2d1500);padding:24px 24px 18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <span style="font-size:0.62rem;color:rgba(255,255,255,0.4);letter-spacing:0.15em;text-transform:uppercase;">Secure Checkout</span>
+        </div>
+        <span id="rco-step-indicator" style="font-size:0.7rem;color:rgba(255,255,255,0.4);"></span>
+        <button onclick="closeModal('modal-reservation-checkout')" style="background:rgba(255,255,255,0.08);border:none;width:30px;height:30px;border-radius:50%;cursor:pointer;color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <!-- Reservation summary -->
+      <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:14px 16px;">
+        <div style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:8px;">Reservation</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <div id="rco-res-name" style="color:#fff;font-weight:600;font-size:0.9rem;"></div>
+            <div id="rco-res-date" style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:3px;"></div>
+            <div id="rco-res-note" style="color:rgba(255,255,255,0.35);font-size:0.7rem;margin-top:2px;"></div>
+          </div>
+          <div id="rco-res-amount" style="color:var(--brown-light);font-family:'DM Serif Display',serif;font-size:1.5rem;white-space:nowrap;flex-shrink:0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:22px 24px 26px;">
+
+      <!-- ── STEP 1: Contact + Card ── -->
+      <div id="rco-step-1">
+        <!-- Contact Info -->
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;">Contact Information</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px;">
+          <input type="text"  id="rco-name"  placeholder="Full Name"                        style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <input type="email" id="rco-email" placeholder="Email Address (receipt sent here)"  style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <input type="tel"   id="rco-phone" placeholder="Phone Number"                      style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+
+        <!-- Card Details -->
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;" id="rco-card1-label">Card Details</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+          <input type="text" id="rco-cardholder" placeholder="Name as it appears on card" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <div style="position:relative;">
+            <input type="text" id="rco-card" placeholder="Card Number" maxlength="19" oninput="formatCard(this)" style="width:100%;padding:12px 52px 12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.92rem;color:#fff;outline:none;letter-spacing:0.08em;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:3px;"><div style="width:24px;height:16px;background:#eb001b;border-radius:3px;opacity:0.7;"></div><div style="width:24px;height:16px;background:#f79e1b;border-radius:3px;opacity:0.7;margin-left:-8px;"></div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <select id="rco-exp-month" style="padding:12px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <option value="" style="background:#1a1a1a;">Month</option>
+              <option style="background:#1a1a1a;">01</option><option style="background:#1a1a1a;">02</option><option style="background:#1a1a1a;">03</option><option style="background:#1a1a1a;">04</option><option style="background:#1a1a1a;">05</option><option style="background:#1a1a1a;">06</option><option style="background:#1a1a1a;">07</option><option style="background:#1a1a1a;">08</option><option style="background:#1a1a1a;">09</option><option style="background:#1a1a1a;">10</option><option style="background:#1a1a1a;">11</option><option style="background:#1a1a1a;">12</option>
+            </select>
+            <select id="rco-exp-year" style="padding:12px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <option value="" style="background:#1a1a1a;">Year</option>
+              <option style="background:#1a1a1a;">2025</option><option style="background:#1a1a1a;">2026</option><option style="background:#1a1a1a;">2027</option><option style="background:#1a1a1a;">2028</option><option style="background:#1a1a1a;">2029</option><option style="background:#1a1a1a;">2030</option><option style="background:#1a1a1a;">2031</option><option style="background:#1a1a1a;">2032</option>
+            </select>
+            <input type="text" id="rco-cvv" placeholder="CVV" maxlength="4" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          </div>
+          <input type="text" id="rco-zip" placeholder="Billing Zip Code" maxlength="10" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <!-- Amount for this card (shown when using two cards) -->
+          <div id="rco-card1-amount-row" style="display:none;">
+            <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">Amount to charge to this card</div>
+            <input type="number" id="rco-card1-amount" min="0.01" step="0.01" placeholder="0.00" oninput="rcoUpdateCard2Amount()" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(192,122,80,0.4);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.7)'" onblur="this.style.borderColor='rgba(192,122,80,0.4)'">
+            <div style="font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:4px;">The remaining balance will be charged to a second card on the next screen</div>
+          </div>
+        </div>
+
+        <!-- Use two cards toggle -->
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;margin-bottom:18px;">
+          <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;color:rgba(255,255,255,0.7);">Pay with two cards</div>
+              <div style="font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:2px;">Card 1 is charged first, then Card 2 covers the rest in the next step</div>
+            </div>
+            <input type="checkbox" id="rco-split-cards" onchange="rcoToggleSplitCards()" style="width:18px;height:18px;accent-color:var(--brown);flex-shrink:0;margin-left:12px;cursor:pointer;">
+          </label>
+        </div>
+
+        <!-- Order total -->
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.82rem;color:rgba(255,255,255,0.5);" id="rco-total-label">Total</span>
+          <span id="rco-total-display" style="color:#fff;font-weight:700;font-size:1rem;"></span>
+        </div>
+
+        <button id="rco-pay-btn" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;box-shadow:0 4px 20px rgba(192,122,80,0.4);">Pay</button>
+      </div>
+
+      <!-- ── STEP 2: Second card (only shown after Card 1 confirmed) ── -->
+      <div id="rco-step-2" style="display:none;">
+        <!-- Card 1 confirmed banner -->
+        <div style="background:rgba(22,163,74,0.1);border:1px solid rgba(22,163,74,0.3);border-radius:10px;padding:12px 14px;margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#4ade80" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <div style="font-size:0.82rem;font-weight:700;color:#4ade80;">Card 1 charged successfully</div>
+            <div id="rco-card1-confirmed-amount" style="font-size:0.72rem;color:rgba(255,255,255,0.5);margin-top:1px;"></div>
+          </div>
+        </div>
+
+        <!-- Remaining balance -->
+        <div style="text-align:center;padding:12px 0 16px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:18px;">
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px;">Remaining balance — Card 2</div>
+          <div id="rco-card2-amount-display" style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--brown-light);"></div>
+        </div>
+
+        <!-- Card 2 fields -->
+        <div style="font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;">Card 2 Details</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+          <input type="text" id="rco-cardholder2" placeholder="Name as it appears on card" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          <div style="position:relative;">
+            <input type="text" id="rco-card2" placeholder="Card Number" maxlength="19" oninput="formatCard(this)" style="width:100%;padding:12px 52px 12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.92rem;color:#fff;outline:none;letter-spacing:0.08em;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+            <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:3px;"><div style="width:24px;height:16px;background:#eb001b;border-radius:3px;opacity:0.7;"></div><div style="width:24px;height:16px;background:#f79e1b;border-radius:3px;opacity:0.7;margin-left:-8px;"></div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+            <select id="rco-exp-month2" style="padding:12px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <option value="" style="background:#1a1a1a;">Month</option>
+              <option style="background:#1a1a1a;">01</option><option style="background:#1a1a1a;">02</option><option style="background:#1a1a1a;">03</option><option style="background:#1a1a1a;">04</option><option style="background:#1a1a1a;">05</option><option style="background:#1a1a1a;">06</option><option style="background:#1a1a1a;">07</option><option style="background:#1a1a1a;">08</option><option style="background:#1a1a1a;">09</option><option style="background:#1a1a1a;">10</option><option style="background:#1a1a1a;">11</option><option style="background:#1a1a1a;">12</option>
+            </select>
+            <select id="rco-exp-year2" style="padding:12px 10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.85rem;color:#fff;outline:none;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+              <option value="" style="background:#1a1a1a;">Year</option>
+              <option style="background:#1a1a1a;">2025</option><option style="background:#1a1a1a;">2026</option><option style="background:#1a1a1a;">2027</option><option style="background:#1a1a1a;">2028</option><option style="background:#1a1a1a;">2029</option><option style="background:#1a1a1a;">2030</option><option style="background:#1a1a1a;">2031</option><option style="background:#1a1a1a;">2032</option>
+            </select>
+            <input type="text" id="rco-cvv2" placeholder="CVV" maxlength="4" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:monospace;font-size:0.9rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+          </div>
+          <input type="text" id="rco-zip2" placeholder="Billing Zip Code" maxlength="10" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.88rem;color:#fff;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(192,122,80,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        </div>
+
+        <button onclick="rcoChargeCard2()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--brown-light),var(--brown-dark));color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.95rem;box-shadow:0 4px 20px rgba(192,122,80,0.4);" id="rco-card2-pay-btn">Charge Card 2</button>
+      </div>
+
+      <div style="text-align:center;margin-top:12px;font-size:0.68rem;color:rgba(255,255,255,0.25);">
+        🔒 256-bit SSL · Powered by Stripe · Secured by Massed
+      </div>
     </div>
   </div>
 </div>
