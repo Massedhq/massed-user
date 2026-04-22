@@ -1,16 +1,5 @@
 {
   "routes": [
-    {
-      "src": "/massed-user/assets/(.*)",
-      "dest": "/massed-user/assets/$1"
-    },
-    {
-      "src": "/massed-user/(.*)",
-      "dest": "/massed-user/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/massed-user/index.html"
-    }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
