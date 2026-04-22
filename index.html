@@ -790,11 +790,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);
         <span class="pulse-dot" style="width:9px;height:9px;background:#fff;"></span>
         Go Live
       </button>
-      <div class="link-badge" id="dual-link-badge" onclick="dualLinkOpen(this)" title="Open your public profile + switch to Public View">
-        <svg viewBox="0 0 24 24" id="chain-link-icon"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
-        massed.io/username
-      </div>
-      <button class="btn-logout" onclick="toast('Logging out...')">Log Out</button>
+      <div class="link-badge" id="dual-link-badge" onclick="dualLinkOpen(this)">
+  <svg viewBox="0 0 24 24" id="chain-link-icon">...</svg>
+  <span id="nav-profile-link">massed.io/username</span>
+</div>
+      <button class="btn-logout" onclick="logout()">Log Out</button>
     </div>
   </div>
   <div class="content">
@@ -9284,21 +9284,26 @@ function getUser() {
 function updateUI(user) {
   console.log("🎨 Updating UI:", user);
 
+  // Sidebar
   const nameEl = document.getElementById("sidebar-name");
   const handleEl = document.getElementById("sidebar-handle");
   const avatarEl = document.getElementById("sidebar-avatar");
 
+  // Topbar
+  const profileLink = document.getElementById("nav-profile-link");
+
   // Name
-  if (nameEl) {
-    nameEl.textContent = user.full_name || "User";
+  if (nameEl) nameEl.textContent = user.full_name || "User";
+
+  // Username (sidebar)
+  if (handleEl) handleEl.textContent = "@" + (user.username || "username");
+
+  // Username (topbar link)
+  if (profileLink) {
+    profileLink.textContent = `massed.io/${user.username || "username"}`;
   }
 
-  // Username
-  if (handleEl) {
-    handleEl.textContent = "@" + (user.username || "username");
-  }
-
-  // Avatar (initials)
+  // Avatar initials
   if (avatarEl && user.full_name) {
     const initials = user.full_name
       .split(" ")
