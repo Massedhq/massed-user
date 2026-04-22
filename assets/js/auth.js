@@ -1,4 +1,5 @@
-// ================================
+
+  // ================================
 // GET USER FROM URL OR STORAGE
 // ================================
 function getUser() {
@@ -29,21 +30,28 @@ function getUser() {
 // UPDATE UI (SIDEBAR + NAVBAR)
 // ================================
 function updateUI(user) {
-  console.log("🎨 Updating UI with user:", user);
+  console.log("🎨 Updating UI:", user);
 
   // Sidebar
   const nameEl = document.getElementById("sidebar-name");
   const handleEl = document.getElementById("sidebar-handle");
-
-  // Navbar (optional)
-  const navName = document.getElementById("nav-username");
-
-  if (nameEl) nameEl.textContent = user.full_name || "—";
-  if (handleEl) handleEl.textContent = user.username ? "@" + user.username : "—";
-  if (navName) navName.textContent = user.username || "";
-
-  // Avatar initials (optional)
   const avatarEl = document.getElementById("sidebar-avatar");
+
+  // Topbar
+  const profileLink = document.getElementById("nav-profile-link");
+
+  // Name
+  if (nameEl) nameEl.textContent = user.full_name || "User";
+
+  // Username (sidebar)
+  if (handleEl) handleEl.textContent = "@" + (user.username || "username");
+
+  // Username (topbar link)
+  if (profileLink) {
+    profileLink.textContent = `massed.io/${user.username || "username"}`;
+  }
+
+  // Avatar initials
   if (avatarEl && user.full_name) {
     const initials = user.full_name
       .split(" ")
@@ -55,6 +63,8 @@ function updateUI(user) {
     avatarEl.textContent = initials;
   }
 }
+
+
 
 // ================================
 // FETCH FRESH USER FROM DB (getMe)
