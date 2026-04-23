@@ -82,7 +82,7 @@ async function fetchCurrentUser(user) {
   try {
 
     const res = await fetch(
-      `https://massed-web.vercel.app/api/get-me?user_id=${user.id}`
+      `https://www.massed.io/api/get-me?user_id=${user.id}`
     );
 
     const data = await res.json();
