@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       ['physical','digital','courses'].forEach(function(t) {
         var grid = document.getElementById('store-' + t + '-grid');
-        if (grid) renderStoreGrid(t);
+        // renderStoreGrid not implemented yet
       });
     }
 

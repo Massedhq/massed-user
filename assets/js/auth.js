@@ -3,15 +3,14 @@
 // GET USER FROM URL OR STORAGE
 // ================================
 function getUser() {
-  console.log("🔍 getUser() called");
 
   const params = new URLSearchParams(window.location.search);
   const userParam = params.get("user");
 
-  if (userParam) {
+  // ---------- FROM URL ----------
+  if (userParam && userParam !== "undefined") {
     try {
       const user = JSON.parse(decodeURIComponent(userParam));
-      console.log("✅ User from URL:", user);
 
       localStorage.setItem("user", JSON.stringify(user));
       return user;
@@ -20,17 +19,27 @@ function getUser() {
     }
   }
 
+  // ---------- FROM LOCAL STORAGE ----------
   const stored = localStorage.getItem("user");
-  console.log("📦 User from localStorage:", stored);
 
-  return stored ? JSON.parse(stored) : null;
+  if (!stored || stored === "undefined") {
+    console.log("❌ No valid user in storage");
+    return null;
+  }
+
+  try {
+    return JSON.parse(stored);
+  } catch (e) {
+    console.error("❌ Corrupted user in storage, clearing...");
+    localStorage.removeItem("user");
+    return null;
+  }
 }
 
 // ================================
 // UPDATE UI (SIDEBAR + NAVBAR)
 // ================================
 function updateUI(user) {
-  console.log("🎨 Updating UI:", user);
 
   // Sidebar
   const nameEl = document.getElementById("sidebar-name");
@@ -71,7 +80,6 @@ function updateUI(user) {
 // ================================
 async function fetchCurrentUser(user) {
   try {
-    console.log("🔄 Fetching user from DB:", user.id);
 
     const res = await fetch(
       `https://massed-web.vercel.app/api/get-me?user_id=${user.id}`
@@ -79,14 +87,12 @@ async function fetchCurrentUser(user) {
 
     const data = await res.json();
 
-    console.log("📦 getMe response:", data);
 
     if (!res.ok) {
       console.error("❌ getMe error:", data.error);
       return;
     }
 
-    console.log("✅ Fresh user from DB:", data.user);
 
     // Update UI with latest data
     updateUI(data.user);
@@ -99,31 +105,46 @@ async function fetchCurrentUser(user) {
   }
 }
 
-// // ================================
-// // INIT AUTH
-// // ================================
+// ================================
+// INIT AUTH
+// ================================
 function initAuth() {
-  console.log("🚀 initAuth() running");
 
-  const user = getUser();
+  let user = null;
 
-  console.log("👤 Final user:", user);
+  try {
+    user = getUser();
+  } catch (e) {
+    console.error("❌ getUser crashed:", e);
+    localStorage.removeItem("user");
+  }
 
-  if (!user) {
-    console.log("❌ No user → redirecting");
+
+  // ❌ NO USER → redirect
+  if (!user || !user.id) {
+    console.log("❌ No valid user → redirecting");
+
+    localStorage.removeItem("user"); // clean bad data
     window.location.href = "https://massed-web.vercel.app/";
     return;
   }
 
-  console.log("✅ User exists");
 
+  // ✅ UI first (fast)
   updateUI(user);
+
+  // 🔄 then refresh from DB
   fetchCurrentUser(user);
 
-  window.history.replaceState({}, document.title, "/");
+  // ✅ CLEAN URL (important: DON'T break path)
+  if (window.location.search) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
 }
 
-console.log("📜 auth.js loaded");
+// ================================
+// AUTO RUN
+// ================================
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("🌐 DOM loaded");
@@ -134,7 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // LOGOUT
 // ================================
 function logout() {
-  console.log("🚪 Logout clicked");
 
   localStorage.removeItem("user");
   window.location.href = "https://massed-web.vercel.app/";
