@@ -1,165 +1,31 @@
-# Massed
+# Massed User Database Connections
 
-Massed is a comprehensive dashboard platform designed for creators, entrepreneurs, and professionals to build and manage their online presence. It provides tools to create public profiles, sell products and services, manage bookings, handle subscriptions, and track business analytics.
+This document details which parts of the Massed User application are connected to a database and which are not.
 
-## Features
+## Connected to Database
 
-### 🏠 Dashboard
-- Real-time analytics (profile views, orders viewed, abandoned carts)
-- Revenue tracking (daily, weekly, monthly, yearly)
-- Graduation countdown with subscription management
-- Quick start actions for adding products and services
-- Alerts and notifications system
+- **User Authentication and Profile Data**: User login, profile information (name, username, avatar) is fetched from the backend API at `https://massed-web.vercel.app/api/get-me`. User data is stored in localStorage for caching, but the source of truth is the database.
 
-### 🎨 Showcase
-- Template selection for public profile customization
-- Live phone preview of profile appearance
-- Full-page preview functionality
-- Real-time template application
+## Not Connected to Database
 
-### 🛍️ My Store
-- **Physical Products**: Manage apparel, merchandise, and shippable goods
-- **Digital Products**: Handle downloads like PDFs, presets, templates, audio, software
-- **Courses**: Create and sell educational content
-- Store visibility controls
-- Live/Paused store status toggle
-- Product management with inventory tracking
+- **Event Creation and Management**: Events are created and managed locally in the browser. The `events` array is stored in memory or localStorage. No API calls to save or load events from database.
 
-### 🔗 Web Links
-- Organize and manage external links
-- Drag-and-drop reordering
-- Visibility toggles for each link
-- Share and preview functionality
+- **Ticket Generation and Validation**: Tickets are generated locally using a formula based on event ID, tier, and index. Ticket validation in the scanner checks against locally created events and tickets. No database storage for tickets.
 
-### 📅 Booking & Services
-- Schedule appointments and services
-- Pricing management
-- Availability controls
+- **Payment Processing**: Payment simulation is done locally. Functions like `payCreator`, `completeCheckout` simulate payments but do not interact with a real payment gateway or database. References to Stripe are for display purposes.
 
-### 💳 Subscriptions & Memberships
-- Create recurring revenue streams
-- Membership management
-- Subscriber tracking
+- **Analytics and Dashboard Data**: Numbers shown in the dashboard (profile views, revenue, etc.) appear to be hardcoded or locally generated. No API calls to fetch real analytics data.
 
-### 🎫 Events & Tickets
-- Event creation and management
-- Ticket sales
-- Event analytics
+- **Products and Store**: Product creation and management is handled locally. No API calls to save products to database.
 
-### 📋 Listings
-- Real estate, cars, jobs, experiences, and more
-- Category-based organization
+- **Other Features**: Forms, polls, listings, reviews, messages, etc., are all handled client-side without database persistence.
 
-### 📊 Analytics
-- Comprehensive business metrics
-- Revenue and performance tracking
-- Chart visualization
+## Architecture Notes
 
-### 👥 Profile Management
-- Media profile setup
-- Social links integration
-- Video content management
-- Branding and browser icons
-- Promo and referral systems
+- The application is primarily a client-side SPA (Single Page Application) with minimal backend integration.
 
-### 🤝 Collaboration
-- Discover potential collaborators
-- Genre-based filtering
-- Connect with other creators
-- Collaboration profile management
+- User authentication is the main server-side component.
 
-### 💰 Finance & Payouts
-- Earnings tracking
-- Affiliate payout management
-- Withdrawal processing
-- Balance management
+- Data persistence is limited to localStorage for user session and possibly some cached data.
 
-### 📱 Responsive Design
-- Mobile-first approach
-- Tablet and desktop optimized
-- Touch-friendly interface
-
-## Tech Stack
-
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Styling**: Custom CSS with CSS Variables
-- **Deployment**: Vercel (static hosting)
-- **Fonts**: Google Fonts (DM Sans, DM Serif Display)
-
-## Installation & Setup
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/massed.git
-   cd massed
-   ```
-
-2. **Open the application**:
-   - Simply open `index.html` in a web browser
-   - No build process required - it's a static HTML/CSS/JS application
-
-3. **For development**:
-   - Edit files directly in your code editor
-   - Refresh browser to see changes
-   - Use browser developer tools for debugging
-
-## Deployment
-
-The project is configured for Vercel deployment:
-
-1. **Connect to Vercel**:
-   - Import your GitHub repository to Vercel
-   - Vercel will automatically detect the `vercel.json` configuration
-
-2. **Build Settings**:
-   - Build Command: Not required (static files)
-   - Output Directory: `.`
-   - Install Command: Not required
-
-3. **Domain**:
-   - Configure custom domain or use Vercel's provided domain
-
-## Usage
-
-1. **Getting Started**:
-   - Open the application
-   - Complete your profile setup in the Media Profile section
-   - The dashboard will unlock after saving your profile
-
-2. **Building Your Store**:
-   - Add physical products, digital downloads, or courses
-   - Configure pricing and inventory
-   - Set up your store visibility
-
-3. **Customizing Your Profile**:
-   - Choose a template from the Showcase
-   - Add web links, social media, and content
-   - Configure branding elements
-
-4. **Managing Business**:
-   - Track analytics from the dashboard
-   - Manage bookings and subscriptions
-   - Handle payouts and withdrawals
-
-## Browser Support
-
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## License
-
-This project is proprietary software. All rights reserved.
-
-## Support
-
-For support or questions, please contact the development team or refer to the help system within the application.
+- For production use, features like events, tickets, products, and analytics would need backend database integration.
