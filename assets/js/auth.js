@@ -99,9 +99,9 @@ async function fetchCurrentUser(user) {
   }
 }
 
-// ================================
-// INIT AUTH
-// ================================
+// // ================================
+// // INIT AUTH
+// // ================================
 function initAuth() {
   console.log("🚀 initAuth() running");
 
@@ -117,19 +117,12 @@ function initAuth() {
 
   console.log("✅ User exists");
 
-  // ✅ Step 1: Instant UI (fast)
   updateUI(user);
-
-  // 🔥 Step 2: Refresh from DB
   fetchCurrentUser(user);
 
-  // Clean URL (remove ?user=...)
   window.history.replaceState({}, document.title, "/");
 }
 
-// ================================
-// AUTO RUN
-// ================================
 console.log("📜 auth.js loaded");
 
 document.addEventListener("DOMContentLoaded", () => {
