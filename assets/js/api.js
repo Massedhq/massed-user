@@ -5,13 +5,7 @@
 var API_BASE = '/api';
 var _currentUser = null;
 
-// ── LOCAL STORAGE PERSISTENCE LAYER ──────────────────────────────────────
-// Acts as a fallback when the backend is unreachable.
-// All reads check localStorage first; all writes save to localStorage AND
-// attempt the real API. When the backend comes online, replace this layer
-// with real API calls only.
 
-var LS_PREFIX = 'massed_';
 
 
 

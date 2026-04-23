@@ -1,5 +1,16 @@
 
-var _currentUser = JSON.parse(localStorage.getItem("user")) || null;
+var _currentUser = null;
+
+try {
+  const raw = localStorage.getItem("user");
+
+  if (raw && raw !== "undefined") {
+    _currentUser = JSON.parse(raw);
+  }
+} catch (e) {
+  console.warn("Invalid user in localStorage, clearing...");
+  localStorage.removeItem("user");
+}
 
 
 // ================================
